@@ -12,6 +12,7 @@ import java.io.File
 class ParseTest {
 	@Test
 	fun testParse() {
-		createAst(File("test.lice"))
+		val ast = createAst(File("sample/test2.lice"))
+		println(ast.root.eval().value)
 	}
 }

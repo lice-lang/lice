@@ -10,8 +10,6 @@ import java.util.*
  * @author ice1000
  */
 
-fun nn(in0: Double) = { in1: Double -> { w0: Double -> { w1: Double -> Math.max(in0 * w0, in1 * w1) } } }
-
 object Main {
 	fun startRepl() {
 		val scanner = Scanner(System.`in`)
@@ -28,3 +26,4 @@ object Main {
 		if (args.isEmpty()) startRepl() else interpret(File(args[0]))
 	}
 }
+
