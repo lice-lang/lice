@@ -19,10 +19,8 @@ object Main {
 		}
 	}
 
-	fun interpret(file: File) = interpret(file.readText())
-
-	fun interpret(code: String) {
-		val ast = createAst(code)
+	fun interpret(file: File) {
+		val ast = createAst(file)
 	}
 
 	@JvmStatic
