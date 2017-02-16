@@ -5,10 +5,25 @@
  */
 package lice.compiler.model
 
-interface StringNode
+interface StringNode {
+	val strRepr: String
+}
 
-class StringMiddleNode(val list: List<StringNode>) : StringNode
+class StringMiddleNode(val list: MutableList<StringNode> = mutableListOf<StringNode>()) : StringNode {
+	override val strRepr: String
+		get() = list.fold(StringBuffer("[")) { stringBuffer, last ->
+			stringBuffer
+					.append(" ")
+					.append(last.strRepr)
+		}
+				.append(" ]")
+				.toString()
+}
 
-class StringLeafNode(val str: String) : StringNode
+class StringLeafNode(val str: String) : StringNode {
+	override val strRepr = str
+}
 
-object EmptyStringNode : StringNode
+object EmptyStringNode : StringNode {
+	override val strRepr = ""
+}

@@ -5,12 +5,53 @@
  */
 package lice.compiler.ast
 
-import lice.compiler.model.Ast
-import lice.compiler.model.EmptyNode
-import lice.compiler.model.EmptyStringNode
-import lice.compiler.model.StringNode
+import lice.compiler.model.*
+import lice.compiler.util.debugApply
 import java.io.File
+import java.util.*
 
+fun buildNode(code: String): StringNode {
+	var beginIndex = 0
+	val currentNodeStack = Stack<StringMiddleNode>()
+	currentNodeStack.push(StringMiddleNode())
+	var elementStarted = true
+	fun check(index: Int) {
+		if (elementStarted) {
+			elementStarted = false
+			currentNodeStack
+					.peek()
+					.list
+					.add(StringLeafNode(code
+							.substring(startIndex = beginIndex, endIndex = index)
+							.debugApply { println("found token: $this") }
+					))
+		}
+	}
+	code.forEachIndexed { index, c ->
+		when (c) {
+			'(' -> {
+				currentNodeStack.push(StringMiddleNode())
+				++beginIndex
+			}
+			')' -> {
+				check(index)
+				val son = currentNodeStack.peek()
+				currentNodeStack.pop()
+				currentNodeStack.peek().list.add(son)
+			}
+			' ', '\n', '\t' -> {
+				check(index)
+				beginIndex = index + 1
+			}
+			else -> elementStarted = true
+		}
+	}
+	check(code.length - 1)
+	if (currentNodeStack.size > 1) {
+		println("Braces not match!")
+	}
+	return currentNodeStack.peek()
+}
 
 fun createAst(file: File): Ast {
 	val variableMap = mutableMapOf<String, Int>()
@@ -18,24 +59,13 @@ fun createAst(file: File): Ast {
 			Pair("+", { ls: List<Int> -> ls.fold(0, { a, b -> a + b }) })
 	)
 	val code = file.readText()
-	var index = 0
-	fun buildNode(code: String): StringNode {
-		val elements = mutableListOf<String>()
-		code.forEach {
-			when (it) {
-				'(' -> {
-				}
-				')' -> {
-				}
-				' ' -> {
-				}
-				else -> {
-				}
-			}
-			++index
+	val stringTreeRoot = buildNode(code)
+	fun test(node: StringNode) {
+		when (node) {
+			is StringMiddleNode -> node.list.forEach(::test)
+			is StringLeafNode -> println(node.str)
 		}
-		return EmptyStringNode
 	}
-	buildNode(code)
+	test(stringTreeRoot)
 	return Ast(EmptyNode)
 }
