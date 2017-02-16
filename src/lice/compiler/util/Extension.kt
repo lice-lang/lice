@@ -22,4 +22,30 @@ fun <T> T.debugApply(block: T.() -> Unit): T {
 	return this
 }
 
+fun <A, B, C> ((a: A, b: B) -> C).curry() =
+		{ a: A ->
+			{ b: B ->
+				invoke(a, b)
+			}
+		}
+
+fun <A, B, C, D> ((a: A, b: B, c: C) -> D).curry() =
+		{ a: A ->
+			{ b: B ->
+				{ c: C ->
+					invoke(a, b, c)
+				}
+			}
+		}
+
+fun <A, B, C, D, E> ((a: A, b: B, c: C, d: D) -> E).curry() =
+		{ a: A ->
+			{ b: B ->
+				{ c: C ->
+					{ d: D ->
+						invoke(a, b, c, d)
+					}
+				}
+			}
+		}
 

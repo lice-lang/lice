@@ -15,6 +15,7 @@ fun buildNode(code: String): StringNode {
 	val currentNodeStack = Stack<StringMiddleNode>()
 	currentNodeStack.push(StringMiddleNode())
 	var elementStarted = true
+	var lineNumber = 0
 	fun check(index: Int) {
 		if (elementStarted) {
 			elementStarted = false
@@ -35,20 +36,27 @@ fun buildNode(code: String): StringNode {
 			}
 			')' -> {
 				check(index)
-				val son = currentNodeStack.peek()
+				if (currentNodeStack.size <= 1) {
+					println("Braces not match at line $lineNumber: Unexpected \')\'.")
+					return EmptyStringNode
+				}
+				val son =
+						if (currentNodeStack.peek().empty) EmptyStringNode
+						else currentNodeStack.peek()
 				currentNodeStack.pop()
-				currentNodeStack.peek().list.add(son)
+				currentNodeStack.peek().add(son)
 			}
 			' ', '\n', '\t' -> {
 				check(index)
 				beginIndex = index + 1
+				if (c == '\n') ++lineNumber
 			}
 			else -> elementStarted = true
 		}
 	}
 	check(code.length - 1)
 	if (currentNodeStack.size > 1) {
-		println("Braces not match!")
+		println("Braces not match at line $lineNumber: Expected \')\'.")
 	}
 	return currentNodeStack.peek()
 }

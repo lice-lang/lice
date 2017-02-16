@@ -10,14 +10,15 @@ interface StringNode {
 }
 
 class StringMiddleNode(val list: MutableList<StringNode> = mutableListOf<StringNode>()) : StringNode {
+	val empty: Boolean
+		get() = list.isEmpty()
+
 	override val strRepr: String
 		get() = list.fold(StringBuffer("[")) { stringBuffer, last ->
-			stringBuffer
-					.append(" ")
-					.append(last.strRepr)
-		}
-				.append(" ]")
-				.toString()
+			stringBuffer.append(" ").append(last.strRepr)
+		}.append(" ]").toString()
+
+	fun add(n: StringNode) = list.add(n)
 }
 
 class StringLeafNode(val str: String) : StringNode {

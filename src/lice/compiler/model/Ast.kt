@@ -5,26 +5,28 @@
  */
 package lice.compiler.model
 
+class Value(val int: Int?)
+
 interface Node {
-	fun eval(): Int
+	fun eval(): Value
 }
 
-class ValueNode(val int: Int) : Node {
-	override fun eval() = int
+class ValueNode(val value: Value) : Node {
+	override fun eval() = value
 }
 
 class ExpressionNode(
-		val function: (List<Int>) -> Int,
+		val function: (List<Value>) -> Value,
 		val params: List<Node>) : Node {
-	constructor(function: (List<Int>) -> Int, param: Node) : this(function, listOf(param))
+	constructor(function: (List<Value>) -> Value, param: Node) : this(function, listOf(param))
 
 	override fun eval() = function(params.map(Node::eval))
 }
 
 object EmptyNode : Node {
-	override fun eval() = 0
+	val nullptr = Value(null)
+
+	override fun eval() = nullptr
 }
 
 class Ast(val root: Node)
-
-fun <A, B, C> ((a: A, b: B) -> C).curry() = { a: A -> { b: B -> invoke(a, b) } }
