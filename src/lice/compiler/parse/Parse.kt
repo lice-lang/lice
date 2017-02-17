@@ -18,12 +18,13 @@ fun buildNode(code: String): StringNode {
 	currentNodeStack.push(StringMiddleNode())
 	var elementStarted = true
 	var lineNumber = 0
+	var lastQuoteIndex = 0
+	var quoteStarted = false
 	fun check(index: Int) {
 		if (elementStarted) {
 			elementStarted = false
 			currentNodeStack
 					.peek()
-					.list
 					.add(StringLeafNode(code
 							.substring(startIndex = beginIndex, endIndex = index)
 							.debugApply { println("found token: $this") }
@@ -33,28 +34,48 @@ fun buildNode(code: String): StringNode {
 	code.forEachIndexed { index, c ->
 		when (c) {
 			'(' -> {
-				check(index)
-				currentNodeStack.push(StringMiddleNode())
-				++beginIndex
+				if (!quoteStarted) {
+					check(index)
+					currentNodeStack.push(StringMiddleNode())
+					++beginIndex
+				}
 			}
 			')' -> {
-				check(index)
-				if (currentNodeStack.size <= 1) {
-					println("Braces not match at line $lineNumber: Unexpected \')\'.")
-					return EmptyStringNode
+				if (!quoteStarted) {
+					check(index)
+					if (currentNodeStack.size <= 1) {
+						println("Braces not match at line $lineNumber: Unexpected \')\'.")
+						return EmptyStringNode
+					}
+					val son =
+							if (currentNodeStack.peek().empty) EmptyStringNode
+							else currentNodeStack.peek()
+					currentNodeStack.pop()
+					currentNodeStack.peek().add(son)
 				}
-				val son =
-						if (currentNodeStack.peek().empty) EmptyStringNode
-						else currentNodeStack.peek()
-				currentNodeStack.pop()
-				currentNodeStack.peek().add(son)
 			}
 			' ', '\n', '\t' -> {
-				check(index)
-				beginIndex = index + 1
+				if (!quoteStarted) {
+					check(index)
+					beginIndex = index + 1
+				}
 				if (c == '\n') ++lineNumber
 			}
-			else -> elementStarted = true
+			"\"" -> {
+				if (!quoteStarted) {
+					quoteStarted = true
+					lastQuoteIndex = index
+				} else {
+					quoteStarted = false
+					currentNodeStack.peek().add(StringLeafNode(code
+							.substring(startIndex = quoteStarted, endIndex = index)
+							.debugApply { println("Found String: $this") }
+					))
+				}
+			}
+			else -> {
+				if (!quoteStarted) elementStarted = true
+			}
 		}
 	}
 	check(code.length - 1)
@@ -64,22 +85,22 @@ fun buildNode(code: String): StringNode {
 	return currentNodeStack.peek()
 }
 
+fun parseToken(str: String): Value {
+	//
+}
+
+fun mapAst(node: StringNode): Node {
+	return when (node) {
+		is StringMiddleNode -> node.list.map(::mapAst)
+		is StringLeafNode -> node.str
+	}
+}
+
 fun createAst(file: File): Ast {
 	val code = file.readText()
 	val symbolList = SymbolList()
 	symbolList.initialize()
 	symbolList.addVariable("FILE_PATH", Value(file.absolutePath))
 	val stringTreeRoot = buildNode(code)
-	fun test(node: StringNode): Node {
-		when (node) {
-			is StringMiddleNode -> {
-				node.list
-			}
-			is StringLeafNode -> {
-				node.str.debugOutput()
-			}
-		}
-		TODO()
-	}
-	return Ast(test(stringTreeRoot), symbolList)
+	return Ast(mapAst(stringTreeRoot), symbolList)
 }
