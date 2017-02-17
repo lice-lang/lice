@@ -8,6 +8,7 @@ package lice.compiler.parse
 import lice.compiler.model.*
 import lice.compiler.util.SymbolList
 import lice.compiler.util.debugApply
+import lice.compiler.util.debugOutput
 import java.io.File
 import java.util.*
 
@@ -75,10 +76,10 @@ fun createAst(file: File): Ast {
 				node.list
 			}
 			is StringLeafNode -> {
-				println(node.str)
+				node.str.debugOutput()
 			}
 		}
 		TODO()
 	}
-	return Ast(test(stringTreeRoot))
+	return Ast(test(stringTreeRoot), symbolList)
 }
