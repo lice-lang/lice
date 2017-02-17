@@ -6,10 +6,9 @@
 package lice.compiler.parse
 
 import lice.compiler.model.*
-import lice.compiler.util.SymbolList
 import lice.compiler.util.ParseException
+import lice.compiler.util.SymbolList
 import lice.compiler.util.debugApply
-import lice.compiler.util.debugOutput
 import java.io.File
 import java.util.*
 
@@ -69,7 +68,7 @@ fun buildNode(code: String): StringNode {
 				} else {
 					quoteStarted = false
 					currentNodeStack.peek().add(StringLeafNode(code
-							.substring(startIndex = quoteStarted, endIndex = index + 1)
+							.substring(startIndex = lastQuoteIndex, endIndex = index + 1)
 							.debugApply { println("Found String: $this") }
 					))
 				}
@@ -86,27 +85,37 @@ fun buildNode(code: String): StringNode {
 	return currentNodeStack.peek()
 }
 
-fun parseValue(str: String, symbolList: SymbolList): Value {
+fun parseValue(str: String, symbolList: SymbolList): Node {
 	return when {
-		str[0] == '\"' && str[str.length - 1] == '\"' -> Value(str.substring(1, str.length - 2).apply {
-				// TODO replace \n, \t, etc.
-		})
-		// TODO is int
-		// TODO is hex
-		// TODO is bin
-		// TODO is float
-		// TODO is double
+		str[0] == '\"' && str[str.length - 1] == '\"' -> ValueNode(Value(str
+				.substring(1, str.length - 2)
+				.apply {
+					// TODO replace \n, \t, etc.
+				}))
+	// TODO is int
+	// TODO is hex
+	// TODO is bin
+	// TODO is float
+	// TODO is double
 		else -> VariableNode(
 				symbolList,
-				symbolList.getVariable(name) ?: throw ParseException("Undefinef Variable: $name")
+				symbolList.getVariableId(str) ?: throw ParseException("Undefined Variable: $str")
 		)
 	}
 }
 
-fun mapAst(node: StringNode): Node {
+fun mapAst(symbolList: SymbolList, node: StringNode): Node {
 	return when (node) {
-		is StringMiddleNode -> node.list.map(::mapAst)
-		is StringLeafNode -> node.str
+		is StringMiddleNode -> {
+			val ls = node.list.map { strNode ->
+				mapAst(symbolList, strNode)
+			}
+			TODO()
+		}
+		is StringLeafNode ->
+			parseValue(node.str, symbolList)
+		else -> // empty
+			EmptyNode
 	}
 }
 
@@ -116,5 +125,5 @@ fun createAst(file: File): Ast {
 	symbolList.initialize()
 	symbolList.addVariable("FILE_PATH", Value(file.absolutePath))
 	val stringTreeRoot = buildNode(code)
-	return Ast(mapAst(stringTreeRoot), symbolList)
+	return Ast(mapAst(symbolList, stringTreeRoot), symbolList)
 }

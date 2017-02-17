@@ -1,8 +1,8 @@
 package lice.compiler
 
-import lice.compiler.ast.buildNode
-import lice.compiler.ast.createAst
 import lice.compiler.model.StringMiddleNode
+import lice.compiler.parse.buildNode
+import lice.compiler.parse.createAst
 import org.junit.Test
 import java.io.File
 

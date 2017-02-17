@@ -8,13 +8,21 @@ this language is very naive, I write it to practise programming, and it can do s
 
 ## Language design
 
-+ Expression based:
++ Strict syntax:
 
 ```lisp
 (233)
 ```
 
-+ Calculating
+Error: 233 isn't a function
+
+```lisp
+233
+```
+
+OK
+
++ Basic functions:
 
 ```lisp
 (+ 2 3 4 (* 2 5))

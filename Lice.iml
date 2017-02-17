@@ -2,7 +2,10 @@
 <module type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
-      <configuration />
+      <configuration>
+        <option name="languageLevel" value="KOTLIN_1_1" />
+        <option name="targetPlatformKind" value="JVM_1_8" />
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -25,6 +28,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="KotlinJavaRuntime (2)" level="project" />
   </component>
 </module>
