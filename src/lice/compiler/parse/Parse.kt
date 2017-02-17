@@ -7,6 +7,7 @@ package lice.compiler.parse
 
 import lice.compiler.model.*
 import lice.compiler.util.SymbolList
+import lice.compiler.util.ParseException
 import lice.compiler.util.debugApply
 import lice.compiler.util.debugOutput
 import java.io.File
@@ -85,8 +86,21 @@ fun buildNode(code: String): StringNode {
 	return currentNodeStack.peek()
 }
 
-fun parseToken(str: String): Value {
-	//
+fun parseValue(str: String, symbolList: SymbolList): Value {
+	return when {
+		str[0] == '\"' && str[str.length - 1] == '\"' -> Value(str.substring(1, str.length - 2).apply {
+				// TODO replace \n, \t, etc.
+		})
+		// TODO is int
+		// TODO is hex
+		// TODO is bin
+		// TODO is float
+		// TODO is double
+		else -> VariableNode(
+				symbolList,
+				symbolList.getVariable(name) ?: throw ParseException("Undefinef Variable: $name")
+		)
+	}
 }
 
 fun mapAst(node: StringNode): Node {

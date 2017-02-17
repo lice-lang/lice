@@ -10,7 +10,7 @@ import lice.compiler.util.SymbolList
 class Value(val o: Any?, val type: Class<*>) {
 	constructor(o: Any) : this(o, o.javaClass)
 
-	companion object Factory
+//	companion object Factory
 }
 
 interface Node {
@@ -19,6 +19,10 @@ interface Node {
 
 class ValueNode(val value: Value) : Node {
 	override fun eval() = value
+}
+
+class VariableNode(val symbolList: SymbolList, val id: Int) {
+	override fun eval() = symbolList.getVariable(id)
 }
 
 class ExpressionNode(

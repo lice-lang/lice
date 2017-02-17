@@ -45,4 +45,16 @@ class SymbolList {
 		variableMap.put(name, variableList.size)
 		variableList.add(value)
 	}
+
+	fun getVariableId(name: String) = variableMap[name]
+
+	fun getFunctionId(name: String) = functionMap[name]
+
+	fun getVariable(id: Int) = variableList[id]
+
+	fun setVariable(id: Int, newValue: Value) {
+		variableList[id] = newValue
+	}
+
+	fun getFunction(id: Int) = functionList[id]
 }
