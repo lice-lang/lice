@@ -22,6 +22,10 @@ fun <T> T.debugApply(block: T.() -> Unit): T {
 	return this
 }
 
+fun serr(str: String) = System.err.println(str)
+
+fun sout(str: String) = println(str)
+
 fun <A, B, C> ((a: A, b: B) -> C).curry() =
 		{ a: A ->
 			{ b: B ->

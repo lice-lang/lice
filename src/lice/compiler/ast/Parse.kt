@@ -62,10 +62,6 @@ fun buildNode(code: String): StringNode {
 }
 
 fun createAst(file: File): Ast {
-	val variableMap = mutableMapOf<String, Int>()
-	val functionMap = mutableMapOf(
-			Pair("+", { ls: List<Int> -> ls.fold(0, { a, b -> a + b }) })
-	)
 	val code = file.readText()
 	val stringTreeRoot = buildNode(code)
 	fun test(node: StringNode) {

@@ -5,7 +5,11 @@
  */
 package lice.compiler.model
 
-class Value(val int: Int?)
+class Value(val o: Any?, val type: Class<*>) {
+	constructor(int: Any) : this(int, int.javaClass)
+
+	companion object Factory
+}
 
 interface Node {
 	fun eval(): Value
@@ -24,7 +28,7 @@ class ExpressionNode(
 }
 
 object EmptyNode : Node {
-	val nullptr = Value(null)
+	val nullptr = Value(null, Any::class.java)
 
 	override fun eval() = nullptr
 }
