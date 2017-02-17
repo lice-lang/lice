@@ -62,7 +62,7 @@ fun buildNode(code: String): StringNode {
 				}
 				if (c == '\n') ++lineNumber
 			}
-			"\"" -> {
+			'\"' -> {
 				if (!quoteStarted) {
 					quoteStarted = true
 					lastQuoteIndex = index

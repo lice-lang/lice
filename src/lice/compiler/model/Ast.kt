@@ -21,7 +21,7 @@ class ValueNode(val value: Value) : Node {
 	override fun eval() = value
 }
 
-class VariableNode(val symbolList: SymbolList, val id: Int) {
+class VariableNode(val symbolList: SymbolList, val id: Int) : Node {
 	override fun eval() = symbolList.getVariable(id)
 }
 
