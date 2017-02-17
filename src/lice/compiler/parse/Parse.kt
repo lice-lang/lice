@@ -107,10 +107,15 @@ fun parseValue(str: String, symbolList: SymbolList): Node {
 fun mapAst(symbolList: SymbolList, node: StringNode): Node {
 	return when (node) {
 		is StringMiddleNode -> {
-			val ls = node.list.map { strNode ->
+			val ls: List<Node> = node.list.map { strNode ->
 				mapAst(symbolList, strNode)
 			}
 			TODO()
+//			ExpressionNode(
+//					symbolList.getFunction(ls[0]),
+//					ls.subList(1, ls.size)
+//			)
+			// TODO return the mapped node
 		}
 		is StringLeafNode ->
 			parseValue(node.str, symbolList)
