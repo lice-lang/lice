@@ -68,7 +68,7 @@ fun buildNode(code: String): StringNode {
 				} else {
 					quoteStarted = false
 					currentNodeStack.peek().add(StringLeafNode(code
-							.substring(startIndex = quoteStarted, endIndex = index)
+							.substring(startIndex = quoteStarted, endIndex = index + 1)
 							.debugApply { println("Found String: $this") }
 					))
 				}
