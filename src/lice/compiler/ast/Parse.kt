@@ -64,12 +64,16 @@ fun buildNode(code: String): StringNode {
 fun createAst(file: File): Ast {
 	val code = file.readText()
 	val stringTreeRoot = buildNode(code)
-	fun test(node: StringNode) {
+	fun test(node: StringNode): Node {
 		when (node) {
-			is StringMiddleNode -> node.list.forEach(::test)
-			is StringLeafNode -> println(node.str)
+			is StringMiddleNode -> {
+				node.list
+			}
+			is StringLeafNode -> {
+				println(node.str)
+			}
 		}
+		TODO()
 	}
-	test(stringTreeRoot)
-	return Ast(EmptyNode)
+	return Ast(test(stringTreeRoot))
 }
