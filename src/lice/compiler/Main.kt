@@ -1,6 +1,6 @@
 package lice.compiler
 
-import lice.compiler.ast.createAst
+import lice.compiler.parse.createAst
 import java.io.File
 import java.util.*
 

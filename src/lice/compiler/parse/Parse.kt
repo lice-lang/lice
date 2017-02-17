@@ -3,9 +3,10 @@
  *
  * @author ice1000
  */
-package lice.compiler.ast
+package lice.compiler.parse
 
 import lice.compiler.model.*
+import lice.compiler.util.SymbolList
 import lice.compiler.util.debugApply
 import java.io.File
 import java.util.*
@@ -31,6 +32,7 @@ fun buildNode(code: String): StringNode {
 	code.forEachIndexed { index, c ->
 		when (c) {
 			'(' -> {
+				check(index)
 				currentNodeStack.push(StringMiddleNode())
 				++beginIndex
 			}
@@ -63,6 +65,9 @@ fun buildNode(code: String): StringNode {
 
 fun createAst(file: File): Ast {
 	val code = file.readText()
+	val symbolList = SymbolList()
+	symbolList.initialize()
+	symbolList.addVariable("FILE_PATH", Value(file.absolutePath))
 	val stringTreeRoot = buildNode(code)
 	fun test(node: StringNode): Node {
 		when (node) {

@@ -5,8 +5,10 @@
  */
 package lice.compiler.model
 
+import lice.compiler.util.SymbolList
+
 class Value(val o: Any?, val type: Class<*>) {
-	constructor(int: Any) : this(int, int.javaClass)
+	constructor(o: Any) : this(o, o.javaClass)
 
 	companion object Factory
 }
@@ -33,4 +35,4 @@ object EmptyNode : Node {
 	override fun eval() = nullptr
 }
 
-class Ast(val root: Node)
+class Ast(val root: Node, val symbolList: SymbolList)
