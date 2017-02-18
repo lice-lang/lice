@@ -1,5 +1,6 @@
 package lice.compiler.util
 
+import lice.compiler.model.EmptyNode
 import lice.compiler.model.Value
 
 /**
@@ -9,33 +10,37 @@ import lice.compiler.model.Value
  */
 class SymbolList {
 	val functionMap: MutableMap<String, Int>
-	val functionList: MutableList<(List<Value>) -> Int>
+	val functionList: MutableList<(List<Value>) -> Value>
 	val variableMap: MutableMap<String, Int>
 	val variableList: MutableList<Value>
 
 	init {
 		functionMap = mutableMapOf()
-		functionList = mutableListOf<(List<Value>) -> Int>()
+		functionList = mutableListOf()
 		variableMap = mutableMapOf()
 		variableList = mutableListOf()
 	}
 
 	fun initialize() {
 		addFunction("+", { ls: List<Value> ->
-			ls.fold(0) { sum, value ->
+			Value(ls.fold(0) { sum, value ->
 				if (value.o is Int) value.o + sum
 				else throw ParseException("type mismatch : expected: Int, found: ${value.type.name}")
-			}
+			})
 		})
 		addFunction("*", { ls: List<Value> ->
-			ls.fold(1) { sum, value ->
+			Value(ls.fold(1) { sum, value ->
 				if (value.o is Int) value.o * sum
 				else throw ParseException("type mismatch : expected: Int, found: ${value.type.name}")
-			}
+			})
+		})
+		addFunction("", { ls: List<Value> ->
+			ls.forEach { println("type: ${it.type.name}, value: ${it.o.toString()}") }
+			EmptyNode.nullptr
 		})
 	}
 
-	fun addFunction(name: String, node: (List<Value>) -> Int): Int {
+	fun addFunction(name: String, node: (List<Value>) -> Value): Int {
 		functionMap.put(name, functionList.size)
 		functionList.add(node)
 		return functionList.size - 1

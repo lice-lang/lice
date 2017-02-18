@@ -87,19 +87,21 @@ fun buildNode(code: String): StringNode {
 
 fun parseValue(str: String, symbolList: SymbolList): Node {
 	return when {
+		str.isEmpty() || str.isBlank() -> EmptyNode
 		str[0] == '\"' && str[str.length - 1] == '\"' -> ValueNode(Value(str
 				.substring(1, str.length - 2)
 				.apply {
 					// TODO replace \n, \t, etc.
 				}))
-	// TODO is int
+		str.isInt() -> ValueNode(str.toInt())
 	// TODO is hex
 	// TODO is bin
 	// TODO is float
 	// TODO is double
 		else -> VariableNode(
 				symbolList,
-				symbolList.getVariableId(str) ?: throw ParseException("Undefined Variable: $str")
+				symbolList.getVariableId(str)
+						?: throw ParseException("Undefined Variable: $str")
 		)
 	}
 }
@@ -107,14 +109,18 @@ fun parseValue(str: String, symbolList: SymbolList): Node {
 fun mapAst(symbolList: SymbolList, node: StringNode): Node {
 	return when (node) {
 		is StringMiddleNode -> {
-			val ls: List<Node> = node.list.map { strNode ->
-				mapAst(symbolList, strNode)
-			}
-			TODO()
-//			ExpressionNode(
-//					symbolList.getFunction(ls[0]),
-//					ls.subList(1, ls.size)
-//			)
+			val ls: List<Node> = node
+					.list
+					.subList(1, node.list.size - 1)
+					.map { strNode ->
+						mapAst(symbolList, strNode)
+					}
+			ExpressionNode(
+					symbolList,
+					symbolList.getFunctionId(node.list[0].strRepr)
+							?: throw ParseException("Undefined Function: ${node.list[0].strRepr}"),
+					ls.subList(1, ls.size)
+			)
 			// TODO return the mapped node
 		}
 		is StringLeafNode ->

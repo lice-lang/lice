@@ -1,6 +1,7 @@
 package lice.compiler.util
 
 import lice.compiler.model.Value
+import lice.compiler.model.VariableNode
 import org.junit.Test
 
 /**
@@ -16,15 +17,18 @@ class SymbolListTest {
 		l.addVariable("fuck", Value("233"))
 		val id = l.getVariableId("fuck") ?: throw ParseException("")
 		println("id = $id")
-		val s = l.getVariable(id)
+		val s = VariableNode(l, id)
 		s.println()
-		s.o.println()
-		s.type.println()
+		s.id.println()
+		s.eval().println()
+		s.eval().o.println()
+		s.eval().type.println()
 		l.setVariable(id, Value("Fuck"))
-		val s1 = l.getVariable(id)
-		println("")
-		s1.println()
-		s1.o.println()
-		s1.type.println()
+		"".println()
+		s.println()
+		s.id.println()
+		s.eval().println()
+		s.eval().o.println()
+		s.eval().type.println()
 	}
 }

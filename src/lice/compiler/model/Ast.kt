@@ -7,7 +7,9 @@ package lice.compiler.model
 
 import lice.compiler.util.SymbolList
 
-class Value(val o: Any?, val type: Class<*>) {
+class Value(
+		val o: Any?,
+		val type: Class<*>) {
 	constructor(o: Any) : this(o, o.javaClass)
 
 //	companion object Factory
@@ -18,19 +20,30 @@ interface Node {
 }
 
 class ValueNode(val value: Value) : Node {
-	override fun eval() = value
+	constructor(any: Any) : this(Value(any))
+
+	override fun eval() =
+			value
 }
 
-class VariableNode(val symbolList: SymbolList, val id: Int) : Node {
-	override fun eval() = symbolList.getVariable(id)
+class VariableNode(
+		val symbolList: SymbolList,
+		val id: Int) : Node {
+	override fun eval() =
+			symbolList.getVariable(id)
 }
 
 class ExpressionNode(
-		val function: (List<Value>) -> Value,
+		val symbolList: SymbolList,
+		val function: Int,
 		val params: List<Node>) : Node {
-	constructor(function: (List<Value>) -> Value, param: Node) : this(function, listOf(param))
+	constructor(
+			symbolList: SymbolList,
+			function: Int,
+			param: Node) : this(symbolList, function, listOf(param))
 
-	override fun eval() = function(params.map(Node::eval))
+	override fun eval() =
+			symbolList.getFunction(function)(params.map(Node::eval))
 }
 
 object EmptyNode : Node {
