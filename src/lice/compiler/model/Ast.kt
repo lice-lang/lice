@@ -5,6 +5,7 @@
  */
 package lice.compiler.model
 
+import lice.compiler.util.ParseException
 import lice.compiler.util.SymbolList
 
 class Value(
@@ -29,6 +30,12 @@ class ValueNode(val value: Value) : Node {
 class VariableNode(
 		val symbolList: SymbolList,
 		val id: Int) : Node {
+	constructor(
+			symbolList: SymbolList,
+			name: String) : this(symbolList, symbolList.getVariableId(name)
+			?: throw ParseException("Undefined Variable: $name")
+	)
+
 	override fun eval() =
 			symbolList.getVariable(id)
 }

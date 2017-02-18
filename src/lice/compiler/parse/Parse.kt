@@ -9,6 +9,7 @@ import lice.compiler.model.*
 import lice.compiler.util.ParseException
 import lice.compiler.util.SymbolList
 import lice.compiler.util.debugApply
+import lice.compiler.util.debugOutput
 import java.io.File
 import java.util.*
 
@@ -20,6 +21,7 @@ fun buildNode(code: String): StringNode {
 	var lineNumber = 0
 	var lastQuoteIndex = 0
 	var quoteStarted = false
+	var commentStarted = false
 	fun check(index: Int) {
 		if (elementStarted) {
 			elementStarted = false
@@ -32,7 +34,8 @@ fun buildNode(code: String): StringNode {
 		}
 	}
 	code.forEachIndexed { index, c ->
-		when (c) {
+		if (!commentStarted) when (c) {
+			';' -> commentStarted = true
 			'(' -> {
 				if (!quoteStarted) {
 					check(index)
@@ -59,7 +62,10 @@ fun buildNode(code: String): StringNode {
 					check(index)
 					beginIndex = index + 1
 				}
-				if (c == '\n') ++lineNumber
+				if (c == '\n') {
+					++lineNumber
+					commentStarted = false
+				}
 			}
 			'\"' -> {
 				if (!quoteStarted) {
@@ -86,24 +92,22 @@ fun buildNode(code: String): StringNode {
 }
 
 fun parseValue(str: String, symbolList: SymbolList): Node {
-	return when {
-		str.isEmpty() || str.isBlank() -> EmptyNode
-		str[0] == '\"' && str[str.length - 1] == '\"' -> ValueNode(Value(str
-				.substring(1, str.length - 2)
-				.apply {
-					// TODO replace \n, \t, etc.
-				}))
-		str.isInt() -> ValueNode(str.toInt())
-	// TODO is hex
-	// TODO is bin
-	// TODO is float
-	// TODO is double
-		else -> VariableNode(
-				symbolList,
-				symbolList.getVariableId(str)
-						?: throw ParseException("Undefined Variable: $str")
-		)
-	}
+	str.debugApply { println("str = $str, ${str.isInt()}") }
+	return if (str.isEmpty() || str.isBlank()) EmptyNode
+	else if (str[0] == '\"' && str[str.length - 1] == '\"') ValueNode(Value(str
+			.substring(1, str.length - 2)
+			.apply {
+				// TODO replace \n, \t, etc.
+			}))
+	else if (str.isInt()) ValueNode(str.toInt())
+	// TODO() is hex
+	// TODO() is bin
+	// TODO() is float
+	// TODO() is double
+	else VariableNode(
+			symbolList,
+			str
+	)
 }
 
 fun mapAst(symbolList: SymbolList, node: StringNode): Node {
@@ -111,10 +115,11 @@ fun mapAst(symbolList: SymbolList, node: StringNode): Node {
 		is StringMiddleNode -> {
 			val ls: List<Node> = node
 					.list
-					.subList(1, node.list.size - 1)
+					.subList(1, node.list.size)
 					.map { strNode ->
 						mapAst(symbolList, strNode)
 					}
+			ls.size.debugOutput()
 			ExpressionNode(
 					symbolList,
 					symbolList.getFunctionId(node.list[0].strRepr)
@@ -136,5 +141,14 @@ fun createAst(file: File): Ast {
 	symbolList.initialize()
 	symbolList.addVariable("FILE_PATH", Value(file.absolutePath))
 	val stringTreeRoot = buildNode(code)
-	return Ast(mapAst(symbolList, stringTreeRoot), symbolList)
+	(stringTreeRoot as StringMiddleNode).list.debugApply {
+		forEach { println(it.strRepr) }
+	}
+	return Ast(
+			mapAst(
+					symbolList,
+					stringTreeRoot
+			),
+			symbolList
+	)
 }

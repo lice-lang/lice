@@ -17,7 +17,7 @@ fun <T> T.debugOutput(): T {
 	return this
 }
 
-fun <T> T.debugApply(block: T.() -> Unit): T {
+inline fun <T> T.debugApply(block: T.() -> Unit): T {
 	if (DEBUGGING) this.block()
 	return this
 }

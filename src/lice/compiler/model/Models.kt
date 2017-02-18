@@ -14,9 +14,12 @@ class StringMiddleNode(val list: MutableList<StringNode> = mutableListOf<StringN
 		get() = list.isEmpty()
 
 	override val strRepr: String
-		get() = list.fold(StringBuffer("[")) { stringBuffer, last ->
-			stringBuffer.append(" ").append(last.strRepr)
-		}.append(" ]").toString()
+		get() = list.fold(StringBuilder("{")) { stringBuilder, last ->
+			stringBuilder
+					.append(" [")
+					.append(last.strRepr)
+					.append("]")
+		}.append(" }").toString()
 
 	fun add(n: StringNode) = list.add(n)
 }

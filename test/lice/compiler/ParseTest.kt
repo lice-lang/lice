@@ -15,7 +15,7 @@ class ParseTest {
 	@Test
 	fun testParse() {
 		val ast = createAst(File("sample/test2.lice"))
-		println(ast.root.eval())
+		println(ast.root.eval().o)
 	}
 
 	@Test
