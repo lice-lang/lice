@@ -2,10 +2,10 @@
 ## output ##
 
 out
-
+build
 
 ## config ##
 
 .idea
-
+.gradle
 
