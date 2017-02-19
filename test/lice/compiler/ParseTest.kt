@@ -21,7 +21,36 @@ class ParseTest {
 	@Test
 	fun testBuildNode() {
 //		buildNode("abc 123 vbvbvb")
-		val root = buildNode("abc 123 (vbvbvb asdj (xaskj) (dhsaj dsaj))")
+		val root = buildNode("abc 123 (vbvbvb asdj (xaskj) (dhsaj dsaj)) ass")
+		(root as StringMiddleNode).list.forEach {
+			println(it.strRepr)
+		}
+	}
+
+	@Test
+	fun testParseComment() {
+//		buildNode("abc 123 vbvbvb")
+		val root = buildNode("""
+; my name is Van
+; I'm an artist
+boyNextDoor ; this is comment
+(another (element)) ; ignore me!
+""")
+		(root as StringMiddleNode).list.forEach {
+			println(it.strRepr)
+		}
+	}
+
+	@Test
+	fun testParseString() {
+//		buildNode("abc 123 vbvbvb")
+		val root = buildNode("""
+; my name is Van
+; I'm an artist
+boyNextDoor "; this is string"
+(another ("element")) ; ignore me!
+(con "what ever I put in a string token, it will be kept!" "Excited(!)")
+""")
 		(root as StringMiddleNode).list.forEach {
 			println(it.strRepr)
 		}

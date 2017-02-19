@@ -31,8 +31,14 @@ fun buildNode(code: String): StringNode {
 		}
 	}
 	code.forEachIndexed { index, c ->
+		if (c == '\n') commentStarted = false
+
 		if (!commentStarted) when (c) {
-			';' -> commentStarted = true
+			';' -> {
+				if (!quoteStarted) {
+					commentStarted = true
+				}
+			}
 			'(' -> {
 				if (!quoteStarted) {
 					check(index)
@@ -88,6 +94,13 @@ fun buildNode(code: String): StringNode {
 	return currentNodeStack.peek()
 }
 
+/**
+ * This is the core implementation of mapAst
+ *
+ * @param symbolList the symbol list
+ * @param str the string to parse
+ * @return parsed node
+ */
 fun parseValue(str: String, symbolList: SymbolList): Node {
 //	str.debugApply { println("str = $str, ${str.isInt()}") }
 	if (str.isEmpty() || str.isBlank()) return EmptyNode
@@ -114,6 +127,13 @@ fun parseValue(str: String, symbolList: SymbolList): Node {
 	}
 }
 
+/**
+ * map the string tree, making it a real ast
+ *
+ * @param symbolList the symbol list
+ * @param node the node to parse
+ * @return the parsed node
+ */
 fun mapAst(symbolList: SymbolList, node: StringNode): Node {
 	return when (node) {
 		is StringMiddleNode -> {
