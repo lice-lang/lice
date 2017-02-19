@@ -6,16 +6,19 @@
 package lice.compiler.parse
 
 import lice.compiler.model.*
-import lice.compiler.util.*
+import lice.compiler.util.ParseException
+import lice.compiler.util.SymbolList
+import lice.compiler.util.debugApply
+import lice.compiler.util.debugOutput
 import java.io.File
 import java.util.*
 
 fun buildNode(code: String): StringNode {
 	var beginIndex = 0
 	val currentNodeStack = Stack<StringMiddleNode>()
-	currentNodeStack.push(StringMiddleNode())
+	currentNodeStack.push(StringMiddleNode(1))
 	var elementStarted = true
-	var lineNumber = 0
+	var lineNumber = 1
 	var lastQuoteIndex = 0
 	var quoteStarted = false
 	var commentStarted = false
@@ -24,7 +27,7 @@ fun buildNode(code: String): StringNode {
 			elementStarted = false
 			currentNodeStack
 					.peek()
-					.add(StringLeafNode(code
+					.add(StringLeafNode(lineNumber, code
 							.substring(startIndex = beginIndex, endIndex = index)
 							.debugApply { println("found token: $this") }
 					))
@@ -42,7 +45,7 @@ fun buildNode(code: String): StringNode {
 			'(' -> {
 				if (!quoteStarted) {
 					check(index)
-					currentNodeStack.push(StringMiddleNode())
+					currentNodeStack.push(StringMiddleNode(lineNumber))
 					++beginIndex
 				}
 			}
@@ -51,10 +54,10 @@ fun buildNode(code: String): StringNode {
 					check(index)
 					if (currentNodeStack.size <= 1) {
 						println("Braces not match at line $lineNumber: Unexpected \')\'.")
-						return EmptyStringNode
+						return EmptyStringNode(lineNumber)
 					}
 					val son =
-							if (currentNodeStack.peek().empty) EmptyStringNode
+							if (currentNodeStack.peek().empty) EmptyStringNode(lineNumber)
 							else currentNodeStack.peek()
 					currentNodeStack.pop()
 					currentNodeStack.peek().add(son)
@@ -76,7 +79,7 @@ fun buildNode(code: String): StringNode {
 					lastQuoteIndex = index
 				} else {
 					quoteStarted = false
-					currentNodeStack.peek().add(StringLeafNode(code
+					currentNodeStack.peek().add(StringLeafNode(lineNumber, code
 							.substring(startIndex = lastQuoteIndex, endIndex = index + 1)
 							.debugApply { println("Found String: $this") }
 					))
@@ -121,7 +124,8 @@ fun parseValue(str: String, symbolList: SymbolList): Node {
 				str
 		)
 	} catch (e: Exception) {
-		str.println()
+		e.debugApply { printStackTrace() }
+		str.debugApply { println("str = $str") }
 		e.message.debugOutput()
 		return EmptyNode // do nothing
 	}

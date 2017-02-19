@@ -1,5 +1,6 @@
 package lice.compiler
 
+import lice.compiler.model.ExpressionNode
 import lice.compiler.model.StringMiddleNode
 import lice.compiler.parse.buildNode
 import lice.compiler.parse.createAst
@@ -15,7 +16,18 @@ class ParseTest {
 	@Test
 	fun testParse() {
 		val ast = createAst(File("sample/test2.lice"))
-		println(ast.root.eval().o)
+		(ast.root as ExpressionNode)
+				.params
+				.run {
+					println("len: $size")
+					forEachIndexed { index, node ->
+						println("number: $index, value: ${node.eval().o}")
+					}
+				}
+		println(ast
+				.root
+				.eval()
+				.o)
 	}
 
 	@Test

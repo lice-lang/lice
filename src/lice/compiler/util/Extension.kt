@@ -5,7 +5,11 @@
  */
 package lice.compiler.util
 
-val DEBUGGING = true
+@JvmField
+var DEBUGGING = true
+
+@JvmField
+var VERBOSE = true
 
 fun <T> T.println(): T {
 	println(this)
@@ -19,6 +23,19 @@ fun <T> T.debugOutput(): T {
 
 inline fun <T> T.debugApply(block: T.() -> Unit): T {
 	if (DEBUGGING) this.block()
+	return this
+}
+
+inline fun debug(block: () -> Unit) {
+	if (DEBUGGING) block()
+}
+
+inline fun verbose(block: () -> Unit) {
+	if (VERBOSE) block()
+}
+
+fun <T> T.verboseOutput(): T {
+	if (VERBOSE) println(this)
 	return this
 }
 

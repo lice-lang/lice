@@ -5,11 +5,16 @@
  */
 package lice.compiler.model
 
+import lice.compiler.util.verboseOutput
+
 interface StringNode {
 	val strRepr: String
+	val lineNumber: Int
 }
 
-class StringMiddleNode(val list: MutableList<StringNode> = mutableListOf<StringNode>()) : StringNode {
+class StringMiddleNode(
+		override val lineNumber: Int,
+		val list: MutableList<StringNode> = mutableListOf<StringNode>()) : StringNode {
 	val empty: Boolean
 		get() = list.isEmpty()
 
@@ -21,13 +26,18 @@ class StringMiddleNode(val list: MutableList<StringNode> = mutableListOf<StringN
 					.append("]")
 		}.append(" }").toString()
 
-	fun add(n: StringNode) = list.add(n)
+	fun add(n: StringNode) {
+		n.strRepr.verboseOutput()
+		list.add(n)
+	}
 }
 
-class StringLeafNode(val str: String) : StringNode {
+class StringLeafNode(
+		override val lineNumber: Int,
+		val str: String) : StringNode {
 	override val strRepr = str
 }
 
-object EmptyStringNode : StringNode {
+class EmptyStringNode(override val lineNumber: Int) : StringNode {
 	override val strRepr = ""
 }
