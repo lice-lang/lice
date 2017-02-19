@@ -40,6 +40,15 @@ class ParseTest {
 	}
 
 	@Test
+	fun testBuildNode2() {
+//		buildNode("abc 123 vbvbvb")
+		val root = buildNode("(* 2 2 2 2 (+ 11 11))")
+		(root as StringMiddleNode).list.forEach {
+			println(it.strRepr)
+		}
+	}
+
+	@Test
 	fun testParseComment() {
 //		buildNode("abc 123 vbvbvb")
 		val root = buildNode("""
