@@ -1,3 +1,5 @@
+package lice
+
 import lice.compiler.util.forceRun
 import lice.compiler.util.println
 import org.junit.Test

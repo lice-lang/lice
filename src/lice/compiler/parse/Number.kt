@@ -30,11 +30,15 @@ fun String.isHexInt(): Boolean {
 }
 
 fun String.toHexInt(): Int {
+	if (this[0] == '-') return -substring(1).toHexInt()
 	var ret = 0
-	(2..length - 1)
-			.reversed()
-			.forEach {
-
-			}
+	(2..length - 1).forEach {
+		ret = ret shl 4
+		val char = this[it].safeLower()
+		if (char.isDigit()) ret += (char - '0')
+		else if (char >= 'a' && char <= 'f') ret += (char - 'a' + 10)
+//		ret *= 16
+	}
+	return ret
 }
 
