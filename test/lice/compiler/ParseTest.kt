@@ -4,6 +4,7 @@ import lice.compiler.model.ExpressionNode
 import lice.compiler.model.StringMiddleNode
 import lice.compiler.parse.buildNode
 import lice.compiler.parse.createAst
+import lice.compiler.util.println
 import org.junit.Test
 import java.io.File
 
@@ -24,10 +25,11 @@ class ParseTest {
 						println("number: $index, value: ${node.eval().o}")
 					}
 				}
-		println(ast
+		ast
 				.root
 				.eval()
-				.o)
+				.o
+				.println()
 	}
 
 	@Test

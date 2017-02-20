@@ -1,7 +1,7 @@
 package lice.compiler.util
 
-import lice.compiler.model.EmptyNode
 import lice.compiler.model.Value
+import lice.compiler.model.Value.Objects.nullptr
 
 /**
  * Created by ice1000 on 2017/2/17.
@@ -36,7 +36,7 @@ class SymbolList {
 		})
 		addFunction("", { ls: List<Value> ->
 			ls.forEach { println("type: ${it.type.name}, value: ${it.o.toString()}") }
-			EmptyNode.nullptr
+			nullptr
 		})
 	}
 

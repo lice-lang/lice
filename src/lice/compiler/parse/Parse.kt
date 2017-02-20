@@ -6,10 +6,7 @@
 package lice.compiler.parse
 
 import lice.compiler.model.*
-import lice.compiler.util.ParseException
-import lice.compiler.util.SymbolList
-import lice.compiler.util.debugApply
-import lice.compiler.util.debugOutput
+import lice.compiler.util.*
 import java.io.File
 import java.util.*
 
@@ -63,7 +60,7 @@ fun buildNode(code: String): StringNode {
 					currentNodeStack.peek().add(son)
 				}
 			}
-			' ', '\n', '\t' -> {
+			' ', '\n', '\t', '\r' -> {
 				if (!quoteStarted) {
 					check(index)
 					beginIndex = index + 1
@@ -81,7 +78,7 @@ fun buildNode(code: String): StringNode {
 					quoteStarted = false
 					currentNodeStack.peek().add(StringLeafNode(lineNumber, code
 							.substring(startIndex = lastQuoteIndex, endIndex = index + 1)
-							.debugApply { println("Found String: $this") }
+							.verboseApply { println("Found String: $this") }
 					))
 				}
 			}
@@ -169,9 +166,9 @@ fun createAst(file: File): Ast {
 	symbolList.initialize()
 	symbolList.addVariable("FILE_PATH", Value(file.absolutePath))
 	val stringTreeRoot = buildNode(code)
-	(stringTreeRoot as StringMiddleNode).list.debugApply {
-		forEach { println(it.strRepr) }
-	}
+//	(stringTreeRoot as StringMiddleNode).list.debugApply {
+//		forEach { println(it.strRepr) }
+//	}
 	return Ast(
 			mapAst(
 					symbolList,

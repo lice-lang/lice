@@ -13,7 +13,9 @@ class Value(
 		val type: Class<*>) {
 	constructor(o: Any) : this(o, o.javaClass)
 
-//	companion object Factory
+	companion object Objects {
+		val nullptr = Value(null, Any::class.java)
+	}
 }
 
 interface Node {
@@ -54,9 +56,10 @@ class ExpressionNode(
 }
 
 object EmptyNode : Node {
-	val nullptr = Value(null, Any::class.java)
-
-	override fun eval() = nullptr
+	override fun eval() = Value.nullptr
 }
 
-class Ast(val root: Node, val symbolList: SymbolList)
+class Ast(
+		val root: Node,
+		val symbolList: SymbolList
+)

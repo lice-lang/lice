@@ -39,6 +39,11 @@ fun <T> T.verboseOutput(): T {
 	return this
 }
 
+inline fun <T> T.verboseApply(block: T.() -> Unit): T {
+	if (VERBOSE) this.block()
+	return this
+}
+
 fun serr(str: String) = System.err.println(str)
 
 fun sout(str: String) = println(str)
