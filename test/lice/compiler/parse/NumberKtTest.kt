@@ -21,4 +21,19 @@ class NumberKtTest {
 		assertEquals('d', 'd'.safeLower())
 	}
 
+	@Test
+	fun isHexInt() {
+		assertTrue("0x2333".isHexInt())
+		assertTrue("0xA1D2".isHexInt())
+		assertTrue("0x0000".isHexInt())
+		assertTrue("0x9999".isHexInt())
+		assertTrue("-0x9999".isHexInt())
+		assertTrue("0xFFFF".isHexInt())
+		assertTrue("0xffff".isHexInt())
+		assertTrue("0XFFFF".isHexInt())
+		assertFalse("0aFFFF".isHexInt())
+		assertFalse("FFFF".isHexInt())
+		assertFalse("0xABCR".isHexInt())
+	}
+
 }

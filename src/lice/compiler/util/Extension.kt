@@ -44,6 +44,13 @@ inline fun <T> T.verboseApply(block: T.() -> Unit): T {
 	return this
 }
 
+inline fun forceRun(block: () -> Unit) {
+	try {
+		block()
+	} catch (e: Throwable) {
+	}
+}
+
 fun serr(str: String) = System.err.println(str)
 
 fun sout(str: String) = println(str)

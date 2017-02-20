@@ -19,11 +19,22 @@ fun Char.safeLower(): Char {
 }
 
 fun String.isHexInt(): Boolean {
-	if (length <= 2) return false
-	return (2..length - 1)
-			.map { this[it] }
-			.none { it < 'a' || it > 'f' }
+	if (this[0] == '-') return substring(1).isHexInt()
+	return when {
+		length <= 2 -> false
+		this[0] != '0' || this[1].safeLower() != 'x' -> false
+		else -> (2..length - 1)
+				.map { this[it].toLowerCase() }
+				.none { !it.isDigit() && (it < 'a' || it > 'f') }
+	}
 }
 
-//fun isHex(string: String) =
+fun String.toHexInt(): Int {
+	var ret = 0
+	(2..length - 1)
+			.reversed()
+			.forEach {
+
+			}
+}
 

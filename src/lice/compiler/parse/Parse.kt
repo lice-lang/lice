@@ -110,7 +110,7 @@ fun parseValue(str: String, symbolList: SymbolList): Node {
 				// TODO replace \n, \t, etc.
 			}))
 	if (str.isInt()) return ValueNode(str.toInt())
-	// TODO() is hex
+//	if (str.isHexInt()) return ValueNode(Integer.)
 	// TODO() is bin
 	// TODO() is float
 	// TODO() is double
