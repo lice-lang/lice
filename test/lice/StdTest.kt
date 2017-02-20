@@ -19,4 +19,11 @@ class StdTest {
 					.println()
 		}
 	}
+
+	companion object {
+		@JvmStatic
+		fun main(args: Array<String>) {
+			StdTest().test1()
+		}
+	}
 }

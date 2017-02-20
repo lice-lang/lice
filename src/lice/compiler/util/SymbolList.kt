@@ -13,12 +13,16 @@ class SymbolList {
 	val functionList: MutableList<(List<Value>) -> Value>
 	val variableMap: MutableMap<String, Int>
 	val variableList: MutableList<Value>
+	val typeMap: MutableMap<String, Int>
+	val typeList: MutableList<Class<*>>
 
 	init {
 		functionMap = mutableMapOf()
 		functionList = mutableListOf()
 		variableMap = mutableMapOf()
 		variableList = mutableListOf()
+		typeMap = mutableMapOf()
+		typeList = mutableListOf()
 	}
 
 	fun initialize() {
@@ -38,6 +42,9 @@ class SymbolList {
 			ls.forEach { println("type: ${it.type.name}, value: ${it.o.toString()}") }
 			nullptr
 		})
+		addType("Int", Int::class.java)
+		addType("Double", Double::class.java)
+		addType("String", String::class.java)
 	}
 
 	fun addFunction(name: String, node: (List<Value>) -> Value): Int {
@@ -51,7 +58,14 @@ class SymbolList {
 		variableList.add(value)
 	}
 
+	fun addType(name: String, clazz: Class<*>) {
+		typeMap.put(name, typeList.size)
+		typeList.add(clazz)
+	}
+
 	fun getVariableId(name: String) = variableMap[name]
+
+	fun getTypeId(name: String) = typeMap[name]
 
 	fun getFunctionId(name: String) = functionMap[name]
 
