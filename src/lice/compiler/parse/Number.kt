@@ -36,7 +36,7 @@ fun String.toHexInt(): Int {
 		ret = ret shl 4
 		val char = this[it].safeLower()
 		if (char.isDigit()) ret += (char - '0')
-		else if (char >= 'a' && char <= 'f') ret += (char - 'a' + 10)
+		else /* if (char >= 'a' && char <= 'f') */ ret += (char - 'a' + 10)
 //		ret *= 16
 	}
 	return ret

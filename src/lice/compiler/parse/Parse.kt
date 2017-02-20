@@ -136,16 +136,21 @@ fun parseValue(str: String, symbolList: SymbolList): Node {
  * @param node the node to parse
  * @return the parsed node
  */
-fun mapAst(symbolList: SymbolList, node: StringNode): Node {
+fun mapAst(
+		node: StringNode,
+		symbolList: SymbolList = SymbolList()): Node {
 	return when (node) {
 		is StringMiddleNode -> {
 			val ls: List<Node> = node
 					.list
 					.subList(1, node.list.size)
 					.map { strNode ->
-						mapAst(symbolList, strNode)
+						mapAst(
+								node = strNode,
+								symbolList = symbolList
+						)
 					}
-			ls.size.debugOutput()
+//			ls.size.debugOutput()
 			ExpressionNode(
 					symbolList,
 					symbolList.getFunctionId(node.list[0].strRepr)
@@ -163,8 +168,8 @@ fun mapAst(symbolList: SymbolList, node: StringNode): Node {
 
 fun createAst(file: File): Ast {
 	val code = file.readText()
-	val symbolList = SymbolList()
-	symbolList.initialize()
+	val symbolList = SymbolList(true)
+//	symbolList.initialize()
 	symbolList.addVariable("FILE_PATH", Value(file.absolutePath))
 	val stringTreeRoot = buildNode(code)
 //	(stringTreeRoot as StringMiddleNode).list.debugApply {
@@ -172,8 +177,8 @@ fun createAst(file: File): Ast {
 //	}
 	return Ast(
 			mapAst(
-					symbolList,
-					stringTreeRoot
+					node = stringTreeRoot,
+					symbolList = symbolList
 			),
 			symbolList
 	)

@@ -1,5 +1,6 @@
 package lice.compiler.util
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import lice.compiler.model.Value
 import lice.compiler.model.Value.Objects.nullptr
 
@@ -8,7 +9,7 @@ import lice.compiler.model.Value.Objects.nullptr
  *
  * @author ice1000
  */
-class SymbolList {
+class SymbolList(init: Boolean = true) {
 	val functionMap: MutableMap<String, Int>
 	val functionList: MutableList<(List<Value>) -> Value>
 	val variableMap: MutableMap<String, Int>
@@ -23,6 +24,7 @@ class SymbolList {
 		variableList = mutableListOf()
 		typeMap = mutableMapOf()
 		typeList = mutableListOf()
+		if (init) initialize()
 	}
 
 	fun initialize() {

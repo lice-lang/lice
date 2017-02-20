@@ -4,6 +4,7 @@ import lice.compiler.model.ExpressionNode
 import lice.compiler.model.StringMiddleNode
 import lice.compiler.parse.buildNode
 import lice.compiler.parse.createAst
+import lice.compiler.parse.mapAst
 import lice.compiler.util.println
 import org.junit.Test
 import java.io.File
@@ -77,5 +78,15 @@ boyNextDoor "; this is string"
 		(root as StringMiddleNode).list.forEach {
 			println(it.strRepr)
 		}
+	}
+
+	@Test
+	fun testMapAst() {
+		val root = buildNode("""
+; code begins
+(+ 1 1 1 (* 2 2))
+""")
+		val ast = mapAst(root)
+		ast.eval().o.println()
 	}
 }
