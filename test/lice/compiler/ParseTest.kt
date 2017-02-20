@@ -5,6 +5,7 @@ import lice.compiler.model.StringMiddleNode
 import lice.compiler.parse.buildNode
 import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
+import lice.compiler.util.VERBOSE
 import lice.compiler.util.println
 import org.junit.Test
 import java.io.File
@@ -82,9 +83,21 @@ boyNextDoor "; this is string"
 
 	@Test
 	fun testMapAst() {
+		VERBOSE = false
 		val root = buildNode("""
 ; code begins
 (+ 1 1 1 (* 2 2))
+""")
+		val ast = mapAst(root)
+		ast.eval().o.println()
+	}
+
+	@Test
+	fun testMapSimpleAst() {
+//		VERBOSE = false
+		val root = buildNode("""
+; code begins
+(+ 1 1)
 """)
 		val ast = mapAst(root)
 		ast.eval().o.println()

@@ -27,7 +27,7 @@ class StringMiddleNode(
 		}.append(" }").toString()
 
 	fun add(n: StringNode) {
-		n.strRepr.verboseOutput()
+//		n.strRepr.verboseOutput()
 		list.add(n)
 	}
 }

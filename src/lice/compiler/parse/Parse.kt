@@ -150,7 +150,8 @@ fun mapAst(
 								symbolList = symbolList
 						)
 					}
-//			ls.size.debugOutput()
+//			ls.size.verboseOutput()
+//			node.list[0].strRepr.verboseOutput()
 			ExpressionNode(
 					symbolList,
 					symbolList.getFunctionId(node.list[0].strRepr)
@@ -161,6 +162,9 @@ fun mapAst(
 		}
 		is StringLeafNode ->
 			parseValue(node.str, symbolList)
+//					.verboseApply {
+//						println("value: [${eval().o}], type: [${eval().type.simpleName}] parsed")
+//					}
 		else -> // empty
 			EmptyNode
 	}
