@@ -7,4 +7,9 @@ package lice.compiler.util
 
 class ParseException(string: String) : RuntimeException(string)
 
-fun showError(string: String): Nothing = throw ParseException(string)
+fun showError(string: String, exit: Boolean = false) {
+	if (exit)
+		throw ParseException(string)
+	else
+		serr(string)
+}

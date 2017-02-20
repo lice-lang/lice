@@ -50,7 +50,7 @@ fun buildNode(code: String): StringNode {
 				if (!quoteStarted) {
 					check(index)
 					if (currentNodeStack.size <= 1) {
-						println("Braces not match at line $lineNumber: Unexpected \')\'.")
+						showError("Braces not match at line $lineNumber: Unexpected \')\'.")
 						return EmptyStringNode(lineNumber)
 					}
 					val son =
@@ -89,7 +89,7 @@ fun buildNode(code: String): StringNode {
 	}
 	check(code.length - 1)
 	if (currentNodeStack.size > 1) {
-		println("Braces not match at line $lineNumber: Expected \')\'.")
+		showError("Braces not match at line $lineNumber: Expected \')\'.")
 	}
 	return currentNodeStack.peek()
 }
@@ -121,9 +121,10 @@ fun parseValue(str: String, symbolList: SymbolList): Node {
 				str
 		)
 	} catch (e: Exception) {
-		e.debugApply { printStackTrace() }
-		str.debugApply { println("str = $str") }
-		e.message.debugOutput()
+//		e.debugApply { printStackTrace() }
+//		str.debugApply { println("str = $str") }
+//		e.message.debugOutput()
+		println("error token: $str")
 		return EmptyNode // do nothing
 	}
 }
