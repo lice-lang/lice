@@ -34,19 +34,28 @@ class SymbolList(init: Boolean = true) {
 //			ls.forEach { verboseOutput() }
 			Value(ls.fold(0) { sum, value ->
 				if (value.o is Int) value.o + sum
-				else throw ParseException("type mismatch : expected: Int, found: ${value.type.name}")
+				else InterpretException.typeMisMatch("Int", value)
 			}.debugApply { println(this) })
 		})
 		addFunction("*", { ls: List<Value> ->
 			Value(ls.fold(1) { sum, value ->
 				if (value.o is Int) value.o * sum
-				else throw ParseException("type mismatch : expected: Int, found: ${value.type.name}")
+				else InterpretException.typeMisMatch("Int", value)
 			})
 		})
 		addFunction("", { ls: List<Value> ->
 //			ls.size.verboseOutput()
-			ls.forEach { println("{${it.o.toString()}}: ${it.type.name}") }
+			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
 			nullptr
+		})
+//		addFunction("new", { ls: List<Value> ->
+// TODO add new function
+//		})
+		addFunction("str-con", { ls: List<Value> ->
+			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
+				if (value.o is String) sb.append(value.o)
+				else InterpretException.typeMisMatch("String", value)
+			}.toString())
 		})
 		addType("Int", Int::class.java)
 		addType("Double", Double::class.java)

@@ -5,6 +5,7 @@ import lice.compiler.model.StringMiddleNode
 import lice.compiler.parse.buildNode
 import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
+import lice.compiler.util.DEBUGGING
 import lice.compiler.util.VERBOSE
 import lice.compiler.util.println
 import org.junit.Test
@@ -19,19 +20,19 @@ class ParseTest {
 	@Test
 	fun testParse() {
 		val ast = createAst(File("sample/test2.lice"))
-		(ast.root as ExpressionNode)
-				.params
-				.run {
-					println("len: $size")
-					forEachIndexed { index, node ->
-						println("number: $index, value: ${node.eval().o}")
-					}
-				}
-		ast
-				.root
-				.eval()
-				.o
-				.println()
+//		(ast.root as ExpressionNode)
+//				.params
+//				.run {
+//					println("len: $size")
+//					forEachIndexed { index, node ->
+//						println("number: $index, value: ${node.eval().o}")
+//					}
+//				}
+//		ast
+//				.root
+//				.eval()
+//				.o
+//				.println()
 	}
 
 	@Test
@@ -41,6 +42,13 @@ class ParseTest {
 		(root as StringMiddleNode).list.forEach {
 			println(it.strRepr)
 		}
+	}
+
+	@Test
+	fun test3() {
+		VERBOSE = false
+		DEBUGGING = false
+		createAst(File("sample/test3.lice")).root.eval()
 	}
 
 	@Test
@@ -89,7 +97,7 @@ boyNextDoor "; this is string"
 (+ 1 1 1 (* 2 2))
 """)
 		val ast = mapAst(root)
-		ast.eval().o.println()
+//		ast.eval().o.println()
 	}
 
 	@Test

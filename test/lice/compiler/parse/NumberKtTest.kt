@@ -11,7 +11,7 @@ import org.junit.Assert.*
  * @author ice1000
  */
 class NumberKtTest {
-	@Test
+	@Test(timeout = 1000)
 	fun safeLower() {
 		assertEquals('a', 'A'.safeLower())
 		assertEquals('a', 'a'.safeLower())
@@ -21,7 +21,7 @@ class NumberKtTest {
 		assertEquals('d', 'd'.safeLower())
 	}
 
-	@Test
+	@Test(timeout = 1000)
 	fun isHexInt() {
 		assertTrue("0x2333".isHexInt())
 		assertTrue("0xA1D2".isHexInt())

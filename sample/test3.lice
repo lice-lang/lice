@@ -1,0 +1,3 @@
+(* 0xFFF 0xFFF)
+(str-con "My name is Van, " "I'm an artist")
+

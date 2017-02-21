@@ -3,6 +3,8 @@
  *
  * @author ice1000
  */
+@file:JvmName("Parse")
+@file:JvmMultifileClass
 package lice.compiler.parse
 
 //val Char.isDigit: Boolean
