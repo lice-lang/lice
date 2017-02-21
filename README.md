@@ -28,6 +28,15 @@ OK
 (+ 2 3 4 (* 2 5))
 ```
 
+## Repl
+
+```lisp
+Lice> (+ 1 1)
+2 => java.lang.Integer
+Lice> (* 2 2)
+4 => java.lang.Integer
+```
+
 ## Contribution
 
 0. It's recommended to use 2-spaces tab size(please DO USE tabs).
