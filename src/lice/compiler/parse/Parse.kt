@@ -166,7 +166,7 @@ fun mapAst(
 					symbolList,
 					symbolList.getFunctionId(node.list[0].strRepr)
 							?: throw ParseException("Undefined Function: ${node.list[0].strRepr}"),
-					ls.subList(1, ls.size)
+					ls
 			)
 		}
 		is StringLeafNode ->

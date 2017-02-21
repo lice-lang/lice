@@ -73,11 +73,11 @@ class ExpressionNode(
 			params
 	)
 
-	init {
-		function.verboseApply {
-			println("function id = $function")
-		}
-	}
+//	init {
+//		function.verboseApply {
+//			println("function id = $function")
+//		}
+//	}
 
 	override fun eval() =
 			symbolList.getFunction(function)(params.map(Node::eval))
