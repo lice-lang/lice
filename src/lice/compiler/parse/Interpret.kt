@@ -27,7 +27,7 @@ fun parseValue(str: String, symbolList: SymbolList): Node {
 		return EmptyNode
 	if ((str[0] == '\"') and (str[str.length - 1] == '\"'))
 		return ValueNode(Value(str
-				.substring(1, str.length - 2)
+				.substring(1, str.length - 1)
 				.apply {
 					// TODO replace \n, \t, etc.
 				}))

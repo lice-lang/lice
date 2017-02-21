@@ -35,6 +35,8 @@ Lice> (+ 1 1)
 2 => java.lang.Integer
 Lice> (* 2 2)
 4 => java.lang.Integer
+Lice> ()
+null => java.lang.Object
 ```
 
 ## Contribution

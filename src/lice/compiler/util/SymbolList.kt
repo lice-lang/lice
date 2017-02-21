@@ -46,7 +46,7 @@ class SymbolList(init: Boolean = true) {
 		addFunction("", { ls: List<Value> ->
 //			ls.size.verboseOutput()
 			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
-			nullptr
+			ls[ls.size - 1]
 		})
 //		addFunction("new", { ls: List<Value> ->
 //			TODO return a new Instance
@@ -56,6 +56,14 @@ class SymbolList(init: Boolean = true) {
 				if (value.o is String) sb.append(value.o)
 				else InterpretException.typeMisMatch("String", value)
 			}.toString())
+		})
+		addFunction("print", { ls: List<Value> ->
+			ls.forEach { println(it.o) }
+			ls[ls.size - 1]
+		})
+		addFunction("type", { ls: List<Value> ->
+			ls.forEach { println(it.type.canonicalName) }
+			ls[ls.size - 1]
 		})
 		addType("Int", Int::class.java)
 		addType("Double", Double::class.java)
