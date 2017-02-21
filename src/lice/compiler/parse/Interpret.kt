@@ -5,6 +5,7 @@
  */
 @file:JvmName("Parse")
 @file:JvmMultifileClass
+
 package lice.compiler.parse
 
 import lice.compiler.model.*
@@ -34,9 +35,11 @@ fun parseValue(str: String, symbolList: SymbolList): Node {
 		return ValueNode(str.toInt())
 	if (str.isHexInt())
 		return ValueNode(str.toHexInt())
-	// TODO() is bin
+	if (str.isBinInt())
+		return ValueNode(str.toBinInt())
 	// TODO() is float
 	// TODO() is double
+	// TODO() is type
 //	str.debugOutput()
 	try {
 		return VariableNode(

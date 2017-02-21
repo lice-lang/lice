@@ -39,12 +39,33 @@ class NumberKtTest {
 	}
 
 	@Test(timeout = 1000)
+	fun isBinInt() {
+		assertTrue("0b1011001".isBinInt())
+		assertTrue("0B110010".isBinInt())
+		assertTrue("-0B110010".isBinInt())
+		assertFalse("0x01010".isBinInt())
+		assertFalse("0b102001".isBinInt())
+		assertFalse("0100101".isBinInt())
+		assertFalse("FFFF".isBinInt())
+		assertFalse("0xABCR".isBinInt())
+		assertFalse("-0xABCX".isBinInt())
+	}
+
+	@Test(timeout = 1000)
 	fun toHexInt() {
 //		0x1.println()
 //		Integer.toHexString("0x1".toHexInt()).println()
 		assertEquals(0x2333, "0x2333".toHexInt())
 		assertEquals(0xABCD, "0xABCD".toHexInt())
 		assertEquals(-0x2333, "-0x2333".toHexInt())
+	}
+
+	@Test(timeout = 1000)
+	fun toBinInt() {
+//		0x1.println()
+//		Integer.toHexString("0x1".toHexInt()).println()
+		assertEquals(0b001010, "0b001010".toBinInt())
+		assertEquals(0B01100010, "0B01100010".toBinInt())
 	}
 
 }

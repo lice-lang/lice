@@ -5,6 +5,7 @@
  */
 @file:JvmName("Parse")
 @file:JvmMultifileClass
+
 package lice.compiler.parse
 
 //val Char.isDigit: Boolean
@@ -31,6 +32,15 @@ fun String.isHexInt(): Boolean {
 	}
 }
 
+fun String.isBinInt(): Boolean {
+	if (this[0] == '-') return substring(1).isBinInt()
+	return when {
+		length <= 2 -> false
+		this[0] != '0' || this[1].safeLower() != 'b' -> false
+		else -> (2..length - 1).none { this[it] != '0' && this[it] != '1' }
+	}
+}
+
 fun String.toHexInt(): Int {
 	if (this[0] == '-') return -substring(1).toHexInt()
 	var ret = 0
@@ -39,6 +49,17 @@ fun String.toHexInt(): Int {
 		val char = this[it].safeLower()
 		if (char.isDigit()) ret += (char - '0')
 		else /* if (char >= 'a' && char <= 'f') */ ret += (char - 'a' + 10)
+//		ret *= 16
+	}
+	return ret
+}
+
+fun String.toBinInt(): Int {
+	if (this[0] == '-') return -substring(1).toBinInt()
+	var ret = 0
+	(2..length - 1).forEach {
+		ret = ret shl 1
+		if (this[it] == '1') ++ret
 //		ret *= 16
 	}
 	return ret

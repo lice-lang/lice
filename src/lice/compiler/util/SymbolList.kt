@@ -49,7 +49,7 @@ class SymbolList(init: Boolean = true) {
 			nullptr
 		})
 //		addFunction("new", { ls: List<Value> ->
-// TODO add new function
+//			TODO return a new Instance
 //		})
 		addFunction("str-con", { ls: List<Value> ->
 			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
