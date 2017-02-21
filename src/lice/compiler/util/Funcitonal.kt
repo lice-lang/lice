@@ -3,6 +3,8 @@
  *
  * @author ice1000
  */
+@file:JvmName("Utilities")
+@file:JvmMultifileClass
 package lice.compiler.util
 
 

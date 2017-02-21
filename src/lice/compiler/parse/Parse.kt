@@ -19,6 +19,7 @@ fun buildNode(code: String): StringNode {
 	var lastQuoteIndex = 0
 	var quoteStarted = false
 	var commentStarted = false
+	var lastElement: Char = '\n'
 	fun check(index: Int) {
 		if (elementStarted) {
 			elementStarted = false
@@ -32,8 +33,7 @@ fun buildNode(code: String): StringNode {
 	}
 	code.forEachIndexed { index, c ->
 		if (c == '\n') commentStarted = false
-
-		if (!commentStarted) when (c) {
+		if (!commentStarted or (lastElement == '\\')) when (c) {
 			';' -> {
 				if (!quoteStarted) {
 					commentStarted = true
@@ -57,7 +57,9 @@ fun buildNode(code: String): StringNode {
 							if (currentNodeStack.peek().empty) EmptyStringNode(lineNumber)
 							else currentNodeStack.peek()
 					currentNodeStack.pop()
-					currentNodeStack.peek().add(son)
+					currentNodeStack
+							.peek()
+							.add(son)
 				}
 			}
 			' ', '\n', '\t', '\r' -> {
@@ -86,6 +88,7 @@ fun buildNode(code: String): StringNode {
 				if (!quoteStarted) elementStarted = true
 			}
 		}
+		lastElement = c
 	}
 	check(code.length - 1)
 	if (currentNodeStack.size > 1) {
@@ -103,14 +106,18 @@ fun buildNode(code: String): StringNode {
  */
 fun parseValue(str: String, symbolList: SymbolList): Node {
 //	str.debugApply { println("str = $str, ${str.isInt()}") }
-	if (str.isEmpty() || str.isBlank()) return EmptyNode
-	if (str[0] == '\"' && str[str.length - 1] == '\"') return ValueNode(Value(str
-			.substring(1, str.length - 2)
-			.apply {
-				// TODO replace \n, \t, etc.
-			}))
-	if (str.isInt()) return ValueNode(str.toInt())
-	if (str.isHexInt()) return ValueNode(str.toHexInt())
+	if (str.isEmpty() || str.isBlank())
+		return EmptyNode
+	if ((str[0] == '\"') and (str[str.length - 1] == '\"'))
+		return ValueNode(Value(str
+				.substring(1, str.length - 2)
+				.apply {
+					// TODO replace \n, \t, etc.
+				}))
+	if (str.isInt())
+		return ValueNode(str.toInt())
+	if (str.isHexInt())
+		return ValueNode(str.toHexInt())
 	// TODO() is bin
 	// TODO() is float
 	// TODO() is double
@@ -151,17 +158,22 @@ fun mapAst(
 						)
 					}
 //			ls.size.verboseOutput()
-//			node.list[0].strRepr.verboseOutput()
+//			node
+//					.list[0]
+//					.strRepr
+//					.verboseOutput()
 			ExpressionNode(
 					symbolList,
 					symbolList.getFunctionId(node.list[0].strRepr)
 							?: throw ParseException("Undefined Function: ${node.list[0].strRepr}"),
 					ls.subList(1, ls.size)
 			)
-			// TODO return the mapped node
 		}
 		is StringLeafNode ->
-			parseValue(node.str, symbolList)
+			parseValue(
+					str = node.str,
+					symbolList = symbolList
+			)
 //					.verboseApply {
 //						println("value: [${eval().o}], type: [${eval().type.simpleName}] parsed")
 //					}

@@ -3,9 +3,10 @@
  *
  * @author ice1000
  */
-package lice.compiler.model
+@file:JvmName("Model")
+@file:JvmMultifileClass
 
-import lice.compiler.util.verboseOutput
+package lice.compiler.model
 
 interface StringNode {
 	val strRepr: String
@@ -27,7 +28,8 @@ class StringMiddleNode(
 		}.append(" }").toString()
 
 	fun add(n: StringNode) {
-//		n.strRepr.verboseOutput()
+//		n.strRepr
+//				.verboseOutput()
 		list.add(n)
 	}
 }

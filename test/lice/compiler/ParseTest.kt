@@ -100,6 +100,10 @@ boyNextDoor "; this is string"
 (+ 1 1)
 """)
 		val ast = mapAst(root)
-		ast.eval().o.println()
+		(ast as StringMiddleNode)
+				.list
+				.forEach {
+//					println("{${it.o.toString()}}: ${it.type.name}")
+				}
 	}
 }

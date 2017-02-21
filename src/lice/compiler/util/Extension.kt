@@ -3,12 +3,12 @@
  *
  * @author ice1000
  */
+@file:JvmName("Utilities")
+@file:JvmMultifileClass
 package lice.compiler.util
 
-@JvmField
 var DEBUGGING = true
 
-@JvmField
 var VERBOSE = true
 
 fun <T> T.println(): T {

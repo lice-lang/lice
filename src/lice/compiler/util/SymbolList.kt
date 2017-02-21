@@ -1,6 +1,5 @@
 package lice.compiler.util
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import lice.compiler.model.Value
 import lice.compiler.model.Value.Objects.nullptr
 
@@ -12,8 +11,10 @@ import lice.compiler.model.Value.Objects.nullptr
 class SymbolList(init: Boolean = true) {
 	val functionMap: MutableMap<String, Int>
 	val functionList: MutableList<(List<Value>) -> Value>
+
 	val variableMap: MutableMap<String, Int>
 	val variableList: MutableList<Value>
+
 	val typeMap: MutableMap<String, Int>
 	val typeList: MutableList<Class<*>>
 
@@ -29,10 +30,12 @@ class SymbolList(init: Boolean = true) {
 
 	fun initialize() {
 		addFunction("+", { ls: List<Value> ->
+//			println("+ called!")
+//			ls.forEach { verboseOutput() }
 			Value(ls.fold(0) { sum, value ->
 				if (value.o is Int) value.o + sum
 				else throw ParseException("type mismatch : expected: Int, found: ${value.type.name}")
-			})
+			}.debugApply { println(this) })
 		})
 		addFunction("*", { ls: List<Value> ->
 			Value(ls.fold(1) { sum, value ->
@@ -41,7 +44,8 @@ class SymbolList(init: Boolean = true) {
 			})
 		})
 		addFunction("", { ls: List<Value> ->
-			ls.forEach { println("type: ${it.type.name}, value: ${it.o.toString()}") }
+//			ls.size.verboseOutput()
+			ls.forEach { println("{${it.o.toString()}}: ${it.type.name}") }
 			nullptr
 		})
 		addType("Int", Int::class.java)
