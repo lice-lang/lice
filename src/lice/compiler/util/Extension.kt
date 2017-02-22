@@ -55,6 +55,8 @@ fun serr(str: String) = System.err.println(str)
 
 fun sout(str: String) = println(str)
 
+fun Int.squared() = this * this
+
 fun <A, B, C> ((a: A, b: B) -> C).curry() =
 		{ a: A ->
 			{ b: B ->

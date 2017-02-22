@@ -34,26 +34,38 @@ class SymbolList(init: Boolean = true) {
 	}
 
 	fun initialize() {
-		addFunction("+", { ls: List<Value> ->
+		addFunction("+", { ls ->
 //			println("+ called!")
 //			ls.forEach { verboseOutput() }
 			Value(ls.fold(0) { sum, value ->
 				if (value.o is Int) value.o + sum
 				else InterpretException.typeMisMatch("Int", value)
-			}.debugApply { println(this) })
+			})
 		})
-		addFunction("*", { ls: List<Value> ->
+		addFunction("-", { ls ->
+			Value(ls.fold(ls[0].o as Int shl 1) { delta, value ->
+				if (value.o is Int) delta - value.o
+				else InterpretException.typeMisMatch("Int", value)
+			})
+		})
+		addFunction("/", { ls ->
+			Value(ls.fold((ls[0].o as Int).squared()) { res, value ->
+				if (value.o is Int) res / value.o
+				else InterpretException.typeMisMatch("Int", value)
+			})
+		})
+		addFunction("*", { ls ->
 			Value(ls.fold(1) { sum, value ->
 				if (value.o is Int) value.o * sum
 				else InterpretException.typeMisMatch("Int", value)
 			})
 		})
-		addFunction("", { ls: List<Value> ->
+		addFunction("", { ls ->
 //			ls.size.verboseOutput()
 			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
 			ls[ls.size - 1]
 		})
-		addFunction("new", { ls: List<Value> ->
+		addFunction("new", { ls ->
 			var obj: Any? = null
 			loop@for (constructor in Class
 					.forName(ls[0].o as String)
@@ -67,21 +79,25 @@ class SymbolList(init: Boolean = true) {
 			}
 			Value(obj ?: showError("constructor not found!"))
 		})
-		addFunction("str-con", { ls: List<Value> ->
+		addFunction("str-con", { ls ->
 			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
 				if (value.o is String) sb.append(value.o)
 				else InterpretException.typeMisMatch("String", value)
 			}.toString())
 		})
-		addFunction("print", { ls: List<Value> ->
+		addFunction("print", { ls ->
 			ls.forEach { println(it.o) }
 			ls[ls.size - 1]
 		})
-		addFunction("type", { ls: List<Value> ->
+		addFunction("type", { ls ->
 			ls.forEach { println(it.type.canonicalName) }
 			ls[ls.size - 1]
 		})
-		addFunction("eval", { ls: List<Value> ->
+		addFunction("gc", {
+			System.gc()
+			nullptr
+		})
+		addFunction("eval", { ls ->
 			val o = ls[0].o
 			if (o is String) {
 				val symbolList = SymbolList(true)

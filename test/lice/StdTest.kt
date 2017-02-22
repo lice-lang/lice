@@ -4,6 +4,7 @@ import lice.compiler.parse.createAst
 import lice.compiler.util.forceRun
 import lice.compiler.util.println
 import org.junit.Test
+import java.io.Console
 import java.io.File
 import java.util.*
 
@@ -45,6 +46,10 @@ class StdTest {
 					}
 				}
 		createAst(obj as File).root.eval()
+	}
+
+	@Test
+	fun test4() {
 	}
 
 	companion object {
