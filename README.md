@@ -47,6 +47,12 @@ lice.compiler.model.Value@448139f0 => lice.compiler.model.Value
 Lice > (eval (str-con "(+ " "1 " "1)"))
 2 => java.lang.Integer
 lice.compiler.model.Value@7cca494b => lice.compiler.model.Value
+
+Lice > (. 1 11 1)
+[1, 11, 1] => java.util.ArrayList
+
+Lice > (. "boy" "next" "door")
+[boy, next, door] => java.util.ArrayList
 ```
 
 ## Contribution

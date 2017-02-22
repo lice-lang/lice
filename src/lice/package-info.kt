@@ -4,6 +4,3 @@
  * @author ice1000
  */
 package lice
-
-
-val VERSION_CODE = "v0.1-SNAPSHOT"

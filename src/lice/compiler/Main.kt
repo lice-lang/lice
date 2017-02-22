@@ -1,13 +1,18 @@
 package lice.compiler
 
-import lice.VERSION_CODE
 import lice.compiler.model.Ast
 import lice.compiler.parse.buildNode
 import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
 import lice.compiler.util.*
+import java.awt.BorderLayout
+import java.awt.TextArea
 import java.io.File
 import java.util.*
+import javax.swing.JFrame
+import javax.swing.JTextArea
+
+val VERSION_CODE = "v1.0-SNAPSHOT"
 
 /**
  * The entrance of the whole application
@@ -25,7 +30,6 @@ object Main {
 		val scanner = Scanner(System.`in`)
 		DEBUGGING = false
 		VERBOSE = false
-		println()
 		val hint = "Lice > "
 		var stackTrace: Throwable? = null
 		while (true) {
@@ -72,6 +76,17 @@ by ice1000""".println()
 		ast.root.eval()
 	}
 
+	fun openGUI() {
+		val frame = JFrame("Lice language interpreter $VERSION_CODE")
+		frame.layout = BorderLayout()
+		val output = JTextArea()
+		output.isEditable = true
+//		System.setIn()
+		frame.add(output, BorderLayout.CENTER)
+		frame.setSize(500, 500)
+		frame.isVisible = true
+	}
+
 	@JvmStatic
 	fun main(args: Array<String>) {
 		if (args.isEmpty())
@@ -81,3 +96,9 @@ by ice1000""".println()
 	}
 }
 
+object GUI {
+	@JvmStatic
+	fun main(args: Array<String>) {
+		Main.openGUI()
+	}
+}

@@ -60,6 +60,7 @@ class SymbolList(init: Boolean = true) {
 				else InterpretException.typeMisMatch("Int", value)
 			})
 		})
+		addFunction(".", { ls -> Value(ls.map { it.o }) })
 		addFunction("", { ls ->
 //			ls.size.verboseOutput()
 			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }

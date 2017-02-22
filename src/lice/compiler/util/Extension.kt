@@ -5,6 +5,7 @@
  */
 @file:JvmName("Utilities")
 @file:JvmMultifileClass
+
 package lice.compiler.util
 
 var DEBUGGING = true
@@ -79,6 +80,30 @@ fun <A, B, C, D, E> ((a: A, b: B, c: C, d: D) -> E).curry() =
 				{ c: C ->
 					{ d: D ->
 						invoke(a, b, c, d)
+					}
+				}
+			}
+		}
+
+fun <A, B, C, D, E, F> ((a: A, b: B, c: C, d: D, e: E) -> F).curry() =
+		{ a: A ->
+			{ b: B ->
+				{ c: C ->
+					{ d: D ->
+						{ e: E ->
+							invoke(a, b, c, d, e)
+						}
+					}
+				}
+			}
+		}
+
+fun <A, B, C, D, E, F, G> ((a: A, b: B, c: C, d: D, e: E, f: F) -> G).curry() =
+		{ a: A ->
+			{ b: B ->
+				{ c: C ->
+					{ d: D ->
+						{ e: E -> { f: F -> invoke(a, b, c, d, e, f) } }
 					}
 				}
 			}
