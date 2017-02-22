@@ -1,8 +1,11 @@
 package lice
 
+import lice.compiler.parse.createAst
 import lice.compiler.util.forceRun
 import lice.compiler.util.println
 import org.junit.Test
+import java.io.File
+import java.util.*
 
 /**
  * Created by ice1000 on 2017/2/20.
@@ -18,6 +21,30 @@ class StdTest {
 					.toInt()
 					.println()
 		}
+	}
+
+	@Test
+	fun test2() {
+		val clazz = Class.forName("java.io.File")
+		val file = clazz
+				.getConstructor(String::class.java)
+				.newInstance("sample/test2.lice")
+		createAst(file as File).root.eval()
+	}
+
+	@Test
+	fun test3() {
+		val ls = listOf("sample/test3.lice")
+		var obj: Any? = null
+		Class
+				.forName("java.io.File")
+				.constructors
+				.forEach {
+					if (obj == null) forceRun {
+						obj = it.newInstance(*ls.toTypedArray())
+					}
+				}
+		createAst(obj as File).root.eval()
 	}
 
 	companion object {

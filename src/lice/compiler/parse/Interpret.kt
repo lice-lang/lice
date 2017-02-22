@@ -11,6 +11,7 @@ package lice.compiler.parse
 import lice.compiler.model.*
 import lice.compiler.util.ParseException
 import lice.compiler.util.SymbolList
+import lice.compiler.util.serr
 import java.io.File
 
 
@@ -50,7 +51,7 @@ fun parseValue(str: String, symbolList: SymbolList): Node {
 //		e.debugApply { printStackTrace() }
 //		str.debugApply { println("str = $str") }
 //		e.message.debugOutput()
-		println("error token: $str")
+		serr("error token: $str")
 		return EmptyNode // do nothing
 	}
 }

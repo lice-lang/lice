@@ -2,6 +2,7 @@ package lice.compiler.util
 
 import lice.compiler.model.Value
 import lice.compiler.model.Value.Objects.nullptr
+import java.io.File
 
 /**
  * Created by ice1000 on 2017/2/17.
@@ -48,26 +49,46 @@ class SymbolList(init: Boolean = true) {
 			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
 			ls[ls.size - 1]
 		})
-//		addFunction("new", { ls: List<Value> ->
-//			TODO return a new Instance
-//		})
-		addFunction("str-con", { ls: List<Value> ->
-			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
-				if (value.o is String) sb.append(value.o)
-				else InterpretException.typeMisMatch("String", value)
-			}.toString())
+		addFunction("new", { ls: List<Value> ->
+			var obj: Any? = null
+			loop@for (constructor in Class
+					.forName(ls[0].o as String)
+					.constructors) {
+				obj = constructor.newInstance(*ls
+						.subList(1, ls.size)
+//						.apply { forEach { it.o.println() } }
+						.toTypedArray()
+				)
+				if (obj != null) break@loop
+			}
+			Value(obj ?: showError("constructor not found!"))
 		})
-		addFunction("print", { ls: List<Value> ->
-			ls.forEach { println(it.o) }
-			ls[ls.size - 1]
-		})
-		addFunction("type", { ls: List<Value> ->
-			ls.forEach { println(it.type.canonicalName) }
-			ls[ls.size - 1]
-		})
-		addType("Int", Int::class.java)
-		addType("Double", Double::class.java)
-		addType("String", String::class.java)
+		addFunction("str-con",
+				{
+					ls: List<Value> ->
+					Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
+						if (value.o is String) sb.append(value.o)
+						else InterpretException.typeMisMatch("String", value)
+					}.toString())
+				})
+		addFunction("print",
+				{
+					ls: List<Value> ->
+					ls.forEach { println(it.o) }
+					ls[ls.size - 1]
+				})
+		addFunction("type",
+				{
+					ls: List<Value> ->
+					ls.forEach { println(it.type.canonicalName) }
+					ls[ls.size - 1]
+				})
+		addType("Int", Int::
+		class.java)
+		addType("Double", Double::
+		class.java)
+		addType("String", String::
+		class.java)
 	}
 
 	fun addFunction(name: String, node: (List<Value>) -> Value): Int {
