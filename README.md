@@ -31,12 +31,22 @@ OK
 ## Repl
 
 ```lisp
-Lice> (+ 1 1)
+Lice > (+ 1 1)
 2 => java.lang.Integer
-Lice> (* 2 2)
+
+Lice > (* 2 2)
 4 => java.lang.Integer
+
 Lice> ()
 null => java.lang.Object
+
+Lice > (eval "(+ 1 1)")
+2 => java.lang.Integer
+lice.compiler.model.Value@448139f0 => lice.compiler.model.Value
+
+Lice > (eval (str-con "(+ " "1 " "1)"))
+2 => java.lang.Integer
+lice.compiler.model.Value@7cca494b => lice.compiler.model.Value
 ```
 
 ## Contribution

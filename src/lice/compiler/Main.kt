@@ -39,29 +39,26 @@ object Main {
 				"show-full-message" ->
 					if (stackTrace != null) stackTrace.printStackTrace()
 					else "No stack trace.".println()
-				"help" -> """This is the repl for lice language.
+				"help" -> """
+This is the repl for lice language.
 
 You have four special commands which you cannot use in the language but the repl:
 
 exit: exit the repl
 show-full-message: print the most recent stack trace
 help: print this doc
-version: check the version
-""".println()
+version: check the version""".println()
 				"version" -> """
 Lice language interpreter $VERSION_CODE
-by ice1000
-""".println()
-				else -> {
-					try {
-						val symbolList = SymbolList(true)
-						Ast(mapAst(buildNode(str), symbolList), symbolList)
-								.root
-								.eval()
-					} catch(e: Throwable) {
-						stackTrace = e
-						serr(e.message ?: "")
-					}
+by ice1000""".println()
+				else -> try {
+					val symbolList = SymbolList(true)
+					Ast(mapAst(buildNode(str), symbolList), symbolList)
+							.root
+							.eval()
+				} catch(e: Throwable) {
+					stackTrace = e
+					serr(e.message ?: "")
 				}
 			}
 		}
@@ -72,6 +69,7 @@ by ice1000
 	 */
 	fun interpret(file: File) {
 		val ast = createAst(file)
+		ast.root.eval()
 	}
 
 	@JvmStatic

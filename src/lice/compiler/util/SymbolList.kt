@@ -1,7 +1,11 @@
 package lice.compiler.util
 
+import lice.compiler.model.Ast
 import lice.compiler.model.Value
 import lice.compiler.model.Value.Objects.nullptr
+import lice.compiler.parse.buildNode
+import lice.compiler.parse.createAst
+import lice.compiler.parse.mapAst
 import java.io.File
 
 /**
@@ -63,32 +67,31 @@ class SymbolList(init: Boolean = true) {
 			}
 			Value(obj ?: showError("constructor not found!"))
 		})
-		addFunction("str-con",
-				{
-					ls: List<Value> ->
-					Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
-						if (value.o is String) sb.append(value.o)
-						else InterpretException.typeMisMatch("String", value)
-					}.toString())
-				})
-		addFunction("print",
-				{
-					ls: List<Value> ->
-					ls.forEach { println(it.o) }
-					ls[ls.size - 1]
-				})
-		addFunction("type",
-				{
-					ls: List<Value> ->
-					ls.forEach { println(it.type.canonicalName) }
-					ls[ls.size - 1]
-				})
-		addType("Int", Int::
-		class.java)
-		addType("Double", Double::
-		class.java)
-		addType("String", String::
-		class.java)
+		addFunction("str-con", { ls: List<Value> ->
+			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
+				if (value.o is String) sb.append(value.o)
+				else InterpretException.typeMisMatch("String", value)
+			}.toString())
+		})
+		addFunction("print", { ls: List<Value> ->
+			ls.forEach { println(it.o) }
+			ls[ls.size - 1]
+		})
+		addFunction("type", { ls: List<Value> ->
+			ls.forEach { println(it.type.canonicalName) }
+			ls[ls.size - 1]
+		})
+		addFunction("eval", { ls: List<Value> ->
+			val o = ls[0].o
+			if (o is String) {
+				val symbolList = SymbolList(true)
+				val stringTreeRoot = buildNode(o)
+				Value(mapAst(stringTreeRoot, symbolList).eval())
+			} else InterpretException.typeMisMatch("String", ls[0])
+		})
+		addType("Int", Int::class.java)
+		addType("Double", Double::class.java)
+		addType("String", String::class.java)
 	}
 
 	fun addFunction(name: String, node: (List<Value>) -> Value): Int {
