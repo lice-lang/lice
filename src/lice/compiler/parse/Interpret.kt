@@ -9,7 +9,7 @@
 package lice.compiler.parse
 
 import lice.compiler.model.*
-import lice.compiler.util.ParseException
+import lice.compiler.util.ParseException.Factory.undefinedFunction
 import lice.compiler.util.SymbolList
 import lice.compiler.util.serr
 import java.io.File
@@ -65,41 +65,36 @@ fun parseValue(str: String, symbolList: SymbolList): Node {
  */
 fun mapAst(
 		node: StringNode,
-		symbolList: SymbolList = SymbolList()): Node {
-	return when (node) {
-		is StringMiddleNode -> {
-			val ls: List<Node> = node
-					.list
-					.subList(1, node.list.size)
-					.map { strNode ->
-						mapAst(
-								node = strNode,
-								symbolList = symbolList
-						)
-					}
-//			ls.size.verboseOutput()
-//			node
-//					.list[0]
-//					.strRepr
-//					.verboseOutput()
-			ExpressionNode(
-					symbolList,
-					symbolList.getFunctionId(node.list[0].strRepr)
-							?: throw ParseException("Undefined Function: ${node.list[0].strRepr}"),
-					ls
-			)
-		}
-		is StringLeafNode ->
-			parseValue(
-					str = node.str,
-					symbolList = symbolList
-			)
-//					.verboseApply {
-//						println("value: [${eval().o}], type: [${eval().type.simpleName}] parsed")
-//					}
-		else -> // empty
-			EmptyNode
+		symbolList: SymbolList = SymbolList()): Node = when (node) {
+	is StringMiddleNode -> {
+		val ls: List<Node> = node
+				.list
+				.subList(1, node.list.size)
+				.map { strNode ->
+					mapAst(
+							node = strNode,
+							symbolList = symbolList
+					)
+				}
+//		ls.size.verboseOutput()
+//		node
+//				.list[0]
+//				.strRepr
+//				.verboseOutput()
+		ExpressionNode(
+				symbolList,
+				symbolList.getFunctionId(node.list[0].strRepr)
+						?: undefinedFunction(node.list[0].strRepr),
+				ls
+		)
 	}
+	is StringLeafNode ->
+		parseValue(
+				str = node.str,
+				symbolList = symbolList
+		)
+	else -> // empty
+		EmptyNode
 }
 
 fun createAst(file: File): Ast {

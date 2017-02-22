@@ -10,7 +10,13 @@ package lice.compiler.util
 
 import lice.compiler.model.Value
 
-class ParseException(string: String) : RuntimeException(string)
+class ParseException(string: String) : RuntimeException(string) {
+	companion object Factory {
+		fun undefinedFunction(name: String): Nothing {
+			throw ParseException("Undefined Function: $name")
+		}
+	}
+}
 
 class InterpretException(string: String) : RuntimeException(string) {
 	companion object Factory {
