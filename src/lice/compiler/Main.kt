@@ -28,20 +28,38 @@ object Main {
 		DEBUGGING = false
 		VERBOSE = false
 		val hint = "Lice > "
+		var stackTrace: Throwable? = null
 		while (true) {
 			print(hint)
 			val str = scanner.nextLine()
-			if ("exit" == str) {
-				println("Have a nice day :)")
-				System.exit(0)
-			}
-			val symbolList = SymbolList(true)
-			try {
-				Ast(mapAst(buildNode(str), symbolList), symbolList)
-						.root
-						.eval()
-			} catch (e: Throwable) {
-				serr(e.message ?: "")
+			when (str) {
+				"exit" -> {
+					println("Have a nice day :)")
+					System.exit(0)
+				}
+				"show-full-message" -> {
+					if (stackTrace != null) stackTrace.printStackTrace()
+					else println("No stack trace.")
+				}
+				"help" -> {
+				}
+				"version" -> {
+					println("""
+Lice language interpreter v0.1-SNAPSHOT
+by ice1000
+""")
+				}
+				else -> {
+					try {
+						val symbolList = SymbolList(true)
+						Ast(mapAst(buildNode(str), symbolList), symbolList)
+								.root
+								.eval()
+					} catch(e: Throwable) {
+						stackTrace = e
+						serr(e.message ?: "")
+					}
+				}
 			}
 		}
 	}
