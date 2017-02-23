@@ -31,22 +31,22 @@ class ValueNode(val value: Value) : Node {
 			value
 }
 
-class JvmReflectionNode(
-		val methodName: String,
-		val receiver: Node,
-		val params: List<Node>) : Node {
-	override fun eval() = Value(receiver.eval().type.getMethod(
-			methodName,
-			*params
-					.map { it.eval().type }
-					.toTypedArray()
-	).invoke(
-			receiver,
-			*params
-					.map { it.eval().o }
-					.toTypedArray()
-	))
-}
+//class JvmReflectionNode(
+//		val methodName: String,
+//		val receiver: Node,
+//		val params: List<Node>) : Node {
+//	override fun eval() = Value(receiver.eval().type.getMethod(
+//			methodName,
+//			*params
+//					.map { it.eval().type }
+//					.toTypedArray()
+//	).invoke(
+//			receiver,
+//			*params
+//					.map { it.eval().o }
+//					.toTypedArray()
+//	))
+//}
 
 class ExpressionNode(
 		val symbolList: SymbolList,

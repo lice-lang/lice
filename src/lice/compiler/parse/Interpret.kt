@@ -17,13 +17,10 @@ import java.io.File
 /**
  * This is the core implementation of mapAst
  *
- * @param symbolList the symbol list
  * @param str the string to parse
  * @return parsed node
  */
-fun parseValue(
-		str: String,
-		symbolList: SymbolList): Node {
+fun parseValue(str: String): Node {
 	return when {
 		str.isEmpty() || str.isBlank() ->
 			EmptyNode
@@ -46,7 +43,6 @@ fun parseValue(
 // TODO() is float
 // TODO() is double
 // TODO() is type
-//	str.debugOutput()
 		else -> {
 			serr("error token: $str")
 			EmptyNode // do nothing
@@ -66,19 +62,6 @@ fun mapAst(
 		symbolList: SymbolList = SymbolList()): Node = when (node) {
 	is StringMiddleNode -> {
 		val str = node.list[0].strRepr
-//		if (str.isString() and (node.list.size > 1)) JvmReflectionNode(
-//				str.substring(1, str.length - 1),
-//				mapAst(node.list[1], symbolList),
-//				node
-//						.list
-//						.subList(2, node.list.size)
-//						.map { strNode ->
-//							mapAst(
-//									node = strNode,
-//									symbolList = symbolList
-//							)
-//						}
-//		) else
 		ExpressionNode(
 				symbolList,
 				symbolList.getFunctionId(str)
@@ -96,8 +79,7 @@ fun mapAst(
 	}
 	is StringLeafNode ->
 		parseValue(
-				str = node.str,
-				symbolList = symbolList
+				str = node.str
 		)
 	else -> // empty
 		EmptyNode
@@ -106,12 +88,8 @@ fun mapAst(
 fun createAst(file: File): Ast {
 	val code = file.readText()
 	val symbolList = SymbolList(true)
-//	symbolList.initialize()
 	symbolList.addVariable("FILE_PATH", Value(file.absolutePath))
 	val stringTreeRoot = buildNode(code)
-//	(stringTreeRoot as StringMiddleNode).list.debugApply {
-//		forEach { println(it.strRepr) }
-//	}
 	return Ast(
 			mapAst(
 					node = stringTreeRoot,

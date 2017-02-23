@@ -19,18 +19,11 @@ class SymbolList(init: Boolean = true) {
 	val functionList: MutableList<(List<Value>) -> Value>
 
 	val variableMap: MutableMap<String, Value>
-//	val variableList: MutableList<>
-
-//	val typeMap: MutableMap<String, Int>
-//	val typeList: MutableList<Class<*>>
 
 	init {
 		functionMap = mutableMapOf()
 		functionList = mutableListOf()
 		variableMap = mutableMapOf()
-//		variableList = mutableListOf()
-//		typeMap = mutableMapOf()
-//		typeList = mutableListOf()
 		if (init) initialize()
 	}
 
@@ -71,7 +64,6 @@ class SymbolList(init: Boolean = true) {
 			else typeMisMatch("File", ls[0])
 		})
 		addFunction("", { ls ->
-//			ls.size.verboseOutput()
 			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
 			ls[ls.size - 1]
 		})
@@ -100,21 +92,6 @@ class SymbolList(init: Boolean = true) {
 			val ret = if (condition) ls[1].o else ls[2].o
 			if (ret != null) Value(ret) else nullptr
 		})
-//		addFunction("new", { ls ->
-//			var obj: Any? = null
-//			val params = ls.subList(1, ls.size - 1)
-//			loop@for (constructor in Class
-//					.forName(ls[0].o as String)
-//					.constructors) {
-//				obj = constructor.newInstance(*ls
-//						.subList(1, ls.size)
-////						.apply { forEach { it.o.println() } }
-//						.toTypedArray()
-//				)
-//				if (obj != null) break@loop
-//			}
-//			Value(obj ?: showError("constructor not found!"))
-//		})
 		addFunction("str-con", { ls ->
 			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
 				if (value.o is String) sb.append(value.o)
@@ -133,14 +110,6 @@ class SymbolList(init: Boolean = true) {
 			System.gc()
 			nullptr
 		})
-//		addFunction(".", { ls ->
-//			if (ls.size <= 1) throw InterpretException("expected more than 2 arguments")
-//			val params = ls.subList(2, ls.size)
-//			Value(ls[0]
-//					.o!!
-//					.javaClass
-//					.getMethod())
-//		})
 		addFunction("eval", { ls ->
 			val o = ls[0].o
 			if (o is String) {
@@ -149,9 +118,6 @@ class SymbolList(init: Boolean = true) {
 				Value(mapAst(stringTreeRoot, symbolList).eval())
 			} else typeMisMatch("String", ls[0])
 		})
-//		addType("Int", Int::class.java)
-//		addType("Double", Double::class.java)
-//		addType("String", String::class.java)
 	}
 
 	fun addFunction(name: String, node: (List<Value>) -> Value): Int {

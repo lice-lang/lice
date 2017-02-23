@@ -4,9 +4,7 @@ import lice.compiler.parse.createAst
 import lice.compiler.util.forceRun
 import lice.compiler.util.println
 import org.junit.Test
-import java.io.Console
 import java.io.File
-import java.util.*
 
 /**
  * Created by ice1000 on 2017/2/20.
