@@ -77,6 +77,14 @@ class SymbolList(init: Boolean = true) {
 			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
 			ls[ls.size - 1]
 		})
+		addFunction("if", { ls ->
+			if (ls.size <= 2) throw InterpretException("")
+			val bool = ls[0].o
+			if (bool is Boolean) {
+				val ret = if (bool) ls[1].o else ls[2].o
+				if (ret != null) Value(ret) else nullptr
+			} else typeMisMatch("Boolean", ls[0])
+		})
 		addFunction("new", { ls ->
 			var obj: Any? = null
 			loop@for (constructor in Class

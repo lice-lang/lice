@@ -1,17 +1,13 @@
 package lice.compiler
 
-import lice.compiler.model.Ast
-import lice.compiler.parse.buildNode
 import lice.compiler.parse.createAst
-import lice.compiler.parse.mapAst
-import lice.compiler.util.*
+import lice.compiler.util.forceRun
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Font
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.io.File
-import java.io.InputStream
 import java.io.OutputStream
 import java.io.PrintStream
 import java.util.*
