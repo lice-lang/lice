@@ -82,6 +82,22 @@ class SymbolList(init: Boolean = true) {
 		})
 	}
 
+	inline fun addBoolFunctions() {
+		addFunction("&&", { ls ->
+			Value(ls.fold(true) { sum, value ->
+				if (value.o is Boolean) value.o && sum
+				else typeMisMatch("Boolean", value)
+			})
+		})
+		addFunction("||", { ls ->
+			Value(ls.fold(true) { sum, value ->
+				if (value.o is Boolean) value.o || sum
+				else typeMisMatch("Boolean", value)
+			})
+		})
+		addFunction("!", { ls -> Value(!(ls[0].o as Boolean)) })
+	}
+
 	inline fun addFileFunctions() {
 		addFunction("file", { ls ->
 			val a = ls[0].o
@@ -152,6 +168,7 @@ class SymbolList(init: Boolean = true) {
 		addFileFunctions()
 		addGetPut()
 		addStringFunctions()
+		addBoolFunctions()
 		addFunction("[]", { ls -> Value(ls.map { it.o }) })
 		addFunction("", { ls ->
 			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
