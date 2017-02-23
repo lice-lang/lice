@@ -8,6 +8,8 @@ import lice.compiler.util.*
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Font
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -32,21 +34,25 @@ object Main {
 	/**
 	 * starting the read-eval-print-loop machine
 	 */
-	fun startRepl(scan: () -> String) {
-		DEBUGGING = false
-		VERBOSE = false
+	class Repl() {
 		val hint = "Lice > "
 		var stackTrace: Throwable? = null
-		while (true) {
+
+		init {
+			println("Lice repl $VERSION_CODE")
 			print(hint)
-			val str = scan()
+			DEBUGGING = false
+			VERBOSE = false
+		}
+
+		fun handle(str: String) {
 			when (str) {
 				"exit" -> {
 					"Have a nice day :)".println()
 					System.exit(0)
 				}
 				"show-full-message" ->
-					if (stackTrace != null) stackTrace.printStackTrace()
+					if (stackTrace != null) stackTrace?.printStackTrace()
 					else "No stack trace.".println()
 				"help" -> """
 This is the repl for lice language.
@@ -70,6 +76,7 @@ by ice1000""".println()
 					serr(e.message ?: "")
 				}
 			}
+			print(hint)
 		}
 	}
 
@@ -89,7 +96,10 @@ by ice1000""".println()
 		output.background = Color.LIGHT_GRAY
 		val input = JTextField()
 		output.tabSize = 2
-		forceRun { output.font = Font("Consolas", 0, 16) }
+		forceRun {
+			output.font = Font("Consolas", 0, 12)
+			input.font = Font("Consolas", 0, 16)
+		}
 		System.setOut(PrintStream(object : OutputStream() {
 			override fun write(b: Int) =
 					output.append(b.toChar().toString())
@@ -97,27 +107,38 @@ by ice1000""".println()
 			override fun write(b: ByteArray) =
 					output.append(java.lang.String(b).toString())
 		}))
+		val repl = Repl()
+		input.addKeyListener(object : KeyListener {
+			override fun keyTyped(e: KeyEvent?) = Unit
+			override fun keyReleased(e: KeyEvent?) = Unit
+			override fun keyPressed(e: KeyEvent?) {
+//				println("${e?.keyCode}, ${KeyEvent.VK_ENTER}")
+				if (e != null && e.keyCode == KeyEvent.VK_ENTER) {
+					repl.handle(input.text)
+					output.append(input.text)
+					input.text = ""
+				}
+			}
+		})
 		frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 		frame.add(output, BorderLayout.CENTER)
 		frame.add(input, BorderLayout.SOUTH)
-		frame.setSize(500, 500)
+		frame.setSize(360, 360)
 		frame.isVisible = true
-//		startRepl()
 	}
 
 	@JvmStatic
-	fun main(args: Array<String>) {
-		if (args.isEmpty()) {
-			val scanner = Scanner(System.`in`)
-			startRepl({ scanner.nextLine() })
-		} else
-			interpret(File(args[0]))
-	}
+	fun main(args: Array<String>) =
+			if (args.isEmpty()) {
+				val scanner = Scanner(System.`in`)
+				val repl = Repl()
+				while (true)
+					repl.handle(scanner.nextLine())
+			} else
+				interpret(File(args[0]))
 }
 
 object GUI {
 	@JvmStatic
-	fun main(args: Array<String>) {
-		Main.openGUI()
-	}
+	fun main(args: Array<String>) = Main.openGUI()
 }
