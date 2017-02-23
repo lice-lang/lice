@@ -53,6 +53,6 @@ by ice1000""".println()
 				serr(e.message ?: "")
 			}
 		}
-		print(hint)
+		print("\n$hint")
 	}
 }

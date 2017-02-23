@@ -58,13 +58,15 @@ fun main(args: Array<String>) {
 		output.font = Font("Consolas", 0, 12)
 		input.font = Font("Consolas", 0, 16)
 	}
-	System.setOut(PrintStream(object : OutputStream() {
+	val printStream = PrintStream(object : OutputStream() {
 		override fun write(b: Int) =
 				output.append(b.toChar().toString())
 
 		override fun write(b: ByteArray) =
 				output.append(java.lang.String(b).toString())
-	}))
+	})
+	System.setOut(printStream)
+	System.setErr(printStream)
 	val repl = Repl()
 	input.addKeyListener(object : KeyListener {
 		override fun keyTyped(e: KeyEvent?) = Unit
@@ -72,7 +74,7 @@ fun main(args: Array<String>) {
 		override fun keyPressed(e: KeyEvent?) {
 //				println("${e?.keyCode}, ${KeyEvent.VK_ENTER}")
 			if (e != null && e.keyCode == KeyEvent.VK_ENTER) {
-				output.append("\n${input.text}\n")
+				output.append("${input.text}\n")
 				repl.handle(input.text)
 				input.text = ""
 			}

@@ -58,6 +58,12 @@ Lice > (eval (read-file (file "sample/test3.lice")))
 16769025 => java.lang.Integer
 My name is Van, I'm an artist => java.lang.String
 lice.compiler.model.Value@1dd0a5f7 => lice.compiler.model.Value
+
+Lice > (if true 1 2)
+1 => java.lang.Integer
+
+Lice > (if false 1 2)
+2 => java.lang.Integer
 ```
 
 ## Contribution
