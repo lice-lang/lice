@@ -6,6 +6,7 @@ import lice.compiler.model.Value.Objects.nullptr
 import lice.compiler.parse.buildNode
 import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
+import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import java.io.File
 
 /**
@@ -39,28 +40,38 @@ class SymbolList(init: Boolean = true) {
 //			ls.forEach { verboseOutput() }
 			Value(ls.fold(0) { sum, value ->
 				if (value.o is Int) value.o + sum
-				else InterpretException.typeMisMatch("Int", value)
+				else typeMisMatch("Int", value)
 			})
 		})
 		addFunction("-", { ls ->
 			Value(ls.fold(ls[0].o as Int shl 1) { delta, value ->
 				if (value.o is Int) delta - value.o
-				else InterpretException.typeMisMatch("Int", value)
+				else typeMisMatch("Int", value)
 			})
 		})
 		addFunction("/", { ls ->
 			Value(ls.fold((ls[0].o as Int).squared()) { res, value ->
 				if (value.o is Int) res / value.o
-				else InterpretException.typeMisMatch("Int", value)
+				else typeMisMatch("Int", value)
 			})
 		})
 		addFunction("*", { ls ->
 			Value(ls.fold(1) { sum, value ->
 				if (value.o is Int) value.o * sum
-				else InterpretException.typeMisMatch("Int", value)
+				else typeMisMatch("Int", value)
 			})
 		})
 		addFunction("[]", { ls -> Value(ls.map { it.o }) })
+		addFunction("file", { ls ->
+			val a = ls[0].o
+			if (a is String) Value(File(a))
+			else typeMisMatch("String", ls[0])
+		})
+		addFunction("read-file", { ls ->
+			val a = ls[0].o
+			if (a is File) Value(a.readText())
+			else typeMisMatch("File", ls[0])
+		})
 		addFunction("", { ls ->
 //			ls.size.verboseOutput()
 			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
@@ -83,7 +94,7 @@ class SymbolList(init: Boolean = true) {
 		addFunction("str-con", { ls ->
 			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
 				if (value.o is String) sb.append(value.o)
-				else InterpretException.typeMisMatch("String", value)
+				else typeMisMatch("String", value)
 			}.toString())
 		})
 		addFunction("print", { ls ->
@@ -104,7 +115,7 @@ class SymbolList(init: Boolean = true) {
 				val symbolList = SymbolList(true)
 				val stringTreeRoot = buildNode(o)
 				Value(mapAst(stringTreeRoot, symbolList).eval())
-			} else InterpretException.typeMisMatch("String", ls[0])
+			} else typeMisMatch("String", ls[0])
 		})
 		addType("Int", Int::class.java)
 		addType("Double", Double::class.java)

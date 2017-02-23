@@ -38,6 +38,10 @@ fun parseValue(str: String, symbolList: SymbolList): Node {
 		return ValueNode(str.toHexInt())
 	if (str.isBinInt())
 		return ValueNode(str.toBinInt())
+	if (str == "true")
+		return ValueNode(true)
+	if (str == "false")
+		return ValueNode(false)
 	// TODO() is float
 	// TODO() is double
 	// TODO() is type

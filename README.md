@@ -53,6 +53,11 @@ Lice > ([] 1 11 1)
 
 Lice > ([] "boy" "next" "door")
 [boy, next, door] => java.util.ArrayList
+
+Lice > (eval (read-file (file "sample/test3.lice")))
+16769025 => java.lang.Integer
+My name is Van, I'm an artist => java.lang.String
+lice.compiler.model.Value@1dd0a5f7 => lice.compiler.model.Value
 ```
 
 ## Contribution
