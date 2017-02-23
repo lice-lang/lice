@@ -22,7 +22,7 @@ class Repl() {
 		VERBOSE = false
 	}
 
-	fun handle(str: String) {
+	fun handle(str: String, symbolList: SymbolList = SymbolList(true)) {
 		when (str) {
 			"exit" -> {
 				"Have a nice day :)".println()
@@ -31,6 +31,7 @@ class Repl() {
 			"show-full-message" ->
 				if (stackTrace != null) stackTrace?.printStackTrace()
 				else "No stack trace.".println()
+			"gc" -> System.gc()
 			"help" -> """
 This is the repl for lice language.
 
@@ -39,12 +40,12 @@ You have four special commands which you cannot use in the language but the repl
 exit: exit the repl
 show-full-message: print the most recent stack trace
 help: print this doc
-version: check the version""".println()
+version: check the version"""
+					.println()
 			"version" -> """
 Lice language interpreter $VERSION_CODE
 by ice1000""".println()
 			else -> try {
-				val symbolList = SymbolList(true)
 				Ast(mapAst(buildNode(str), symbolList), symbolList)
 						.root
 						.eval()

@@ -18,26 +18,24 @@ class SymbolList(init: Boolean = true) {
 	val functionMap: MutableMap<String, Int>
 	val functionList: MutableList<(List<Value>) -> Value>
 
-	val variableMap: MutableMap<String, Int>
-	val variableList: MutableList<Value>
+	val variableMap: MutableMap<String, Value>
+//	val variableList: MutableList<>
 
-	val typeMap: MutableMap<String, Int>
-	val typeList: MutableList<Class<*>>
+//	val typeMap: MutableMap<String, Int>
+//	val typeList: MutableList<Class<*>>
 
 	init {
 		functionMap = mutableMapOf()
 		functionList = mutableListOf()
 		variableMap = mutableMapOf()
-		variableList = mutableListOf()
-		typeMap = mutableMapOf()
-		typeList = mutableListOf()
+//		variableList = mutableListOf()
+//		typeMap = mutableMapOf()
+//		typeList = mutableListOf()
 		if (init) initialize()
 	}
 
 	fun initialize() {
 		addFunction("+", { ls ->
-//			println("+ called!")
-//			ls.forEach { verboseOutput() }
 			Value(ls.fold(0) { sum, value ->
 				if (value.o is Int) value.o + sum
 				else typeMisMatch("Int", value)
@@ -77,28 +75,46 @@ class SymbolList(init: Boolean = true) {
 			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
 			ls[ls.size - 1]
 		})
+		addFunction("put", { ls ->
+			if (ls.size < 2)
+				throw InterpretException("Expected 2 arguments, found: ${ls.size}")
+			val str = ls[0].o
+			if (str is String) addVariable(str, ls[1])
+			else typeMisMatch("String", ls[0])
+			ls[1]
+		})
+		addFunction("get", { ls ->
+			if (ls.isEmpty())
+				throw InterpretException("Expected 1 arguments, found: ${ls.size}")
+			val str = ls[0].o
+			if (str is String) {
+				val value = variableMap[str]
+				value ?: nullptr
+			} else typeMisMatch("String", ls[0])
+		})
 		addFunction("if", { ls ->
-			if (ls.size <= 2) throw InterpretException("")
+			if (ls.size < 2)
+				throw InterpretException("Expected 2 arguments, found: ${ls.size}")
 			val bool = ls[0].o
-			if (bool is Boolean) {
-				val ret = if (bool) ls[1].o else ls[2].o
-				if (ret != null) Value(ret) else nullptr
-			} else typeMisMatch("Boolean", ls[0])
+			val condition = bool as? Boolean ?: ls[1].o != null
+			val ret = if (condition) ls[1].o else ls[2].o
+			if (ret != null) Value(ret) else nullptr
 		})
-		addFunction("new", { ls ->
-			var obj: Any? = null
-			loop@for (constructor in Class
-					.forName(ls[0].o as String)
-					.constructors) {
-				obj = constructor.newInstance(*ls
-						.subList(1, ls.size)
-//						.apply { forEach { it.o.println() } }
-						.toTypedArray()
-				)
-				if (obj != null) break@loop
-			}
-			Value(obj ?: showError("constructor not found!"))
-		})
+//		addFunction("new", { ls ->
+//			var obj: Any? = null
+//			val params = ls.subList(1, ls.size - 1)
+//			loop@for (constructor in Class
+//					.forName(ls[0].o as String)
+//					.constructors) {
+//				obj = constructor.newInstance(*ls
+//						.subList(1, ls.size)
+////						.apply { forEach { it.o.println() } }
+//						.toTypedArray()
+//				)
+//				if (obj != null) break@loop
+//			}
+//			Value(obj ?: showError("constructor not found!"))
+//		})
 		addFunction("str-con", { ls ->
 			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
 				if (value.o is String) sb.append(value.o)
@@ -117,6 +133,14 @@ class SymbolList(init: Boolean = true) {
 			System.gc()
 			nullptr
 		})
+//		addFunction(".", { ls ->
+//			if (ls.size <= 1) throw InterpretException("expected more than 2 arguments")
+//			val params = ls.subList(2, ls.size)
+//			Value(ls[0]
+//					.o!!
+//					.javaClass
+//					.getMethod())
+//		})
 		addFunction("eval", { ls ->
 			val o = ls[0].o
 			if (o is String) {
@@ -125,9 +149,9 @@ class SymbolList(init: Boolean = true) {
 				Value(mapAst(stringTreeRoot, symbolList).eval())
 			} else typeMisMatch("String", ls[0])
 		})
-		addType("Int", Int::class.java)
-		addType("Double", Double::class.java)
-		addType("String", String::class.java)
+//		addType("Int", Int::class.java)
+//		addType("Double", Double::class.java)
+//		addType("String", String::class.java)
 	}
 
 	fun addFunction(name: String, node: (List<Value>) -> Value): Int {
@@ -137,26 +161,12 @@ class SymbolList(init: Boolean = true) {
 	}
 
 	fun addVariable(name: String, value: Value) {
-		variableMap.put(name, variableList.size)
-		variableList.add(value)
+		variableMap[name] = value
 	}
 
-	fun addType(name: String, clazz: Class<*>) {
-		typeMap.put(name, typeList.size)
-		typeList.add(clazz)
-	}
-
-	fun getVariableId(name: String) = variableMap[name]
-
-	fun getTypeId(name: String) = typeMap[name]
+	fun getVariable(name: String) = variableMap[name]
 
 	fun getFunctionId(name: String) = functionMap[name]
-
-	fun getVariable(id: Int) = variableList[id]
-
-	fun setVariable(id: Int, newValue: Value) {
-		variableList[id] = newValue
-	}
 
 	fun getFunction(id: Int) = functionList[id]
 }

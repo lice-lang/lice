@@ -16,6 +16,7 @@ interface StringNode {
 class StringMiddleNode(
 		override val lineNumber: Int,
 		val list: MutableList<StringNode> = mutableListOf<StringNode>()) : StringNode {
+
 	val empty: Boolean
 		get() = list.isEmpty()
 
@@ -25,7 +26,9 @@ class StringMiddleNode(
 					.append(" [")
 					.append(last.strRepr)
 					.append("]")
-		}.append(" }").toString()
+		}
+				.append(" }")
+				.toString()
 
 	fun add(n: StringNode) {
 //		n.strRepr
@@ -40,6 +43,7 @@ class StringLeafNode(
 	override val strRepr = str
 }
 
-class EmptyStringNode(override val lineNumber: Int) : StringNode {
+class EmptyStringNode(
+		override val lineNumber: Int) : StringNode {
 	override val strRepr = ""
 }

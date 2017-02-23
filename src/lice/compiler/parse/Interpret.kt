@@ -9,9 +9,8 @@
 package lice.compiler.parse
 
 import lice.compiler.model.*
+import lice.compiler.util.*
 import lice.compiler.util.ParseException.Factory.undefinedFunction
-import lice.compiler.util.SymbolList
-import lice.compiler.util.serr
 import java.io.File
 
 
@@ -22,41 +21,36 @@ import java.io.File
  * @param str the string to parse
  * @return parsed node
  */
-fun parseValue(str: String, symbolList: SymbolList): Node {
-//	str.debugApply { println("str = $str, ${str.isInt()}") }
-	if (str.isEmpty() || str.isBlank())
-		return EmptyNode
-	if ((str[0] == '\"') and (str[str.length - 1] == '\"'))
-		return ValueNode(Value(str
-				.substring(1, str.length - 1)
-				.apply {
-					// TODO replace \n, \t, etc.
-				}))
-	if (str.isInt())
-		return ValueNode(str.toInt())
-	if (str.isHexInt())
-		return ValueNode(str.toHexInt())
-	if (str.isBinInt())
-		return ValueNode(str.toBinInt())
-	if (str == "true")
-		return ValueNode(true)
-	if (str == "false")
-		return ValueNode(false)
-	// TODO() is float
-	// TODO() is double
-	// TODO() is type
+fun parseValue(
+		str: String,
+		symbolList: SymbolList): Node {
+	return when {
+		str.isEmpty() || str.isBlank() ->
+			EmptyNode
+		str.isString() ->
+			ValueNode(Value(str
+					.substring(1, str.length - 1)
+					.apply {
+						// TODO replace \n, \t, etc.
+					}))
+		str.isInt() ->
+			ValueNode(str.toInt())
+		str.isHexInt() ->
+			ValueNode(str.toHexInt())
+		str.isBinInt() ->
+			ValueNode(str.toBinInt())
+		"true" == str ->
+			ValueNode(true)
+		"false" == str ->
+			ValueNode(false)
+// TODO() is float
+// TODO() is double
+// TODO() is type
 //	str.debugOutput()
-	try {
-		return VariableNode(
-				symbolList,
-				str
-		)
-	} catch (e: Exception) {
-//		e.debugApply { printStackTrace() }
-//		str.debugApply { println("str = $str") }
-//		e.message.debugOutput()
-		serr("error token: $str")
-		return EmptyNode // do nothing
+		else -> {
+			serr("error token: $str")
+			EmptyNode // do nothing
+		}
 	}
 }
 
@@ -71,25 +65,33 @@ fun mapAst(
 		node: StringNode,
 		symbolList: SymbolList = SymbolList()): Node = when (node) {
 	is StringMiddleNode -> {
-		val ls: List<Node> = node
-				.list
-				.subList(1, node.list.size)
-				.map { strNode ->
-					mapAst(
-							node = strNode,
-							symbolList = symbolList
-					)
-				}
-//		ls.size.verboseOutput()
-//		node
-//				.list[0]
-//				.strRepr
-//				.verboseOutput()
+		val str = node.list[0].strRepr
+//		if (str.isString() and (node.list.size > 1)) JvmReflectionNode(
+//				str.substring(1, str.length - 1),
+//				mapAst(node.list[1], symbolList),
+//				node
+//						.list
+//						.subList(2, node.list.size)
+//						.map { strNode ->
+//							mapAst(
+//									node = strNode,
+//									symbolList = symbolList
+//							)
+//						}
+//		) else
 		ExpressionNode(
 				symbolList,
-				symbolList.getFunctionId(node.list[0].strRepr)
-						?: undefinedFunction(node.list[0].strRepr),
-				ls
+				symbolList.getFunctionId(str)
+						?: undefinedFunction(str),
+				node
+						.list
+						.subList(1, node.list.size)
+						.map { strNode ->
+							mapAst(
+									node = strNode,
+									symbolList = symbolList
+							)
+						}
 		)
 	}
 	is StringLeafNode ->

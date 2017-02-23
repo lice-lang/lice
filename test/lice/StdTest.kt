@@ -50,6 +50,21 @@ class StdTest {
 
 	@Test
 	fun test4() {
+		val file = File("out")
+		file
+				.javaClass
+				.getMethod("toString")
+				.invoke(file)
+	}
+
+	@Test
+	fun test5() {
+		val one: Int? = 1
+		Integer::class
+				.java
+				.getMethod("equals", Object::class.java)
+				.invoke(one, 1)
+				.println()
 	}
 
 	companion object {

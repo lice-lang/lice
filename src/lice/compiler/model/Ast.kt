@@ -31,20 +31,21 @@ class ValueNode(val value: Value) : Node {
 			value
 }
 
-class VariableNode(
-		val symbolList: SymbolList,
-		val id: Int) : Node {
-	constructor(
-			symbolList: SymbolList,
-			name: String
-	) : this(
-			symbolList,
-			symbolList.getVariableId(name)
-					?: throw ParseException("Undefined Variable: $name")
-	)
-
-	override fun eval() =
-			symbolList.getVariable(id)
+class JvmReflectionNode(
+		val methodName: String,
+		val receiver: Node,
+		val params: List<Node>) : Node {
+	override fun eval() = Value(receiver.eval().type.getMethod(
+			methodName,
+			*params
+					.map { it.eval().type }
+					.toTypedArray()
+	).invoke(
+			receiver,
+			*params
+					.map { it.eval().o }
+					.toTypedArray()
+	))
 }
 
 class ExpressionNode(
@@ -72,12 +73,6 @@ class ExpressionNode(
 					?: throw ParseException("function not found: $function"),
 			params
 	)
-
-//	init {
-//		function.verboseApply {
-//			println("function id = $function")
-//		}
-//	}
 
 	override fun eval() =
 			symbolList.getFunction(function)(params.map(Node::eval))

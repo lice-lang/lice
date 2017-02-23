@@ -1,6 +1,7 @@
 package lice.compiler
 
 import lice.compiler.parse.createAst
+import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
 import java.awt.BorderLayout
 import java.awt.Color
@@ -11,10 +12,7 @@ import java.io.File
 import java.io.OutputStream
 import java.io.PrintStream
 import java.util.*
-import javax.swing.JFrame
-import javax.swing.JTextArea
-import javax.swing.JTextField
-import javax.swing.WindowConstants
+import javax.swing.*
 
 val VERSION_CODE = "v1.0-SNAPSHOT"
 
@@ -38,15 +36,17 @@ object Main {
 	@JvmStatic
 	fun main(args: Array<String>) =
 			if (args.isEmpty()) {
+				val sl = SymbolList()
 				val scanner = Scanner(System.`in`)
 				val repl = Repl()
 				while (true)
-					repl.handle(scanner.nextLine())
+					repl.handle(scanner.nextLine(), sl)
 			} else
 				interpret(File(args[0]))
 }
 
 fun main(args: Array<String>) {
+	val sl = SymbolList()
 	val frame = JFrame("Lice language interpreter $VERSION_CODE")
 	frame.layout = BorderLayout()
 	val output = JTextArea()
@@ -75,14 +75,15 @@ fun main(args: Array<String>) {
 //				println("${e?.keyCode}, ${KeyEvent.VK_ENTER}")
 			if (e != null && e.keyCode == KeyEvent.VK_ENTER) {
 				output.append("${input.text}\n")
-				repl.handle(input.text)
+				repl.handle(input.text, sl)
 				input.text = ""
 			}
 		}
 	})
 	frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
-	frame.add(output, BorderLayout.CENTER)
+	frame.add(JScrollPane(output), BorderLayout.CENTER)
 	frame.add(input, BorderLayout.SOUTH)
+	frame.setLocation(100, 100)
 	frame.setSize(360, 360)
 	frame.isVisible = true
 	input.requestFocus()
