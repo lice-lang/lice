@@ -6,11 +6,16 @@ import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
 import lice.compiler.util.*
 import java.awt.BorderLayout
-import java.awt.TextArea
+import java.awt.Color
+import java.awt.Font
 import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.PrintStream
 import java.util.*
 import javax.swing.JFrame
 import javax.swing.JTextArea
+import javax.swing.WindowConstants
 
 val VERSION_CODE = "v1.0-SNAPSHOT"
 
@@ -81,10 +86,24 @@ by ice1000""".println()
 		frame.layout = BorderLayout()
 		val output = JTextArea()
 		output.isEditable = true
-//		System.setIn()
+		output.background = Color.LIGHT_GRAY
+		output.tabSize = 2
+		forceRun { output.font = Font("Consolas", 0, 16) }
+		System.setOut(PrintStream(object : OutputStream() {
+			override fun write(b: Int) =
+					output.append(b.toChar().toString())
+
+			override fun write(b: ByteArray) =
+					output.append(java.lang.String(b).toString())
+		}))
+//		System.setIn(object : InputStream() {
+//			override fun read() = output
+//		})
+		frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 		frame.add(output, BorderLayout.CENTER)
 		frame.setSize(500, 500)
 		frame.isVisible = true
+		startRepl()
 	}
 
 	@JvmStatic
