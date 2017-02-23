@@ -1,13 +1,12 @@
 package lice.compiler.util
 
-import lice.compiler.model.Ast
 import lice.compiler.model.Value
 import lice.compiler.model.Value.Objects.nullptr
 import lice.compiler.parse.buildNode
-import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import java.io.File
+import java.net.URL
 
 /**
  * Created by ice1000 on 2017/2/17.
@@ -27,7 +26,7 @@ class SymbolList(init: Boolean = true) {
 		if (init) initialize()
 	}
 
-	fun initialize() {
+	fun addNumberFunctions() {
 		addFunction("+", { ls ->
 			Value(ls.fold(0) { sum, value ->
 				if (value.o is Int) value.o + sum
@@ -52,7 +51,35 @@ class SymbolList(init: Boolean = true) {
 				else typeMisMatch("Int", value)
 			})
 		})
-		addFunction("[]", { ls -> Value(ls.map { it.o }) })
+		addFunction("==", { ls ->
+			Value((1..ls.size - 1).none { it -> ls[it].o != ls[it - 1].o })
+		})
+		addFunction("!=", { ls ->
+			Value((1..ls.size - 1).none { it -> ls[it].o == ls[it - 1].o })
+		})
+		addFunction("<", { ls ->
+			Value((1..ls.size - 1).none {
+				ls[it].o as Int <= ls[it - 1].o as Int
+			})
+		})
+		addFunction(">", { ls ->
+			Value((1..ls.size - 1).none {
+				(ls[it].o as Int) >= ls[it - 1].o as Int
+			})
+		})
+		addFunction(">=", { ls ->
+			Value((1..ls.size - 1).none {
+				ls[it].o as Int > ls[it - 1].o as Int
+			})
+		})
+		addFunction("<", { ls ->
+			Value((1..ls.size - 1).none {
+				(ls[it].o as Int) < ls[it - 1].o as Int
+			})
+		})
+	}
+
+	fun addFileFunctions() {
 		addFunction("file", { ls ->
 			val a = ls[0].o
 			if (a is String) Value(File(a))
@@ -63,6 +90,22 @@ class SymbolList(init: Boolean = true) {
 			if (a is File) Value(a.readText())
 			else typeMisMatch("File", ls[0])
 		})
+		addFunction("url", { ls ->
+			val a = ls[0].o
+			if (a is String) Value(URL(a))
+			else typeMisMatch("String", ls[0])
+		})
+		addFunction("read-url", { ls ->
+			val a = ls[0].o
+			if (a is URL) Value(a.readText())
+			else typeMisMatch("URL", ls[0])
+		})
+	}
+
+	fun initialize() {
+		addNumberFunctions()
+		addFileFunctions()
+		addFunction("[]", { ls -> Value(ls.map { it.o }) })
 		addFunction("", { ls ->
 			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
 			ls[ls.size - 1]
@@ -87,11 +130,11 @@ class SymbolList(init: Boolean = true) {
 		addFunction("if", { ls ->
 			if (ls.size < 2)
 				throw InterpretException("Expected 2 arguments, found: ${ls.size}")
-			val bool = ls[0].o
-			val condition = bool as? Boolean ?: ls[1].o != null
+			val condition = ls[0].o as? Boolean ?: ls[1].o != null
 			val ret = if (condition) ls[1].o else ls[2].o
 			if (ret != null) Value(ret) else nullptr
 		})
+		// TODO loops
 		addFunction("str-con", { ls ->
 			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
 				if (value.o is String) sb.append(value.o)
