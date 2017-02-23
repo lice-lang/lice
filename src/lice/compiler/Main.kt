@@ -15,6 +15,7 @@ import java.io.PrintStream
 import java.util.*
 import javax.swing.JFrame
 import javax.swing.JTextArea
+import javax.swing.JTextField
 import javax.swing.WindowConstants
 
 val VERSION_CODE = "v1.0-SNAPSHOT"
@@ -31,15 +32,14 @@ object Main {
 	/**
 	 * starting the read-eval-print-loop machine
 	 */
-	fun startRepl() {
-		val scanner = Scanner(System.`in`)
+	fun startRepl(scan: () -> String) {
 		DEBUGGING = false
 		VERBOSE = false
 		val hint = "Lice > "
 		var stackTrace: Throwable? = null
 		while (true) {
 			print(hint)
-			val str = scanner.nextLine()
+			val str = scan()
 			when (str) {
 				"exit" -> {
 					"Have a nice day :)".println()
@@ -87,6 +87,7 @@ by ice1000""".println()
 		val output = JTextArea()
 		output.isEditable = true
 		output.background = Color.LIGHT_GRAY
+		val input = JTextField()
 		output.tabSize = 2
 		forceRun { output.font = Font("Consolas", 0, 16) }
 		System.setOut(PrintStream(object : OutputStream() {
@@ -96,21 +97,20 @@ by ice1000""".println()
 			override fun write(b: ByteArray) =
 					output.append(java.lang.String(b).toString())
 		}))
-//		System.setIn(object : InputStream() {
-//			override fun read() = output
-//		})
 		frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 		frame.add(output, BorderLayout.CENTER)
+		frame.add(input, BorderLayout.SOUTH)
 		frame.setSize(500, 500)
 		frame.isVisible = true
-		startRepl()
+//		startRepl()
 	}
 
 	@JvmStatic
 	fun main(args: Array<String>) {
-		if (args.isEmpty())
-			startRepl()
-		else
+		if (args.isEmpty()) {
+			val scanner = Scanner(System.`in`)
+			startRepl({ scanner.nextLine() })
+		} else
 			interpret(File(args[0]))
 	}
 }
