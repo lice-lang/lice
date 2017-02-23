@@ -78,9 +78,7 @@ fun mapAst(
 		)
 	}
 	is StringLeafNode ->
-		parseValue(
-				str = node.str
-		)
+		parseValue(str = node.str)
 	else -> // empty
 		EmptyNode
 }

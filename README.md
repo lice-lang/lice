@@ -68,7 +68,7 @@ Lice > (if false 1 2)
 
 ## Contribution
 
-0. It's recommended to use 2-spaces tab size(please DO USE tabs).
+0. It's recommended to use 2-spaces tab actual(please DO USE tabs).
 
 
 

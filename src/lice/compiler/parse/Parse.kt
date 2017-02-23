@@ -37,9 +37,7 @@ fun buildNode(code: String): StringNode {
 		if (c == '\n') commentStarted = false
 		if (!commentStarted or (lastElement == '\\')) when (c) {
 			';' -> {
-				if (!quoteStarted) {
-					commentStarted = true
-				}
+				if (!quoteStarted) commentStarted = true
 			}
 			'(' -> {
 				if (!quoteStarted) {

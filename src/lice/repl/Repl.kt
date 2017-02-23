@@ -1,4 +1,4 @@
-package lice.compiler
+package lice.repl
 
 import lice.compiler.model.Ast
 import lice.compiler.parse.buildNode
@@ -43,7 +43,7 @@ help: print this doc
 version: check the version"""
 					.println()
 			"version" -> """
-Lice language interpreter $VERSION_CODE
+Lice language interpreter ${VERSION_CODE}
 by ice1000""".println()
 			else -> try {
 				Ast(mapAst(buildNode(str), symbolList), symbolList)

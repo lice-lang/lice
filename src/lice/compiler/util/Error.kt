@@ -23,6 +23,10 @@ class InterpretException(string: String) : RuntimeException(string) {
 		fun typeMisMatch(expected: String, value: Value): Nothing {
 			throw InterpretException("type mismatch: expected: $expected, found: ${value.type.name}")
 		}
+
+		fun tooFewArgument(expected: Int, actual: Int): Nothing {
+			throw InterpretException("Expected $expected arguments, found: $actual")
+		}
 	}
 }
 

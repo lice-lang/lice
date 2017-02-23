@@ -3,10 +3,10 @@
  *
  * @author ice1000
  */
-package lice
+package lice.repl
 
-import lice.compiler.Repl
-import lice.compiler.VERSION_CODE
+import lice.repl.Repl
+import lice.repl.VERSION_CODE
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
 import java.awt.BorderLayout
@@ -21,7 +21,7 @@ import javax.swing.*
 
 fun main(args: Array<String>) {
 	val sl = SymbolList()
-	val frame = JFrame("Lice language interpreter $VERSION_CODE")
+	val frame = JFrame("Lice language interpreter ${VERSION_CODE}")
 	frame.layout = BorderLayout()
 	val output = JTextArea()
 	output.isEditable = false

@@ -1,3 +1,6 @@
 
 
+(eval (read-file
+      (file (to-str (get "FILE_PATH"))))
+)
 

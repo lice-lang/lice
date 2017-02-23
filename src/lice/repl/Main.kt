@@ -1,4 +1,4 @@
-package lice.compiler
+package lice.repl
 
 import lice.compiler.parse.createAst
 import lice.compiler.util.SymbolList

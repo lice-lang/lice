@@ -1,18 +1,21 @@
+/**
+ * Created by ice1000 on 2017/2/17.
+ *
+ * @author ice1000
+ */
 package lice.compiler.util
 
 import lice.compiler.model.Value
 import lice.compiler.model.Value.Objects.nullptr
 import lice.compiler.parse.buildNode
 import lice.compiler.parse.mapAst
+import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import java.io.File
 import java.net.URL
 
-/**
- * Created by ice1000 on 2017/2/17.
- *
- * @author ice1000
- */
+@Suppress("NOTHING_TO_INLINE")
+
 class SymbolList(init: Boolean = true) {
 	val functionMap: MutableMap<String, Int>
 	val functionList: MutableList<(List<Value>) -> Value>
@@ -26,7 +29,7 @@ class SymbolList(init: Boolean = true) {
 		if (init) initialize()
 	}
 
-	fun addNumberFunctions() {
+	inline fun addNumberFunctions() {
 		addFunction("+", { ls ->
 			Value(ls.fold(0) { sum, value ->
 				if (value.o is Int) value.o + sum
@@ -79,7 +82,7 @@ class SymbolList(init: Boolean = true) {
 		})
 	}
 
-	fun addFileFunctions() {
+	inline fun addFileFunctions() {
 		addFunction("file", { ls ->
 			val a = ls[0].o
 			if (a is String) Value(File(a))
@@ -102,17 +105,10 @@ class SymbolList(init: Boolean = true) {
 		})
 	}
 
-	fun initialize() {
-		addNumberFunctions()
-		addFileFunctions()
-		addFunction("[]", { ls -> Value(ls.map { it.o }) })
-		addFunction("", { ls ->
-			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
-			ls[ls.size - 1]
-		})
+	inline fun addGetPut() {
 		addFunction("put", { ls ->
 			if (ls.size < 2)
-				throw InterpretException("Expected 2 arguments, found: ${ls.size}")
+				tooFewArgument(2, ls.size)
 			val str = ls[0].o
 			if (str is String) addVariable(str, ls[1])
 			else typeMisMatch("String", ls[0])
@@ -120,21 +116,17 @@ class SymbolList(init: Boolean = true) {
 		})
 		addFunction("get", { ls ->
 			if (ls.isEmpty())
-				throw InterpretException("Expected 1 arguments, found: ${ls.size}")
+				tooFewArgument(1, ls.size)
 			val str = ls[0].o
 			if (str is String) {
 				val value = variableMap[str]
 				value ?: nullptr
 			} else typeMisMatch("String", ls[0])
 		})
-		addFunction("if", { ls ->
-			if (ls.size < 2)
-				throw InterpretException("Expected 2 arguments, found: ${ls.size}")
-			val condition = ls[0].o as? Boolean ?: ls[1].o != null
-			val ret = if (condition) ls[1].o else ls[2].o
-			if (ret != null) Value(ret) else nullptr
-		})
-		// TODO loops
+	}
+
+	inline fun addStringFunctions() {
+		addFunction("to-str", { ls -> Value(ls[0].o.toString()) })
 		addFunction("str-con", { ls ->
 			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
 				if (value.o is String) sb.append(value.o)
@@ -145,14 +137,6 @@ class SymbolList(init: Boolean = true) {
 			ls.forEach { println(it.o) }
 			ls[ls.size - 1]
 		})
-		addFunction("type", { ls ->
-			ls.forEach { println(it.type.canonicalName) }
-			ls[ls.size - 1]
-		})
-		addFunction("gc", {
-			System.gc()
-			nullptr
-		})
 		addFunction("eval", { ls ->
 			val o = ls[0].o
 			if (o is String) {
@@ -160,6 +144,34 @@ class SymbolList(init: Boolean = true) {
 				val stringTreeRoot = buildNode(o)
 				Value(mapAst(stringTreeRoot, symbolList).eval())
 			} else typeMisMatch("String", ls[0])
+		})
+	}
+
+	fun initialize() {
+		addNumberFunctions()
+		addFileFunctions()
+		addGetPut()
+		addStringFunctions()
+		addFunction("[]", { ls -> Value(ls.map { it.o }) })
+		addFunction("", { ls ->
+			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
+			ls[ls.size - 1]
+		})
+		addFunction("if", { ls ->
+			if (ls.size < 2)
+				tooFewArgument(2, ls.size)
+			val condition = ls[0].o as? Boolean ?: ls[1].o != null
+			val ret = if (condition) ls[1].o else ls[2].o
+			if (ret != null) Value(ret) else nullptr
+		})
+		// TODO loops
+		addFunction("type", { ls ->
+			ls.forEach { println(it.type.canonicalName) }
+			ls[ls.size - 1]
+		})
+		addFunction("gc", {
+			System.gc()
+			nullptr
 		})
 	}
 
