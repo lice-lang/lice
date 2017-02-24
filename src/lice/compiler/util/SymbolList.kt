@@ -103,7 +103,7 @@ class SymbolList(init: Boolean = true) {
 				ls[it].o as Int > ls[it - 1].o as Int
 			})
 		})
-		addFunction("<", { ls ->
+		addFunction("<=", { ls ->
 			val list = ls.map(Node::eval)
 			ValueNode((1..list.size - 1).none {
 				(list[it].o as Int) < list[it - 1].o as Int

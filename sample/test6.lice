@@ -1,13 +1,11 @@
 
 ; initialize
 
-; it shows that it's not lazy evaluation.
-
-; (if (! (file-exists? "save"))
-;     (run (write-file (file "save") "0")
-;          (print "fuck"))
-;     (print "shit")
-; )
+(if (! (file-exists? "save"))
+    (run (write-file (file "save") "0")
+         (print "fuck"))
+    (print "shit")
+)
 
 ; read the file and get the value
 
