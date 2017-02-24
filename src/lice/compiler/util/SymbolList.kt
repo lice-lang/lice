@@ -115,42 +115,54 @@ class SymbolList(init: Boolean = true) {
 	inline fun addFileFunctions() {
 		addFunction("file", { ls ->
 			val a = ls[0].o
-			if (a is String) Value(File(a).apply { if (!exists()) createNewFile() })
-			else typeMisMatch("String", ls[0])
+			when (a) {
+				is String -> Value(File(a).apply { if (!exists()) createNewFile() })
+				else -> typeMisMatch("String", ls[0])
+			}
 		})
 		addFunction("file-exists?", { ls ->
 			val a = ls[0].o
-			if (a is String) Value(File(a).exists())
-			else typeMisMatch("String", ls[0])
+			when (a) {
+				is String -> Value(File(a).exists())
+				else -> typeMisMatch("String", ls[0])
+			}
 		})
 		addFunction("read-file", { ls ->
 			val a = ls[0].o
-			if (a is File) Value(a.readText())
-			else typeMisMatch("File", ls[0])
+			when (a) {
+				is File -> Value(a.readText())
+				else -> typeMisMatch("File", ls[0])
+			}
 		})
 		addFunction("url", { ls ->
 			val a = ls[0].o
-			if (a is String) Value(URL(a))
-			else typeMisMatch("String", ls[0])
+			when (a) {
+				is String -> Value(URL(a))
+				else -> typeMisMatch("String", ls[0])
+			}
 		})
 		addFunction("read-url", { ls ->
 			val a = ls[0].o
-			if (a is URL) Value(a.readText())
-			else typeMisMatch("URL", ls[0])
+			when (a) {
+				is URL -> Value(a.readText())
+				else -> typeMisMatch("URL", ls[0])
+			}
 		})
 		addFunction("load-file", { ls ->
 			val o = ls[0].o
-			if (o is File) createAst(o).root.eval()
-			else typeMisMatch("File", ls[0])
+			when (o) {
+				is File -> createAst(o).root.eval()
+				else -> typeMisMatch("File", ls[0])
+			}
 		})
 		addFunction("write-file", { ls ->
 			val a = ls[0].o
 			val b = ls[1].o
-			if (a is File) {
-				if (b is String) a.writeText(b)
-				else typeMisMatch("String", ls[1])
-			} else typeMisMatch("File", ls[0])
-			Value(b)
+			when (a) {
+				is File -> a.writeText(b.toString())
+				else -> typeMisMatch("File", ls[0])
+			}
+			Value(b.toString())
 		})
 	}
 

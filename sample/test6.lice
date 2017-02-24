@@ -1,14 +1,14 @@
 (if (file-exists? "save")
-    (write-file (file "save") "1")
+    (write-file (file "save") "0")
 )
 
-(set "var" (str->int (read-file (file "save"))))
-
-(write-file (file "save")
-            (+ 1 (get "var"))
-)
+(set "var" (+ 1 (str->int (read-file (file "save")))))
 
 (print (get "var"))
+
+(write-file (file "save")
+            (to-str (+ 1 (get "var")))
+)
 
 ; evaluate this file
 
