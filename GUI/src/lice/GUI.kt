@@ -5,6 +5,7 @@
  */
 package lice
 
+import lice.repl.Repl
 import lice.repl.VERSION_CODE
 import java.awt.BorderLayout
 import java.awt.Color
@@ -24,12 +25,14 @@ fun main(args: Array<String>) {
 	output.isEditable = false
 	output.background = Color.LIGHT_GRAY
 	val input = JTextField()
-	val button = JButton()
+	val button = JButton("Clear screen")
 	output.tabSize = 2
 	lice.compiler.util.forceRun {
 		output.font = Font("Consolas", 0, 12)
+		button.font = Font("Consolas", 0, 12)
 		input.font = Font("Consolas", 0, 16)
 	}
+	button.addActionListener { output.text = Repl.HINT }
 	val printStream = PrintStream(object : OutputStream() {
 		override fun write(b: Int) =
 				output.append(b.toChar().toString())

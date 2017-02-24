@@ -102,7 +102,7 @@ class SymbolList(init: Boolean = true) {
 	inline fun addFileFunctions() {
 		addFunction("file", { ls ->
 			val a = ls[0].o
-			if (a is String) Value(File(a))
+			if (a is String) Value(File(a).apply { if (!exists()) createNewFile() })
 			else typeMisMatch("String", ls[0])
 		})
 		addFunction("read-file", { ls ->
@@ -124,6 +124,15 @@ class SymbolList(init: Boolean = true) {
 			val o = ls[0].o
 			if (o is File) createAst(o).root.eval()
 			else typeMisMatch("File", ls[0])
+		})
+		addFunction("write-file", { ls ->
+			val a = ls[0].o
+			val b = ls[1].o
+			if (a is File) {
+				if (b is String) a.writeText(b)
+				else typeMisMatch("String", ls[1])
+			} else typeMisMatch("File", ls[0])
+			Value(b)
 		})
 	}
 

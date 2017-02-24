@@ -11,13 +11,12 @@ import lice.compiler.util.*
  *
  * @author ice1000
  */
-class Repl() {
-	val hint = "Lice > "
+class Repl {
 	var stackTrace: Throwable? = null
 
 	init {
 		println("Lice repl $VERSION_CODE")
-		print(hint)
+		print(HINT)
 		DEBUGGING = false
 		VERBOSE = false
 	}
@@ -35,15 +34,16 @@ class Repl() {
 			"help" -> """
 This is the repl for lice language.
 
-You have four special commands which you cannot use in the language but the repl:
+You have 5 special commands which you cannot use in the language but the repl:
 
 exit: exit the repl
 show-full-message: print the most recent stack trace
+gc: run garbage collection
 help: print this doc
 version: check the version"""
 					.println()
 			"version" -> """
-Lice language interpreter ${VERSION_CODE}
+Lice language interpreter $VERSION_CODE
 by ice1000""".println()
 			else -> try {
 				Ast(mapAst(buildNode(str), symbolList), symbolList)
@@ -54,6 +54,10 @@ by ice1000""".println()
 				serr(e.message ?: "")
 			}
 		}
-		print("\n$hint")
+		print("\n$HINT")
+	}
+
+	companion object {
+		val HINT = "Lice > "
 	}
 }

@@ -11,21 +11,15 @@ this language is very naive, I write it to practise programming, and it can do s
 + Strict syntax:
 
 ```lisp
-(233)
+(233) ; Error: 233 isn't a function
+
+233 ; OK: 233 is a java.lang.Integer
 ```
-
-Error: 233 isn't a function
-
-```lisp
-233
-```
-
-OK
 
 + Basic functions:
 
 ```lisp
-(+ 2 3 4 (* 2 5))
+(+ 2 3 4 (* 2 5)) ; result: 19
 ```
 
 ## Repl
@@ -42,11 +36,11 @@ null => java.lang.Object
 
 Lice > (eval "(+ 1 1)")
 2 => java.lang.Integer
-lice.compiler.model.Value@448139f0 => lice.compiler.model.Value
+2 => java.lang.Integer
 
 Lice > (eval (str-con "(+ " "1 " "1)"))
 2 => java.lang.Integer
-lice.compiler.model.Value@7cca494b => lice.compiler.model.Value
+2 => java.lang.Integer
 
 Lice > ([] 1 11 1)
 [1, 11, 1] => java.util.ArrayList
@@ -57,7 +51,7 @@ Lice > ([] "boy" "next" "door")
 Lice > (eval (read-file (file "sample/test3.lice")))
 16769025 => java.lang.Integer
 My name is Van, I'm an artist => java.lang.String
-lice.compiler.model.Value@1dd0a5f7 => lice.compiler.model.Value
+My name is Van, I'm an artist => java.lang.String
 
 Lice > (if true 1 2)
 1 => java.lang.Integer
