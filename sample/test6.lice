@@ -1,3 +1,21 @@
-(if (== () (get "var")) (set "var" 1))
+(if (file-exists? "save")
+    (write-file (file "save") "1")
+)
 
-(set "var" (get "var"))
+(set "var" (str->int (read-file (file "save"))))
+
+(write-file (file "save")
+            (+ 1 (get "var"))
+)
+
+(print (get "var"))
+
+; evaluate this file
+
+(set "file" (file (to-str (get "FILE_PATH"))))
+
+; (print (get "file"))
+
+(load-file (get "file"))
+
+

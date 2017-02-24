@@ -118,6 +118,11 @@ class SymbolList(init: Boolean = true) {
 			if (a is String) Value(File(a).apply { if (!exists()) createNewFile() })
 			else typeMisMatch("String", ls[0])
 		})
+		addFunction("file-exists?", { ls ->
+			val a = ls[0].o
+			if (a is String) Value(File(a).exists())
+			else typeMisMatch("String", ls[0])
+		})
 		addFunction("read-file", { ls ->
 			val a = ls[0].o
 			if (a is File) Value(a.readText())
@@ -238,8 +243,8 @@ class SymbolList(init: Boolean = true) {
 			ls[0]
 		})
 		addFunction("if", { ls ->
-			if (ls.size < 3)
-				tooFewArgument(3, ls.size)
+			if (ls.size < 2)
+				tooFewArgument(2, ls.size)
 			val a = ls[0].o
 			val condition = a as? Boolean ?: (a != null)
 			val ret = when {

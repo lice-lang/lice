@@ -25,4 +25,11 @@ class Runner {
 		VERBOSE = false
 		createAst(File("sample/test5.lice")).root.eval()
 	}
+
+	@Test
+	fun test3() {
+		DEBUGGING = false
+		VERBOSE = false
+		createAst(File("sample/test6.lice")).root.eval()
+	}
 }
