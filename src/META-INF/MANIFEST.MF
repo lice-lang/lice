@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 Class-Path: kotlin-runtime.jar kotlin-reflect.jar
-Main-Class: lice.repl.Main
+Main-Class: lice.GUIKt
 
