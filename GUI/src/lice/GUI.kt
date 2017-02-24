@@ -17,54 +17,70 @@ import java.awt.event.KeyListener
 import java.io.OutputStream
 import java.io.PrintStream
 import javax.swing.*
+import javax.swing.text.SimpleAttributeSet
+import javax.swing.text.StyleConstants
 
 val FONT_NAME = "Consolas"
 
+fun JTextPane.append(
+		string: String,
+		color: Color = Color(0x2B2B2B)) {
+	val set = SimpleAttributeSet()
+	StyleConstants.setForeground(set, color)
+	StyleConstants.setFontSize(set, 12)
+	styledDocument.insertString(styledDocument.length, string, set)
+}
+
 fun main(args: Array<String>) {
 	val sl = SymbolList()
-	val frame = JFrame("Lice language interpreter $VERSION_CODE")
-	frame.layout = BorderLayout()
-	val output = JTextArea()
+	val output = JTextPane()
 	output.isEditable = false
-	output.background = Color.LIGHT_GRAY
-	val input = JTextField()
+	output.background = Color(0xD0D0FF)
 	val button = JButton("Clear screen")
-	output.tabSize = 2
-	forceRun {
-		output.font = Font(FONT_NAME, 0, 12)
-		button.font = Font(FONT_NAME, 0, 12)
-		input.font = Font(FONT_NAME, 0, 16)
-	}
 	button.addActionListener {
-		output.text = Repl.HINT }
-	val printStream = PrintStream(object : OutputStream() {
+		output.text = ""
+		output.append(Repl.HINT)
+	}
+	System.setOut(PrintStream(object : OutputStream() {
 		override fun write(b: Int) =
 				output.append(b.toChar().toString())
 
 		override fun write(b: ByteArray) =
-				output.append(java.lang.String(b).toString())
-	})
-	System.setOut(printStream)
-	System.setErr(printStream)
+				output.append(String(b))
+	}))
+	System.setErr(PrintStream(object : OutputStream() {
+		override fun write(b: Int) =
+				output.append(b.toChar().toString(), Color(0xBC3F3C))
+
+		override fun write(b: ByteArray) =
+				output.append(String(b), Color(0xBC3F3C))
+	}))
 	val repl = Repl()
+	val input = JTextField()
 	input.addKeyListener(object : KeyListener {
 		override fun keyTyped(e: KeyEvent?) = Unit
 		override fun keyReleased(e: KeyEvent?) = Unit
 		override fun keyPressed(e: KeyEvent?) {
-//				println("${e?.keyCode}, ${KeyEvent.VK_ENTER}")
 			if (e != null && e.keyCode == KeyEvent.VK_ENTER) {
-				output.append("${input.text}\n")
+				output.append("${input.text}\n", Color(0xCC7832))
 				repl.handle(input.text, sl)
 				input.text = ""
 			}
 		}
 	})
+	forceRun {
+		button.font = Font(FONT_NAME, 0, 12)
+		input.font = Font(FONT_NAME, 0, 16)
+		output.font = Font(FONT_NAME, 0, 12)
+	}
+	val frame = JFrame("Lice language interpreter $VERSION_CODE")
+	frame.layout = BorderLayout()
 	frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 	frame.add(JScrollPane(output), BorderLayout.CENTER)
 	frame.add(button, BorderLayout.NORTH)
 	frame.add(input, BorderLayout.SOUTH)
-	frame.setLocation(100, 100)
-	frame.setSize(360, 360)
+	frame.setLocation(80, 80)
+	frame.setSize(640, 640)
 	frame.isVisible = true
 	input.requestFocus()
 }
