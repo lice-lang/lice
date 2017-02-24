@@ -52,6 +52,18 @@ class NumberKtTest {
 	}
 
 	@Test(timeout = 1000)
+	fun isOctInt() {
+		assertTrue("01011001".isOctInt())
+		assertTrue("-01011001".isOctInt())
+		assertTrue("02738687001".isOctInt())
+		assertTrue("-02738687001".isOctInt())
+		assertFalse("09a010".isOctInt())
+		assertFalse("091010".isOctInt())
+		assertFalse("-091010".isOctInt())
+		assertFalse("2738687001".isOctInt())
+	}
+
+	@Test(timeout = 1000)
 	fun toHexInt() {
 //		0x1.println()
 //		Integer.toHexString("0x1".toHexInt()).println()

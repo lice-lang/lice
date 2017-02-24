@@ -24,12 +24,13 @@ this language is very naive, I write it to practise programming, and it can do s
 
 ## Repl
 
+The repl has two versions, a GUI one based on swing, and a CUI one.
+
+Here are some examples.
+
 ```lisp
 Lice > (+ 1 1)
 2 => java.lang.Integer
-
-Lice > (* 2 2)
-4 => java.lang.Integer
 
 Lice> ()
 null => java.lang.Object
@@ -45,9 +46,6 @@ Lice > (eval (str-con "(+ " "1 " "1)"))
 Lice > ([] 1 11 1)
 [1, 11, 1] => java.util.ArrayList
 
-Lice > ([] "boy" "next" "door")
-[boy, next, door] => java.util.ArrayList
-
 Lice > (eval (read-file (file "sample/test3.lice")))
 16769025 => java.lang.Integer
 My name is Van, I'm an artist => java.lang.String
@@ -56,14 +54,21 @@ My name is Van, I'm an artist => java.lang.String
 Lice > (if true 1 2)
 1 => java.lang.Integer
 
-Lice > (if false 1 2)
-2 => java.lang.Integer
+Lice > (set "file" (file "fuck_you"))
+fuck_you => java.io.File
+
+Lice > (write-file (get "file") (str-con "deep dark fantasy"))
+deep dark fantasy => java.lang.String
+
+Lice > (read-file (get "file"))
+deep dark fantasy => java.lang.String
 ```
 
 ## Contribution
 
 0. It's recommended to use 2-spaces tab actual(please DO USE tabs).
-
+0. It's not recommended to use any language but Java/Kotlin.
+0. It's recommended to use functional collection API.
 
 
 

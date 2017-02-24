@@ -7,9 +7,7 @@ package lice.compiler.util
 
 import lice.compiler.model.Value
 import lice.compiler.model.Value.Objects.nullptr
-import lice.compiler.parse.buildNode
-import lice.compiler.parse.createAst
-import lice.compiler.parse.mapAst
+import lice.compiler.parse.*
 import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import java.io.File
@@ -18,15 +16,12 @@ import java.net.URL
 @Suppress("NOTHING_TO_INLINE")
 
 class SymbolList(init: Boolean = true) {
-	val functionMap: MutableMap<String, Int>
-	val functionList: MutableList<(List<Value>) -> Value>
+	val functionMap: MutableMap<String, Int> = mutableMapOf()
+	val functionList: MutableList<(List<Value>) -> Value> = mutableListOf()
 
-	val variableMap: MutableMap<String, Value>
+	val variableMap: MutableMap<String, Value> = mutableMapOf()
 
 	init {
-		functionMap = mutableMapOf()
-		functionList = mutableListOf()
-		variableMap = mutableMapOf()
 		if (init) initialize()
 	}
 
@@ -80,6 +75,9 @@ class SymbolList(init: Boolean = true) {
 			Value((1..ls.size - 1).none {
 				(ls[it].o as Int) < ls[it - 1].o as Int
 			})
+		})
+		addFunction("sqrt", { ls ->
+			Value(Math.sqrt((ls[0].o as Int).toDouble()))
 		})
 	}
 
@@ -158,6 +156,31 @@ class SymbolList(init: Boolean = true) {
 
 	inline fun addStringFunctions() {
 		addFunction("to-str", { ls -> Value(ls[0].o.toString()) })
+		addFunction("str->int", { ls ->
+			val a = ls[0].o
+			if (a is String)
+				Value(when {
+					a.isInt() -> a.toInt()
+					a.isBinInt() -> a.toBinInt()
+					a.isHexInt() -> a.toHexInt()
+					else -> throw InterpretException("give string: \"$a\" cannot be parsed as a number!")
+				}) else typeMisMatch("String", ls[0])
+		})
+		addFunction("int->hex", { ls ->
+			val a = ls[0].o
+			if (a is Int) Value("0x${Integer.toHexString(a)}")
+			else typeMisMatch("Int", ls[0])
+		})
+		addFunction("int->bin", { ls ->
+			val a = ls[0].o
+			if (a is Int) Value("0b${Integer.toBinaryString(a)}")
+			else typeMisMatch("Int", ls[0])
+		})
+		addFunction("int->oct", { ls ->
+			val a = ls[0].o
+			if (a is Int) Value("0${Integer.toOctalString(a)}")
+			else typeMisMatch("Int", ls[0])
+		})
 		addFunction("str-con", { ls ->
 			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
 				if (value.o is String) sb.append(value.o)

@@ -9,8 +9,10 @@
 package lice.compiler.parse
 
 import lice.compiler.model.*
-import lice.compiler.util.*
+import lice.compiler.model.Value.Objects.nullptr
 import lice.compiler.util.ParseException.Factory.undefinedFunction
+import lice.compiler.util.SymbolList
+import lice.compiler.util.serr
 import java.io.File
 
 
@@ -30,12 +32,16 @@ fun parseValue(str: String): Node {
 					.apply {
 						// TODO replace \n, \t, etc.
 					}))
+		str.isOctInt() ->
+			ValueNode(str.toOctInt())
 		str.isInt() ->
 			ValueNode(str.toInt())
 		str.isHexInt() ->
 			ValueNode(str.toHexInt())
 		str.isBinInt() ->
 			ValueNode(str.toBinInt())
+		"null" == str ->
+			ValueNode(nullptr)
 		"true" == str ->
 			ValueNode(true)
 		"false" == str ->

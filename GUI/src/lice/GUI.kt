@@ -5,6 +5,8 @@
  */
 package lice
 
+import lice.compiler.util.SymbolList
+import lice.compiler.util.forceRun
 import lice.repl.Repl
 import lice.repl.VERSION_CODE
 import java.awt.BorderLayout
@@ -16,9 +18,10 @@ import java.io.OutputStream
 import java.io.PrintStream
 import javax.swing.*
 
+val FONT_NAME = "Consolas"
 
 fun main(args: Array<String>) {
-	val sl = lice.compiler.util.SymbolList()
+	val sl = SymbolList()
 	val frame = JFrame("Lice language interpreter $VERSION_CODE")
 	frame.layout = BorderLayout()
 	val output = JTextArea()
@@ -27,12 +30,13 @@ fun main(args: Array<String>) {
 	val input = JTextField()
 	val button = JButton("Clear screen")
 	output.tabSize = 2
-	lice.compiler.util.forceRun {
-		output.font = Font("Consolas", 0, 12)
-		button.font = Font("Consolas", 0, 12)
-		input.font = Font("Consolas", 0, 16)
+	forceRun {
+		output.font = Font(FONT_NAME, 0, 12)
+		button.font = Font(FONT_NAME, 0, 12)
+		input.font = Font(FONT_NAME, 0, 16)
 	}
-	button.addActionListener { output.text = Repl.HINT }
+	button.addActionListener {
+		output.text = Repl.HINT }
 	val printStream = PrintStream(object : OutputStream() {
 		override fun write(b: Int) =
 				output.append(b.toChar().toString())
@@ -42,7 +46,7 @@ fun main(args: Array<String>) {
 	})
 	System.setOut(printStream)
 	System.setErr(printStream)
-	val repl = lice.repl.Repl()
+	val repl = Repl()
 	input.addKeyListener(object : KeyListener {
 		override fun keyTyped(e: KeyEvent?) = Unit
 		override fun keyReleased(e: KeyEvent?) = Unit

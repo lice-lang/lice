@@ -16,8 +16,10 @@ fun String.isInt() =
 			res && char.isDigit()
 		})
 
+fun Char.isOctalInt() = this in '0'..'8'
+
 fun Char.safeLower(): Char {
-	if (this >= 'A' && this <= 'Z') return this - ('A' - 'a');
+	if (this in 'A'..'Z') return this - ('A' - 'a');
 	return this
 }
 
@@ -41,6 +43,15 @@ fun String.isBinInt(): Boolean {
 	}
 }
 
+fun String.isOctInt(): Boolean {
+	if (this[0] == '-') return substring(1).isOctInt()
+	return when {
+		length <= 1 -> false
+		this[0] != '0' -> false
+		else -> (1..length - 1).none { !this[it].isOctalInt() }
+	}
+}
+
 fun String.toHexInt(): Int {
 	if (this[0] == '-') return -substring(1).toHexInt()
 	var ret = 0
@@ -60,7 +71,18 @@ fun String.toBinInt(): Int {
 	(2..length - 1).forEach {
 		ret = ret shl 1
 		if (this[it] == '1') ++ret
-//		ret *= 16
+//		ret *= 2
+	}
+	return ret
+}
+
+fun String.toOctInt(): Int {
+	if (this[0] == '-') return -substring(1).toBinInt()
+	var ret = 0
+	(1..length - 1).forEach {
+		ret = ret shl 3
+		ret += this[it] - '0'
+//		ret *= 8
 	}
 	return ret
 }
