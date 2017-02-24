@@ -11,6 +11,7 @@ import lice.repl.Repl
 import lice.repl.VERSION_CODE
 import java.awt.BorderLayout
 import java.awt.Color
+import java.awt.Dimension
 import java.awt.Font
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
@@ -36,6 +37,7 @@ fun main(args: Array<String>) {
 	val output = JTextPane()
 	output.isEditable = false
 	output.background = Color(0xD0D0FF)
+	output.maximumSize = Dimension(640, 640)
 	val button = JButton("Clear screen")
 	button.addActionListener {
 		output.text = ""
@@ -80,7 +82,7 @@ fun main(args: Array<String>) {
 	frame.add(button, BorderLayout.NORTH)
 	frame.add(input, BorderLayout.SOUTH)
 	frame.setLocation(80, 80)
-	frame.setSize(640, 640)
+	frame.size = output.maximumSize
 	frame.isVisible = true
 	input.requestFocus()
 }

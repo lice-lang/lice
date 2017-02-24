@@ -328,23 +328,27 @@ class SymbolList(init: Boolean = true) {
 			}
 			ValueNode(progression.toList())
 		})
+		addFunction("for-each", { ls ->
+			if (ls.size < 3)
+				tooFewArgument(3, ls.size)
+			val i = ls[0].eval()
+			if (i.o !is String) typeMisMatch("String", i)
+			val a = ls[1].eval()
+			when (a.o) {
+				is List<*> -> {
+					var ret: Any? = null
+					a.o.forEach {
+						setVariable(i.o, ValueNode(it ?: Nullptr))
+						ret = ls[2].eval().o
+					}
+					ValueNode(ret ?: Nullptr)
+				}
+				else -> typeMisMatch("List", a)
+			}
+		})
 	}
 
-	fun initialize() {
-		addNumberFunctions()
-		addFileFunctions()
-		addGetSetFunction()
-		addStringFunctions()
-		addBoolFunctions()
-		addListProcessingFunctions()
-
-		addFunction("", { ls ->
-			ls.forEach {
-				val res = it.eval()
-				println("${res.o.toString()} => ${res.type.name}")
-			}
-			EmptyNode
-		})
+	inline fun addControlFlowFunctions() {
 		addFunction("if", { ls ->
 			if (ls.size < 2)
 				tooFewArgument(2, ls.size)
@@ -376,23 +380,29 @@ class SymbolList(init: Boolean = true) {
 				else -> EmptyNode
 			}
 		})
-		addFunction("for-each", { ls ->
-			if (ls.size < 3)
-				tooFewArgument(3, ls.size)
-			val i = ls[0].eval()
-			if (i.o !is String) typeMisMatch("String", i)
-			val a = ls[1].eval()
+	}
+
+	fun initialize() {
+		addNumberFunctions()
+		addFileFunctions()
+		addGetSetFunction()
+		addStringFunctions()
+		addBoolFunctions()
+		addListProcessingFunctions()
+		addControlFlowFunctions()
+		addFunction("new", { ls ->
+			val a = ls[0].eval()
 			when (a.o) {
-				is List<*> -> {
-					var ret: Any? = null
-					a.o.forEach {
-						setVariable(i.o, ValueNode(it ?: Nullptr))
-						ret = ls[2].eval().o
-					}
-					ValueNode(ret ?: Nullptr)
-				}
-				else -> typeMisMatch("List", a)
+				is String -> ValueNode(Class.forName(a.o).newInstance())
+				else -> typeMisMatch("String", a)
 			}
+		})
+		addFunction("", { ls ->
+			ls.forEach {
+				val res = it.eval()
+				println("${res.o.toString()} => ${res.type.name}")
+			}
+			EmptyNode
 		})
 		addFunction("type", { ls ->
 			ls.forEach { println(it.eval().type.canonicalName) }
