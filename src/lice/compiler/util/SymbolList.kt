@@ -14,6 +14,7 @@ import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import java.io.File
 import java.net.URL
+import java.util.*
 
 @Suppress("NOTHING_TO_INLINE")
 
@@ -22,6 +23,7 @@ class SymbolList(init: Boolean = true) {
 	val functionList: MutableList<(List<Node>) -> Node> = mutableListOf()
 
 	val variableMap: MutableMap<String, Node> = mutableMapOf()
+	val rand = Random(System.currentTimeMillis())
 
 	init {
 		if (init) initialize()
@@ -112,6 +114,7 @@ class SymbolList(init: Boolean = true) {
 		addFunction("sqrt", { ls ->
 			ValueNode(Math.sqrt((ls[0].eval().o as Int).toDouble()))
 		})
+		addFunction("rand", { ValueNode(rand.nextInt()) })
 	}
 
 	inline fun addBoolFunctions() {
@@ -188,7 +191,7 @@ class SymbolList(init: Boolean = true) {
 	}
 
 	inline fun addGetSetFunction() {
-		addFunction("set", { ls ->
+		addFunction("->", { ls ->
 			if (ls.size < 2)
 				tooFewArgument(2, ls.size)
 			val str = ls[0].eval()
@@ -199,7 +202,7 @@ class SymbolList(init: Boolean = true) {
 			}
 			res
 		})
-		addFunction("get", { ls ->
+		addFunction("<-", { ls ->
 			if (ls.isEmpty())
 				tooFewArgument(1, ls.size)
 			val str = ls[0].eval()
@@ -268,13 +271,30 @@ class SymbolList(init: Boolean = true) {
 		})
 	}
 
+	inline fun addListProcessingFunctions() {
+		addFunction("[]", { ls ->
+			ValueNode(ls.map { it.eval().o })
+		})
+		addFunction("..", { ls ->
+			if (ls.size < 2)
+				tooFewArgument(2, ls.size)
+			val begin = ls[0].eval().o as Int
+			val end = ls[1].eval().o as Int
+			val progression = when {
+				begin <= end -> begin..end
+				else -> (begin..end).reversed()
+			}
+			ValueNode(progression.toList())
+		})
+	}
+
 	fun initialize() {
 		addNumberFunctions()
 		addFileFunctions()
 		addGetSetFunction()
 		addStringFunctions()
 		addBoolFunctions()
-		addFunction("[]", { ls -> ValueNode(ls.map { it.eval().o }) })
+		addListProcessingFunctions()
 		addFunction("", { ls ->
 			ls.forEach {
 				val res = it.eval()
@@ -306,7 +326,7 @@ class SymbolList(init: Boolean = true) {
 			System.gc()
 			EmptyNode
 		})
-		addFunction("run", { ls ->
+		addFunction("|>", { ls ->
 			var ret = Nullptr
 			ls.forEach { ret = it.eval() }
 			ValueNode(ret)

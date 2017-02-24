@@ -82,6 +82,14 @@ false ; false
 ))
 ```
 
++ A global variable map to store values
+
+```lisp
+(-> "var" "value") ; put "value" into "var"
+
+(<- "var") ; returns "value"
+```
+
 ## Repl
 
 The repl has two versions, a GUI one based on swing, and a CUI one.
@@ -114,13 +122,13 @@ My name is Van, I'm an artist => java.lang.String
 Lice > (if true 1 2)
 1 => java.lang.Integer
 
-Lice > (set "file" (file "fuck_you"))
+Lice > (-> "file" (file "fuck_you"))
 fuck_you => java.io.File
 
-Lice > (write-file (get "file") (str-con "deep dark fantasy"))
+Lice > (write-file (<- "file") (str-con "deep dark fantasy"))
 deep dark fantasy => java.lang.String
 
-Lice > (read-file (get "file"))
+Lice > (read-file (<- "file"))
 deep dark fantasy => java.lang.String
 ```
 

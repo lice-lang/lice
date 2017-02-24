@@ -15,7 +15,8 @@ class Repl {
 	var stackTrace: Throwable? = null
 
 	init {
-		println("Lice repl $VERSION_CODE")
+		println("Lice language repl $VERSION_CODE")
+		println("see: https://github.com/ice1000/lice\n")
 		print(HINT)
 		DEBUGGING = false
 		VERBOSE = false
