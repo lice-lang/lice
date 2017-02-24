@@ -26,35 +26,50 @@ class SymbolList(init: Boolean = true) {
 	}
 
 	inline fun addNumberFunctions() {
+		addFunction("int->double", { ls ->
+			Value((ls[0].o as Int).toDouble())
+		})
 		addFunction("+", { ls ->
 			Value(ls.fold(0) { sum, value ->
-				if (value.o is Int) value.o + sum
-				else typeMisMatch("Int", value)
+				when {
+					value.o is Int -> value.o + sum
+					else -> typeMisMatch("Int", value)
+				}
 			})
 		})
 		addFunction("-", { ls ->
 			Value(ls.fold(ls[0].o as Int shl 1) { delta, value ->
-				if (value.o is Int) delta - value.o
-				else typeMisMatch("Int", value)
+				when {
+					value.o is Int -> delta - value.o
+					else -> typeMisMatch("Int", value)
+				}
 			})
 		})
 		addFunction("/", { ls ->
 			Value(ls.fold((ls[0].o as Int).squared()) { res, value ->
-				if (value.o is Int) res / value.o
-				else typeMisMatch("Int", value)
+				when {
+					value.o !is Int -> typeMisMatch("Int", value)
+					else -> res / value.o
+				}
 			})
 		})
 		addFunction("*", { ls ->
 			Value(ls.fold(1) { sum, value ->
-				if (value.o is Int) value.o * sum
-				else typeMisMatch("Int", value)
+				when {
+					value.o is Int -> value.o * sum
+					else -> typeMisMatch("Int", value)
+				}
 			})
 		})
 		addFunction("==", { ls ->
-			Value((1..ls.size - 1).none { it -> ls[it].o != ls[it - 1].o })
+			Value((1..ls.size - 1).none {
+				ls[it].o != ls[it - 1].o
+			})
 		})
 		addFunction("!=", { ls ->
-			Value((1..ls.size - 1).none { it -> ls[it].o == ls[it - 1].o })
+			Value((1..ls.size - 1).none {
+				ls[it].o == ls[it - 1].o
+			})
 		})
 		addFunction("<", { ls ->
 			Value((1..ls.size - 1).none {
@@ -169,18 +184,24 @@ class SymbolList(init: Boolean = true) {
 		})
 		addFunction("int->hex", { ls ->
 			val a = ls[0].o
-			if (a is Int) Value("0x${Integer.toHexString(a)}")
-			else typeMisMatch("Int", ls[0])
+			when (a) {
+				is Int -> Value("0x${Integer.toHexString(a)}")
+				else -> typeMisMatch("Int", ls[0])
+			}
 		})
 		addFunction("int->bin", { ls ->
 			val a = ls[0].o
-			if (a is Int) Value("0b${Integer.toBinaryString(a)}")
-			else typeMisMatch("Int", ls[0])
+			when (a) {
+				is Int -> Value("0b${Integer.toBinaryString(a)}")
+				else -> typeMisMatch("Int", ls[0])
+			}
 		})
 		addFunction("int->oct", { ls ->
 			val a = ls[0].o
-			if (a is Int) Value("0${Integer.toOctalString(a)}")
-			else typeMisMatch("Int", ls[0])
+			when (a) {
+				is Int -> Value("0${Integer.toOctalString(a)}")
+				else -> typeMisMatch("Int", ls[0])
+			}
 		})
 		addFunction("str-con", { ls ->
 			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
@@ -194,11 +215,14 @@ class SymbolList(init: Boolean = true) {
 		})
 		addFunction("eval", { ls ->
 			val o = ls[0].o
-			if (o is String) {
-				val symbolList = SymbolList(true)
-				val stringTreeRoot = buildNode(o)
-				mapAst(stringTreeRoot, symbolList).eval()
-			} else typeMisMatch("String", ls[0])
+			when (o) {
+				is String -> {
+					val symbolList = SymbolList(true)
+					val stringTreeRoot = buildNode(o)
+					mapAst(stringTreeRoot, symbolList).eval()
+				}
+				else -> typeMisMatch("String", ls[0])
+			}
 		})
 	}
 
@@ -218,8 +242,15 @@ class SymbolList(init: Boolean = true) {
 				tooFewArgument(3, ls.size)
 			val a = ls[0].o
 			val condition = a as? Boolean ?: (a != null)
-			val ret = if (condition) ls[1].o else if (ls.size >= 3) ls[2].o else null
-			if (ret != null) Value(ret) else nullptr
+			val ret = when {
+				condition -> ls[1].o
+				ls.size >= 3 -> ls[2].o
+				else -> null
+			}
+			when {
+				ret != null -> Value(ret)
+				else -> nullptr
+			}
 		})
 		// TODO loops
 		addFunction("type", { ls ->
