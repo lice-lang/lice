@@ -2,7 +2,12 @@
 ## output ##
 
 out
+bin
 build
+*.class
+*.jar
+*.war
+*.exe
 
 ## config ##
 
