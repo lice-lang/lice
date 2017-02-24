@@ -3,12 +3,9 @@
  *
  * @author ice1000
  */
-package lice.repl
+package lice
 
-import lice.repl.Repl
 import lice.repl.VERSION_CODE
-import lice.compiler.util.SymbolList
-import lice.compiler.util.forceRun
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Font
@@ -20,15 +17,15 @@ import javax.swing.*
 
 
 fun main(args: Array<String>) {
-	val sl = SymbolList()
-	val frame = JFrame("Lice language interpreter ${VERSION_CODE}")
+	val sl = lice.compiler.util.SymbolList()
+	val frame = JFrame("Lice language interpreter $VERSION_CODE")
 	frame.layout = BorderLayout()
 	val output = JTextArea()
 	output.isEditable = false
 	output.background = Color.LIGHT_GRAY
 	val input = JTextField()
 	output.tabSize = 2
-	forceRun {
+	lice.compiler.util.forceRun {
 		output.font = Font("Consolas", 0, 12)
 		input.font = Font("Consolas", 0, 16)
 	}
@@ -41,7 +38,7 @@ fun main(args: Array<String>) {
 	})
 	System.setOut(printStream)
 	System.setErr(printStream)
-	val repl = Repl()
+	val repl = lice.repl.Repl()
 	input.addKeyListener(object : KeyListener {
 		override fun keyTyped(e: KeyEvent?) = Unit
 		override fun keyReleased(e: KeyEvent?) = Unit
