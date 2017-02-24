@@ -1,0 +1,3 @@
+(if (== () (get "var")) (set "var" 1))
+
+(set "var" (get "var"))

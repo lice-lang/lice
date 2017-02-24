@@ -160,6 +160,7 @@ class SymbolList(init: Boolean = true) {
 			val a = ls[0].o
 			if (a is String)
 				Value(when {
+					a.isOctInt() -> a.toOctInt()
 					a.isInt() -> a.toInt()
 					a.isBinInt() -> a.toBinInt()
 					a.isHexInt() -> a.toHexInt()
@@ -210,19 +211,20 @@ class SymbolList(init: Boolean = true) {
 		addFunction("[]", { ls -> Value(ls.map { it.o }) })
 		addFunction("", { ls ->
 			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
-			ls[ls.size - 1]
+			ls[0]
 		})
 		addFunction("if", { ls ->
-			if (ls.size < 2)
-				tooFewArgument(2, ls.size)
-			val condition = ls[0].o as? Boolean ?: ls[1].o != null
-			val ret = if (condition) ls[1].o else ls[2].o
+			if (ls.size < 3)
+				tooFewArgument(3, ls.size)
+			val a = ls[0].o
+			val condition = a as? Boolean ?: (a != null)
+			val ret = if (condition) ls[1].o else if (ls.size >= 3) ls[2].o else null
 			if (ret != null) Value(ret) else nullptr
 		})
 		// TODO loops
 		addFunction("type", { ls ->
 			ls.forEach { println(it.type.canonicalName) }
-			ls[ls.size - 1]
+			ls[0]
 		})
 		addFunction("gc", {
 			System.gc()

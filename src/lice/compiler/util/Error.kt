@@ -25,7 +25,7 @@ class InterpretException(string: String) : RuntimeException(string) {
 		}
 
 		fun tooFewArgument(expected: Int, actual: Int): Nothing {
-			throw InterpretException("Expected $expected arguments, found: $actual")
+			throw InterpretException("Expected $expected or more arguments, found: $actual")
 		}
 	}
 }
