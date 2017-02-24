@@ -13,9 +13,16 @@ import java.io.File
  */
 class Runner {
 	@Test
-	fun testHandWrittenAst() {
+	fun test1() {
 		DEBUGGING = false
 		VERBOSE = false
 		createAst(File("sample/test4.lice")).root.eval()
+	}
+
+	@Test
+	fun test2() {
+		DEBUGGING = false
+		VERBOSE = false
+		createAst(File("sample/test5.lice")).root.eval()
 	}
 }

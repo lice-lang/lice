@@ -1,3 +1,8 @@
+
+; integer calculations
+; hex number
 (* 0xFFF 0xFFF)
+
+; string connecting
 (str-con "My name is Van, " "I'm an artist")
 

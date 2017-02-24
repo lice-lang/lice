@@ -1,0 +1,9 @@
+
+; evaluate this file
+
+(set "file" (file (to-str (get "FILE_PATH"))))
+
+; (print (get "file"))
+
+(load-file (get "file"))
+

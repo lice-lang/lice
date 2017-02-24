@@ -8,6 +8,7 @@ package lice.compiler.util
 import lice.compiler.model.Value
 import lice.compiler.model.Value.Objects.nullptr
 import lice.compiler.parse.buildNode
+import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
 import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
@@ -119,10 +120,15 @@ class SymbolList(init: Boolean = true) {
 			if (a is URL) Value(a.readText())
 			else typeMisMatch("URL", ls[0])
 		})
+		addFunction("load-file", { ls ->
+			val o = ls[0].o
+			if (o is File) createAst(o).root.eval()
+			else typeMisMatch("File", ls[0])
+		})
 	}
 
-	inline fun addGetPut() {
-		addFunction("put", { ls ->
+	inline fun addGetSetFunction() {
+		addFunction("set", { ls ->
 			if (ls.size < 2)
 				tooFewArgument(2, ls.size)
 			val str = ls[0].o
@@ -166,7 +172,7 @@ class SymbolList(init: Boolean = true) {
 	fun initialize() {
 		addNumberFunctions()
 		addFileFunctions()
-		addGetPut()
+		addGetSetFunction()
 		addStringFunctions()
 		addBoolFunctions()
 		addFunction("[]", { ls -> Value(ls.map { it.o }) })
