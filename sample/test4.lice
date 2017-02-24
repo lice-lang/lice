@@ -1,16 +1,16 @@
 
 ; evaluate this file
 
-(set "FILE_PATH" "C:\Users\ice1000\Desktop\Lice\sample\test4.lice")
+(-> "FILE_PATH" "C:\Users\ice1000\Desktop\Lice\sample\test4.lice")
 
-(set "file" (file (to-str (get "FILE_PATH"))))
+(-> "file" (file (to-str (<- "FILE_PATH"))))
 
-; (print (get "file"))
+; (print (<- "file"))
 
-(set "code" (read-file (get "file")))
+(-> "code" (read-file (<- "file")))
 
-; (type (get "code"))
-; (print (get "code"))
+; (type (<- "code"))
+; (print (<- "code"))
 
-(eval (get "code"))
+(eval (<- "code"))
 

@@ -89,10 +89,13 @@ fun mapAst(
 		EmptyNode
 }
 
-fun createAst(file: File): Ast {
+fun createAst(
+		file: File,
+		symbolList: SymbolList = SymbolList(true)): Ast {
 	val code = file.readText()
-	val symbolList = SymbolList(true)
-	symbolList.addVariable("FILE_PATH", ValueNode(file.absolutePath))
+	val fp = "FILE_PATH"
+	if (symbolList.getVariable(fp) == null)
+		symbolList.setVariable(fp, ValueNode(file.absolutePath))
 	val stringTreeRoot = buildNode(code)
 	return Ast(
 			mapAst(

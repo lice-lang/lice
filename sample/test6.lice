@@ -9,22 +9,22 @@
 
 ; read the file and get the value
 
-(set "var" (str->int (read-file (file "save"))))
+(-> "var" (str->int (read-file (file "save"))))
 
-(print (get "var"))
+(print (<- "var"))
 
 ; write the increased value to file
 
 (write-file (file "save")
-            (to-str (+ 7 (get "var")))
+            (to-str (+ 7 (<- "var")))
 )
 
 ; evaluate this file
 
-(set "file" (file (to-str (get "FILE_PATH"))))
+(-> "file" (file (to-str (<- "FILE_PATH"))))
 
-; (print (get "file"))
+; (print (<- "file"))
 
-(load-file (get "file"))
+(load-file (<- "file"))
 
 

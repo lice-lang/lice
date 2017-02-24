@@ -66,6 +66,19 @@ class SymbolList(init: Boolean = true) {
 				}
 			}
 		})
+		addFunction("%", { ls ->
+			when (ls.size) {
+				0 -> ValueNode(0)
+				1 -> ValueNode(ls[0].eval())
+				else -> {
+					var res = ls[0].eval().o as Int
+					@Suppress("DEPRECATION")
+					for (i in 1..ls.size - 1)
+						res = res.mod(ls[i].eval().o as Int)
+					ValueNode(res)
+				}
+			}
+		})
 		addFunction("*", { ls ->
 			ValueNode(ls.fold(1) { sum, value ->
 				val res = value.eval()
@@ -197,7 +210,7 @@ class SymbolList(init: Boolean = true) {
 			val str = ls[0].eval()
 			val res = ValueNode(ls[1].eval())
 			when (str.o) {
-				is String -> addVariable(str.o, res)
+				is String -> setVariable(str.o, res)
 				else -> typeMisMatch("String", str)
 			}
 			res
@@ -208,6 +221,18 @@ class SymbolList(init: Boolean = true) {
 			val str = ls[0].eval()
 			when (str.o) {
 				is String -> getVariable(str.o) ?: EmptyNode
+				else -> typeMisMatch("String", str)
+			}
+		})
+		addFunction("<->", { ls ->
+			if (ls.size < 2)
+				tooFewArgument(2, ls.size)
+			val str = ls[0].eval()
+			when (str.o) {
+				is String -> {
+					if (getVariable(str.o) == null) setVariable(str.o, ValueNode(ls[1].eval()))
+					getVariable(str.o)!!
+				}
 				else -> typeMisMatch("String", str)
 			}
 		})
@@ -259,8 +284,25 @@ class SymbolList(init: Boolean = true) {
 			}.toString())
 		})
 		addFunction("print", { ls ->
+			ls.forEach { print(it.eval().o) }
+			println("")
+			ls[0]
+		})
+		addFunction("println", { ls ->
 			ls.forEach { println(it.eval().o) }
 			ls[0]
+		})
+		addFunction("format", { ls ->
+			if (ls.isEmpty()) tooFewArgument(1, ls.size)
+			val format = ls[0].eval()
+			when (format.o) {
+				is String -> ValueNode(String.format(format.o, *ls
+						.subList(1, ls.size)
+						.map { it.eval().o }
+						.toTypedArray()
+				))
+				else -> typeMisMatch("String", format)
+			}
 		})
 		addFunction("eval", { ls ->
 			val value = ls[0].eval()
@@ -295,18 +337,19 @@ class SymbolList(init: Boolean = true) {
 		addStringFunctions()
 		addBoolFunctions()
 		addListProcessingFunctions()
+
 		addFunction("", { ls ->
 			ls.forEach {
 				val res = it.eval()
 				println("${res.o.toString()} => ${res.type.name}")
 			}
-			ls[0]
+			EmptyNode
 		})
 		addFunction("if", { ls ->
 			if (ls.size < 2)
 				tooFewArgument(2, ls.size)
 			val a = ls[0].eval().o
-			val condition = ls[0].eval().o as? Boolean ?: (a != null)
+			val condition = a as? Boolean ?: (a != null)
 			val ret = when {
 				condition -> ls[1].eval().o
 				ls.size >= 3 -> ls[2].eval().o
@@ -317,7 +360,40 @@ class SymbolList(init: Boolean = true) {
 				else -> EmptyNode
 			}
 		})
-		// TODO loops
+		addFunction("while", { ls ->
+			if (ls.size < 2)
+				tooFewArgument(2, ls.size)
+			var a = ls[0].eval().o
+			var ret: Any? = null
+			while (a as? Boolean ?: (a != null)) {
+				// execute loop
+				ret = ls[1].eval().o
+				// update a
+				a = ls[0].eval().o
+			}
+			when {
+				ret != null -> ValueNode(ret)
+				else -> EmptyNode
+			}
+		})
+		addFunction("for-each", { ls ->
+			if (ls.size < 3)
+				tooFewArgument(3, ls.size)
+			val i = ls[0].eval()
+			if (i.o !is String) typeMisMatch("String", i)
+			val a = ls[1].eval()
+			when (a.o) {
+				is List<*> -> {
+					var ret: Any? = null
+					a.o.forEach {
+						setVariable(i.o, ValueNode(it ?: Nullptr))
+						ret = ls[2].eval().o
+					}
+					ValueNode(ret ?: Nullptr)
+				}
+				else -> typeMisMatch("List", a)
+			}
+		})
 		addFunction("type", { ls ->
 			ls.forEach { println(it.eval().type.canonicalName) }
 			ls[0]
@@ -339,7 +415,7 @@ class SymbolList(init: Boolean = true) {
 		return functionList.size - 1
 	}
 
-	fun addVariable(name: String, value: Node) {
+	fun setVariable(name: String, value: Node) {
 		variableMap[name] = value
 	}
 
