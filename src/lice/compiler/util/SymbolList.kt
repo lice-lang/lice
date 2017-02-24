@@ -164,7 +164,7 @@ class SymbolList(init: Boolean = true) {
 			if (o is String) {
 				val symbolList = SymbolList(true)
 				val stringTreeRoot = buildNode(o)
-				Value(mapAst(stringTreeRoot, symbolList).eval())
+				mapAst(stringTreeRoot, symbolList).eval()
 			} else typeMisMatch("String", ls[0])
 		})
 	}

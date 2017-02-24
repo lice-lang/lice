@@ -24,6 +24,7 @@ fun main(args: Array<String>) {
 	output.isEditable = false
 	output.background = Color.LIGHT_GRAY
 	val input = JTextField()
+	val button = JButton()
 	output.tabSize = 2
 	lice.compiler.util.forceRun {
 		output.font = Font("Consolas", 0, 12)
@@ -53,6 +54,7 @@ fun main(args: Array<String>) {
 	})
 	frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 	frame.add(JScrollPane(output), BorderLayout.CENTER)
+	frame.add(button, BorderLayout.NORTH)
 	frame.add(input, BorderLayout.SOUTH)
 	frame.setLocation(100, 100)
 	frame.setSize(360, 360)
