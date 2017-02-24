@@ -1,13 +1,24 @@
-(if (file-exists? "save")
-    (write-file (file "save") "0")
-)
 
-(set "var" (+ 1 (str->int (read-file (file "save")))))
+; initialize
+
+; it shows that it's not lazy evaluation.
+
+; (if (! (file-exists? "save"))
+;     (run (write-file (file "save") "0")
+;          (print "fuck"))
+;     (print "shit")
+; )
+
+; read the file and get the value
+
+(set "var" (str->int (read-file (file "save"))))
 
 (print (get "var"))
 
+; write the increased value to file
+
 (write-file (file "save")
-            (to-str (+ 1 (get "var")))
+            (to-str (+ 7 (get "var")))
 )
 
 ; evaluate this file

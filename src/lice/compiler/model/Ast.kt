@@ -8,7 +8,8 @@
 
 package lice.compiler.model
 
-import lice.compiler.util.*
+import lice.compiler.util.ParseException
+import lice.compiler.util.SymbolList
 
 class Value(
 		val o: Any?,
@@ -16,12 +17,16 @@ class Value(
 	constructor(o: Any) : this(o, o.javaClass)
 
 	companion object Objects {
-		val nullptr = Value(null, Any::class.java)
+		val Nullptr = Value(null, Any::class.java)
 	}
 }
 
 interface Node {
 	fun eval(): Value
+
+	companion object Objects {
+		val EmptyNode = ValueNode(Value.Nullptr)
+	}
 }
 
 class ValueNode(val value: Value) : Node {
@@ -75,11 +80,11 @@ class ExpressionNode(
 	)
 
 	override fun eval() =
-			symbolList.getFunction(function)(params.map(Node::eval))
+			symbolList.getFunction(function)(params).eval()
 }
 
 object EmptyNode : Node {
-	override fun eval() = Value.nullptr
+	override fun eval() = Value.Nullptr
 }
 
 class Ast(

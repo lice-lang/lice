@@ -5,8 +5,10 @@
  */
 package lice.compiler.util
 
-import lice.compiler.model.Value
-import lice.compiler.model.Value.Objects.nullptr
+import lice.compiler.model.Node
+import lice.compiler.model.Node.Objects.EmptyNode
+import lice.compiler.model.Value.Objects.Nullptr
+import lice.compiler.model.ValueNode
 import lice.compiler.parse.*
 import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
@@ -17,9 +19,9 @@ import java.net.URL
 
 class SymbolList(init: Boolean = true) {
 	val functionMap: MutableMap<String, Int> = mutableMapOf()
-	val functionList: MutableList<(List<Value>) -> Value> = mutableListOf()
+	val functionList: MutableList<(List<Node>) -> Node> = mutableListOf()
 
-	val variableMap: MutableMap<String, Value> = mutableMapOf()
+	val variableMap: MutableMap<String, Node> = mutableMapOf()
 
 	init {
 		if (init) initialize()
@@ -27,142 +29,161 @@ class SymbolList(init: Boolean = true) {
 
 	inline fun addNumberFunctions() {
 		addFunction("int->double", { ls ->
-			Value((ls[0].o as Int).toDouble())
+			ValueNode((ls[0].eval().o as Int).toDouble())
 		})
-		addFunction("+", { ls ->
-			Value(ls.fold(0) { sum, value ->
-				when {
-					value.o is Int -> value.o + sum
-					else -> typeMisMatch("Int", value)
+		addFunction("+", { list ->
+			ValueNode(list.fold(0) { sum, value ->
+				val res = value.eval()
+				when (res.o) {
+					is Int -> res.o + sum
+					else -> typeMisMatch("Int", res)
 				}
 			})
 		})
 		addFunction("-", { ls ->
-			Value(ls.fold(ls[0].o as Int shl 1) { delta, value ->
-				when {
-					value.o is Int -> delta - value.o
-					else -> typeMisMatch("Int", value)
+			when (ls.size) {
+				0 -> ValueNode(0)
+				1 -> ValueNode(ls[0].eval())
+				else -> {
+					var res = ls[0].eval().o as Int
+					for (i in 1..ls.size - 1)
+						res -= ls[i].eval().o as Int
+					ValueNode(res)
 				}
-			})
+			}
 		})
 		addFunction("/", { ls ->
-			Value(ls.fold((ls[0].o as Int).squared()) { res, value ->
-				when {
-					value.o !is Int -> typeMisMatch("Int", value)
-					else -> res / value.o
+			when (ls.size) {
+				0 -> ValueNode(1)
+				1 -> ValueNode(ls[0].eval())
+				else -> {
+					var res = ls[0].eval().o as Int
+					for (i in 1..ls.size - 1)
+						res /= ls[i].eval().o as Int
+					ValueNode(res)
 				}
-			})
+			}
 		})
 		addFunction("*", { ls ->
-			Value(ls.fold(1) { sum, value ->
-				when {
-					value.o is Int -> value.o * sum
-					else -> typeMisMatch("Int", value)
+			ValueNode(ls.fold(1) { sum, value ->
+				val res = value.eval()
+				when (res.o) {
+					is Int -> res.o * sum
+					else -> typeMisMatch("Int", res)
 				}
 			})
 		})
-		addFunction("==", { ls ->
-			Value((1..ls.size - 1).none {
+		addFunction("==", { list ->
+			val ls = list.map(Node::eval)
+			ValueNode((1..ls.size - 1).none {
 				ls[it].o != ls[it - 1].o
 			})
 		})
-		addFunction("!=", { ls ->
-			Value((1..ls.size - 1).none {
+		addFunction("!=", { list ->
+			val ls = list.map(Node::eval)
+			ValueNode((1..ls.size - 1).none {
 				ls[it].o == ls[it - 1].o
 			})
 		})
-		addFunction("<", { ls ->
-			Value((1..ls.size - 1).none {
+		addFunction("<", { list ->
+			val ls = list.map(Node::eval)
+			ValueNode((1..ls.size - 1).none {
 				ls[it].o as Int <= ls[it - 1].o as Int
 			})
 		})
-		addFunction(">", { ls ->
-			Value((1..ls.size - 1).none {
+		addFunction(">", { list ->
+			val ls = list.map(Node::eval)
+			ValueNode((1..ls.size - 1).none {
 				(ls[it].o as Int) >= ls[it - 1].o as Int
 			})
 		})
-		addFunction(">=", { ls ->
-			Value((1..ls.size - 1).none {
+		addFunction(">=", { list ->
+			val ls = list.map(Node::eval)
+			ValueNode((1..ls.size - 1).none {
 				ls[it].o as Int > ls[it - 1].o as Int
 			})
 		})
 		addFunction("<", { ls ->
-			Value((1..ls.size - 1).none {
-				(ls[it].o as Int) < ls[it - 1].o as Int
+			val list = ls.map(Node::eval)
+			ValueNode((1..list.size - 1).none {
+				(list[it].o as Int) < list[it - 1].o as Int
 			})
 		})
 		addFunction("sqrt", { ls ->
-			Value(Math.sqrt((ls[0].o as Int).toDouble()))
+			ValueNode(Math.sqrt((ls[0].eval().o as Int).toDouble()))
 		})
 	}
 
 	inline fun addBoolFunctions() {
 		addFunction("&&", { ls ->
-			Value(ls.fold(true) { sum, value ->
-				if (value.o is Boolean) value.o && sum
-				else typeMisMatch("Boolean", value)
+			ValueNode(ls.fold(true) { sum, value ->
+				val o = value.eval()
+				if (o.o is Boolean) o.o && sum
+				else typeMisMatch("Boolean", o)
 			})
 		})
 		addFunction("||", { ls ->
-			Value(ls.fold(false) { sum, value ->
-				if (value.o is Boolean) value.o || sum
-				else typeMisMatch("Boolean", value)
+			ValueNode(ls.fold(false) { sum, value ->
+				val o = value.eval()
+				if (o.o is Boolean) o.o || sum
+				else typeMisMatch("Boolean", o)
 			})
 		})
-		addFunction("!", { ls -> Value(!(ls[0].o as Boolean)) })
+		addFunction("!", { ls -> ValueNode(!(ls[0].eval().o as Boolean)) })
 	}
 
 	inline fun addFileFunctions() {
 		addFunction("file", { ls ->
-			val a = ls[0].o
-			when (a) {
-				is String -> Value(File(a).apply { if (!exists()) createNewFile() })
-				else -> typeMisMatch("String", ls[0])
+			val a = ls[0].eval()
+			when (a.o) {
+				is String -> ValueNode(File(a.o)
+						.apply { if (!exists()) createNewFile() })
+				else -> typeMisMatch("String", a)
 			}
 		})
 		addFunction("file-exists?", { ls ->
-			val a = ls[0].o
-			when (a) {
-				is String -> Value(File(a).exists())
-				else -> typeMisMatch("String", ls[0])
+			val a = ls[0].eval()
+			when (a.o) {
+				is String -> ValueNode(File(a.o).exists())
+				else -> typeMisMatch("String", a)
 			}
 		})
 		addFunction("read-file", { ls ->
-			val a = ls[0].o
-			when (a) {
-				is File -> Value(a.readText())
-				else -> typeMisMatch("File", ls[0])
+			val a = ls[0].eval()
+			when (a.o) {
+				is File -> ValueNode(a.o.readText())
+				else -> typeMisMatch("File", a)
 			}
 		})
 		addFunction("url", { ls ->
-			val a = ls[0].o
-			when (a) {
-				is String -> Value(URL(a))
-				else -> typeMisMatch("String", ls[0])
+			val a = ls[0].eval()
+			when (a.o) {
+				is String -> ValueNode(URL(a.o))
+				else -> typeMisMatch("String", a)
 			}
 		})
 		addFunction("read-url", { ls ->
-			val a = ls[0].o
-			when (a) {
-				is URL -> Value(a.readText())
-				else -> typeMisMatch("URL", ls[0])
+			val a = ls[0].eval()
+			when (a.o) {
+				is URL -> ValueNode(a.o.readText())
+				else -> typeMisMatch("URL", a)
 			}
 		})
 		addFunction("load-file", { ls ->
-			val o = ls[0].o
-			when (o) {
-				is File -> createAst(o).root.eval()
-				else -> typeMisMatch("File", ls[0])
+			val o = ls[0].eval()
+			when (o.o) {
+				is File -> ValueNode(createAst(o.o).root.eval())
+				else -> typeMisMatch("File", o)
 			}
 		})
 		addFunction("write-file", { ls ->
-			val a = ls[0].o
-			val b = ls[1].o
-			when (a) {
-				is File -> a.writeText(b.toString())
-				else -> typeMisMatch("File", ls[0])
+			val a = ls[0].eval()
+			val b = ls[1].eval()
+			when (a.o) {
+				is File -> a.o.writeText(b.o.toString())
+				else -> typeMisMatch("File", a)
 			}
-			Value(b.toString())
+			ValueNode(b.o.toString())
 		})
 	}
 
@@ -170,75 +191,79 @@ class SymbolList(init: Boolean = true) {
 		addFunction("set", { ls ->
 			if (ls.size < 2)
 				tooFewArgument(2, ls.size)
-			val str = ls[0].o
-			if (str is String) addVariable(str, ls[1])
-			else typeMisMatch("String", ls[0])
-			ls[1]
+			val str = ls[0].eval()
+			val res = ValueNode(ls[1].eval())
+			when (str.o) {
+				is String -> addVariable(str.o, res)
+				else -> typeMisMatch("String", str)
+			}
+			res
 		})
 		addFunction("get", { ls ->
 			if (ls.isEmpty())
 				tooFewArgument(1, ls.size)
-			val str = ls[0].o
-			if (str is String) {
-				val value = variableMap[str]
-				value ?: nullptr
-			} else typeMisMatch("String", ls[0])
+			val str = ls[0].eval()
+			when (str.o) {
+				is String -> getVariable(str.o) ?: EmptyNode
+				else -> typeMisMatch("String", str)
+			}
 		})
 	}
 
 	inline fun addStringFunctions() {
-		addFunction("to-str", { ls -> Value(ls[0].o.toString()) })
+		addFunction("to-str", { ls -> ValueNode(ls[0].eval().o.toString()) })
 		addFunction("str->int", { ls ->
-			val a = ls[0].o
-			if (a is String)
-				Value(when {
-					a.isOctInt() -> a.toOctInt()
-					a.isInt() -> a.toInt()
-					a.isBinInt() -> a.toBinInt()
-					a.isHexInt() -> a.toHexInt()
-					else -> throw InterpretException("give string: \"$a\" cannot be parsed as a number!")
-				}) else typeMisMatch("String", ls[0])
+			val res = ls[0].eval()
+			when (res.o) {
+				is String -> ValueNode(when {
+					res.o.isOctInt() -> res.o.toOctInt()
+					res.o.isInt() -> res.o.toInt()
+					res.o.isBinInt() -> res.o.toBinInt()
+					res.o.isHexInt() -> res.o.toHexInt()
+					else -> throw InterpretException("give string: \"${res.o}\" cannot be parsed as a number!")
+				})
+				else -> typeMisMatch("String", res)
+			}
 		})
 		addFunction("int->hex", { ls ->
-			val a = ls[0].o
-			when (a) {
-				is Int -> Value("0x${Integer.toHexString(a)}")
-				else -> typeMisMatch("Int", ls[0])
+			val a = ls[0].eval()
+			when (a.o) {
+				is Int -> ValueNode("0x${Integer.toHexString(a.o)}")
+				else -> typeMisMatch("Int", a)
 			}
 		})
 		addFunction("int->bin", { ls ->
-			val a = ls[0].o
-			when (a) {
-				is Int -> Value("0b${Integer.toBinaryString(a)}")
-				else -> typeMisMatch("Int", ls[0])
+			val a = ls[0].eval()
+			when (a.o) {
+				is Int -> ValueNode("0b${Integer.toBinaryString(a.o)}")
+				else -> typeMisMatch("Int", a)
 			}
 		})
 		addFunction("int->oct", { ls ->
-			val a = ls[0].o
-			when (a) {
-				is Int -> Value("0${Integer.toOctalString(a)}")
-				else -> typeMisMatch("Int", ls[0])
+			val a = ls[0].eval()
+			when (a.o) {
+				is Int -> ValueNode("0${Integer.toOctalString(a.o)}")
+				else -> typeMisMatch("Int", a)
 			}
 		})
 		addFunction("str-con", { ls ->
-			Value(ls.fold(StringBuilder(ls.size)) { sb, value ->
-				if (value.o is String) sb.append(value.o)
-				else typeMisMatch("String", value)
+			ValueNode(ls.fold(StringBuilder(ls.size)) { sb, value ->
+				val res = value.eval()
+				when (res.o) {
+					is String -> sb.append(res.o)
+					else -> typeMisMatch("String", res)
+				}
 			}.toString())
 		})
 		addFunction("print", { ls ->
-			ls.forEach { println(it.o) }
-			ls[ls.size - 1]
+			ls.forEach { println(it.eval().o) }
+			ls[0]
 		})
 		addFunction("eval", { ls ->
-			val o = ls[0].o
-			when (o) {
-				is String -> {
-					val symbolList = SymbolList(true)
-					val stringTreeRoot = buildNode(o)
-					mapAst(stringTreeRoot, symbolList).eval()
-				}
-				else -> typeMisMatch("String", ls[0])
+			val value = ls[0].eval()
+			when (value.o) {
+				is String -> ValueNode(mapAst(buildNode(value.o), this@SymbolList).eval())
+				else -> typeMisMatch("String", value)
 			}
 		})
 	}
@@ -249,44 +274,52 @@ class SymbolList(init: Boolean = true) {
 		addGetSetFunction()
 		addStringFunctions()
 		addBoolFunctions()
-		addFunction("[]", { ls -> Value(ls.map { it.o }) })
+		addFunction("[]", { ls -> ValueNode(ls.map { it.eval().o }) })
 		addFunction("", { ls ->
-			ls.forEach { println("${it.o.toString()} => ${it.type.name}") }
+			ls.forEach {
+				val res = it.eval()
+				println("${res.o.toString()} => ${res.type.name}")
+			}
 			ls[0]
 		})
 		addFunction("if", { ls ->
 			if (ls.size < 2)
 				tooFewArgument(2, ls.size)
-			val a = ls[0].o
-			val condition = a as? Boolean ?: (a != null)
+			val a = ls[0].eval().o
+			val condition = ls[0].eval().o as? Boolean ?: (a != null)
 			val ret = when {
-				condition -> ls[1].o
-				ls.size >= 3 -> ls[2].o
+				condition -> ls[1].eval().o
+				ls.size >= 3 -> ls[2].eval().o
 				else -> null
 			}
 			when {
-				ret != null -> Value(ret)
-				else -> nullptr
+				ret != null -> ValueNode(ret)
+				else -> EmptyNode
 			}
 		})
 		// TODO loops
 		addFunction("type", { ls ->
-			ls.forEach { println(it.type.canonicalName) }
+			ls.forEach { println(it.eval().type.canonicalName) }
 			ls[0]
 		})
 		addFunction("gc", {
 			System.gc()
-			nullptr
+			EmptyNode
+		})
+		addFunction("run", { ls ->
+			var ret = Nullptr
+			ls.forEach { ret = it.eval() }
+			ValueNode(ret)
 		})
 	}
 
-	fun addFunction(name: String, node: (List<Value>) -> Value): Int {
+	fun addFunction(name: String, node: (List<Node>) -> Node): Int {
 		functionMap.put(name, functionList.size)
 		functionList.add(node)
 		return functionList.size - 1
 	}
 
-	fun addVariable(name: String, value: Value) {
+	fun addVariable(name: String, value: Node) {
 		variableMap[name] = value
 	}
 

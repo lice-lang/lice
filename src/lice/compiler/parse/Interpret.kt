@@ -9,7 +9,7 @@
 package lice.compiler.parse
 
 import lice.compiler.model.*
-import lice.compiler.model.Value.Objects.nullptr
+import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.util.ParseException.Factory.undefinedFunction
 import lice.compiler.util.SymbolList
 import lice.compiler.util.serr
@@ -41,7 +41,7 @@ fun parseValue(str: String): Node {
 		str.isBinInt() ->
 			ValueNode(str.toBinInt())
 		"null" == str ->
-			ValueNode(nullptr)
+			ValueNode(Nullptr)
 		"true" == str ->
 			ValueNode(true)
 		"false" == str ->
@@ -92,7 +92,7 @@ fun mapAst(
 fun createAst(file: File): Ast {
 	val code = file.readText()
 	val symbolList = SymbolList(true)
-	symbolList.addVariable("FILE_PATH", Value(file.absolutePath))
+	symbolList.addVariable("FILE_PATH", ValueNode(file.absolutePath))
 	val stringTreeRoot = buildNode(code)
 	return Ast(
 			mapAst(
