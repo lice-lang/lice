@@ -91,7 +91,7 @@ class SymbolList(init: Boolean = true) {
 			})
 		})
 		addFunction("||", { ls ->
-			Value(ls.fold(true) { sum, value ->
+			Value(ls.fold(false) { sum, value ->
 				if (value.o is Boolean) value.o || sum
 				else typeMisMatch("Boolean", value)
 			})
