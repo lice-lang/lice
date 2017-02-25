@@ -88,6 +88,14 @@ inline fun SymbolList.addStandard() {
 		thread { ls.forEach { node -> node.eval() } }
 		EmptyNode
 	})
+
+	addFunction("load-file", { ls ->
+		val o = ls[0].eval()
+		when (o.o) {
+			is File -> ValueNode(createAst(o.o, this).root.eval())
+			else -> InterpretException.typeMisMatch("File", o)
+		}
+	})
 }
 
 inline fun SymbolList.addGetSetFunction() {
@@ -140,13 +148,6 @@ inline fun SymbolList.addCollectionsFunctions() {
 		}
 		ValueNode(progression.toList())
 	})
-	addFunction("load-file", { ls ->
-		val o = ls[0].eval()
-		when (o.o) {
-			is File -> ValueNode(createAst(o.o, this).root.eval())
-			else -> InterpretException.typeMisMatch("File", o)
-		}
-	})
 	addFunction("for-each", { ls ->
 		if (ls.size < 3)
 			InterpretException.tooFewArgument(3, ls.size)
@@ -154,7 +155,7 @@ inline fun SymbolList.addCollectionsFunctions() {
 		if (i.o !is String) InterpretException.typeMisMatch("String", i)
 		val a = ls[1].eval()
 		when (a.o) {
-			is List<*> -> {
+			is Collection<*> -> {
 				var ret: Any? = null
 				a.o.forEach {
 					setVariable(i.o, ValueNode(it ?: Nullptr))
@@ -178,6 +179,17 @@ inline fun SymbolList.addCollectionsFunctions() {
 		when (i.o) {
 			is Collection<*> -> ValueNode(i.o.count { e.o == it })
 			else -> ValueNode(0)
+		}
+	})
+	addFunction("empty?", { ls ->
+		ValueNode((ls[0].eval().o as? Collection<*>)?.isEmpty() ?: true)
+	})
+	addFunction("in?", { ls ->
+		val i = ls[0].eval()
+		val e = ls[1].eval()
+		when (i.o) {
+			is Collection<*> -> ValueNode(e.o in i.o)
+			else -> ValueNode(false)
 		}
 	})
 }

@@ -135,3 +135,5 @@ inline fun SymbolList.addBoolFunctions() {
 		ValueNode(!(ls[0].eval().o as Boolean))
 	})
 }
+
+
