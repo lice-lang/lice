@@ -1,3 +1,5 @@
+; (import "lice.core")
+
 (while (> 10 (<-> "i" 0))
        (|> (print (<- "i"))
            (-> "i" (+ 1 (<- "i")))
