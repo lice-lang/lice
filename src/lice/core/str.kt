@@ -76,4 +76,10 @@ inline fun SymbolList.addStringFunctions() {
 				.toCharArray()
 				.toList())
 	})
+	addFunction("split", { ls ->
+		val str = ls[0].eval()
+		val regex = ls[1].eval()
+		ValueNode(str.o.toString().split(regex.o.toString()).toList())
+	})
+
 }

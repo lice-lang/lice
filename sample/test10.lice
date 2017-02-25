@@ -1,0 +1,10 @@
+(import "lice.io")
+
+(print (java-api-invoking))
+(print (java-api-invoking))
+(print (java-api-invoking))
+(print (java-api-invoking))
+(print (java-api-invoking))
+(print (java-api-invoking))
+(print (java-api-invoking))
+(print (java-api-invoking))

@@ -124,6 +124,30 @@ false ; false
 ; this prints from 0 to 9
 ```
 
++ Invoking Java
+
+```java
+// java
+class Main {
+	public static void main(String[] args){
+		SymbolList sl = new SymbolList();
+		sl.addFunction(
+				"java-api-invoking",
+				ls -> new ValueNode(100)
+		);
+		createAst(new File("sample/test10.lice"), sl)
+				.getRoot().eval();
+	}
+}
+```
+
+```lisp
+; Lice
+(import "lice.io")
+
+(print (java-api-invoking))
+```
+
 ## Repl
 
 The repl has two versions, a GUI one based on swing, and a CUI one.

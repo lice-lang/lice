@@ -57,6 +57,7 @@ fun main(args: Array<String>) {
 		override fun write(b: ByteArray) =
 				output.append(String(b), Color(0xBC3F3C))
 	}))
+	output.append("This is the GUI repl $VERSION_CODE for Lice language.\n", Color(0xCC7832))
 	val repl = Repl()
 	val input = JTextField()
 	input.addKeyListener(object : KeyListener {
@@ -64,7 +65,7 @@ fun main(args: Array<String>) {
 		override fun keyReleased(e: KeyEvent?) = Unit
 		override fun keyPressed(e: KeyEvent?) {
 			if (e != null && e.keyCode == KeyEvent.VK_ENTER) {
-				output.append("${input.text}\n", Color(0xCC7832))
+				output.append("${input.text}\n", Color(0x467CDA))
 				repl.handle(input.text, sl)
 				input.text = ""
 			}
