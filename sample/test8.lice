@@ -1,6 +1,4 @@
 (import "lice.io")
-
 (import "lice.gui")
-
 
 (show-image (image (url "http://ice1000.tech/assets/img/avatar.jpg")))

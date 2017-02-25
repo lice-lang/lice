@@ -13,7 +13,9 @@ import lice.compiler.model.Node
 import lice.compiler.model.Node.Objects.EmptyNode
 import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.model.ValueNode
-import lice.compiler.parse.*
+import lice.compiler.parse.buildNode
+import lice.compiler.parse.createAst
+import lice.compiler.parse.mapAst
 import lice.compiler.util.InterpretException
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
@@ -28,6 +30,14 @@ inline fun SymbolList.addStandard() {
 	addStringFunctions()
 	addBoolFunctions()
 	addCollectionsFunctions()
+
+	addFunction("eval", { ls ->
+		val value = ls[0].eval()
+		when (value.o) {
+			is String -> ValueNode(mapAst(buildNode(value.o), this).eval())
+			else -> InterpretException.typeMisMatch("String", value)
+		}
+	})
 
 	addFunction("print", { ls ->
 		ls.forEach { print(it.eval().o) }
@@ -176,10 +186,6 @@ inline fun SymbolList.addNumberFunctions() {
 			(list[it].o as Int) < list[it - 1].o as Int
 		})
 	})
-	addFunction("sqrt", { ls ->
-		ValueNode(Math.sqrt((ls[0].eval().o as Int).toDouble()))
-	})
-	addFunction("rand", { ValueNode(rand.nextInt()) })
 }
 
 inline fun SymbolList.addBoolFunctions() {
@@ -237,68 +243,6 @@ inline fun SymbolList.addGetSetFunction() {
 				getVariable(str.o)!!
 			}
 			else -> InterpretException.typeMisMatch("String", str)
-		}
-	})
-}
-
-inline fun SymbolList.addStringFunctions() {
-	addFunction("->str", { ls -> ValueNode(ls[0].eval().o.toString()) })
-	addFunction("str->int", { ls ->
-		val res = ls[0].eval()
-		when (res.o) {
-			is String -> ValueNode(when {
-				res.o.isOctInt() -> res.o.toOctInt()
-				res.o.isInt() -> res.o.toInt()
-				res.o.isBinInt() -> res.o.toBinInt()
-				res.o.isHexInt() -> res.o.toHexInt()
-				else -> throw InterpretException("give string: \"${res.o}\" cannot be parsed as a number!")
-			})
-			else -> InterpretException.typeMisMatch("String", res)
-		}
-	})
-	addFunction("int->hex", { ls ->
-		val a = ls[0].eval()
-		when (a.o) {
-			is Int -> ValueNode("0x${Integer.toHexString(a.o)}")
-			else -> InterpretException.typeMisMatch("Int", a)
-		}
-	})
-	addFunction("int->bin", { ls ->
-		val a = ls[0].eval()
-		when (a.o) {
-			is Int -> ValueNode("0b${Integer.toBinaryString(a.o)}")
-			else -> InterpretException.typeMisMatch("Int", a)
-		}
-	})
-	addFunction("int->oct", { ls ->
-		val a = ls[0].eval()
-		when (a.o) {
-			is Int -> ValueNode("0${Integer.toOctalString(a.o)}")
-			else -> InterpretException.typeMisMatch("Int", a)
-		}
-	})
-	addFunction("str-con", { ls ->
-		ValueNode(ls.fold(StringBuilder(ls.size)) { sb, value ->
-			sb.append(value.eval().o.toString())
-		}.toString())
-	})
-	addFunction("format", { ls ->
-		if (ls.isEmpty()) InterpretException.tooFewArgument(1, ls.size)
-		val format = ls[0].eval()
-		when (format.o) {
-			is String -> ValueNode(kotlin.String.format(format.o, *ls
-					.subList(1, ls.size)
-					.map { it.eval().o }
-					.toTypedArray()
-			))
-			else -> InterpretException.typeMisMatch("String", format)
-		}
-	})
-	addFunction("eval", { ls ->
-		val value = ls[0].eval()
-		when (value.o) {
-			is String -> ValueNode(mapAst(buildNode(value.o), this).eval())
-			else -> InterpretException.typeMisMatch("String", value)
 		}
 	})
 }

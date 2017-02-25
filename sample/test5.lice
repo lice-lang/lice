@@ -1,4 +1,5 @@
 (import "lice.io")
+(import "lice.str")
 
 ; evaluate this file
 

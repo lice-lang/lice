@@ -8,9 +8,7 @@ package lice.compiler.util
 import lice.compiler.model.Node
 import lice.compiler.model.Node.Objects.EmptyNode
 import lice.compiler.model.ValueNode
-import lice.core.addFileFunctions
-import lice.core.addGUIFunctions
-import lice.core.addStandard
+import lice.core.*
 import java.util.*
 
 @Suppress("NOTHING_TO_INLINE")
@@ -38,6 +36,8 @@ class SymbolList(init: Boolean = true) {
 					when (res.o) {
 						"lice.io" -> addFileFunctions()
 						"lice.gui" -> addGUIFunctions()
+						"lice.math" -> addMathFunctions()
+						"lice.str" -> addStringFunctions()
 						else -> {
 							serr("${res.o} not found!")
 							ret = EmptyNode
