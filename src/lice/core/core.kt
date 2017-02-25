@@ -10,11 +10,14 @@
 package lice.core
 
 import lice.compiler.model.Node
-import lice.compiler.model.Value
+import lice.compiler.model.Node.Objects.EmptyNode
+import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.model.ValueNode
 import lice.compiler.parse.*
 import lice.compiler.util.InterpretException
 import lice.compiler.util.SymbolList
+import lice.compiler.util.forceRun
+import kotlin.concurrent.thread
 
 inline fun SymbolList.addStandard() {
 	addGetSetFunction()
@@ -36,7 +39,7 @@ inline fun SymbolList.addStandard() {
 			val res = it.eval()
 			println("${res.o.toString()} => ${res.type.name}")
 		}
-		Node.EmptyNode
+		EmptyNode
 	})
 	addFunction("type", { ls ->
 		ls.forEach { println(it.eval().type.canonicalName) }
@@ -44,12 +47,21 @@ inline fun SymbolList.addStandard() {
 	})
 	addFunction("gc", {
 		System.gc()
-		Node.EmptyNode
+		EmptyNode
 	})
 	addFunction("|>", { ls ->
-		var ret = Value.Nullptr
+		var ret = Nullptr
 		ls.forEach { ret = it.eval() }
 		ValueNode(ret)
+	})
+	addFunction("force|>", { ls ->
+		var ret = Nullptr
+		forceRun { ls.forEach { node -> ret = node.eval() } }
+		ValueNode(ret)
+	})
+	addFunction("thread|>", { ls ->
+		thread { ls.forEach { node -> node.eval() } }
+		EmptyNode
 	})
 }
 
@@ -158,18 +170,24 @@ inline fun SymbolList.addBoolFunctions() {
 	addFunction("&&", { ls ->
 		ValueNode(ls.fold(true) { sum, value ->
 			val o = value.eval()
-			if (o.o is Boolean) o.o && sum
-			else InterpretException.typeMisMatch("Boolean", o)
+			when {
+				o.o is Boolean -> o.o && sum
+				else -> InterpretException.typeMisMatch("Boolean", o)
+			}
 		})
 	})
 	addFunction("||", { ls ->
 		ValueNode(ls.fold(false) { sum, value ->
 			val o = value.eval()
-			if (o.o is Boolean) o.o || sum
-			else InterpretException.typeMisMatch("Boolean", o)
+			when {
+				o.o is Boolean -> o.o || sum
+				else -> InterpretException.typeMisMatch("Boolean", o)
+			}
 		})
 	})
-	addFunction("!", { ls -> ValueNode(!(ls[0].eval().o as Boolean)) })
+	addFunction("!", { ls ->
+		ValueNode(!(ls[0].eval().o as Boolean))
+	})
 }
 
 inline fun SymbolList.addGetSetFunction() {
@@ -189,7 +207,7 @@ inline fun SymbolList.addGetSetFunction() {
 			InterpretException.tooFewArgument(1, ls.size)
 		val str = ls[0].eval()
 		when (str.o) {
-			is String -> getVariable(str.o) ?: Node.EmptyNode
+			is String -> getVariable(str.o) ?: EmptyNode
 			else -> InterpretException.typeMisMatch("String", str)
 		}
 	})
@@ -294,10 +312,10 @@ inline fun SymbolList.addCollectionsFunctions() {
 			is List<*> -> {
 				var ret: Any? = null
 				a.o.forEach {
-					setVariable(i.o, ValueNode(it ?: Value.Nullptr))
+					setVariable(i.o, ValueNode(it ?: Nullptr))
 					ret = ls[2].eval().o
 				}
-				ValueNode(ret ?: Value.Nullptr)
+				ValueNode(ret ?: Nullptr)
 			}
 			else -> InterpretException.typeMisMatch("List", a)
 		}
@@ -317,7 +335,7 @@ inline fun SymbolList.addControlFlowFunctions() {
 		}
 		when {
 			ret != null -> ValueNode(ret)
-			else -> Node.EmptyNode
+			else -> EmptyNode
 		}
 	})
 	addFunction("while", { ls ->
@@ -333,7 +351,7 @@ inline fun SymbolList.addControlFlowFunctions() {
 		}
 		when {
 			ret != null -> ValueNode(ret)
-			else -> Node.EmptyNode
+			else -> EmptyNode
 		}
 	})
 }

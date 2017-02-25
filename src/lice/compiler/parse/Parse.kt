@@ -5,11 +5,14 @@
  */
 @file:JvmName("Parse")
 @file:JvmMultifileClass
+
 package lice.compiler.parse
 
-import lice.compiler.model.*
-import lice.compiler.util.*
-import java.io.File
+import lice.compiler.model.EmptyStringNode
+import lice.compiler.model.StringLeafNode
+import lice.compiler.model.StringMiddleNode
+import lice.compiler.model.StringNode
+import lice.compiler.util.showError
 import java.util.*
 
 fun buildNode(code: String): StringNode {
@@ -21,7 +24,6 @@ fun buildNode(code: String): StringNode {
 	var lastQuoteIndex = 0
 	var quoteStarted = false
 	var commentStarted = false
-	var lastElement: Char = '\n'
 	fun check(index: Int) {
 		if (elementStarted) {
 			elementStarted = false
@@ -29,40 +31,34 @@ fun buildNode(code: String): StringNode {
 					.peek()
 					.add(StringLeafNode(lineNumber, code
 							.substring(startIndex = beginIndex, endIndex = index)
-							.debugApply { println("found token: $this") }
+//							.debugApply { println("found token: $this") }
 					))
 		}
 	}
 	code.forEachIndexed { index, c ->
 		if (c == '\n') commentStarted = false
-		if (!commentStarted or (lastElement == '\\')) when (c) {
-			';' -> {
-				if (!quoteStarted) commentStarted = true
+		if (!commentStarted) when (c) {
+			';' -> if (!quoteStarted) commentStarted = true
+			'(' -> if (!quoteStarted) {
+				check(index)
+				currentNodeStack.push(StringMiddleNode(lineNumber))
+				++beginIndex
 			}
-			'(' -> {
-				if (!quoteStarted) {
-					check(index)
-					currentNodeStack.push(StringMiddleNode(lineNumber))
-					++beginIndex
+			')' -> if (!quoteStarted) {
+				check(index)
+				if (currentNodeStack.size <= 1) {
+					showError("Braces not match at line $lineNumber: Unexpected \')\'.")
+					return EmptyStringNode(lineNumber)
 				}
+				val son =
+						if (currentNodeStack.peek().empty) EmptyStringNode(lineNumber)
+						else currentNodeStack.peek()
+				currentNodeStack.pop()
+				currentNodeStack
+						.peek()
+						.add(son)
 			}
-			')' -> {
-				if (!quoteStarted) {
-					check(index)
-					if (currentNodeStack.size <= 1) {
-						showError("Braces not match at line $lineNumber: Unexpected \')\'.")
-						return EmptyStringNode(lineNumber)
-					}
-					val son =
-							if (currentNodeStack.peek().empty) EmptyStringNode(lineNumber)
-							else currentNodeStack.peek()
-					currentNodeStack.pop()
-					currentNodeStack
-							.peek()
-							.add(son)
-				}
-			}
-			' ', '\n', '\t', '\r' -> {
+			' ', '\n', '\t', '\r', ',' -> {
 				if (!quoteStarted) {
 					check(index)
 					beginIndex = index + 1
@@ -72,23 +68,17 @@ fun buildNode(code: String): StringNode {
 					commentStarted = false
 				}
 			}
-			'\"' -> {
-				if (!quoteStarted) {
-					quoteStarted = true
-					lastQuoteIndex = index
-				} else {
-					quoteStarted = false
-					currentNodeStack.peek().add(StringLeafNode(lineNumber, code
-							.substring(startIndex = lastQuoteIndex, endIndex = index + 1)
-							.verboseApply { println("Found String: $this") }
-					))
-				}
+			'\"' -> if (!quoteStarted) {
+				quoteStarted = true
+				lastQuoteIndex = index
+			} else {
+				quoteStarted = false
+				currentNodeStack.peek().add(StringLeafNode(lineNumber, code
+						.substring(startIndex = lastQuoteIndex, endIndex = index + 1)
+				))
 			}
-			else -> {
-				if (!quoteStarted) elementStarted = true
-			}
+			else -> if (!quoteStarted) elementStarted = true
 		}
-		lastElement = c
 	}
 	check(code.length - 1)
 	if (currentNodeStack.size > 1) {

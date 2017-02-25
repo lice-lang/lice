@@ -103,7 +103,11 @@ fun <A, B, C, D, E, F, G> ((a: A, b: B, c: C, d: D, e: E, f: F) -> G).curry() =
 			{ b: B ->
 				{ c: C ->
 					{ d: D ->
-						{ e: E -> { f: F -> invoke(a, b, c, d, e, f) } }
+						{ e: E ->
+							{ f: F ->
+								invoke(a, b, c, d, e, f)
+							}
+						}
 					}
 				}
 			}

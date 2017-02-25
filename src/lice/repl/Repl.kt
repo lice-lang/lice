@@ -37,15 +37,13 @@ for help please input: help
 			"pst" ->
 				if (stackTrace != null) stackTrace?.printStackTrace()
 				else "No stack trace.".println()
-			"gc" -> System.gc()
 			"help" -> """
 This is the repl for lice language.
 
-You have 5 special commands which you cannot use in the language but the repl:
+You have 4 special commands which you cannot use in the language but the repl:
 
 exit: exit the repl
 pst: print the most recent stack trace
-gc: run garbage collection
 help: print this doc
 version: check the version"""
 					.println()
