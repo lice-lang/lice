@@ -1,6 +1,6 @@
-# lice
+![](./GUI/icon.jpg)
 
-It's entirely working in progress....
+# Lice
 
 This is an interpreter for a dialect of lisp, running on JVM.
 
