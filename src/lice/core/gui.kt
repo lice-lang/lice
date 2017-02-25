@@ -47,8 +47,9 @@ inline fun SymbolList.addGUIFunctions() {
 		val o = ls[0].eval()
 		when (o.o) {
 			is BufferedImage -> {
-				JFrame().run {
-					setSize(o.o.width + 2, o.o.height + 2)
+				ValueNode(JFrame().apply {
+					setSize(o.o.width + 8, o.o.height + 8)
+					title = "width: ${o.o.width}, height: ${o.o.height}"
 					layout = BorderLayout()
 					add(object : JPanel() {
 						override fun paintComponent(g: Graphics?) {
@@ -60,10 +61,10 @@ inline fun SymbolList.addGUIFunctions() {
 					defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
 //					isResizable = false
 					isVisible = true
-				}
+				})
 			}
+			else -> EmptyNode
 		}
-		EmptyNode
 	})
 }
 

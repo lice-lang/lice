@@ -2,7 +2,7 @@
 
 ; evaluate this file
 
-(-> "file" (file (to-str (<- "FILE_PATH"))))
+(-> "file" (file (->str (<- "FILE_PATH"))))
 
 ; (print (<- "file"))
 

@@ -15,20 +15,26 @@ class Repl {
 	var stackTrace: Throwable? = null
 
 	init {
-		println("Lice language repl $VERSION_CODE")
-		println("see: https://github.com/ice1000/lice\n")
+		println("""Lice language repl $VERSION_CODE
+see: https://github.com/ice1000/lice
+
+for help please input: help
+""")
 		print(HINT)
 		DEBUGGING = false
 		VERBOSE = false
 	}
 
-	fun handle(str: String, symbolList: SymbolList = SymbolList(true)) {
+	@JvmOverloads
+	fun handle(
+			str: String,
+			symbolList: SymbolList = SymbolList(true)) {
 		when (str) {
 			"exit" -> {
 				"Have a nice day :)".println()
 				System.exit(0)
 			}
-			"show-full-message" ->
+			"pst" ->
 				if (stackTrace != null) stackTrace?.printStackTrace()
 				else "No stack trace.".println()
 			"gc" -> System.gc()
@@ -38,7 +44,7 @@ This is the repl for lice language.
 You have 5 special commands which you cannot use in the language but the repl:
 
 exit: exit the repl
-show-full-message: print the most recent stack trace
+pst: print the most recent stack trace
 gc: run garbage collection
 help: print this doc
 version: check the version"""

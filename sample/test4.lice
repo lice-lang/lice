@@ -4,7 +4,7 @@
 
 (-> "FILE_PATH" "C:\Users\ice1000\Desktop\Lice\sample\test4.lice")
 
-(-> "file" (file (to-str (<- "FILE_PATH"))))
+(-> "file" (file (->str (<- "FILE_PATH"))))
 
 ; (print (<- "file"))
 

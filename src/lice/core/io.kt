@@ -17,11 +17,32 @@ import java.io.File
 import java.net.URL
 
 inline fun SymbolList.addFileFunctions() {
+	addFunction("print", { ls ->
+		ls.forEach { print(it.eval().o) }
+		println("")
+		ls[0]
+	})
+	addFunction("print-err", { ls ->
+		ls.forEach { System.err.print(it.eval().o.toString()) }
+		ls[0]
+	})
+	addFunction("println", { ls ->
+		ls.forEach { println(it.eval().o) }
+		ls[0]
+	})
 	addFunction("file", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is String -> ValueNode(File(a.o)
 					.apply { if (!exists()) createNewFile() })
+			else -> InterpretException.typeMisMatch("String", a)
+		}
+	})
+	addFunction("directory", { ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is String -> ValueNode(File(a.o)
+					.apply { if (!exists()) mkdirs() })
 			else -> InterpretException.typeMisMatch("String", a)
 		}
 	})

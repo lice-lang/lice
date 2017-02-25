@@ -5,6 +5,8 @@
 + Lisp-style comments
 
 ```lisp
+(import "lice.io")
+
 (233) ; Error: 233 isn't a function
 
 (print 233) ; OK: 233 is a java.lang.Integer
@@ -13,6 +15,8 @@
 + Basic functions
 
 ```lisp
+(import "lice.io")
+
 (+ 2 3 4 (* 2 5)) ; result: 19
 
 (sqrt 100) ; result: 10.0
@@ -43,6 +47,8 @@ false ; false
 + File/URL APIs
 
 ```lisp
+(import "lice.io")
+
 (if (! (file-exists? "save"))
     (run (write-file (file "save") "0")
          (print "fuck"))
@@ -69,12 +75,14 @@ false ; false
 (int->oct 12345678) ; result: 057060516
 (int->bin 12345678) ; result: 0b101111000110000101001110
 
-(to-str (file "deep")) ; result: "deep"
+(->str (file "deep")) ; result: "deep"
 ```
 
 + Lazy evaluation
 
 ```lisp
+(import "lice.io")
+
 (print (if (>= 1 2)
     (read-file (file "out")) ; will not be read
     (read-file (file "in"))
@@ -105,6 +113,8 @@ false ; false
 + Loop
 
 ```lisp
+(import "lice.io")
+
 (while (> 10 (<-> "i" 0))
        (|> (print (<- "i"))
            (-> "i" (+ 1 (<- "i")))
@@ -121,6 +131,12 @@ The repl has two versions, a GUI one based on swing, and a CUI one.
 Here are some examples.
 
 ```lisp
+Lice > (import "lice.io")
+true => java.lang.Boolean
+
+Lice > (import "lice.gui")
+true => java.lang.Boolean
+
 Lice > (+ 1 1)
 2 => java.lang.Integer
 

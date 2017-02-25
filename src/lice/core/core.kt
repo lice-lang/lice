@@ -6,6 +6,7 @@
 @file:Suppress("NOTHING_TO_INLINE")
 @file:JvmName("Standard")
 @file:JvmMultifileClass
+
 package lice.core
 
 import lice.compiler.model.Node
@@ -14,6 +15,43 @@ import lice.compiler.model.ValueNode
 import lice.compiler.parse.*
 import lice.compiler.util.InterpretException
 import lice.compiler.util.SymbolList
+
+inline fun SymbolList.addStandard() {
+	addGetSetFunction()
+	addControlFlowFunctions()
+	addNumberFunctions()
+	addStringFunctions()
+	addBoolFunctions()
+	addCollectionsFunctions()
+
+	addFunction("new", { ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is String -> ValueNode(Class.forName(a.o).newInstance())
+			else -> InterpretException.typeMisMatch("String", a)
+		}
+	})
+	addFunction("", { ls ->
+		ls.forEach {
+			val res = it.eval()
+			println("${res.o.toString()} => ${res.type.name}")
+		}
+		Node.EmptyNode
+	})
+	addFunction("type", { ls ->
+		ls.forEach { println(it.eval().type.canonicalName) }
+		ls[0]
+	})
+	addFunction("gc", {
+		System.gc()
+		Node.EmptyNode
+	})
+	addFunction("|>", { ls ->
+		var ret = Value.Nullptr
+		ls.forEach { ret = it.eval() }
+		ValueNode(ret)
+	})
+}
 
 inline fun SymbolList.addNumberFunctions() {
 	addFunction("int->double", { ls ->
@@ -170,7 +208,7 @@ inline fun SymbolList.addGetSetFunction() {
 }
 
 inline fun SymbolList.addStringFunctions() {
-	addFunction("to-str", { ls -> ValueNode(ls[0].eval().o.toString()) })
+	addFunction("->str", { ls -> ValueNode(ls[0].eval().o.toString()) })
 	addFunction("str->int", { ls ->
 		val res = ls[0].eval()
 		when (res.o) {
@@ -207,21 +245,8 @@ inline fun SymbolList.addStringFunctions() {
 	})
 	addFunction("str-con", { ls ->
 		ValueNode(ls.fold(StringBuilder(ls.size)) { sb, value ->
-			val res = value.eval()
-			when (res.o) {
-				is String -> sb.append(res.o)
-				else -> InterpretException.typeMisMatch("String", res)
-			}
+			sb.append(value.eval().o.toString())
 		}.toString())
-	})
-	addFunction("print", { ls ->
-		ls.forEach { print(it.eval().o) }
-		println("")
-		ls[0]
-	})
-	addFunction("println", { ls ->
-		ls.forEach { println(it.eval().o) }
-		ls[0]
 	})
 	addFunction("format", { ls ->
 		if (ls.isEmpty()) InterpretException.tooFewArgument(1, ls.size)

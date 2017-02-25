@@ -17,12 +17,12 @@
 ; write the increased value to file
 
 (write-file (file "save")
-            (to-str (+ 7 (<- "var")))
+            (->str (+ 7 (<- "var")))
 )
 
 ; evaluate this file
 
-(-> "file" (file (to-str (<- "FILE_PATH"))))
+(-> "file" (file (->str (<- "FILE_PATH"))))
 
 ; (print (<- "file"))
 

@@ -7,10 +7,10 @@ package lice.compiler.util
 
 import lice.compiler.model.Node
 import lice.compiler.model.Node.Objects.EmptyNode
-import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.model.ValueNode
-import lice.compiler.util.InterpretException.Factory.typeMisMatch
-import lice.core.*
+import lice.core.addFileFunctions
+import lice.core.addGUIFunctions
+import lice.core.addStandard
 import java.util.*
 
 @Suppress("NOTHING_TO_INLINE")
@@ -28,12 +28,7 @@ class SymbolList(init: Boolean = true) {
 	}
 
 	fun initialize() {
-		addGetSetFunction()
-		addControlFlowFunctions()
-		addNumberFunctions()
-		addStringFunctions()
-		addBoolFunctions()
-		addCollectionsFunctions()
+		addStandard()
 		addFunction("import", { ls ->
 			var ret = ValueNode(true)
 			ls.forEach { node ->
@@ -51,33 +46,6 @@ class SymbolList(init: Boolean = true) {
 				}
 			}
 			ret
-		})
-		addFunction("new", { ls ->
-			val a = ls[0].eval()
-			when (a.o) {
-				is String -> ValueNode(Class.forName(a.o).newInstance())
-				else -> typeMisMatch("String", a)
-			}
-		})
-		addFunction("", { ls ->
-			ls.forEach {
-				val res = it.eval()
-				println("${res.o.toString()} => ${res.type.name}")
-			}
-			EmptyNode
-		})
-		addFunction("type", { ls ->
-			ls.forEach { println(it.eval().type.canonicalName) }
-			ls[0]
-		})
-		addFunction("gc", {
-			System.gc()
-			EmptyNode
-		})
-		addFunction("|>", { ls ->
-			var ret = Nullptr
-			ls.forEach { ret = it.eval() }
-			ValueNode(ret)
 		})
 	}
 
