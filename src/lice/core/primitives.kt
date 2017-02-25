@@ -110,6 +110,33 @@ inline fun SymbolList.addNumberFunctions() {
 			(list[it].o as Int) < list[it - 1].o as Int
 		})
 	})
+	addFunction("&", { list ->
+		ValueNode(list.fold(0) { sum, value ->
+			val res = value.eval()
+			when (res.o) {
+				is Int -> res.o and sum
+				else -> InterpretException.typeMisMatch("Int", res)
+			}
+		})
+	})
+	addFunction("|", { list ->
+		ValueNode(list.fold(0) { sum, value ->
+			val res = value.eval()
+			when (res.o) {
+				is Int -> res.o or sum
+				else -> InterpretException.typeMisMatch("Int", res)
+			}
+		})
+	})
+	addFunction("^", { list ->
+		ValueNode(list.fold(0) { sum, value ->
+			val res = value.eval()
+			when (res.o) {
+				is Int -> res.o xor sum
+				else -> InterpretException.typeMisMatch("Int", res)
+			}
+		})
+	})
 }
 
 inline fun SymbolList.addBoolFunctions() {
