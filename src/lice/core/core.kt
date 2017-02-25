@@ -287,6 +287,21 @@ inline fun SymbolList.addCollectionsFunctions() {
 			else -> InterpretException.typeMisMatch("List", a)
 		}
 	})
+	addFunction("size", { ls ->
+		val i = ls[0].eval()
+		when (i.o) {
+			is Collection<*> -> ValueNode(i.o.size)
+			else -> ValueNode(ls.size)
+		}
+	})
+	addFunction("count", { ls ->
+		val i = ls[0].eval()
+		val e = ls[1].eval()
+		when (i.o) {
+			is Collection<*> -> ValueNode(i.o.count { e.o == it })
+			else -> ValueNode(0)
+		}
+	})
 }
 
 inline fun SymbolList.addControlFlowFunctions() {

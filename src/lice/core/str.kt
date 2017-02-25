@@ -81,5 +81,4 @@ inline fun SymbolList.addStringFunctions() {
 		val regex = ls[1].eval()
 		ValueNode(str.o.toString().split(regex.o.toString()).toList())
 	})
-
 }
