@@ -1,0 +1,16 @@
+(print (import "lice.io"))
+
+(for-each
+  "i"
+  (.. 1000 1500)
+;  (print (<- "i"))
+  (thread|> (force|>
+    (println (<- "i"))
+    (write-file
+      (file (format "%d.html" (<- "i")))
+      (read-url (url (str-con "https://vijos.org/p/" (<- "i"))))
+    )))
+)
+
+
+

@@ -15,8 +15,10 @@ import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.model.ValueNode
 import lice.compiler.parse.*
 import lice.compiler.util.InterpretException
+import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
+import java.io.File
 import kotlin.concurrent.thread
 
 inline fun SymbolList.addStandard() {
@@ -26,6 +28,20 @@ inline fun SymbolList.addStandard() {
 	addStringFunctions()
 	addBoolFunctions()
 	addCollectionsFunctions()
+
+	addFunction("print", { ls ->
+		ls.forEach { print(it.eval().o) }
+		println("")
+		ls[0]
+	})
+	addFunction("print-err", { ls ->
+		ls.forEach { System.err.print(it.eval().o.toString()) }
+		ls[0]
+	})
+	addFunction("println", { ls ->
+		ls.forEach { println(it.eval().o) }
+		ls[0]
+	})
 
 	addFunction("new", { ls ->
 		val a = ls[0].eval()
@@ -74,7 +90,7 @@ inline fun SymbolList.addNumberFunctions() {
 			val res = value.eval()
 			when (res.o) {
 				is Int -> res.o + sum
-				else -> InterpretException.typeMisMatch("Int", res)
+				else -> typeMisMatch("Int", res)
 			}
 		})
 	})
@@ -301,6 +317,13 @@ inline fun SymbolList.addCollectionsFunctions() {
 			else -> (begin..end).reversed()
 		}
 		ValueNode(progression.toList())
+	})
+	addFunction("load-file", { ls ->
+		val o = ls[0].eval()
+		when (o.o) {
+			is File -> ValueNode(createAst(o.o, this).root.eval())
+			else -> InterpretException.typeMisMatch("File", o)
+		}
 	})
 	addFunction("for-each", { ls ->
 		if (ls.size < 3)

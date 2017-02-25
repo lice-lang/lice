@@ -10,26 +10,12 @@
 package lice.core
 
 import lice.compiler.model.ValueNode
-import lice.compiler.parse.createAst
 import lice.compiler.util.InterpretException
 import lice.compiler.util.SymbolList
 import java.io.File
 import java.net.URL
 
 inline fun SymbolList.addFileFunctions() {
-	addFunction("print", { ls ->
-		ls.forEach { print(it.eval().o) }
-		println("")
-		ls[0]
-	})
-	addFunction("print-err", { ls ->
-		ls.forEach { System.err.print(it.eval().o.toString()) }
-		ls[0]
-	})
-	addFunction("println", { ls ->
-		ls.forEach { println(it.eval().o) }
-		ls[0]
-	})
 	addFunction("file", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
@@ -72,13 +58,6 @@ inline fun SymbolList.addFileFunctions() {
 		when (a.o) {
 			is URL -> ValueNode(a.o.readText())
 			else -> InterpretException.typeMisMatch("URL", a)
-		}
-	})
-	addFunction("load-file", { ls ->
-		val o = ls[0].eval()
-		when (o.o) {
-			is File -> ValueNode(createAst(o.o).root.eval())
-			else -> InterpretException.typeMisMatch("File", o)
 		}
 	})
 	addFunction("write-file", { ls ->

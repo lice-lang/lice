@@ -1,4 +1,5 @@
 /**
+ * Codes that parse the code into a string tree
  * Created by ice1000 on 2017/2/12.
  *
  * @author ice1000
@@ -31,7 +32,6 @@ fun buildNode(code: String): StringNode {
 					.peek()
 					.add(StringLeafNode(lineNumber, code
 							.substring(startIndex = beginIndex, endIndex = index)
-//							.debugApply { println("found token: $this") }
 					))
 		}
 	}

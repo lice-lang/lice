@@ -28,12 +28,12 @@ class SymbolList(init: Boolean = true) {
 	}
 
 	fun initialize() {
-		addStandard()
 		addFunction("import", { ls ->
 			var ret = ValueNode(true)
 			ls.forEach { node ->
 				val res = node.eval()
-				if (res.o is String && res.o !in loadedModules) {
+				if (res.o is String) {
+					if (res.o in loadedModules) return@addFunction ValueNode(false)
 					loadedModules.add(res.o)
 					when (res.o) {
 						"lice.io" -> addFileFunctions()
@@ -47,6 +47,7 @@ class SymbolList(init: Boolean = true) {
 			}
 			ret
 		})
+		addStandard()
 	}
 
 	fun addFunction(name: String, node: (List<Node>) -> Node): Int {
