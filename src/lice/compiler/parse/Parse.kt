@@ -47,7 +47,7 @@ fun buildNode(code: String): StringNode {
 			')' -> if (!quoteStarted) {
 				check(index)
 				if (currentNodeStack.size <= 1) {
-					showError("Braces not match at line $lineNumber: Unexpected \')\'.")
+					showError("Braces not match at line $lineNumber: Unexpected \')\'.", true)
 					return EmptyStringNode(lineNumber)
 				}
 				val son =
@@ -82,7 +82,7 @@ fun buildNode(code: String): StringNode {
 	}
 	check(code.length - 1)
 	if (currentNodeStack.size > 1) {
-		showError("Braces not match at line $lineNumber: Expected \')\'.")
+		showError("Braces not match at line $lineNumber: Expected \')\'.", true)
 	}
 	return currentNodeStack.peek()
 }

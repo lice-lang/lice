@@ -165,7 +165,7 @@ Lice > (if true 1 2)
 Lice > (-> "file" (file "fuck_you"))
 fuck_you => java.io.File
 
-Lice > (write-file (<- "file") (str-con "deep dark fantasy"))
+Lice > (write-file (<- "file") (str-con "deep" " dark fantasy"))
 deep dark fantasy => java.lang.String
 
 Lice > (read-file (<- "file"))

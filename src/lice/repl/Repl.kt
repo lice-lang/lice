@@ -1,6 +1,7 @@
 package lice.repl
 
 import lice.compiler.model.Ast
+import lice.compiler.model.ValueNode
 import lice.compiler.parse.buildNode
 import lice.compiler.parse.mapAst
 import lice.compiler.util.*
@@ -51,9 +52,10 @@ version: check the version"""
 Lice language interpreter $VERSION_CODE
 by ice1000""".println()
 			else -> try {
-				Ast(mapAst(buildNode(str), symbolList), symbolList)
-						.root
-						.eval()
+				symbolList.setVariable(
+						"%",
+						ValueNode(Ast(mapAst(buildNode(str), symbolList), symbolList).root.eval())
+				)
 			} catch(e: Throwable) {
 				stackTrace = e
 				serr(e.message ?: "")

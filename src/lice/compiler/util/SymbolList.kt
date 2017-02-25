@@ -17,7 +17,7 @@ class SymbolList(init: Boolean = true) {
 	val functionMap = mutableMapOf<String, Int>()
 	val functionList = mutableListOf<(List<Node>) -> Node>()
 
-	val variableMap = mutableMapOf<String, Node>()
+	val variables = mutableMapOf<String, Node>()
 	val rand = Random(System.currentTimeMillis())
 	val loadedModules = mutableListOf<String>()
 
@@ -27,7 +27,6 @@ class SymbolList(init: Boolean = true) {
 
 	fun initialize() {
 		addFunction("import", { ls ->
-			var ret = ValueNode(true)
 			ls.forEach { node ->
 				val res = node.eval()
 				if (res.o is String) {
@@ -40,12 +39,12 @@ class SymbolList(init: Boolean = true) {
 						"lice.str" -> addStringFunctions()
 						else -> {
 							serr("${res.o} not found!")
-							ret = EmptyNode
+							return@addFunction EmptyNode
 						}
 					}
 				}
 			}
-			ret
+			ValueNode(true)
 		})
 		addStandard()
 	}
@@ -57,10 +56,10 @@ class SymbolList(init: Boolean = true) {
 	}
 
 	fun setVariable(name: String, value: Node) {
-		variableMap[name] = value
+		variables[name] = value
 	}
 
-	fun getVariable(name: String) = variableMap[name]
+	fun getVariable(name: String) = variables[name]
 
 	fun getFunctionId(name: String) = functionMap[name]
 

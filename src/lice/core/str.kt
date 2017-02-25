@@ -68,4 +68,12 @@ inline fun SymbolList.addStringFunctions() {
 			else -> InterpretException.typeMisMatch("String", format)
 		}
 	})
+	addFunction("->chars", { ls ->
+		ValueNode(ls.fold(StringBuilder(ls.size)) { sb, value ->
+			sb.append(value.eval().o.toString())
+		}
+				.toString()
+				.toCharArray()
+				.toList())
+	})
 }
