@@ -57,28 +57,17 @@ class ValueNode(val value: Value) : Node {
 
 class ExpressionNode(
 		val symbolList: SymbolList,
-		val function: Int,
+		val function: String,
 		val params: List<Node>) : Node {
 
 	constructor(
 			symbolList: SymbolList,
-			function: Int,
+			function: String,
 			vararg params: Node
 	) : this(
 			symbolList,
 			function,
 			params.toList()
-	)
-
-	constructor(
-			symbolList: SymbolList,
-			function: String,
-			params: List<Node>
-	) : this(
-			symbolList,
-			symbolList.getFunctionId(function)
-					?: throw ParseException("function not found: $function"),
-			params
 	)
 
 	override fun eval() =

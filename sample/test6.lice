@@ -9,13 +9,13 @@
     (print "shit")
 )
 
-; read the file and get the value
+; read the file and get the actual
 
 (-> "var" (str->int (read-file (file "save"))))
 
 (print (<- "var"))
 
-; write the increased value to file
+; write the increased actual to file
 
 (write-file (file "save")
             (->str (+ 7 (<- "var")))

@@ -30,137 +30,167 @@ inline fun SymbolList.addStandard() {
 	addCollectionsFunctions()
 	addListFunctions()
 
-	addFunction("def", { ls ->
+	setFunction("def", { ls ->
 		val a = ls[0].eval()
-		if (a.o is String) addFunction(a.o, { ls[1] })
+		if (a.o is String) setFunction(a.o, { ls[1] })
 		ls[1]
 	})
-	addFunction("call", { ls ->
+	setFunction("call", { ls ->
 		val a = ls[0].eval()
-		if (a.o is String) getFunction(getFunctionId(a.o)
-				?: throw InterpretException("function not found: ${a.o}"))(ls.subList(1, ls.size))
+		if (a.o is String) getFunction(a.o)(ls.subList(1, ls.size))
 		else EmptyNode
 	})
 
-	addFunction("eval", { ls ->
+	setFunction("eval", { ls ->
 		val value = ls[0].eval()
 		when (value.o) {
-			is String -> ValueNode(mapAst(buildNode(value.o), this).eval())
-			else -> InterpretException.typeMisMatch("String", value)
+			is String -> ValueNode(mapAst(
+					node = buildNode(value.o),
+					symbolList = this
+			).eval())
+			else -> InterpretException.typeMisMatch(
+					expected = "String",
+					actual = value
+			)
 		}
 	})
 
-	addFunction("print", { ls ->
+	setFunction("print", { ls ->
 		ls.forEach { print(it.eval().o) }
 		println("")
 		ls[0]
 	})
-	addFunction("print-err", { ls ->
+	setFunction("print-err", { ls ->
 		ls.forEach { System.err.print(it.eval().o.toString()) }
 		serr("")
 		ls[0]
 	})
-	addFunction("println-err", { ls ->
+	setFunction("println-err", { ls ->
 		ls.forEach { serr(it.eval().o.toString()) }
 		ls[0]
 	})
-	addFunction("println", { ls ->
+	setFunction("println", { ls ->
 		ls.forEach { println(it.eval().o) }
 		ls[0]
 	})
 
-	addFunction("new", { ls ->
+	setFunction("new", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is String -> ValueNode(Class.forName(a.o).newInstance())
-			else -> InterpretException.typeMisMatch("String", a)
+			else -> InterpretException.typeMisMatch(
+					expected = "String",
+					actual = a
+			)
 		}
 	})
-	addFunction("", { ls ->
+	setFunction("", { ls ->
 		ls.forEach {
 			val res = it.eval()
 			println("${res.o.toString()} => ${res.type.name}")
 		}
 		EmptyNode
 	})
-	addFunction("type", { ls ->
+	setFunction("type", { ls ->
 		ls.forEach { println(it.eval().type.canonicalName) }
 		ls[0]
 	})
-	addFunction("gc", {
+	setFunction("gc", {
 		System.gc()
 		EmptyNode
 	})
 
-	addFunction("|>", { ls ->
+	setFunction("|>", { ls ->
 		var ret = Nullptr
 		ls.forEach { ret = it.eval() }
 		ValueNode(ret)
 	})
-	addFunction("force|>", { ls ->
+	setFunction("force|>", { ls ->
 		var ret = Nullptr
 		forceRun { ls.forEach { node -> ret = node.eval() } }
 		ValueNode(ret)
 	})
-	addFunction("no-run|>", { EmptyNode })
+	setFunction("no-run|>", { EmptyNode })
 
-	addFunction("load-file", { ls ->
+	setFunction("load-file", { ls ->
 		val o = ls[0].eval()
 		when (o.o) {
-			is File -> ValueNode(createAst(o.o, this).root.eval())
-			else -> InterpretException.typeMisMatch("File", o)
+			is File -> ValueNode(createAst(
+					file = o.o,
+					symbolList = this
+			).root.eval())
+			else -> InterpretException.typeMisMatch(
+					expected = "File",
+					actual = o
+			)
 		}
 	})
 
-	addFunction("exit", {
+	setFunction("exit", {
 		System.exit(0)
 		EmptyNode
 	})
 
-	addFunction("null?", { ls -> ValueNode(null == ls[0].eval().o) })
-	addFunction("!null?", { ls -> ValueNode(null != ls[0].eval().o) })
-	addFunction("true?", { ls -> ValueNode(true == ls[0].eval().o) })
-	addFunction("false?", { ls -> ValueNode(false == ls[0].eval().o) })
+	setFunction("null?", { ls -> ValueNode(null == ls[0].eval().o) })
+	setFunction("!null?", { ls -> ValueNode(null != ls[0].eval().o) })
+	setFunction("true?", { ls -> ValueNode(true == ls[0].eval().o) })
+	setFunction("false?", { ls -> ValueNode(false == ls[0].eval().o) })
 }
 
 inline fun SymbolList.addGetSetFunction() {
-	addFunction("->", { ls ->
+	setFunction("->", { ls ->
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size)
+			InterpretException.tooFewArgument(
+					expected = 2,
+					actual = ls.size
+			)
 		val str = ls[0].eval()
 		val res = ValueNode(ls[1].eval())
 		when (str.o) {
 			is String -> setVariable(str.o, res)
-			else -> InterpretException.typeMisMatch("String", str)
+			else -> InterpretException.typeMisMatch(
+					expected = "String",
+					actual = str
+			)
 		}
 		res
 	})
-	addFunction("<-", { ls ->
+	setFunction("<-", { ls ->
 		if (ls.isEmpty())
 			InterpretException.tooFewArgument(1, ls.size)
 		val str = ls[0].eval()
 		when (str.o) {
 			is String -> getVariable(str.o) ?: EmptyNode
-			else -> InterpretException.typeMisMatch("String", str)
+			else -> InterpretException.typeMisMatch(
+					expected = "String",
+					actual = str
+			)
 		}
 	})
-	addFunction("<->", { ls ->
+	setFunction("<->", { ls ->
 		if (ls.size < 2)
 			InterpretException.tooFewArgument(2, ls.size)
 		val str = ls[0].eval()
 		when (str.o) {
 			is String -> {
-				if (getVariable(str.o) == null) setVariable(str.o, ValueNode(ls[1].eval()))
-				getVariable(str.o)!!
+				if (getVariable(name = str.o) == null)
+					setVariable(
+							name = str.o,
+							value = ValueNode(ls[1].eval())
+					)
+				getVariable(name = str.o)!!
 			}
-			else -> InterpretException.typeMisMatch("String", str)
+			else -> InterpretException.typeMisMatch(
+					expected = "String",
+					actual = str
+			)
 		}
 	})
 }
 
 
 inline fun SymbolList.addControlFlowFunctions() {
-	addFunction("if", { ls ->
+	setFunction("if", { ls ->
 		if (ls.size < 2)
 			InterpretException.tooFewArgument(2, ls.size)
 		val a = ls[0].eval().o
@@ -175,7 +205,7 @@ inline fun SymbolList.addControlFlowFunctions() {
 			else -> EmptyNode
 		}
 	})
-	addFunction("while", { ls ->
+	setFunction("while", { ls ->
 		if (ls.size < 2)
 			InterpretException.tooFewArgument(2, ls.size)
 		var a = ls[0].eval().o

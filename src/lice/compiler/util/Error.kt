@@ -20,8 +20,8 @@ class ParseException(string: String) : RuntimeException(string) {
 
 class InterpretException(string: String) : RuntimeException(string) {
 	companion object Factory {
-		fun typeMisMatch(expected: String, value: Value): Nothing {
-			throw InterpretException("type mismatch: expected: $expected, found: ${value.type.name}")
+		fun typeMisMatch(expected: String, actual: Value): Nothing {
+			throw InterpretException("type mismatch: expected: $expected, found: ${actual.type.name}")
 		}
 
 		fun tooFewArgument(expected: Int, actual: Int): Nothing {

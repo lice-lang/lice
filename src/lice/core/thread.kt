@@ -15,11 +15,11 @@ import java.lang.Thread.sleep
 import kotlin.concurrent.thread
 
 inline fun SymbolList.addConcurrentFunctions() {
-	addFunction("thread|>", { ls ->
+	setFunction("thread|>", { ls ->
 		thread { ls.forEach { node -> node.eval() } }
 		EmptyNode
 	})
-	addFunction("sleep", { ls ->
+	setFunction("sleep", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is Long -> sleep(a.o)

@@ -10,7 +10,6 @@ package lice.compiler.parse
 
 import lice.compiler.model.*
 import lice.compiler.model.Value.Objects.Nullptr
-import lice.compiler.util.ParseException.Factory.undefinedFunction
 import lice.compiler.util.SymbolList
 import lice.compiler.util.serr
 import java.io.File
@@ -24,14 +23,17 @@ import java.io.File
  */
 fun parseValue(str: String): Node {
 	return when {
-		str.isEmpty() || str.isBlank() ->
+		str.isEmpty() or str.isBlank() ->
 			EmptyNode
 		str.isString() ->
-			ValueNode(Value(str
-					.substring(1, str.length - 1)
+			ValueNode(str
+					.substring(
+							startIndex = 1,
+							endIndex = str.length - 1
+					)
 					.apply {
 						// TODO replace \n, \t, etc.
-					}))
+					})
 		str.isOctInt() ->
 			ValueNode(str.toOctInt())
 		str.isInt() ->
@@ -70,12 +72,11 @@ fun mapAst(
 	is StringMiddleNode -> {
 		val str = node.list[0].strRepr
 		ExpressionNode(
-				symbolList,
-				symbolList.getFunctionId(str)
-						?: undefinedFunction(str),
-				node
+				symbolList = symbolList,
+				function = str,
+				params = node
 						.list
-						.subList(1, node.list.size)
+						.subList(fromIndex = 1, toIndex = node.list.size)
 						.map { strNode ->
 							mapAst(
 									node = strNode,
@@ -92,11 +93,14 @@ fun mapAst(
 
 fun createAst(
 		file: File,
-		symbolList: SymbolList = SymbolList(true)): Ast {
+		symbolList: SymbolList = SymbolList(init = true)): Ast {
 	val code = file.readText()
 	val fp = "FILE_PATH"
-	if (symbolList.getVariable(fp) == null)
-		symbolList.setVariable(fp, ValueNode(file.absolutePath))
+	if (symbolList.getVariable(name = fp) == null)
+		symbolList.setVariable(
+				name = fp,
+				value = ValueNode(any = file.absolutePath)
+		)
 	val stringTreeRoot = buildNode(code)
 	return Ast(
 			mapAst(

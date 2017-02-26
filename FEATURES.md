@@ -92,9 +92,9 @@ false ; false
 + A global variable map to store values
 
 ```lisp
-(-> "var" "value") ; put "value" into "var"
+(-> "var" "actual") ; put "actual" into "var"
 
-(<- "var") ; returns "value"
+(<- "var") ; returns "actual"
 
 (<-> "var" "darkholm")
 ; if (<- "var") is null,
@@ -131,7 +131,7 @@ false ; false
 class Main {
 	public static void main(String[] args){
 		SymbolList sl = new SymbolList();
-		sl.addFunction(
+		sl.setFunction(
 				"java-api-invoking",
 				ls -> new ValueNode(100)
 		);

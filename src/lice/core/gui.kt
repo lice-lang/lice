@@ -24,14 +24,14 @@ import javax.swing.JPanel
 import javax.swing.WindowConstants
 
 inline fun SymbolList.addGUIFunctions() {
-	addFunction("frame", { ls ->
+	setFunction("frame", { ls ->
 		ValueNode(JFrame().apply {
 			if (ls.isNotEmpty()) title = ls[0].eval().o.toString()
 			defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
 			isVisible = true
 		})
 	})
-	addFunction("image", { ls ->
+	setFunction("image", { ls ->
 		val o = ls[0].eval()
 		when (o.o) {
 			is File -> ValueNode(ImageIO.read(o.o))
@@ -43,7 +43,7 @@ inline fun SymbolList.addGUIFunctions() {
 			else -> typeMisMatch("File or URL", o)
 		}
 	})
-	addFunction("show-image", { ls ->
+	setFunction("show-image", { ls ->
 		val o = ls[0].eval()
 		when (o.o) {
 			is BufferedImage -> {

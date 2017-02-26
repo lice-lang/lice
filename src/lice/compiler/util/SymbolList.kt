@@ -14,10 +14,9 @@ import java.util.*
 @Suppress("NOTHING_TO_INLINE")
 
 class SymbolList(init: Boolean = true) {
-	val functionMap = mutableMapOf<String, Int>()
-	val functionList = mutableListOf<(List<Node>) -> Node>()
-
+	val function = mutableMapOf<String, (List<Node>) -> Node>()
 	val variables = mutableMapOf<String, Node>()
+
 	val rand = Random(System.currentTimeMillis())
 	val loadedModules = mutableListOf<String>()
 
@@ -26,11 +25,11 @@ class SymbolList(init: Boolean = true) {
 	}
 
 	fun initialize() {
-		addFunction("import", { ls ->
+		setFunction("import", { ls ->
 			ls.forEach { node ->
 				val res = node.eval()
 				if (res.o is String) {
-					if (res.o in loadedModules) return@addFunction ValueNode(false)
+					if (res.o in loadedModules) return@setFunction ValueNode(false)
 					loadedModules.add(res.o)
 					when (res.o) {
 						"lice.io" -> addFileFunctions()
@@ -40,7 +39,7 @@ class SymbolList(init: Boolean = true) {
 						"lice.thread" -> addConcurrentFunctions()
 						else -> {
 							serr("${res.o} not found!")
-							return@addFunction EmptyNode
+							return@setFunction EmptyNode
 						}
 					}
 				}
@@ -50,19 +49,18 @@ class SymbolList(init: Boolean = true) {
 		addStandard()
 	}
 
-	fun addFunction(name: String, node: (List<Node>) -> Node): Int {
-		functionMap.put(name, functionList.size)
-		functionList.add(node)
-		return functionList.size - 1
+	fun setFunction(name: String, node: (List<Node>) -> Node) {
+		function.put(name, node)
 	}
 
 	fun setVariable(name: String, value: Node) {
 		variables[name] = value
 	}
 
-	fun getVariable(name: String) = variables[name]
+	fun getVariable(name: String) =
+			variables[name]
 
-	fun getFunctionId(name: String) = functionMap[name]
-
-	fun getFunction(id: Int) = functionList[id]
+	fun getFunction(name: String) =
+			function[name]
+					?: throw ParseException("function not found: $function")
 }
