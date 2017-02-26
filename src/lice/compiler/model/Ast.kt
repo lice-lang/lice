@@ -31,6 +31,7 @@ interface Node {
 
 class ValueNode(val value: Value) : Node {
 	constructor(any: Any) : this(Value(any))
+	constructor(any: Any?, type: Class<*>) : this(Value(any, type))
 
 	override fun eval() =
 			value

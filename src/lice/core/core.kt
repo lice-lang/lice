@@ -29,6 +29,18 @@ inline fun SymbolList.addStandard() {
 	addBoolFunctions()
 	addCollectionsFunctions()
 
+	addFunction("def", { ls ->
+		val a = ls[0].eval()
+		if (a.o is String) addFunction(a.o, { ls[1] })
+		ls[1]
+	})
+	addFunction("call", { ls ->
+		val a = ls[0].eval()
+		if (a.o is String) getFunction(getFunctionId(a.o)
+				?: throw InterpretException("function not found: ${a.o}"))(ls.subList(1, ls.size))
+		else EmptyNode
+	})
+
 	addFunction("eval", { ls ->
 		val value = ls[0].eval()
 		when (value.o) {
@@ -96,6 +108,11 @@ inline fun SymbolList.addStandard() {
 			else -> InterpretException.typeMisMatch("File", o)
 		}
 	})
+
+	addFunction("null?", { ls -> ValueNode(null == ls[0].eval().o) })
+	addFunction("!null?", { ls -> ValueNode(null != ls[0].eval().o) })
+	addFunction("true?", { ls -> ValueNode(true == ls[0].eval().o) })
+	addFunction("false?", { ls -> ValueNode(false == ls[0].eval().o) })
 }
 
 inline fun SymbolList.addGetSetFunction() {
@@ -133,66 +150,6 @@ inline fun SymbolList.addGetSetFunction() {
 	})
 }
 
-inline fun SymbolList.addCollectionsFunctions() {
-	addFunction("[]", { ls ->
-		ValueNode(ls.map { it.eval().o })
-	})
-	addFunction("..", { ls ->
-		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size)
-		val begin = ls[0].eval().o as Int
-		val end = ls[1].eval().o as Int
-		val progression = when {
-			begin <= end -> begin..end
-			else -> (begin..end).reversed()
-		}
-		ValueNode(progression.toList())
-	})
-	addFunction("for-each", { ls ->
-		if (ls.size < 3)
-			InterpretException.tooFewArgument(3, ls.size)
-		val i = ls[0].eval()
-		if (i.o !is String) InterpretException.typeMisMatch("String", i)
-		val a = ls[1].eval()
-		when (a.o) {
-			is Collection<*> -> {
-				var ret: Any? = null
-				a.o.forEach {
-					setVariable(i.o, ValueNode(it ?: Nullptr))
-					ret = ls[2].eval().o
-				}
-				ValueNode(ret ?: Nullptr)
-			}
-			else -> InterpretException.typeMisMatch("List", a)
-		}
-	})
-	addFunction("size", { ls ->
-		val i = ls[0].eval()
-		when (i.o) {
-			is Collection<*> -> ValueNode(i.o.size)
-			else -> ValueNode(ls.size)
-		}
-	})
-	addFunction("count", { ls ->
-		val i = ls[0].eval()
-		val e = ls[1].eval()
-		when (i.o) {
-			is Collection<*> -> ValueNode(i.o.count { e.o == it })
-			else -> ValueNode(0)
-		}
-	})
-	addFunction("empty?", { ls ->
-		ValueNode((ls[0].eval().o as? Collection<*>)?.isEmpty() ?: true)
-	})
-	addFunction("in?", { ls ->
-		val i = ls[0].eval()
-		val e = ls[1].eval()
-		when (i.o) {
-			is Collection<*> -> ValueNode(e.o in i.o)
-			else -> ValueNode(false)
-		}
-	})
-}
 
 inline fun SymbolList.addControlFlowFunctions() {
 	addFunction("if", { ls ->
