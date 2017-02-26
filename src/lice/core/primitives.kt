@@ -76,38 +76,38 @@ inline fun SymbolList.addNumberFunctions() {
 	})
 	addFunction("==", { list ->
 		val ls = list.map(Node::eval)
-		ValueNode((1..ls.size - 1).none {
-			ls[it].o != ls[it - 1].o
+		ValueNode((1..ls.size - 1).all {
+			ls[it].o == ls[it - 1].o
 		})
 	})
 	addFunction("!=", { list ->
 		val ls = list.map(Node::eval)
-		ValueNode((1..ls.size - 1).none {
-			ls[it].o == ls[it - 1].o
+		ValueNode((1..ls.size - 1).all {
+			ls[it].o != ls[it - 1].o
 		})
 	})
 	addFunction("<", { list ->
 		val ls = list.map(Node::eval)
-		ValueNode((1..ls.size - 1).none {
-			ls[it].o as Int <= ls[it - 1].o as Int
+		ValueNode((1..ls.size - 1).all {
+			(ls[it - 1].o as Int) < (ls[it].o as Int)
 		})
 	})
 	addFunction(">", { list ->
 		val ls = list.map(Node::eval)
-		ValueNode((1..ls.size - 1).none {
-			(ls[it].o as Int) >= ls[it - 1].o as Int
+		ValueNode((1..ls.size - 1).all {
+			ls[it - 1].o as Int > (ls[it].o as Int)
 		})
 	})
 	addFunction(">=", { list ->
 		val ls = list.map(Node::eval)
-		ValueNode((1..ls.size - 1).none {
-			ls[it].o as Int > ls[it - 1].o as Int
+		ValueNode((1..ls.size - 1).all {
+			(ls[it - 1].o as Int) >= (ls[it].o as Int)
 		})
 	})
 	addFunction("<=", { ls ->
 		val list = ls.map(Node::eval)
-		ValueNode((1..list.size - 1).none {
-			(list[it].o as Int) < list[it - 1].o as Int
+		ValueNode((1..list.size - 1).all {
+			(list[it - 1].o as Int) <= (list[it].o as Int)
 		})
 	})
 	addFunction("&", { list ->
