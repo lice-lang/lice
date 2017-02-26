@@ -106,7 +106,6 @@ fun createAst(
 			mapAst(
 					node = stringTreeRoot,
 					symbolList = symbolList
-			),
-			symbolList
+			)
 	)
 }

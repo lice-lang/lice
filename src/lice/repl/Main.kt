@@ -2,10 +2,11 @@ package lice.repl
 
 import lice.compiler.parse.createAst
 import lice.compiler.util.SymbolList
+import lice.compiler.util.serr
 import java.io.File
 import java.util.*
 
-val VERSION_CODE = "v1.0-SNAPSHOT"
+val VERSION_CODE = "v1.1-SNAPSHOT"
 
 /**
  * The entrance of the whole application
@@ -32,6 +33,9 @@ object Main {
 				val repl = Repl()
 				while (true)
 					repl.handle(scanner.nextLine(), sl)
-			} else
-				interpret(File(args[0]))
+			} else {
+				interpret(File(args[0]).apply {
+					if (!exists()) serr("file not found: ${args[0]}")
+				})
+			}
 }

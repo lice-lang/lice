@@ -79,6 +79,5 @@ object EmptyNode : Node {
 }
 
 class Ast(
-		val root: Node,
-		val symbolList: SymbolList
+		val root: Node
 )

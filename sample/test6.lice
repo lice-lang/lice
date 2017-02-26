@@ -9,7 +9,7 @@
     (print "shit")
 )
 
-; read the file and get the actual
+; read the file and get the value
 
 (-> "var" (str->int (read-file (file "save"))))
 
@@ -17,8 +17,9 @@
 
 ; write the increased actual to file
 
-(write-file (file "save")
-            (->str (+ 7 (<- "var")))
+(write-file
+  (file "save")
+  (->str (+ 7 (<- "var")))
 )
 
 ; evaluate this file

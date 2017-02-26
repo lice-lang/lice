@@ -140,18 +140,12 @@ inline fun SymbolList.addStandard() {
 inline fun SymbolList.addGetSetFunction() {
 	setFunction("->", { ls ->
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(
-					expected = 2,
-					actual = ls.size
-			)
+			InterpretException.tooFewArgument(2, ls.size)
 		val str = ls[0].eval()
 		val res = ValueNode(ls[1].eval())
 		when (str.o) {
 			is String -> setVariable(str.o, res)
-			else -> InterpretException.typeMisMatch(
-					expected = "String",
-					actual = str
-			)
+			else -> InterpretException.typeMisMatch("String", str)
 		}
 		res
 	})
@@ -161,10 +155,7 @@ inline fun SymbolList.addGetSetFunction() {
 		val str = ls[0].eval()
 		when (str.o) {
 			is String -> getVariable(str.o) ?: EmptyNode
-			else -> InterpretException.typeMisMatch(
-					expected = "String",
-					actual = str
-			)
+			else -> InterpretException.typeMisMatch("String", str)
 		}
 	})
 	setFunction("<->", { ls ->
@@ -180,10 +171,7 @@ inline fun SymbolList.addGetSetFunction() {
 					)
 				getVariable(name = str.o)!!
 			}
-			else -> InterpretException.typeMisMatch(
-					expected = "String",
-					actual = str
-			)
+			else -> InterpretException.typeMisMatch("String", str)
 		}
 	})
 }
