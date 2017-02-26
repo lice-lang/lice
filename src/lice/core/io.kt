@@ -16,7 +16,7 @@ import java.io.File
 import java.net.URL
 
 inline fun SymbolList.addFileFunctions() {
-	setFunction("file", { ls ->
+	defineFunction("file", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is String -> ValueNode(File(a.o)
@@ -24,7 +24,7 @@ inline fun SymbolList.addFileFunctions() {
 			else -> InterpretException.typeMisMatch("String", a)
 		}
 	})
-	setFunction("directory", { ls ->
+	defineFunction("directory", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is String -> ValueNode(File(a.o)
@@ -32,35 +32,35 @@ inline fun SymbolList.addFileFunctions() {
 			else -> InterpretException.typeMisMatch("String", a)
 		}
 	})
-	setFunction("file-exists?", { ls ->
+	defineFunction("file-exists?", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is String -> ValueNode(File(a.o).exists())
 			else -> InterpretException.typeMisMatch("String", a)
 		}
 	})
-	setFunction("read-file", { ls ->
+	defineFunction("read-file", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is File -> ValueNode(a.o.readText())
 			else -> InterpretException.typeMisMatch("File", a)
 		}
 	})
-	setFunction("url", { ls ->
+	defineFunction("url", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is String -> ValueNode(URL(a.o))
 			else -> InterpretException.typeMisMatch("String", a)
 		}
 	})
-	setFunction("read-url", { ls ->
+	defineFunction("read-url", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is URL -> ValueNode(a.o.readText())
 			else -> InterpretException.typeMisMatch("URL", a)
 		}
 	})
-	setFunction("write-file", { ls ->
+	defineFunction("write-file", { ls ->
 		val a = ls[0].eval()
 		val b = ls[1].eval()
 		when (a.o) {

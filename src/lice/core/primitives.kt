@@ -16,10 +16,10 @@ import lice.compiler.util.SymbolList
 
 
 inline fun SymbolList.addNumberFunctions() {
-	setFunction("int->double", { ls ->
+	defineFunction("int->double", { ls ->
 		ValueNode((ls[0].eval().o as Int).toDouble())
 	})
-	setFunction("+", { list ->
+	defineFunction("+", { list ->
 		ValueNode(list.fold(0) { sum, value ->
 			val res = value.eval()
 			when (res.o) {
@@ -28,7 +28,7 @@ inline fun SymbolList.addNumberFunctions() {
 			}
 		})
 	})
-	setFunction("-", { ls ->
+	defineFunction("-", { ls ->
 		when (ls.size) {
 			0 -> ValueNode(0)
 			1 -> ValueNode(ls[0].eval())
@@ -40,7 +40,7 @@ inline fun SymbolList.addNumberFunctions() {
 			}
 		}
 	})
-	setFunction("/", { ls ->
+	defineFunction("/", { ls ->
 		when (ls.size) {
 			0 -> ValueNode(1)
 			1 -> ValueNode(ls[0].eval())
@@ -52,7 +52,7 @@ inline fun SymbolList.addNumberFunctions() {
 			}
 		}
 	})
-	setFunction("%", { ls ->
+	defineFunction("%", { ls ->
 		when (ls.size) {
 			0 -> ValueNode(0)
 			1 -> ValueNode(ls[0].eval())
@@ -65,7 +65,7 @@ inline fun SymbolList.addNumberFunctions() {
 			}
 		}
 	})
-	setFunction("*", { ls ->
+	defineFunction("*", { ls ->
 		ValueNode(ls.fold(1) { sum, value ->
 			val res = value.eval()
 			when (res.o) {
@@ -74,43 +74,43 @@ inline fun SymbolList.addNumberFunctions() {
 			}
 		})
 	})
-	setFunction("==", { list ->
+	defineFunction("==", { list ->
 		val ls = list.map(Node::eval)
 		ValueNode((1..ls.size - 1).all {
 			ls[it].o == ls[it - 1].o
 		})
 	})
-	setFunction("!=", { list ->
+	defineFunction("!=", { list ->
 		val ls = list.map(Node::eval)
 		ValueNode((1..ls.size - 1).all {
 			ls[it].o != ls[it - 1].o
 		})
 	})
-	setFunction("<", { list ->
+	defineFunction("<", { list ->
 		val ls = list.map(Node::eval)
 		ValueNode((1..ls.size - 1).all {
 			(ls[it - 1].o as Int) < (ls[it].o as Int)
 		})
 	})
-	setFunction(">", { list ->
+	defineFunction(">", { list ->
 		val ls = list.map(Node::eval)
 		ValueNode((1..ls.size - 1).all {
 			ls[it - 1].o as Int > (ls[it].o as Int)
 		})
 	})
-	setFunction(">=", { list ->
+	defineFunction(">=", { list ->
 		val ls = list.map(Node::eval)
 		ValueNode((1..ls.size - 1).all {
 			(ls[it - 1].o as Int) >= (ls[it].o as Int)
 		})
 	})
-	setFunction("<=", { ls ->
+	defineFunction("<=", { ls ->
 		val list = ls.map(Node::eval)
 		ValueNode((1..list.size - 1).all {
 			(list[it - 1].o as Int) <= (list[it].o as Int)
 		})
 	})
-	setFunction("&", { list ->
+	defineFunction("&", { list ->
 		ValueNode(list.fold(0) { sum, value ->
 			val res = value.eval()
 			when (res.o) {
@@ -119,7 +119,7 @@ inline fun SymbolList.addNumberFunctions() {
 			}
 		})
 	})
-	setFunction("|", { list ->
+	defineFunction("|", { list ->
 		ValueNode(list.fold(0) { sum, value ->
 			val res = value.eval()
 			when (res.o) {
@@ -128,7 +128,7 @@ inline fun SymbolList.addNumberFunctions() {
 			}
 		})
 	})
-	setFunction("^", { list ->
+	defineFunction("^", { list ->
 		ValueNode(list.fold(0) { sum, value ->
 			val res = value.eval()
 			when (res.o) {
@@ -140,7 +140,7 @@ inline fun SymbolList.addNumberFunctions() {
 }
 
 inline fun SymbolList.addBoolFunctions() {
-	setFunction("&&", { ls ->
+	defineFunction("&&", { ls ->
 		ValueNode(ls.fold(true) { sum, value ->
 			val o = value.eval()
 			when {
@@ -149,7 +149,7 @@ inline fun SymbolList.addBoolFunctions() {
 			}
 		})
 	})
-	setFunction("||", { ls ->
+	defineFunction("||", { ls ->
 		ValueNode(ls.fold(false) { sum, value ->
 			val o = value.eval()
 			when {
@@ -158,7 +158,7 @@ inline fun SymbolList.addBoolFunctions() {
 			}
 		})
 	})
-	setFunction("!", { ls ->
+	defineFunction("!", { ls ->
 		ValueNode(!(ls[0].eval().o as Boolean))
 	})
 }

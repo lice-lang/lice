@@ -19,12 +19,12 @@ import lice.compiler.util.SymbolList
 import lice.util.Pair
 
 inline fun SymbolList.addListFunctions() {
-	setFunction("[|]", { ls ->
+	defineFunction("[|]", { ls ->
 		ValueNode(ls.foldRight(null) { value, pairs: Any? ->
 			Pair(value.eval().o, pairs)
 		}, Pair::class.java)
 	})
-	setFunction("head", { ls ->
+	defineFunction("head", { ls ->
 		val a = ls[0].eval()
 		if (a.o is Pair<*, *>) when (a.o.first) {
 			null -> EmptyNode
@@ -32,7 +32,7 @@ inline fun SymbolList.addListFunctions() {
 		}
 		else typeMisMatch("Pair", a)
 	})
-	setFunction("tail", { ls ->
+	defineFunction("tail", { ls ->
 		val a = ls[0].eval()
 		if (a.o is Pair<*, *>) when (a.o.second) {
 			null -> EmptyNode
@@ -43,10 +43,10 @@ inline fun SymbolList.addListFunctions() {
 }
 
 inline fun SymbolList.addCollectionsFunctions() {
-	setFunction("[]", { ls ->
+	defineFunction("[]", { ls ->
 		ValueNode(ls.map { it.eval().o })
 	})
-	setFunction("..", { ls ->
+	defineFunction("..", { ls ->
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size)
 		val begin = ls[0].eval().o as Int
@@ -57,7 +57,7 @@ inline fun SymbolList.addCollectionsFunctions() {
 		}
 		ValueNode(progression.toList())
 	})
-	setFunction("for-each", { ls ->
+	defineFunction("for-each", { ls ->
 		if (ls.size < 3)
 			tooFewArgument(3, ls.size)
 		val i = ls[0].eval()
@@ -75,21 +75,21 @@ inline fun SymbolList.addCollectionsFunctions() {
 			else -> typeMisMatch("List", a)
 		}
 	})
-	setFunction("size", { ls ->
+	defineFunction("size", { ls ->
 		val i = ls[0].eval()
 		when (i.o) {
 			is Collection<*> -> ValueNode(i.o.size)
 			else -> ValueNode(ls.size)
 		}
 	})
-	setFunction("reverse", { ls ->
+	defineFunction("reverse", { ls ->
 		val i = ls[0].eval()
 		when (i.o) {
 			is Collection<*> -> ValueNode(i.o.reversed())
 			else -> ValueNode(ls.size)
 		}
 	})
-	setFunction("count", { ls ->
+	defineFunction("count", { ls ->
 		val i = ls[0].eval()
 		val e = ls[1].eval()
 		when (i.o) {
@@ -97,10 +97,10 @@ inline fun SymbolList.addCollectionsFunctions() {
 			else -> ValueNode(0)
 		}
 	})
-	setFunction("empty?", { ls ->
+	defineFunction("empty?", { ls ->
 		ValueNode((ls[0].eval().o as? Collection<*>)?.isEmpty() ?: true)
 	})
-	setFunction("in?", { ls ->
+	defineFunction("in?", { ls ->
 		val i = ls[0].eval()
 		val e = ls[1].eval()
 		when (i.o) {

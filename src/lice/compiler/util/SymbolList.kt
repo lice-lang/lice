@@ -6,15 +6,17 @@
 package lice.compiler.util
 
 import lice.compiler.model.Node
-import lice.compiler.model.Node.Objects.EmptyNode
+import lice.compiler.model.Node.Objects.NullNode
 import lice.compiler.model.ValueNode
 import lice.core.*
 import java.util.*
 
 @Suppress("NOTHING_TO_INLINE")
 
-class SymbolList(init: Boolean = true) {
-	val function = mutableMapOf<String, (List<Node>) -> Node>()
+class SymbolList
+@JvmOverloads
+constructor(init: Boolean = true) {
+	val functions = mutableMapOf<String, (List<Node>) -> Node>()
 	val variables = mutableMapOf<String, Node>()
 
 	val rand = Random(System.currentTimeMillis())
@@ -25,11 +27,11 @@ class SymbolList(init: Boolean = true) {
 	}
 
 	fun initialize() {
-		setFunction("import", { ls ->
+		defineFunction("import", { ls ->
 			ls.forEach { node ->
 				val res = node.eval()
 				if (res.o is String) {
-					if (res.o in loadedModules) return@setFunction ValueNode(false)
+					if (res.o in loadedModules) return@defineFunction ValueNode(false)
 					loadedModules.add(res.o)
 					when (res.o) {
 						"lice.io" -> addFileFunctions()
@@ -39,7 +41,7 @@ class SymbolList(init: Boolean = true) {
 						"lice.thread" -> addConcurrentFunctions()
 						else -> {
 							serr("${res.o} not found!")
-							return@setFunction EmptyNode
+							return@defineFunction NullNode
 						}
 					}
 				}
@@ -49,8 +51,12 @@ class SymbolList(init: Boolean = true) {
 		addStandard()
 	}
 
-	fun setFunction(name: String, node: (List<Node>) -> Node) {
-		function.put(name, node)
+	fun defineFunction(name: String, node: (List<Node>) -> Node) {
+		functions.put(name, node)
+	}
+
+	fun removeFunction(name: String) {
+		functions.remove(name)
 	}
 
 	fun setVariable(name: String, value: Node) {
@@ -61,6 +67,6 @@ class SymbolList(init: Boolean = true) {
 			variables[name]
 
 	fun getFunction(name: String) =
-			function[name]
-					?: throw ParseException("function not found: $function")
+			functions[name]
+					?: throw ParseException("functions not found: $functions")
 }

@@ -16,8 +16,8 @@ import lice.compiler.util.SymbolList
 
 
 inline fun SymbolList.addStringFunctions() {
-	setFunction("->str", { ls -> ValueNode(ls[0].eval().o.toString()) })
-	setFunction("str->int", { ls ->
+	defineFunction("->str", { ls -> ValueNode(ls[0].eval().o.toString()) })
+	defineFunction("str->int", { ls ->
 		val res = ls[0].eval()
 		when (res.o) {
 			is String -> ValueNode(when {
@@ -30,33 +30,33 @@ inline fun SymbolList.addStringFunctions() {
 			else -> InterpretException.typeMisMatch("String", res)
 		}
 	})
-	setFunction("int->hex", { ls ->
+	defineFunction("int->hex", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is Int -> ValueNode("0x${Integer.toHexString(a.o)}")
 			else -> InterpretException.typeMisMatch("Int", a)
 		}
 	})
-	setFunction("int->bin", { ls ->
+	defineFunction("int->bin", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is Int -> ValueNode("0b${Integer.toBinaryString(a.o)}")
 			else -> InterpretException.typeMisMatch("Int", a)
 		}
 	})
-	setFunction("int->oct", { ls ->
+	defineFunction("int->oct", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is Int -> ValueNode("0${Integer.toOctalString(a.o)}")
 			else -> InterpretException.typeMisMatch("Int", a)
 		}
 	})
-	setFunction("str-con", { ls ->
+	defineFunction("str-con", { ls ->
 		ValueNode(ls.fold(StringBuilder(ls.size)) { sb, value ->
 			sb.append(value.eval().o.toString())
 		}.toString())
 	})
-	setFunction("format", { ls ->
+	defineFunction("format", { ls ->
 		if (ls.isEmpty()) InterpretException.tooFewArgument(1, ls.size)
 		val format = ls[0].eval()
 		when (format.o) {
@@ -68,7 +68,7 @@ inline fun SymbolList.addStringFunctions() {
 			else -> InterpretException.typeMisMatch("String", format)
 		}
 	})
-	setFunction("->chars", { ls ->
+	defineFunction("->chars", { ls ->
 		ValueNode(ls.fold(StringBuilder(ls.size)) { sb, value ->
 			sb.append(value.eval().o.toString())
 		}
@@ -76,7 +76,7 @@ inline fun SymbolList.addStringFunctions() {
 				.toCharArray()
 				.toList())
 	})
-	setFunction("split", { ls ->
+	defineFunction("split", { ls ->
 		val str = ls[0].eval()
 		val regex = ls[1].eval()
 		ValueNode(str.o.toString().split(regex.o.toString()).toList())

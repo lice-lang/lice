@@ -9,16 +9,18 @@
 package lice.compiler.model
 
 import lice.compiler.model.Value.Objects.Nullptr
-import lice.compiler.util.ParseException
 import lice.compiler.util.SymbolList
 
 class Value(
 		val o: Any?,
 		val type: Class<*>) {
-	constructor(o: Any) : this(o, o.javaClass)
+	constructor(
+			o: Any
+	) : this(o, o.javaClass)
 
 	companion object Objects {
-		val Nullptr = Value(null, Any::class.java)
+		val Nullptr =
+				Value(null, Any::class.java)
 	}
 }
 
@@ -26,13 +28,21 @@ interface Node {
 	fun eval(): Value
 
 	companion object Objects {
-		val EmptyNode = ValueNode(Nullptr)
+		val NullNode = ValueNode(Nullptr)
 	}
 }
 
-class ValueNode(val value: Value) : Node {
-	constructor(any: Any) : this(Value(any))
-	constructor(any: Any?, type: Class<*>) : this(Value(any, type))
+class ValueNode(
+		val value: Value) : Node {
+
+	constructor(
+			any: Any
+	) : this(Value(any))
+
+	constructor(
+			any: Any?,
+			type: Class<*>
+	) : this(Value(any, type))
 
 	override fun eval() =
 			value

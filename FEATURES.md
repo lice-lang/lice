@@ -128,15 +128,20 @@ false ; false
 
 ```java
 // java
+import lice.Lice;
+import lice.compiler.model.ValueNode;
+import lice.compiler.util.SymbolList;
+
+import java.io.File;
+
 class Main {
 	public static void main(String[] args){
 		SymbolList sl = new SymbolList();
-		sl.setFunction(
+		sl.defineFunction(
 				"java-api-invoking",
 				ls -> new ValueNode(100)
 		);
-		createAst(new File("sample/test10.lice"), sl)
-				.getRoot().eval();
+		Lice.run(new File("sample/test10.lice"), sl);
 	}
 }
 ```

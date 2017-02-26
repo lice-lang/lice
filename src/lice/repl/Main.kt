@@ -6,8 +6,6 @@ import lice.compiler.util.serr
 import java.io.File
 import java.util.*
 
-val VERSION_CODE = "v1.1-SNAPSHOT"
-
 /**
  * The entrance of the whole application
  * Created by ice1000 on 2017/2/12.
@@ -20,8 +18,11 @@ object Main {
 	/**
 	 * interpret code in a file
 	 */
-	fun interpret(file: File) {
-		val ast = createAst(file)
+	@JvmOverloads
+	fun interpret(
+			file: File,
+			symbolList: SymbolList = SymbolList()) {
+		val ast = createAst(file, symbolList)
 		ast.root.eval()
 	}
 
