@@ -40,6 +40,8 @@ fun parseValue(str: String): Node {
 			ValueNode(str.toHexInt())
 		str.isBinInt() ->
 			ValueNode(str.toBinInt())
+		str.isBigInt() ->
+			ValueNode(str.toBigInt())
 		"null" == str ->
 			ValueNode(Nullptr)
 		"true" == str ->
@@ -48,7 +50,6 @@ fun parseValue(str: String): Node {
 			ValueNode(false)
 // TODO() is float
 // TODO() is double
-// TODO() is type
 		else -> {
 			serr("error token: $str")
 			EmptyNode // do nothing

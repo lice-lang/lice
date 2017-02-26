@@ -73,6 +73,13 @@ inline fun SymbolList.addCollectionsFunctions() {
 			else -> ValueNode(ls.size)
 		}
 	})
+	addFunction("reverse", { ls ->
+		val i = ls[0].eval()
+		when (i.o) {
+			is Collection<*> -> ValueNode(i.o.reversed())
+			else -> ValueNode(ls.size)
+		}
+	})
 	addFunction("count", { ls ->
 		val i = ls[0].eval()
 		val e = ls[1].eval()

@@ -19,7 +19,6 @@ import lice.compiler.util.InterpretException
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
 import java.io.File
-import kotlin.concurrent.thread
 
 inline fun SymbolList.addStandard() {
 	addGetSetFunction()
@@ -28,6 +27,7 @@ inline fun SymbolList.addStandard() {
 	addStringFunctions()
 	addBoolFunctions()
 	addCollectionsFunctions()
+	addListFunctions()
 
 	addFunction("def", { ls ->
 		val a = ls[0].eval()
@@ -95,10 +95,6 @@ inline fun SymbolList.addStandard() {
 		var ret = Nullptr
 		forceRun { ls.forEach { node -> ret = node.eval() } }
 		ValueNode(ret)
-	})
-	addFunction("thread|>", { ls ->
-		thread { ls.forEach { node -> node.eval() } }
-		EmptyNode
 	})
 
 	addFunction("load-file", { ls ->

@@ -37,6 +37,7 @@ class SymbolList(init: Boolean = true) {
 						"lice.gui" -> addGUIFunctions()
 						"lice.math" -> addMathFunctions()
 						"lice.str" -> addStringFunctions()
+						"lice.thread" -> addConcurrentFunctions()
 						else -> {
 							serr("${res.o} not found!")
 							return@addFunction EmptyNode

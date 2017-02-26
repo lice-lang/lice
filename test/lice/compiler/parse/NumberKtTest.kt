@@ -4,6 +4,7 @@ import lice.compiler.util.println
 import org.junit.Test
 
 import org.junit.Assert.*
+import java.math.BigInteger
 
 /**
  * Created by ice1000 on 2017/2/20.
@@ -78,6 +79,13 @@ class NumberKtTest {
 //		Integer.toHexString("0x1".toHexInt()).println()
 		assertEquals(0b001010, "0b001010".toBinInt())
 		assertEquals(0B01100010, "0B01100010".toBinInt())
+	}
+
+	@Test(timeout = 1000)
+	fun toBigInt() {
+		assertEquals(BigInteger("12903829108"), "12903829108M".toBigInt())
+		assertEquals(BigInteger("-21893219"), "-21893219M".toBigInt())
+		assertEquals(BigInteger("-21893219"), "-21893219m".toBigInt())
 	}
 
 }

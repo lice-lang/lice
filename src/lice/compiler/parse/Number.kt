@@ -8,6 +8,8 @@
 
 package lice.compiler.parse
 
+import java.math.BigInteger
+
 //val Char.isDigit: Boolean
 //	get() = this >= '0' && this <= '9'
 
@@ -16,12 +18,14 @@ fun String.isInt() =
 			res && char.isDigit()
 		})
 
-fun Char.isOctalInt() = this in '0'..'8'
+fun Char.isOctalInt() =
+		this in '0'..'8'
 
-fun Char.safeLower(): Char {
-	if (this in 'A'..'Z') return this - ('A' - 'a');
-	return this
-}
+fun Char.safeLower() =
+		when (this) {
+			in 'A'..'Z' -> this - ('A' - 'a')
+			else -> this
+		}
 
 fun String.isHexInt(): Boolean {
 	if (this[0] == '-') return substring(1).isHexInt()
@@ -31,6 +35,16 @@ fun String.isHexInt(): Boolean {
 		else -> (2..length - 1)
 				.map { this[it].toLowerCase() }
 				.none { !it.isDigit() && (it < 'a' || it > 'f') }
+	}
+}
+
+fun String.isBigInt(): Boolean {
+	if (this[0] == '-') return substring(1).isBigInt()
+	return when {
+		length <= 1 -> false
+		this[length - 1].safeLower() != 'm' -> false
+		else -> (0..length - 2)
+				.all { this[it].isDigit() }
 	}
 }
 
@@ -75,6 +89,8 @@ fun String.toBinInt(): Int {
 	}
 	return ret
 }
+
+fun String.toBigInt() = BigInteger(this.substring(0, length - 1))
 
 fun String.toOctInt(): Int {
 	if (this[0] == '-') return -substring(1).toBinInt()
