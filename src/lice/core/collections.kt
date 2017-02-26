@@ -16,13 +16,7 @@ import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 
-class Pair<out A, out B>(
-		val first: A,
-		val second: B) {
-	override fun toString(): String {
-		return "[$first $second]"
-	}
-}
+import lice.util.Pair
 
 inline fun SymbolList.addListFunctions() {
 	addFunction("[|]", { ls ->
@@ -32,7 +26,10 @@ inline fun SymbolList.addListFunctions() {
 	})
 	addFunction("head", { ls ->
 		val a = ls[0].eval()
-		if (a.o is Pair<*, *>) ValueNode(a.o.first, Any::class.java)
+		if (a.o is Pair<*, *>) when (a.o.first) {
+			null -> EmptyNode
+			else -> ValueNode(a.o.first)
+		}
 		else typeMisMatch("Pair", a)
 	})
 	addFunction("tail", { ls ->

@@ -18,6 +18,7 @@ import lice.compiler.parse.mapAst
 import lice.compiler.util.InterpretException
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
+import lice.compiler.util.serr
 import java.io.File
 
 inline fun SymbolList.addStandard() {
@@ -56,6 +57,11 @@ inline fun SymbolList.addStandard() {
 	})
 	addFunction("print-err", { ls ->
 		ls.forEach { System.err.print(it.eval().o.toString()) }
+		serr("")
+		ls[0]
+	})
+	addFunction("println-err", { ls ->
+		ls.forEach { serr(it.eval().o.toString()) }
 		ls[0]
 	})
 	addFunction("println", { ls ->
@@ -96,6 +102,7 @@ inline fun SymbolList.addStandard() {
 		forceRun { ls.forEach { node -> ret = node.eval() } }
 		ValueNode(ret)
 	})
+	addFunction("no-run|>", { EmptyNode })
 
 	addFunction("load-file", { ls ->
 		val o = ls[0].eval()
@@ -103,6 +110,11 @@ inline fun SymbolList.addStandard() {
 			is File -> ValueNode(createAst(o.o, this).root.eval())
 			else -> InterpretException.typeMisMatch("File", o)
 		}
+	})
+
+	addFunction("exit", {
+		System.exit(0)
+		EmptyNode
 	})
 
 	addFunction("null?", { ls -> ValueNode(null == ls[0].eval().o) })

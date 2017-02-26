@@ -5,7 +5,7 @@
  */
 @file:JvmName("Utilities")
 @file:JvmMultifileClass
-package lice.compiler.util
+package lice.util
 
 
 interface Option<T>
