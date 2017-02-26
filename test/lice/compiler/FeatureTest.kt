@@ -17,7 +17,7 @@ class FeatureTest {
 		val sl = SymbolList()
 		val a = ValueNode(1)
 		val b = ValueNode(1)
-		val ast = ExpressionNode(sl, sl.getFunction("+")!!, listOf(a, b))
+		val ast = ExpressionNode(sl, "+", listOf(a, b))
 		ast
 				.eval()
 				.o
