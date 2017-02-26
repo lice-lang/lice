@@ -8,6 +8,7 @@
 
 package lice.compiler.model
 
+import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.util.ParseException
 import lice.compiler.util.SymbolList
 
@@ -25,7 +26,7 @@ interface Node {
 	fun eval(): Value
 
 	companion object Objects {
-		val EmptyNode = ValueNode(Value.Nullptr)
+		val EmptyNode = ValueNode(Nullptr)
 	}
 }
 
@@ -85,7 +86,7 @@ class ExpressionNode(
 }
 
 object EmptyNode : Node {
-	override fun eval() = Value.Nullptr
+	override fun eval() = Nullptr
 }
 
 class Ast(

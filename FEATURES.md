@@ -161,6 +161,9 @@ true => java.lang.Boolean
 Lice > (import "lice.gui")
 true => java.lang.Boolean
 
+Lice > (import "lice.gui")
+false => java.lang.Boolean
+
 Lice > (+ 1 1)
 2 => java.lang.Integer
 
@@ -183,7 +186,7 @@ Lice > (eval (read-file (file "sample/test3.lice")))
 My name is Van, I'm an artist => java.lang.String
 My name is Van, I'm an artist => java.lang.String
 
-Lice > (if true 1 2)
+Lice > (if (> 2 1) 1 2)
 1 => java.lang.Integer
 
 Lice > (-> "file" (file "fuck_you"))
@@ -194,4 +197,13 @@ deep dark fantasy => java.lang.String
 
 Lice > (read-file (<- "file"))
 deep dark fantasy => java.lang.String
+
+Lice > ([|] 1 2 3 4 5)
+[1 [2 [3 [4 [5 null]]]]] => lice.core.Pair
+
+Lice > (-> "i" ([|] 1 2 3 4 5 6 7))
+[1 [2 [3 [4 [5 [6 [7 null]]]]]]] => lice.core.Pair
+
+Lice > (tail (tail (<- "i")))
+[3 [4 [5 [6 [7 null]]]]] => lice.core.Pair
 ```

@@ -9,16 +9,25 @@
 
 package lice.core
 
-import lice.compiler.model.Value
+import lice.compiler.model.EmptyNode
+import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.model.ValueNode
-import lice.compiler.util.InterpretException
+import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
+
+class Pair<out A, out B>(
+		val first: A,
+		val second: B) {
+	override fun toString(): String {
+		return "[$first $second]"
+	}
+}
 
 inline fun SymbolList.addListFunctions() {
 	addFunction("[|]", { ls ->
 		ValueNode(ls.foldRight(null) { value, pairs: Any? ->
-			Pair(value, pairs)
+			Pair(value.eval().o, pairs)
 		}, Pair::class.java)
 	})
 	addFunction("head", { ls ->
@@ -28,7 +37,10 @@ inline fun SymbolList.addListFunctions() {
 	})
 	addFunction("tail", { ls ->
 		val a = ls[0].eval()
-		if (a.o is Pair<*, *>) ValueNode(a.o.second, Any::class.java)
+		if (a.o is Pair<*, *>) when (a.o.second) {
+			null -> EmptyNode
+			else -> ValueNode(a.o.second)
+		}
 		else typeMisMatch("Pair", a)
 	})
 }
@@ -39,7 +51,7 @@ inline fun SymbolList.addCollectionsFunctions() {
 	})
 	addFunction("..", { ls ->
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size)
+			tooFewArgument(2, ls.size)
 		val begin = ls[0].eval().o as Int
 		val end = ls[1].eval().o as Int
 		val progression = when {
@@ -50,20 +62,20 @@ inline fun SymbolList.addCollectionsFunctions() {
 	})
 	addFunction("for-each", { ls ->
 		if (ls.size < 3)
-			InterpretException.tooFewArgument(3, ls.size)
+			tooFewArgument(3, ls.size)
 		val i = ls[0].eval()
-		if (i.o !is String) InterpretException.typeMisMatch("String", i)
+		if (i.o !is String) typeMisMatch("String", i)
 		val a = ls[1].eval()
 		when (a.o) {
 			is Collection<*> -> {
 				var ret: Any? = null
 				a.o.forEach {
-					setVariable(i.o, ValueNode(it ?: Value.Nullptr))
+					setVariable(i.o, ValueNode(it ?: Nullptr))
 					ret = ls[2].eval().o
 				}
-				ValueNode(ret ?: Value.Nullptr)
+				ValueNode(ret ?: Nullptr)
 			}
-			else -> InterpretException.typeMisMatch("List", a)
+			else -> typeMisMatch("List", a)
 		}
 	})
 	addFunction("size", { ls ->

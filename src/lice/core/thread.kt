@@ -11,6 +11,7 @@ package lice.core
 
 import lice.compiler.model.Node.Objects.EmptyNode
 import lice.compiler.util.SymbolList
+import java.lang.Thread.sleep
 import kotlin.concurrent.thread
 
 inline fun SymbolList.addConcurrentFunctions() {
@@ -21,8 +22,9 @@ inline fun SymbolList.addConcurrentFunctions() {
 	addFunction("sleep", { ls ->
 		val a = ls[0].eval()
 		when (a.o) {
-			is Long -> Thread.sleep(a.o)
-			is Int -> Thread.sleep(a.o.toLong())
+			is Long -> sleep(a.o)
+			is Int -> sleep(a.o.toLong())
+			is Short -> sleep(a.o.toLong())
 		}
 		EmptyNode
 	})
