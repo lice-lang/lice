@@ -16,7 +16,7 @@ import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 
-import lice.util.Pair
+import lice.lang.Pair
 
 inline fun SymbolList.addListFunctions() {
 	defineFunction("[|]", { ls ->

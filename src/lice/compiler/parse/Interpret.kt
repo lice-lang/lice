@@ -11,7 +11,7 @@ package lice.compiler.parse
 import lice.compiler.model.*
 import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.util.SymbolList
-import lice.compiler.util.serr
+import lice.lang.Symbol
 import java.io.File
 
 
@@ -52,10 +52,7 @@ fun parseValue(str: String): Node {
 			ValueNode(false)
 // TODO() is float
 // TODO() is double
-		else -> {
-			serr("error token: $str")
-			EmptyNode // do nothing
-		}
+		else -> ValueNode(Symbol(str))
 	}
 }
 

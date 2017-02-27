@@ -19,6 +19,7 @@ import lice.compiler.util.InterpretException
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
 import lice.compiler.util.serr
+import lice.lang.Symbol
 import java.io.File
 
 inline fun SymbolList.addStandard() {
@@ -146,8 +147,8 @@ inline fun SymbolList.addGetSetFunction() {
 		val str = ls[0].eval()
 		val res = ValueNode(ls[1].eval())
 		when (str.o) {
-			is String -> setVariable(str.o, res)
-			else -> InterpretException.typeMisMatch("String", str)
+			is Symbol -> setVariable(str.o, res)
+			else -> InterpretException.typeMisMatch("Symbol", str)
 		}
 		res
 	})
@@ -156,8 +157,8 @@ inline fun SymbolList.addGetSetFunction() {
 			InterpretException.tooFewArgument(1, ls.size)
 		val str = ls[0].eval()
 		when (str.o) {
-			is String -> getVariable(str.o) ?: NullNode
-			else -> InterpretException.typeMisMatch("String", str)
+			is Symbol -> getVariable(str.o) ?: NullNode
+			else -> InterpretException.typeMisMatch("Symbol", str)
 		}
 	})
 	defineFunction("<->", { ls ->
@@ -165,7 +166,7 @@ inline fun SymbolList.addGetSetFunction() {
 			InterpretException.tooFewArgument(2, ls.size)
 		val str = ls[0].eval()
 		when (str.o) {
-			is String -> {
+			is Symbol -> {
 				if (getVariable(name = str.o) == null)
 					setVariable(
 							name = str.o,
@@ -173,7 +174,7 @@ inline fun SymbolList.addGetSetFunction() {
 					)
 				getVariable(name = str.o)!!
 			}
-			else -> InterpretException.typeMisMatch("String", str)
+			else -> InterpretException.typeMisMatch("Symbol", str)
 		}
 	})
 }

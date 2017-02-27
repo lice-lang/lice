@@ -9,6 +9,7 @@ import lice.compiler.model.Node
 import lice.compiler.model.Node.Objects.NullNode
 import lice.compiler.model.ValueNode
 import lice.core.*
+import lice.lang.Symbol
 import java.util.*
 
 @Suppress("NOTHING_TO_INLINE")
@@ -20,7 +21,7 @@ constructor(init: Boolean = true) {
 	val variables = mutableMapOf<String, Node>()
 
 	val rand = Random(System.currentTimeMillis())
-	val loadedModules = mutableListOf<String>()
+	val loadedModules = mutableListOf<Symbol>()
 
 	init {
 		if (init) initialize()
@@ -30,10 +31,10 @@ constructor(init: Boolean = true) {
 		defineFunction("import", { ls ->
 			ls.forEach { node ->
 				val res = node.eval()
-				if (res.o is String) {
+				if (res.o is Symbol) {
 					if (res.o in loadedModules) return@defineFunction ValueNode(false)
 					loadedModules.add(res.o)
-					when (res.o) {
+					when (res.o.name) {
 						"lice.io" -> addFileFunctions()
 						"lice.gui" -> addGUIFunctions()
 						"lice.math" -> addMathFunctions()
@@ -51,6 +52,9 @@ constructor(init: Boolean = true) {
 		addStandard()
 	}
 
+	fun defineFunction(name: Symbol, node: (List<Node>) -> Node) =
+			defineFunction(name.name, node)
+
 	fun defineFunction(name: String, node: (List<Node>) -> Node) {
 		functions.put(name, node)
 	}
@@ -59,12 +63,24 @@ constructor(init: Boolean = true) {
 		functions.remove(name)
 	}
 
+	fun removeFunction(name: Symbol) =
+			removeFunction(name.name)
+
+	fun setVariable(name: Symbol, value: Node) =
+			setVariable(name.name, value)
+
 	fun setVariable(name: String, value: Node) {
 		variables[name] = value
 	}
 
 	fun getVariable(name: String) =
 			variables[name]
+
+	fun getVariable(name: Symbol) =
+			getVariable(name.name)
+
+	fun getFunction(name: Symbol) =
+			getFunction(name.name)
 
 	fun getFunction(name: String) =
 			functions[name]

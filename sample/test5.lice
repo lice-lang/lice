@@ -1,11 +1,11 @@
-(import "lice.io")
-(import "lice.str")
+(import lice.io)
+(import lice.str)
 
 ; evaluate this file
 
-(-> "file" (file (->str (<- "FILE_PATH"))))
+(-> "file" (file (->str (<- FILE_PATH))))
 
-; (print (<- "file"))
+; (print (<- file))
 
-(load-file (<- "file"))
+(load-file (<- file))
 
