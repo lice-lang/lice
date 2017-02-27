@@ -21,10 +21,12 @@ import java.io.File
  * @param str the string to parse
  * @return parsed node
  */
-fun parseValue(str: String): Node {
+fun parseValue(
+		str: String,
+		lineNumber: Int): Node {
 	return when {
 		str.isEmpty() or str.isBlank() ->
-			EmptyNode
+			EmptyNode(lineNumber)
 		str.isString() ->
 			ValueNode(str
 					.substring(
@@ -33,26 +35,27 @@ fun parseValue(str: String): Node {
 					)
 					.apply {
 						// TODO replace \n, \t, etc.
-					})
+					}, lineNumber)
 		str.isOctInt() ->
-			ValueNode(str.toOctInt())
+			ValueNode(str.toOctInt(), lineNumber)
 		str.isInt() ->
-			ValueNode(str.toInt())
+			ValueNode(str.toInt(), lineNumber)
 		str.isHexInt() ->
-			ValueNode(str.toHexInt())
+			ValueNode(str.toHexInt(), lineNumber)
 		str.isBinInt() ->
-			ValueNode(str.toBinInt())
+			ValueNode(str.toBinInt(), lineNumber)
 		str.isBigInt() ->
-			ValueNode(str.toBigInt())
+			ValueNode(str.toBigInt(), lineNumber)
 		"null" == str ->
-			ValueNode(Nullptr)
+			ValueNode(Nullptr, lineNumber)
 		"true" == str ->
-			ValueNode(true)
+			ValueNode(true, lineNumber)
 		"false" == str ->
-			ValueNode(false)
+			ValueNode(false, lineNumber)
 // TODO() is float
 // TODO() is double
-		else -> ValueNode(Symbol(str))
+		else ->
+			ValueNode(Symbol(str), lineNumber)
 	}
 }
 
@@ -71,9 +74,13 @@ fun mapAst(
 		ExpressionNode(
 				symbolList = symbolList,
 				function = str,
+				lineNumber = node.lineNumber,
 				params = node
 						.list
-						.subList(fromIndex = 1, toIndex = node.list.size)
+						.subList(
+								fromIndex = 1,
+								toIndex = node.list.size
+						)
 						.map { strNode ->
 							mapAst(
 									node = strNode,
@@ -83,9 +90,12 @@ fun mapAst(
 		)
 	}
 	is StringLeafNode ->
-		parseValue(str = node.str)
+		parseValue(
+				str = node.str,
+				lineNumber = node.lineNumber
+		)
 	else -> // empty
-		EmptyNode
+		EmptyNode(node.lineNumber)
 }
 
 fun createAst(
@@ -96,7 +106,10 @@ fun createAst(
 	if (symbolList.getVariable(name = fp) == null)
 		symbolList.setVariable(
 				name = fp,
-				value = ValueNode(any = file.absolutePath)
+				value = ValueNode(
+						any = file.absolutePath,
+						lineNumber = -1
+				)
 		)
 	val stringTreeRoot = buildNode(code)
 	return Ast(

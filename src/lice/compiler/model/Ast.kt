@@ -26,23 +26,34 @@ class Value(
 
 interface Node {
 	fun eval(): Value
+	val lineNumber: Int
 
 	companion object Objects {
-		val NullNode = ValueNode(Nullptr)
+		fun getNullNode(lineNumber: Int) =
+				ValueNode(Nullptr, lineNumber)
 	}
 }
 
 class ValueNode(
-		val value: Value) : Node {
+		val value: Value,
+		override val lineNumber: Int) : Node {
 
 	constructor(
-			any: Any
-	) : this(Value(any))
+			any: Any,
+			lineNumber: Int
+	) : this(
+			Value(any),
+			lineNumber
+	)
 
 	constructor(
 			any: Any?,
-			type: Class<*>
-	) : this(Value(any, type))
+			type: Class<*>,
+			lineNumber: Int
+	) : this(
+			Value(any, type),
+			lineNumber
+	)
 
 	override fun eval() =
 			value
@@ -68,23 +79,26 @@ class ValueNode(
 class ExpressionNode(
 		val symbolList: SymbolList,
 		val function: String,
+		override val lineNumber: Int,
 		val params: List<Node>) : Node {
 
 	constructor(
 			symbolList: SymbolList,
 			function: String,
+			lineNumber: Int,
 			vararg params: Node
 	) : this(
 			symbolList,
 			function,
+			lineNumber,
 			params.toList()
 	)
 
 	override fun eval() =
-			symbolList.getFunction(function)(params).eval()
+			symbolList.getFunction(function)(lineNumber, params).eval()
 }
 
-object EmptyNode : Node {
+class EmptyNode(override val lineNumber: Int) : Node {
 	override fun eval() = Nullptr
 }
 

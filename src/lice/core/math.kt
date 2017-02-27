@@ -14,36 +14,36 @@ import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 
 inline fun SymbolList.addMathFunctions() {
-	defineFunction("sqrt", { ls ->
-		ValueNode(Math.sqrt((ls[0].eval().o as Int).toDouble()))
+	defineFunction("sqrt", { ln, ls ->
+		ValueNode(Math.sqrt((ls[0].eval().o as Int).toDouble()), ln)
 	})
-	defineFunction("rand", { ValueNode(rand.nextInt()) })
-	defineFunction("abs", { ls ->
+	defineFunction("rand", { ln, ls -> ValueNode(rand.nextInt(), ln) })
+	defineFunction("abs", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
-			is Int -> ValueNode(Math.abs(a.o))
-			is Double -> ValueNode(Math.abs(a.o))
-			is Long -> ValueNode(Math.abs(a.o))
-			is Float -> ValueNode(Math.abs(a.o))
+			is Int -> ValueNode(Math.abs(a.o), ln)
+			is Double -> ValueNode(Math.abs(a.o), ln)
+			is Long -> ValueNode(Math.abs(a.o), ln)
+			is Float -> ValueNode(Math.abs(a.o), ln)
 			else -> typeMisMatch("Number", a)
 		}
 	})
-	defineFunction("min", { ls ->
+	defineFunction("min", { ln, ls ->
 		ValueNode(ls.fold(Int.MAX_VALUE) { min, value ->
 			val res = value.eval()
 			when (res.o) {
 				is Int -> if (res.o > min) min else res.o
 				else -> typeMisMatch("Int", res)
 			}
-		})
+		}, ln)
 	})
-	defineFunction("max", { ls ->
+	defineFunction("max", { ln, ls ->
 		ValueNode(ls.fold(Int.MIN_VALUE) { max, value ->
 			val res = value.eval()
 			when (res.o) {
 				is Int -> if (res.o < max) max else res.o
 				else -> typeMisMatch("Int", res)
 			}
-		})
+		}, ln)
 	})
 }

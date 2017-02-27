@@ -16,7 +16,7 @@ public class JavaAPI {
 	public static void main(String[] args) {
 		SymbolList sl = new SymbolList();
 		final int[] a = {0};
-		sl.defineFunction("java-api-invoking", ls -> new ValueNode(a[0]++));
+		sl.defineFunction("java-api-invoking", (ln, ls) -> new ValueNode(a[0]++, ln));
 
 		createAst(new File("sample/test10.lice"), sl)
 				.getRoot()

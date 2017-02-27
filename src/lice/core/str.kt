@@ -16,8 +16,8 @@ import lice.compiler.util.SymbolList
 
 
 inline fun SymbolList.addStringFunctions() {
-	defineFunction("->str", { ls -> ValueNode(ls[0].eval().o.toString()) })
-	defineFunction("str->int", { ls ->
+	defineFunction("->str", { ln, ls -> ValueNode(ls[0].eval().o.toString(), ln) })
+	defineFunction("str->int", { ln, ls ->
 		val res = ls[0].eval()
 		when (res.o) {
 			is String -> ValueNode(when {
@@ -26,37 +26,37 @@ inline fun SymbolList.addStringFunctions() {
 				res.o.isBinInt() -> res.o.toBinInt()
 				res.o.isHexInt() -> res.o.toHexInt()
 				else -> throw InterpretException("give string: \"${res.o}\" cannot be parsed as a number!")
-			})
+			}, ln)
 			else -> InterpretException.typeMisMatch("String", res)
 		}
 	})
-	defineFunction("int->hex", { ls ->
+	defineFunction("int->hex", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
-			is Int -> ValueNode("0x${Integer.toHexString(a.o)}")
+			is Int -> ValueNode("0x${Integer.toHexString(a.o)}", ln)
 			else -> InterpretException.typeMisMatch("Int", a)
 		}
 	})
-	defineFunction("int->bin", { ls ->
+	defineFunction("int->bin", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
-			is Int -> ValueNode("0b${Integer.toBinaryString(a.o)}")
+			is Int -> ValueNode("0b${Integer.toBinaryString(a.o)}", ln)
 			else -> InterpretException.typeMisMatch("Int", a)
 		}
 	})
-	defineFunction("int->oct", { ls ->
+	defineFunction("int->oct", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
-			is Int -> ValueNode("0${Integer.toOctalString(a.o)}")
+			is Int -> ValueNode("0${Integer.toOctalString(a.o)}", ln)
 			else -> InterpretException.typeMisMatch("Int", a)
 		}
 	})
-	defineFunction("str-con", { ls ->
+	defineFunction("str-con", { ln, ls ->
 		ValueNode(ls.fold(StringBuilder(ls.size)) { sb, value ->
 			sb.append(value.eval().o.toString())
-		}.toString())
+		}.toString(), ln)
 	})
-	defineFunction("format", { ls ->
+	defineFunction("format", { ln, ls ->
 		if (ls.isEmpty()) InterpretException.tooFewArgument(1, ls.size)
 		val format = ls[0].eval()
 		when (format.o) {
@@ -64,21 +64,21 @@ inline fun SymbolList.addStringFunctions() {
 					.subList(1, ls.size)
 					.map { it.eval().o }
 					.toTypedArray()
-			))
+			), ln)
 			else -> InterpretException.typeMisMatch("String", format)
 		}
 	})
-	defineFunction("->chars", { ls ->
+	defineFunction("->chars", { ln, ls ->
 		ValueNode(ls.fold(StringBuilder(ls.size)) { sb, value ->
 			sb.append(value.eval().o.toString())
 		}
 				.toString()
 				.toCharArray()
-				.toList())
+				.toList(), ln)
 	})
-	defineFunction("split", { ls ->
+	defineFunction("split", { ln, ls ->
 		val str = ls[0].eval()
 		val regex = ls[1].eval()
-		ValueNode(str.o.toString().split(regex.o.toString()).toList())
+		ValueNode(str.o.toString().split(regex.o.toString()).toList(), ln)
 	})
 }

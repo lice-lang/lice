@@ -9,23 +9,23 @@
 
 package lice.core
 
-import lice.compiler.model.Node.Objects.NullNode
+import lice.compiler.model.Node.Objects.getNullNode
 import lice.compiler.util.SymbolList
 import java.lang.Thread.sleep
 import kotlin.concurrent.thread
 
 inline fun SymbolList.addConcurrentFunctions() {
-	defineFunction("thread|>", { ls ->
+	defineFunction("thread|>", { ln, ls ->
 		thread { ls.forEach { node -> node.eval() } }
-		NullNode
+		getNullNode(ln)
 	})
-	defineFunction("sleep", { ls ->
+	defineFunction("sleep", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is Long -> sleep(a.o)
 			is Int -> sleep(a.o.toLong())
 			is Short -> sleep(a.o.toLong())
 		}
-		NullNode
+		getNullNode(ln)
 	})
 }

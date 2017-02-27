@@ -16,150 +16,150 @@ import lice.compiler.util.SymbolList
 
 
 inline fun SymbolList.addNumberFunctions() {
-	defineFunction("int->double", { ls ->
-		ValueNode((ls[0].eval().o as Int).toDouble())
+	defineFunction("int->double", { ln, ls ->
+		ValueNode((ls[0].eval().o as Int).toDouble(), ln)
 	})
-	defineFunction("+", { list ->
+	defineFunction("+", { ln, list ->
 		ValueNode(list.fold(0) { sum, value ->
 			val res = value.eval()
 			when (res.o) {
 				is Int -> res.o + sum
 				else -> InterpretException.typeMisMatch("Int", res)
 			}
-		})
+		}, ln)
 	})
-	defineFunction("-", { ls ->
+	defineFunction("-", { ln, ls ->
 		when (ls.size) {
-			0 -> ValueNode(0)
-			1 -> ValueNode(ls[0].eval())
+			0 -> ValueNode(0, ln)
+			1 -> ValueNode(ls[0].eval(), ln)
 			else -> {
 				var res = ls[0].eval().o as Int
 				for (i in 1..ls.size - 1)
 					res -= ls[i].eval().o as Int
-				ValueNode(res)
+				ValueNode(res, ln)
 			}
 		}
 	})
-	defineFunction("/", { ls ->
+	defineFunction("/", { ln, ls ->
 		when (ls.size) {
-			0 -> ValueNode(1)
-			1 -> ValueNode(ls[0].eval())
+			0 -> ValueNode(1, ln)
+			1 -> ValueNode(ls[0].eval(), ln)
 			else -> {
 				var res = ls[0].eval().o as Int
 				for (i in 1..ls.size - 1)
 					res /= ls[i].eval().o as Int
-				ValueNode(res)
+				ValueNode(res, ln)
 			}
 		}
 	})
-	defineFunction("%", { ls ->
+	defineFunction("%", { ln, ls ->
 		when (ls.size) {
-			0 -> ValueNode(0)
-			1 -> ValueNode(ls[0].eval())
+			0 -> ValueNode(0, ln)
+			1 -> ValueNode(ls[0].eval(), ln)
 			else -> {
 				var res = ls[0].eval().o as Int
 				@Suppress("DEPRECATION")
 				for (i in 1..ls.size - 1)
 					res = res.mod(ls[i].eval().o as Int)
-				ValueNode(res)
+				ValueNode(res, ln)
 			}
 		}
 	})
-	defineFunction("*", { ls ->
+	defineFunction("*", { ln, ls ->
 		ValueNode(ls.fold(1) { sum, value ->
 			val res = value.eval()
 			when (res.o) {
 				is Int -> res.o * sum
 				else -> InterpretException.typeMisMatch("Int", res)
 			}
-		})
+		}, ln)
 	})
-	defineFunction("==", { list ->
+	defineFunction("==", { ln, list ->
 		val ls = list.map(Node::eval)
 		ValueNode((1..ls.size - 1).all {
 			ls[it].o == ls[it - 1].o
-		})
+		}, ln)
 	})
-	defineFunction("!=", { list ->
+	defineFunction("!=", { ln, list ->
 		val ls = list.map(Node::eval)
 		ValueNode((1..ls.size - 1).all {
 			ls[it].o != ls[it - 1].o
-		})
+		}, ln)
 	})
-	defineFunction("<", { list ->
+	defineFunction("<", { ln, list ->
 		val ls = list.map(Node::eval)
 		ValueNode((1..ls.size - 1).all {
 			(ls[it - 1].o as Int) < (ls[it].o as Int)
-		})
+		}, ln)
 	})
-	defineFunction(">", { list ->
+	defineFunction(">", { ln, list ->
 		val ls = list.map(Node::eval)
 		ValueNode((1..ls.size - 1).all {
 			ls[it - 1].o as Int > (ls[it].o as Int)
-		})
+		}, ln)
 	})
-	defineFunction(">=", { list ->
+	defineFunction(">=", { ln, list ->
 		val ls = list.map(Node::eval)
 		ValueNode((1..ls.size - 1).all {
 			(ls[it - 1].o as Int) >= (ls[it].o as Int)
-		})
+		}, ln)
 	})
-	defineFunction("<=", { ls ->
+	defineFunction("<=", { ln, ls ->
 		val list = ls.map(Node::eval)
 		ValueNode((1..list.size - 1).all {
 			(list[it - 1].o as Int) <= (list[it].o as Int)
-		})
+		}, ln)
 	})
-	defineFunction("&", { list ->
+	defineFunction("&", { ln, list ->
 		ValueNode(list.fold(0) { sum, value ->
 			val res = value.eval()
 			when (res.o) {
 				is Int -> res.o and sum
 				else -> InterpretException.typeMisMatch("Int", res)
 			}
-		})
+		}, ln)
 	})
-	defineFunction("|", { list ->
+	defineFunction("|", { ln, list ->
 		ValueNode(list.fold(0) { sum, value ->
 			val res = value.eval()
 			when (res.o) {
 				is Int -> res.o or sum
 				else -> InterpretException.typeMisMatch("Int", res)
 			}
-		})
+		}, ln)
 	})
-	defineFunction("^", { list ->
+	defineFunction("^", { ln, list ->
 		ValueNode(list.fold(0) { sum, value ->
 			val res = value.eval()
 			when (res.o) {
 				is Int -> res.o xor sum
 				else -> InterpretException.typeMisMatch("Int", res)
 			}
-		})
+		}, ln)
 	})
 }
 
 inline fun SymbolList.addBoolFunctions() {
-	defineFunction("&&", { ls ->
+	defineFunction("&&", { ln, ls ->
 		ValueNode(ls.fold(true) { sum, value ->
 			val o = value.eval()
 			when {
 				o.o is Boolean -> o.o && sum
 				else -> InterpretException.typeMisMatch("Boolean", o)
 			}
-		})
+		}, ln)
 	})
-	defineFunction("||", { ls ->
+	defineFunction("||", { ln, ls ->
 		ValueNode(ls.fold(false) { sum, value ->
 			val o = value.eval()
 			when {
 				o.o is Boolean -> o.o || sum
 				else -> InterpretException.typeMisMatch("Boolean", o)
 			}
-		})
+		}, ln)
 	})
-	defineFunction("!", { ls ->
-		ValueNode(!(ls[0].eval().o as Boolean))
+	defineFunction("!", { ln, ls ->
+		ValueNode(!(ls[0].eval().o as Boolean), ln)
 	})
 }
 

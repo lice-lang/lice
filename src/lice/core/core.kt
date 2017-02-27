@@ -9,7 +9,7 @@
 
 package lice.core
 
-import lice.compiler.model.Node.Objects.NullNode
+import lice.compiler.model.Node.Objects.getNullNode
 import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.model.ValueNode
 import lice.compiler.parse.buildNode
@@ -31,97 +31,97 @@ inline fun SymbolList.addStandard() {
 	addCollectionsFunctions()
 	addListFunctions()
 
-	defineFunction("def", { ls ->
+	defineFunction("def", { ln, ls ->
 		val a = ls[0].eval()
-		if (a.o is String) defineFunction(a.o, { ls[1] })
-		NullNode
+		if (a.o is String) defineFunction(a.o, { ln, ls -> ls[1] })
+		getNullNode(ln)
 	})
-	defineFunction("undef", { ls ->
+	defineFunction("undef", { ln, ls ->
 		val a = ls[0].eval()
 		if (a.o is String) removeFunction(a.o)
-		NullNode
+		getNullNode(ln)
 	})
-	defineFunction("call", { ls ->
+	defineFunction("call", { ln, ls ->
 		val a = ls[0].eval()
-		if (a.o is String) getFunction(a.o)(ls.subList(1, ls.size))
-		else NullNode
+		if (a.o is String) getFunction(a.o)(ln, ls.subList(1, ls.size))
+		else getNullNode(ln)
 	})
 
-	defineFunction("eval", { ls ->
+	defineFunction("eval", { ln, ls ->
 		val value = ls[0].eval()
 		when (value.o) {
 			is String -> ValueNode(mapAst(
 					node = buildNode(value.o),
 					symbolList = this
-			).eval())
+			).eval(), ln)
 			else -> InterpretException.typeMisMatch("String", value)
 		}
 	})
 
-	defineFunction("print", { ls ->
+	defineFunction("print", { ln, ls ->
 		ls.forEach { print(it.eval().o) }
 		println("")
 		ls.last()
 	})
-	defineFunction("print-err", { ls ->
+	defineFunction("print-err", { ln, ls ->
 		ls.forEach { System.err.print(it.eval().o.toString()) }
 		serr("")
 		ls.last()
 	})
-	defineFunction("println-err", { ls ->
+	defineFunction("println-err", { ln, ls ->
 		ls.forEach { serr(it.eval().o.toString()) }
 		ls.last()
 	})
-	defineFunction("println", { ls ->
+	defineFunction("println", { ln, ls ->
 		ls.forEach { println(it.eval().o) }
 		ls.last()
 	})
 
-	defineFunction("new", { ls ->
+	defineFunction("new", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
-			is String -> ValueNode(Class.forName(a.o).newInstance())
+			is String -> ValueNode(Class.forName(a.o).newInstance(), ln)
 			else -> InterpretException.typeMisMatch(
 					expected = "String",
 					actual = a
 			)
 		}
 	})
-	defineFunction("", { ls ->
+	defineFunction("", { ln, ls ->
 		ls.forEach {
 			val res = it.eval()
 			println("${res.o.toString()} => ${res.type.name}")
 		}
-		NullNode
+		getNullNode(ln)
 	})
-	defineFunction("type", { ls ->
+	defineFunction("type", { ln, ls ->
 		ls.forEach { println(it.eval().type.canonicalName) }
 		ls.last()
 	})
-	defineFunction("gc", {
+	defineFunction("gc", { ln, ls ->
 		System.gc()
-		NullNode
+		getNullNode(ln)
 	})
 
-	defineFunction("|>", { ls ->
+	defineFunction("|>", { ln, ls ->
 		var ret = Nullptr
 		ls.forEach { ret = it.eval() }
-		ValueNode(ret)
+		ValueNode(ret, ln)
 	})
-	defineFunction("force|>", { ls ->
+	defineFunction("force|>", { ln, ls ->
 		var ret = Nullptr
 		forceRun { ls.forEach { node -> ret = node.eval() } }
-		ValueNode(ret)
+		ValueNode(ret, ln)
 	})
-	defineFunction("no-run|>", { NullNode })
+	defineFunction("no-run|>", { ln, ls -> getNullNode(ln) })
 
-	defineFunction("load-file", { ls ->
+	defineFunction("load-file", { ln, ls ->
 		val o = ls[0].eval()
 		when (o.o) {
 			is File -> ValueNode(createAst(
 					file = o.o,
 					symbolList = this
-			).root.eval())
+			).root.eval(), ln)
 			else -> InterpretException.typeMisMatch(
 					expected = "File",
 					actual = o
@@ -129,39 +129,39 @@ inline fun SymbolList.addStandard() {
 		}
 	})
 
-	defineFunction("exit", {
+	defineFunction("exit", { ln, ls ->
 		System.exit(0)
-		NullNode
+		getNullNode(ln)
 	})
 
-	defineFunction("null?", { ls -> ValueNode(null == ls[0].eval().o) })
-	defineFunction("!null?", { ls -> ValueNode(null != ls[0].eval().o) })
-	defineFunction("true?", { ls -> ValueNode(true == ls[0].eval().o) })
-	defineFunction("false?", { ls -> ValueNode(false == ls[0].eval().o) })
+	defineFunction("null?", { ln, ls -> ValueNode(null == ls[0].eval().o, ln) })
+	defineFunction("!null?", { ln, ls -> ValueNode(null != ls[0].eval().o, ln) })
+	defineFunction("true?", { ln, ls -> ValueNode(true == ls[0].eval().o, ln) })
+	defineFunction("false?", { ln, ls -> ValueNode(false == ls[0].eval().o, ln) })
 }
 
 inline fun SymbolList.addGetSetFunction() {
-	defineFunction("->", { ls ->
+	defineFunction("->", { ln, ls ->
 		if (ls.size < 2)
 			InterpretException.tooFewArgument(2, ls.size)
 		val str = ls[0].eval()
-		val res = ValueNode(ls[1].eval())
+		val res = ValueNode(ls[1].eval(), ln)
 		when (str.o) {
 			is Symbol -> setVariable(str.o, res)
 			else -> InterpretException.typeMisMatch("Symbol", str)
 		}
 		res
 	})
-	defineFunction("<-", { ls ->
+	defineFunction("<-", { ln, ls ->
 		if (ls.isEmpty())
 			InterpretException.tooFewArgument(1, ls.size)
 		val str = ls[0].eval()
 		when (str.o) {
-			is Symbol -> getVariable(str.o) ?: NullNode
+			is Symbol -> getVariable(str.o) ?: getNullNode(ln)
 			else -> InterpretException.typeMisMatch("Symbol", str)
 		}
 	})
-	defineFunction("<->", { ls ->
+	defineFunction("<->", { ln, ls ->
 		if (ls.size < 2)
 			InterpretException.tooFewArgument(2, ls.size)
 		val str = ls[0].eval()
@@ -170,7 +170,7 @@ inline fun SymbolList.addGetSetFunction() {
 				if (getVariable(name = str.o) == null)
 					setVariable(
 							name = str.o,
-							value = ValueNode(ls[1].eval())
+							value = ValueNode(ls[1].eval(), ln)
 					)
 				getVariable(name = str.o)!!
 			}
@@ -181,7 +181,7 @@ inline fun SymbolList.addGetSetFunction() {
 
 
 inline fun SymbolList.addControlFlowFunctions() {
-	defineFunction("if", { ls ->
+	defineFunction("if", { ln, ls ->
 		if (ls.size < 2)
 			InterpretException.tooFewArgument(2, ls.size)
 		val a = ls[0].eval().o
@@ -192,11 +192,11 @@ inline fun SymbolList.addControlFlowFunctions() {
 			else -> null
 		}
 		when {
-			ret != null -> ValueNode(ret)
-			else -> NullNode
+			ret != null -> ValueNode(ret, ln)
+			else -> getNullNode(ln)
 		}
 	})
-	defineFunction("while", { ls ->
+	defineFunction("while", { ln, ls ->
 		if (ls.size < 2)
 			InterpretException.tooFewArgument(2, ls.size)
 		var a = ls[0].eval().o
@@ -208,8 +208,8 @@ inline fun SymbolList.addControlFlowFunctions() {
 			a = ls[0].eval().o
 		}
 		when {
-			ret != null -> ValueNode(ret)
-			else -> NullNode
+			ret != null -> ValueNode(ret, ln)
+			else -> getNullNode(ln)
 		}
 	})
 }

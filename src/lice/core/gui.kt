@@ -9,7 +9,7 @@
 
 package lice.core
 
-import lice.compiler.model.EmptyNode
+import lice.compiler.model.Node.Objects.getNullNode
 import lice.compiler.model.ValueNode
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
@@ -24,26 +24,26 @@ import javax.swing.JPanel
 import javax.swing.WindowConstants
 
 inline fun SymbolList.addGUIFunctions() {
-	defineFunction("frame", { ls ->
+	defineFunction("frame", { ln, ls ->
 		ValueNode(JFrame().apply {
 			if (ls.isNotEmpty()) title = ls[0].eval().o.toString()
 			defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
 			isVisible = true
-		})
+		}, ln)
 	})
-	defineFunction("image", { ls ->
+	defineFunction("image", { ln, ls ->
 		val o = ls[0].eval()
 		when (o.o) {
-			is File -> ValueNode(ImageIO.read(o.o))
-			is URL -> ValueNode(ImageIO.read(o.o))
+			is File -> ValueNode(ImageIO.read(o.o), ln)
+			is URL -> ValueNode(ImageIO.read(o.o), ln)
 			is Int -> {
 				val q = if (ls.size >= 2) ls[1].eval() else o
-				ValueNode(BufferedImage(o.o, q.o as Int, BufferedImage.TYPE_INT_ARGB))
+				ValueNode(BufferedImage(o.o, q.o as Int, BufferedImage.TYPE_INT_ARGB), ln)
 			}
 			else -> typeMisMatch("File or URL", o)
 		}
 	})
-	defineFunction("show-image", { ls ->
+	defineFunction("show-image", { ln, ls ->
 		val o = ls[0].eval()
 		when (o.o) {
 			is BufferedImage -> {
@@ -61,9 +61,9 @@ inline fun SymbolList.addGUIFunctions() {
 					defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
 //					isResizable = false
 					isVisible = true
-				})
+				}, ln)
 			}
-			else -> EmptyNode
+			else -> getNullNode(ln)
 		}
 	})
 }
