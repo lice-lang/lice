@@ -31,7 +31,7 @@ inline fun SymbolList.addListFunctions() {
 			null -> EmptyNode(ln)
 			else -> ValueNode(a.o.first, ln)
 		}
-		else typeMisMatch("Pair", a)
+		else typeMisMatch("Pair", a, ln)
 	})
 	defineFunction("tail", { ln, ls ->
 		val a = ls[0].eval()
@@ -39,7 +39,7 @@ inline fun SymbolList.addListFunctions() {
 			null -> EmptyNode(ln)
 			else -> ValueNode(a.o.second, ln)
 		}
-		else typeMisMatch("Pair", a)
+		else typeMisMatch("Pair", a, ln)
 	})
 }
 
@@ -49,7 +49,7 @@ inline fun SymbolList.addCollectionsFunctions() {
 	})
 	defineFunction("..", { ln, ls ->
 		if (ls.size < 2)
-			tooFewArgument(2, ls.size)
+			tooFewArgument(2, ls.size, ln)
 		val begin = ls[0].eval().o as Int
 		val end = ls[1].eval().o as Int
 		val progression = when {
@@ -60,9 +60,9 @@ inline fun SymbolList.addCollectionsFunctions() {
 	})
 	defineFunction("for-each", { ln, ls ->
 		if (ls.size < 3)
-			tooFewArgument(3, ls.size)
+			tooFewArgument(3, ls.size, ln)
 		val i = ls[0].eval()
-		if (i.o !is Symbol) typeMisMatch("Symbol", i)
+		if (i.o !is Symbol) typeMisMatch("Symbol", i, ln)
 		val a = ls[1].eval()
 		when (a.o) {
 			is Collection<*> -> {
@@ -73,7 +73,7 @@ inline fun SymbolList.addCollectionsFunctions() {
 				}
 				ValueNode(ret ?: Nullptr, ln)
 			}
-			else -> typeMisMatch("List", a)
+			else -> typeMisMatch("List", a, ln)
 		}
 	})
 	defineFunction("size", { ln, ls ->

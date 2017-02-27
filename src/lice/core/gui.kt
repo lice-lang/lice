@@ -40,7 +40,7 @@ inline fun SymbolList.addGUIFunctions() {
 				val q = if (ls.size >= 2) ls[1].eval() else o
 				ValueNode(BufferedImage(o.o, q.o as Int, BufferedImage.TYPE_INT_ARGB), ln)
 			}
-			else -> typeMisMatch("File or URL", o)
+			else -> typeMisMatch("File or URL", o, ln)
 		}
 	})
 	defineFunction("show-image", { ln, ls ->

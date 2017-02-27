@@ -54,7 +54,7 @@ inline fun SymbolList.addStandard() {
 					node = buildNode(value.o),
 					symbolList = this
 			).eval(), ln)
-			else -> InterpretException.typeMisMatch("String", value)
+			else -> InterpretException.typeMisMatch("String", value, ln)
 		}
 	})
 
@@ -83,7 +83,8 @@ inline fun SymbolList.addStandard() {
 			is String -> ValueNode(Class.forName(a.o).newInstance(), ln)
 			else -> InterpretException.typeMisMatch(
 					expected = "String",
-					actual = a
+					actual = a,
+					lineNumber = ln
 			)
 		}
 	})
@@ -124,7 +125,8 @@ inline fun SymbolList.addStandard() {
 			).root.eval(), ln)
 			else -> InterpretException.typeMisMatch(
 					expected = "File",
-					actual = o
+					actual = o,
+					lineNumber = ln
 			)
 		}
 	})
@@ -143,27 +145,27 @@ inline fun SymbolList.addStandard() {
 inline fun SymbolList.addGetSetFunction() {
 	defineFunction("->", { ln, ls ->
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size)
+			InterpretException.tooFewArgument(2, ls.size, ln)
 		val str = ls[0].eval()
 		val res = ValueNode(ls[1].eval(), ln)
 		when (str.o) {
 			is Symbol -> setVariable(str.o, res)
-			else -> InterpretException.typeMisMatch("Symbol", str)
+			else -> InterpretException.typeMisMatch("Symbol", str, ln)
 		}
 		res
 	})
 	defineFunction("<-", { ln, ls ->
 		if (ls.isEmpty())
-			InterpretException.tooFewArgument(1, ls.size)
+			InterpretException.tooFewArgument(1, ls.size, ln)
 		val str = ls[0].eval()
 		when (str.o) {
 			is Symbol -> getVariable(str.o) ?: getNullNode(ln)
-			else -> InterpretException.typeMisMatch("Symbol", str)
+			else -> InterpretException.typeMisMatch("Symbol", str, ln)
 		}
 	})
 	defineFunction("<->", { ln, ls ->
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size)
+			InterpretException.tooFewArgument(2, ls.size, ln)
 		val str = ls[0].eval()
 		when (str.o) {
 			is Symbol -> {
@@ -174,7 +176,7 @@ inline fun SymbolList.addGetSetFunction() {
 					)
 				getVariable(name = str.o)!!
 			}
-			else -> InterpretException.typeMisMatch("Symbol", str)
+			else -> InterpretException.typeMisMatch("Symbol", str, ln)
 		}
 	})
 }
@@ -183,7 +185,7 @@ inline fun SymbolList.addGetSetFunction() {
 inline fun SymbolList.addControlFlowFunctions() {
 	defineFunction("if", { ln, ls ->
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size)
+			InterpretException.tooFewArgument(2, ls.size, ln)
 		val a = ls[0].eval().o
 		val condition = a as? Boolean ?: (a != null)
 		val ret = when {
@@ -198,7 +200,7 @@ inline fun SymbolList.addControlFlowFunctions() {
 	})
 	defineFunction("while", { ln, ls ->
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size)
+			InterpretException.tooFewArgument(2, ls.size, ln)
 		var a = ls[0].eval().o
 		var ret: Any? = null
 		while (a as? Boolean ?: (a != null)) {

@@ -25,7 +25,7 @@ inline fun SymbolList.addMathFunctions() {
 			is Double -> ValueNode(Math.abs(a.o), ln)
 			is Long -> ValueNode(Math.abs(a.o), ln)
 			is Float -> ValueNode(Math.abs(a.o), ln)
-			else -> typeMisMatch("Number", a)
+			else -> typeMisMatch("Number", a, ln)
 		}
 	})
 	defineFunction("min", { ln, ls ->
@@ -33,7 +33,7 @@ inline fun SymbolList.addMathFunctions() {
 			val res = value.eval()
 			when (res.o) {
 				is Int -> if (res.o > min) min else res.o
-				else -> typeMisMatch("Int", res)
+				else -> typeMisMatch("Int", res, ln)
 			}
 		}, ln)
 	})
@@ -42,7 +42,7 @@ inline fun SymbolList.addMathFunctions() {
 			val res = value.eval()
 			when (res.o) {
 				is Int -> if (res.o < max) max else res.o
-				else -> typeMisMatch("Int", res)
+				else -> typeMisMatch("Int", res, ln)
 			}
 		}, ln)
 	})

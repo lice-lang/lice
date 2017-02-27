@@ -5,7 +5,7 @@
 + Lisp-style comments
 
 ```lisp
-(import "lice.io")
+(require lice.io)
 
 (233) ; Error: 233 isn't a function
 
@@ -15,7 +15,7 @@
 + Basic functions
 
 ```lisp
-(import "lice.io")
+(require lice.io)
 
 (+ 2 3 4 (* 2 5)) ; result: 19
 
@@ -47,7 +47,7 @@ false ; false
 + File/URL APIs
 
 ```lisp
-(import "lice.io")
+(require lice.io)
 
 (if (! (file-exists? "save"))
     (run (write-file (file "save") "0")
@@ -81,7 +81,7 @@ false ; false
 + Lazy evaluation
 
 ```lisp
-(import "lice.io")
+(require lice.io)
 
 (print (if (>= 1 2)
     (read-file (file "out")) ; will not be read
@@ -92,32 +92,32 @@ false ; false
 + A global variable map to store values
 
 ```lisp
-(-> "var" "actual") ; put "actual" into "var"
+(-> var "actual") ; put "actual" into "var"
 
-(<- "var") ; returns "actual"
+(<- var) ; returns "actual"
 
-(<-> "var" "darkholm")
-; if (<- "var") is null,
-; (-> "var" "darkholm"),
+(<-> var "darkholm")
+; if (<- var) is null,
+; (-> var "darkholm"),
 ; then return "darkholm".
-; if not, return (<- "var").
+; if not, return (<- var).
 ```
 
 + List processing
 
 ```lisp
-(for-each "i" (.. 1 10) (print (<- "i")))
+(for-each i (.. 1 10) (print (<- i)))
 ; prints: from 1 to 10
 ```
 
 + Loop
 
 ```lisp
-(import "lice.io")
+(require lice.io)
 
-(while (> 10 (<-> "i" 0))
-       (|> (print (<- "i"))
-           (-> "i" (+ 1 (<- "i")))
+(while (> 10 (<-> i 0))
+       (|> (print (<- i))
+           (-> i (+ 1 (<- i)))
        )
 )
 ; |> means to evaluate every parameters given
@@ -148,7 +148,7 @@ class Main {
 
 ```lisp
 ; Lice
-(import "lice.io")
+(require lice.io)
 
 (print (java-api-invoking))
 ```
@@ -160,13 +160,13 @@ The repl has two versions, a GUI one based on swing, and a CUI one.
 Here are some examples.
 
 ```lisp
-Lice > (import "lice.io")
+Lice > (require lice.io)
 true => java.lang.Boolean
 
-Lice > (import "lice.gui")
+Lice > (require lice.gui)
 true => java.lang.Boolean
 
-Lice > (import "lice.gui")
+Lice > (require lice.gui)
 false => java.lang.Boolean
 
 Lice > (+ 1 1)
@@ -183,7 +183,7 @@ Lice > (eval (str-con "(+ " "1 " "1)"))
 2 => java.lang.Integer
 2 => java.lang.Integer
 
-Lice > ([] 1 11 1)
+Lice > (cons 1 11 1)
 [1, 11, 1] => java.util.ArrayList
 
 Lice > (eval (read-file (file "sample/test3.lice")))
@@ -194,21 +194,21 @@ My name is Van, I'm an artist => java.lang.String
 Lice > (if (> 2 1) 1 2)
 1 => java.lang.Integer
 
-Lice > (-> "file" (file "fuck_you"))
+Lice > (-> file (file "fuck_you"))
 fuck_you => java.io.File
 
-Lice > (write-file (<- "file") (str-con "deep" " dark fantasy"))
+Lice > (write-file (<- file) (str-con "deep" " dark fantasy"))
 deep dark fantasy => java.lang.String
 
-Lice > (read-file (<- "file"))
+Lice > (read-file (<- file))
 deep dark fantasy => java.lang.String
 
 Lice > ([|] 1 2 3 4 5)
 [1 [2 [3 [4 [5 null]]]]] => lice.core.Pair
 
-Lice > (-> "i" ([|] 1 2 3 4 5 6 7))
+Lice > (-> i ([|] 1 2 3 4 5 6 7))
 [1 [2 [3 [4 [5 [6 [7 null]]]]]]] => lice.core.Pair
 
-Lice > (tail (tail (<- "i")))
+Lice > (tail (tail (<- i)))
 [3 [4 [5 [6 [7 null]]]]] => lice.core.Pair
 ```

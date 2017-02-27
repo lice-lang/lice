@@ -12,20 +12,22 @@ import lice.compiler.model.Value
 
 class ParseException(string: String) : RuntimeException(string) {
 	companion object Factory {
-		fun undefinedFunction(name: String): Nothing {
-			throw ParseException("Undefined Function: $name")
+		fun undefinedFunction(name: String, lineNumber: Int): Nothing {
+			throw ParseException("""Undefined Function: $name
+at line: $lineNumber""")
 		}
 	}
 }
 
 class InterpretException(string: String) : RuntimeException(string) {
 	companion object Factory {
-		fun typeMisMatch(expected: String, actual: Value): Nothing {
-			throw InterpretException("type mismatch: expected: $expected, found: ${actual.type.name}")
-		}
+		fun typeMisMatch(expected: String, actual: Value, lineNumber: Int): Nothing =
+				throw InterpretException("""type mismatch: expected: $expected, found: ${actual.type.name}
+at line: $lineNumber""")
 
-		fun tooFewArgument(expected: Int, actual: Int): Nothing {
-			throw InterpretException("Expected $expected or more arguments, found: $actual")
+		fun tooFewArgument(expected: Int, actual: Int, lineNumber: Int): Nothing {
+			throw InterpretException("""Expected $expected or more arguments, found: $actual
+at line: $lineNumber""")
 		}
 	}
 }

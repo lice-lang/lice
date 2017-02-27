@@ -27,28 +27,28 @@ inline fun SymbolList.addStringFunctions() {
 				res.o.isHexInt() -> res.o.toHexInt()
 				else -> throw InterpretException("give string: \"${res.o}\" cannot be parsed as a number!")
 			}, ln)
-			else -> InterpretException.typeMisMatch("String", res)
+			else -> InterpretException.typeMisMatch("String", res, ln)
 		}
 	})
 	defineFunction("int->hex", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is Int -> ValueNode("0x${Integer.toHexString(a.o)}", ln)
-			else -> InterpretException.typeMisMatch("Int", a)
+			else -> InterpretException.typeMisMatch("Int", a, ln)
 		}
 	})
 	defineFunction("int->bin", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is Int -> ValueNode("0b${Integer.toBinaryString(a.o)}", ln)
-			else -> InterpretException.typeMisMatch("Int", a)
+			else -> InterpretException.typeMisMatch("Int", a, ln)
 		}
 	})
 	defineFunction("int->oct", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is Int -> ValueNode("0${Integer.toOctalString(a.o)}", ln)
-			else -> InterpretException.typeMisMatch("Int", a)
+			else -> InterpretException.typeMisMatch("Int", a, ln)
 		}
 	})
 	defineFunction("str-con", { ln, ls ->
@@ -57,7 +57,7 @@ inline fun SymbolList.addStringFunctions() {
 		}.toString(), ln)
 	})
 	defineFunction("format", { ln, ls ->
-		if (ls.isEmpty()) InterpretException.tooFewArgument(1, ls.size)
+		if (ls.isEmpty()) InterpretException.tooFewArgument(1, ls.size, ln)
 		val format = ls[0].eval()
 		when (format.o) {
 			is String -> ValueNode(kotlin.String.format(format.o, *ls
@@ -65,7 +65,7 @@ inline fun SymbolList.addStringFunctions() {
 					.map { it.eval().o }
 					.toTypedArray()
 			), ln)
-			else -> InterpretException.typeMisMatch("String", format)
+			else -> InterpretException.typeMisMatch("String", format, ln)
 		}
 	})
 	defineFunction("->chars", { ln, ls ->

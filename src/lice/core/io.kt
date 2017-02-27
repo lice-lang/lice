@@ -21,7 +21,7 @@ inline fun SymbolList.addFileFunctions() {
 		when (a.o) {
 			is String -> ValueNode(File(a.o)
 					.apply { if (!exists()) createNewFile() }, ln)
-			else -> InterpretException.typeMisMatch("String", a)
+			else -> InterpretException.typeMisMatch("String", a, ln)
 		}
 	})
 	defineFunction("directory", { ln, ls ->
@@ -29,35 +29,35 @@ inline fun SymbolList.addFileFunctions() {
 		when (a.o) {
 			is String -> ValueNode(File(a.o)
 					.apply { if (!exists()) mkdirs() }, ln)
-			else -> InterpretException.typeMisMatch("String", a)
+			else -> InterpretException.typeMisMatch("String", a, ln)
 		}
 	})
 	defineFunction("file-exists?", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is String -> ValueNode(File(a.o).exists(), ln)
-			else -> InterpretException.typeMisMatch("String", a)
+			else -> InterpretException.typeMisMatch("String", a, ln)
 		}
 	})
 	defineFunction("read-file", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is File -> ValueNode(a.o.readText(), ln)
-			else -> InterpretException.typeMisMatch("File", a)
+			else -> InterpretException.typeMisMatch("File", a, ln)
 		}
 	})
 	defineFunction("url", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is String -> ValueNode(URL(a.o), ln)
-			else -> InterpretException.typeMisMatch("String", a)
+			else -> InterpretException.typeMisMatch("String", a, ln)
 		}
 	})
 	defineFunction("read-url", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is URL -> ValueNode(a.o.readText(), ln)
-			else -> InterpretException.typeMisMatch("URL", a)
+			else -> InterpretException.typeMisMatch("URL", a, ln)
 		}
 	})
 	defineFunction("write-file", { ln, ls ->
@@ -65,7 +65,7 @@ inline fun SymbolList.addFileFunctions() {
 		val b = ls[1].eval()
 		when (a.o) {
 			is File -> a.o.writeText(b.o.toString())
-			else -> InterpretException.typeMisMatch("File", a)
+			else -> InterpretException.typeMisMatch("File", a, ln)
 		}
 		ValueNode(b.o.toString(), ln)
 	})
