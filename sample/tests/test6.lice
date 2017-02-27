@@ -15,7 +15,7 @@
 
 (print (<- var))
 
-; write the increased actual to file
+; write the increased value to file
 
 (write-file
   (file "save")

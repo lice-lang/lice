@@ -61,6 +61,10 @@ constructor(init: Boolean = true) {
 		functions.put(name, node)
 	}
 
+	fun isFunctionDefined(name: String) = functions.containsKey(name)
+
+	fun isFunctionDefined(name: Symbol) = isFunctionDefined(name.name)
+
 	fun removeFunction(name: String) {
 		functions.remove(name)
 	}

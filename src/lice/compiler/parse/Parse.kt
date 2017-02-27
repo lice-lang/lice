@@ -17,6 +17,7 @@ import lice.compiler.util.showError
 import java.util.*
 
 fun buildNode(code: String): StringNode {
+	if (code.isEmpty() || code.isBlank()) return EmptyStringNode(0)
 	var beginIndex = 0
 	val currentNodeStack = Stack<StringMiddleNode>()
 	currentNodeStack.push(StringMiddleNode(1))

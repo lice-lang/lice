@@ -16,6 +16,7 @@ import lice.compiler.parse.buildNode
 import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
 import lice.compiler.util.InterpretException
+import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
 import lice.compiler.util.serr
@@ -33,18 +34,41 @@ inline fun SymbolList.addStandard() {
 
 	defineFunction("def", { ln, ls ->
 		val a = ls[0].eval()
-		if (a.o is String) defineFunction(a.o, { ln, ls -> ls[1] })
-		getNullNode(ln)
+		when (a.o) {
+			is Symbol -> {
+				defineFunction(a.o, { ln, ignored -> ls[1] })
+				ValueNode(a.o, ln)
+			}
+			is String -> {
+				defineFunction(a.o, { ln, ignored -> ls[1] })
+				ValueNode(a.o, ln)
+			}
+			else -> getNullNode(ln)
+		}
+	})
+	defineFunction("def?", { ln, ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is Symbol -> ValueNode(isFunctionDefined(a.o), ln)
+			is String -> ValueNode(isFunctionDefined(a.o), ln)
+			else -> ValueNode(false, ln)
+		}
 	})
 	defineFunction("undef", { ln, ls ->
 		val a = ls[0].eval()
-		if (a.o is String) removeFunction(a.o)
+		when (a.o) {
+			is String -> removeFunction(a.o)
+			is Symbol -> removeFunction(a.o)
+		}
 		getNullNode(ln)
 	})
 	defineFunction("call", { ln, ls ->
 		val a = ls[0].eval()
-		if (a.o is String) getFunction(a.o)(ln, ls.subList(1, ls.size))
-		else getNullNode(ln)
+		when (a.o) {
+			is String -> getFunction(a.o)(ln, ls.subList(1, ls.size))
+			is Symbol -> getFunction(a.o)(ln, ls.subList(1, ls.size))
+			else -> getNullNode(ln)
+		}
 	})
 
 	defineFunction("eval", { ln, ls ->
@@ -54,7 +78,7 @@ inline fun SymbolList.addStandard() {
 					node = buildNode(value.o),
 					symbolList = this
 			).eval(), ln)
-			else -> InterpretException.typeMisMatch("String", value, ln)
+			else -> typeMisMatch("String", value, ln)
 		}
 	})
 
@@ -81,8 +105,9 @@ inline fun SymbolList.addStandard() {
 		val a = ls[0].eval()
 		when (a.o) {
 			is String -> ValueNode(Class.forName(a.o).newInstance(), ln)
-			else -> InterpretException.typeMisMatch(
-					expected = "String",
+			is Symbol -> ValueNode(Class.forName(a.o.name).newInstance(), ln)
+			else -> typeMisMatch(
+					expected = "String or Symbol",
 					actual = a,
 					lineNumber = ln
 			)
@@ -123,7 +148,7 @@ inline fun SymbolList.addStandard() {
 					file = o.o,
 					symbolList = this
 			).root.eval(), ln)
-			else -> InterpretException.typeMisMatch(
+			else -> typeMisMatch(
 					expected = "File",
 					actual = o,
 					lineNumber = ln
@@ -140,6 +165,14 @@ inline fun SymbolList.addStandard() {
 	defineFunction("!null?", { ln, ls -> ValueNode(null != ls[0].eval().o, ln) })
 	defineFunction("true?", { ln, ls -> ValueNode(true == ls[0].eval().o, ln) })
 	defineFunction("false?", { ln, ls -> ValueNode(false == ls[0].eval().o, ln) })
+
+	defineFunction("str->sym", { ln, ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is String -> ValueNode(Symbol(a.o), ln)
+			else -> typeMisMatch("String", a, ln)
+		}
+	})
 }
 
 inline fun SymbolList.addGetSetFunction() {
@@ -150,7 +183,7 @@ inline fun SymbolList.addGetSetFunction() {
 		val res = ValueNode(ls[1].eval(), ln)
 		when (str.o) {
 			is Symbol -> setVariable(str.o, res)
-			else -> InterpretException.typeMisMatch("Symbol", str, ln)
+			else -> typeMisMatch("Symbol", str, ln)
 		}
 		res
 	})
@@ -160,7 +193,7 @@ inline fun SymbolList.addGetSetFunction() {
 		val str = ls[0].eval()
 		when (str.o) {
 			is Symbol -> getVariable(str.o) ?: getNullNode(ln)
-			else -> InterpretException.typeMisMatch("Symbol", str, ln)
+			else -> typeMisMatch("Symbol", str, ln)
 		}
 	})
 	defineFunction("<->", { ln, ls ->
@@ -176,7 +209,7 @@ inline fun SymbolList.addGetSetFunction() {
 					)
 				getVariable(name = str.o)!!
 			}
-			else -> InterpretException.typeMisMatch("Symbol", str, ln)
+			else -> typeMisMatch("Symbol", str, ln)
 		}
 	})
 }

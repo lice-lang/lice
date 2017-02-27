@@ -27,16 +27,18 @@ object Main {
 	}
 
 	@JvmStatic
-	fun main(args: Array<String>) =
-			if (args.isEmpty()) {
-				val sl = SymbolList()
-				val scanner = Scanner(System.`in`)
-				val repl = Repl()
-				while (true)
-					repl.handle(scanner.nextLine(), sl)
-			} else {
-				interpret(File(args[0]).apply {
-					if (!exists()) serr("file not found: ${args[0]}")
-				})
-			}
+	fun main(args: Array<String>) {
+		if (args.isEmpty()) {
+			val sl = SymbolList()
+			val scanner = Scanner(System.`in`)
+			val repl = Repl()
+			while (true)
+				repl.handle(scanner.nextLine(), sl)
+		} else {
+			interpret(File(args[0]).apply {
+				if (!exists()) serr("file not found: ${args[0]}")
+			})
+		}
+		System.exit(0)
+	}
 }

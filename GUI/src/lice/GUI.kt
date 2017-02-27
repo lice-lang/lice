@@ -7,6 +7,7 @@ package lice
 
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
+import lice.repl.Main
 import lice.repl.Repl
 import lice.repl.VERSION_CODE
 import java.awt.BorderLayout
@@ -33,6 +34,7 @@ fun JTextPane.append(
 }
 
 fun main(args: Array<String>) {
+	if (args.isNotEmpty() && args[0] == "-cui") Main.main(emptyArray())
 	val sl = SymbolList()
 	val output = JTextPane()
 	output.isEditable = false

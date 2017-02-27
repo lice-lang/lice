@@ -14,6 +14,8 @@ import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 
 inline fun SymbolList.addMathFunctions() {
+	setVariable("PI", ValueNode(Math.PI, -1))
+	setVariable("E", ValueNode(Math.E, -1))
 	defineFunction("sqrt", { ln, ls ->
 		ValueNode(Math.sqrt((ls[0].eval().o as Int).toDouble()), ln)
 	})
