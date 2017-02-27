@@ -17,6 +17,7 @@ import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 
 import lice.lang.Pair
+import lice.lang.Symbol
 
 inline fun SymbolList.addListFunctions() {
 	defineFunction("[|]", { ls ->
@@ -61,7 +62,7 @@ inline fun SymbolList.addCollectionsFunctions() {
 		if (ls.size < 3)
 			tooFewArgument(3, ls.size)
 		val i = ls[0].eval()
-		if (i.o !is String) typeMisMatch("String", i)
+		if (i.o !is Symbol) typeMisMatch("Symbol", i)
 		val a = ls[1].eval()
 		when (a.o) {
 			is Collection<*> -> {

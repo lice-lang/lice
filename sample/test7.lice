@@ -1,9 +1,9 @@
 
-; (import "lice.core")
+; (require lice.core)
 
-(while (> 10 (<-> "i" 0))
-       (|> (print (<- "i"))
-           (type (<- "i"))
-           (-> "i" (+ 1 (<- "i")))
+(while (> 10 (<-> i 0))
+       (|> (print (<- i))
+           (type (<- i))
+           (-> i (+ 1 (<- i)))
        )
 )

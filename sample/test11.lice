@@ -1,16 +1,16 @@
-(import "lice.thread")
+(require lice.thread)
 
 ; This is an example for
 ; the worst practise of for-each
 
 (for-each
-  "i"
+  i
   (.. 1 10)
 
   ; worst practise!
   (thread|>
 
     ; not safe!
-    (println (<- "i"))
-    (sleep (* 100 (<- "i")))
+    (println (<- i))
+    (sleep (* 100 (<- i)))
     (print "I'm alive")))

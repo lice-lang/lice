@@ -1,17 +1,17 @@
-(import "lice.io")
+(require lice.io)
 
 ; evaluate this file
 
-(-> "FILE_PATH" "C:\Users\ice1000\Desktop\Lice\sample\test4.lice")
+(-> FILE_PATH "C:\Users\ice1000\Desktop\Lice\sample\test4.lice")
 
-(-> "file" (file (->str (<- "FILE_PATH"))))
+(-> file (file (->str (<- FILE_PATH))))
 
-; (print (<- "file"))
+; (print (<- file))
 
-(-> "code" (read-file (<- "file")))
+(-> code (read-file (<- file)))
 
-; (type (<- "code"))
-; (print (<- "code"))
+; (type (<- code))
+; (print (<- code))
 
-(eval (<- "code"))
+(eval (<- code))
 

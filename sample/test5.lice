@@ -1,9 +1,9 @@
-(import lice.io)
-(import lice.str)
+(require lice.io)
+(require lice.str)
 
 ; evaluate this file
 
-(-> "file" (file (->str (<- FILE_PATH))))
+(-> file (file (->str (<- FILE_PATH))))
 
 ; (print (<- file))
 

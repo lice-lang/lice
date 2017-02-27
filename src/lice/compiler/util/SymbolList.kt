@@ -28,7 +28,7 @@ constructor(init: Boolean = true) {
 	}
 
 	fun initialize() {
-		defineFunction("import", { ls ->
+		defineFunction("require", { ls ->
 			ls.forEach { node ->
 				val res = node.eval()
 				if (res.o is Symbol) {

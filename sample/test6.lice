@@ -1,5 +1,5 @@
-(import "lice.io")
-(import "lice.str")
+(require lice.io)
+(require lice.str)
 
 ; initialize
 
@@ -11,23 +11,23 @@
 
 ; read the file and get the value
 
-(-> "var" (str->int (read-file (file "save"))))
+(-> var (str->int (read-file (file "save"))))
 
-(print (<- "var"))
+(print (<- var))
 
 ; write the increased actual to file
 
 (write-file
   (file "save")
-  (->str (+ 7 (<- "var")))
+  (->str (+ 7 (<- var)))
 )
 
 ; evaluate this file
 
-(-> "file" (file (->str (<- "FILE_PATH"))))
+(-> file (file (->str (<- FILE_PATH))))
 
-; (print (<- "file"))
+; (print (<- file))
 
-(load-file (<- "file"))
+(load-file (<- file))
 
 

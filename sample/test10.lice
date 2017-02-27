@@ -1,4 +1,4 @@
-(import "lice.io")
+(require lice.io)
 
 (print (java-api-invoking))
 (print (java-api-invoking))
