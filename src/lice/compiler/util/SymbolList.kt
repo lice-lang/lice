@@ -90,5 +90,4 @@ constructor(init: Boolean = true) {
 
 	fun getFunction(name: String) =
 			functions[name]
-					?: throw ParseException("functions not found: $functions")
 }

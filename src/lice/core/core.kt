@@ -17,6 +17,7 @@ import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
 import lice.compiler.util.InterpretException
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
+import lice.compiler.util.ParseException.Factory.undefinedFunction
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
 import lice.compiler.util.serr
@@ -65,8 +66,10 @@ inline fun SymbolList.addStandard() {
 	defineFunction("call", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
-			is String -> getFunction(a.o)(ln, ls.subList(1, ls.size))
-			is Symbol -> getFunction(a.o)(ln, ls.subList(1, ls.size))
+			is String -> (getFunction(a.o) ?: undefinedFunction(a.o, ln))
+					.invoke(ln, ls.subList(1, ls.size))
+			is Symbol -> (getFunction(a.o) ?: undefinedFunction(a.o.name, ln))
+					.invoke(ln, ls.subList(1, ls.size))
 			else -> getNullNode(ln)
 		}
 	})

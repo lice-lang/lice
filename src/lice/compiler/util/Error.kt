@@ -13,7 +13,7 @@ import lice.compiler.model.Value
 class ParseException(string: String) : RuntimeException(string) {
 	companion object Factory {
 		fun undefinedFunction(name: String, lineNumber: Int): Nothing {
-			throw ParseException("""Undefined Function: $name
+			throw ParseException("""undefined function: $name
 at line: $lineNumber""")
 		}
 	}
@@ -26,7 +26,7 @@ class InterpretException(string: String) : RuntimeException(string) {
 at line: $lineNumber""")
 
 		fun tooFewArgument(expected: Int, actual: Int, lineNumber: Int): Nothing {
-			throw InterpretException("""Expected $expected or more arguments, found: $actual
+			throw InterpretException("""expected $expected or more arguments, found: $actual
 at line: $lineNumber""")
 		}
 	}

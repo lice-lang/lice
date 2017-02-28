@@ -9,6 +9,7 @@
 package lice.compiler.model
 
 import lice.compiler.model.Value.Objects.Nullptr
+import lice.compiler.util.ParseException.Factory.undefinedFunction
 import lice.compiler.util.SymbolList
 
 class Value(
@@ -99,7 +100,8 @@ class ExpressionNode(
 	)
 
 	override fun eval() =
-			symbolList.getFunction(function)(lineNumber, params).eval()
+			(symbolList.getFunction(function) ?: undefinedFunction(function, lineNumber))
+					.invoke(lineNumber, params).eval()
 }
 
 class EmptyNode(override val lineNumber: Int) : Node {
