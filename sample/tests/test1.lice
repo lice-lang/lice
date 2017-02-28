@@ -1,0 +1,21 @@
+(require lice.str)
+(require lice.gui)
+
+(for-each i
+  (.. 1 5)
+  (println (str-con
+    "C:\Users\ice1000\Desktop\Lice\"
+    (<- i)
+    ".PNG")))
+
+; prints the file names
+
+(for-each i
+  (.. 1 5)
+  (show-image (image (file
+    (str-con
+      "C:\Users\ice1000\Desktop\Lice\"
+      (<- i)
+      ".PNG")))))
+
+; displays these images
