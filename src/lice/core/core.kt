@@ -148,6 +148,10 @@ inline fun SymbolList.addStandard() {
 					file = o.o,
 					symbolList = this
 			).root.eval(), ln)
+			is String -> ValueNode(createAst(
+					file = File(o.o),
+					symbolList = this
+			).root.eval(), ln)
 			else -> typeMisMatch(
 					expected = "File",
 					actual = o,

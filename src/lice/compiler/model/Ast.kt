@@ -34,22 +34,26 @@ interface Node {
 	}
 }
 
-class ValueNode(
+class ValueNode
+@JvmOverloads
+constructor(
 		val value: Value,
-		override val lineNumber: Int) : Node {
+		override val lineNumber: Int = -1) : Node {
 
+	@JvmOverloads
 	constructor(
 			any: Any,
-			lineNumber: Int
+			lineNumber: Int = -1
 	) : this(
 			Value(any),
 			lineNumber
 	)
 
+	@JvmOverloads
 	constructor(
 			any: Any?,
 			type: Class<*>,
-			lineNumber: Int
+			lineNumber: Int = -1
 	) : this(
 			Value(any, type),
 			lineNumber
