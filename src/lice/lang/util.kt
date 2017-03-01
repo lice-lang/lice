@@ -67,8 +67,23 @@ class NumberOperator(var initial: Number = 0) {
 			minusLikeFunctionsImpl(o, lineNumber, Leveler::remValue)
 
 	companion object Leveler {
-		@JvmOverloads
-		fun getLevel(o: Number, lineNumber: Int = -1) = when (o) {
+		fun compare(
+				o1: Number,
+				o2: Number,
+				lineNumber: Int = -1): Int {
+			if (getLevel(o2, lineNumber) <= getLevel(o1, lineNumber))
+				return compareValue(o2, o1, lineNumber)
+			else
+				return compareValue(o1, o2, lineNumber).negative()
+		}
+
+		internal fun Int.negative() = when {
+			this > 0 -> -1
+			this < 0 -> 1
+			else -> 0
+		}
+
+		internal fun getLevel(o: Number, lineNumber: Int = -1) = when (o) {
 			is Byte -> 0
 //			is Char -> 1
 			is Short -> 2
@@ -81,8 +96,7 @@ class NumberOperator(var initial: Number = 0) {
 			else -> typeMisMatch("Numberic", o, lineNumber)
 		}
 
-		@JvmOverloads
-		fun plusValue(
+		internal fun plusValue(
 				lowLevel: Number,
 				highLevel: Number,
 				lineNumber: Int = -1): Number = when (highLevel) {
@@ -112,8 +126,7 @@ class NumberOperator(var initial: Number = 0) {
 			else -> typeMisMatch("Numberic", lowLevel, lineNumber)
 		}
 
-		@JvmOverloads
-		fun timesValue(
+		internal fun timesValue(
 				lowLevel: Number,
 				highLevel: Number,
 				lineNumber: Int = -1): Number = when (highLevel) {
@@ -143,8 +156,7 @@ class NumberOperator(var initial: Number = 0) {
 			else -> typeMisMatch("Numberic", lowLevel, lineNumber)
 		}
 
-		@JvmOverloads
-		fun minusValue(
+		internal fun minusValue(
 				lowLevel: Number,
 				highLevel: Number,
 				lineNumber: Int = -1,
@@ -190,8 +202,7 @@ class NumberOperator(var initial: Number = 0) {
 			else -> typeMisMatch("Numberic", lowLevel, lineNumber)
 		}
 
-		@JvmOverloads
-		fun remValue(
+		internal fun remValue(
 				lowLevel: Number,
 				highLevel: Number,
 				lineNumber: Int = -1,
@@ -234,6 +245,36 @@ class NumberOperator(var initial: Number = 0) {
 			}
 			is BigDecimal ->
 				highLevel % BigDecimal(lowLevel.toString())
+			else -> typeMisMatch("Numberic", lowLevel, lineNumber)
+		}
+
+		internal fun compareValue(
+				lowLevel: Number,
+				highLevel: Number,
+				lineNumber: Int = -1): Int = when (highLevel) {
+			is Byte -> highLevel.compareTo(lowLevel.toByte())
+			is Short -> highLevel.compareTo(lowLevel.toShort())
+			is Int -> highLevel.compareTo(lowLevel.toInt())
+			is Long -> highLevel.compareTo(lowLevel.toLong())
+			is Float -> highLevel.compareTo(lowLevel.toFloat())
+			is Double -> highLevel.compareTo(lowLevel.toDouble())
+			is BigInteger -> {
+				val l = getLevel(lowLevel)
+				when {
+					l <= 4 ->
+						// int
+						highLevel.compareTo(BigInteger(lowLevel.toString()))
+					l == 7 ->
+						// both are big integer
+						highLevel.compareTo(lowLevel as BigInteger)
+					else ->
+						// low is Float/Double, and high is BigInteger
+						// should return a big decimal
+						BigDecimal(highLevel).compareTo(BigDecimal(lowLevel.toString()))
+				}
+			}
+			is BigDecimal ->
+				highLevel.compareTo(BigDecimal(lowLevel.toString()))
 			else -> typeMisMatch("Numberic", lowLevel, lineNumber)
 		}
 

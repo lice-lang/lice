@@ -33,51 +33,45 @@ inline fun SymbolList.addNumberFunctions() {
 		when (ls.size) {
 			0 -> ValueNode(0, ln)
 			1 -> ValueNode(ls[0].eval(), ln)
-			else -> {
-				ValueNode(ls
-						.subList(1, ls.size)
-						.fold(NumberOperator(ls[0].eval().o as Number)) { sum, value ->
-					val res = value.eval()
-					when (res.o) {
-						is Number -> sum.minus(res.o, ln)
-						else -> typeMisMatch("Number", res, ln)
-					}
-				}.result, ln)
-			}
+			else -> ValueNode(ls
+					.subList(1, ls.size)
+					.fold(NumberOperator(ls[0].eval().o as Number)) { sum, value ->
+						val res = value.eval()
+						when (res.o) {
+							is Number -> sum.minus(res.o, ln)
+							else -> typeMisMatch("Number", res, ln)
+						}
+					}.result, ln)
 		}
 	})
 	defineFunction("/", { ln, ls ->
 		when (ls.size) {
 			0 -> ValueNode(0, ln)
 			1 -> ValueNode(ls[0].eval(), ln)
-			else -> {
-				ValueNode(ls
-						.subList(1, ls.size)
-						.fold(NumberOperator(ls[0].eval().o as Number)) { sum, value ->
-							val res = value.eval()
-							when (res.o) {
-								is Number -> sum.div(res.o, ln)
-								else -> typeMisMatch("Number", res, ln)
-							}
-						}.result, ln)
-			}
+			else -> ValueNode(ls
+					.subList(1, ls.size)
+					.fold(NumberOperator(ls[0].eval().o as Number)) { sum, value ->
+						val res = value.eval()
+						when (res.o) {
+							is Number -> sum.div(res.o, ln)
+							else -> typeMisMatch("Number", res, ln)
+						}
+					}.result, ln)
 		}
 	})
 	defineFunction("%", { ln, ls ->
 		when (ls.size) {
 			0 -> ValueNode(0, ln)
 			1 -> ValueNode(ls[0].eval(), ln)
-			else -> {
-				ValueNode(ls
-						.subList(1, ls.size)
-						.fold(NumberOperator(ls[0].eval().o as Number)) { sum, value ->
-							val res = value.eval()
-							when (res.o) {
-								is Number -> sum.rem(res.o, ln)
-								else -> typeMisMatch("Number", res, ln)
-							}
-						}.result, ln)
-			}
+			else -> ValueNode(ls
+					.subList(1, ls.size)
+					.fold(NumberOperator(ls[0].eval().o as Number)) { sum, value ->
+						val res = value.eval()
+						when (res.o) {
+							is Number -> sum.rem(res.o, ln)
+							else -> typeMisMatch("Number", res, ln)
+						}
+					}.result, ln)
 		}
 	})
 	defineFunction("*", { ln, ls ->
