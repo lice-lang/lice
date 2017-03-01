@@ -14,6 +14,7 @@ import lice.compiler.model.ValueNode
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 import lice.lang.NumberOperator
+import lice.lang.NumberOperator.Leveler.compare
 
 
 inline fun SymbolList.addNumberFunctions() {
@@ -83,40 +84,52 @@ inline fun SymbolList.addNumberFunctions() {
 			}
 		}.result, ln)
 	})
-	defineFunction("==", { ln, list ->
+	defineFunction("===", { ln, list ->
 		val ls = list.map(Node::eval)
 		ValueNode((1..ls.size - 1).all {
 			ls[it].o == ls[it - 1].o
 		}, ln)
 	})
-	defineFunction("!=", { ln, list ->
+	defineFunction("==", { ln, list ->
+		val ls = list.map { it.eval().o as Number }
+		ValueNode((1..ls.size - 1).all {
+			compare(ls[it - 1], ls[it], ln) == 0
+		}, ln)
+	})
+	defineFunction("!==", { ln, list ->
 		val ls = list.map(Node::eval)
 		ValueNode((1..ls.size - 1).all {
 			ls[it].o != ls[it - 1].o
 		}, ln)
 	})
+	defineFunction("!=", { ln, list ->
+		val ls = list.map { it.eval().o as Number }
+		ValueNode((1..ls.size - 1).all {
+			compare(ls[it - 1], ls[it], ln) != 0
+		}, ln)
+	})
 	defineFunction("<", { ln, list ->
 		val ls = list.map { it.eval().o as Number }
-		ValueNode((1..ls.size).all {
-			NumberOperator.compare(ls[it - 1], ls[it], ln) < 0
+		ValueNode((1..ls.size - 1).all {
+			compare(ls[it - 1], ls[it], ln) < 0
 		}, ln)
 	})
 	defineFunction(">", { ln, list ->
 		val ls = list.map { it.eval().o as Number }
-		ValueNode((1..ls.size).all {
-			NumberOperator.compare(ls[it - 1], ls[it], ln) > 0
+		ValueNode((1..ls.size - 1).all {
+			compare(ls[it - 1], ls[it], ln) > 0
 		}, ln)
 	})
 	defineFunction(">=", { ln, list ->
 		val ls = list.map { it.eval().o as Number }
-		ValueNode((1..ls.size).all {
-			NumberOperator.compare(ls[it - 1], ls[it], ln) >= 0
+		ValueNode((1..ls.size - 1).all {
+			compare(ls[it - 1], ls[it], ln) >= 0
 		}, ln)
 	})
 	defineFunction("<=", { ln, list ->
 		val ls = list.map { it.eval().o as Number }
-		ValueNode((1..ls.size).all {
-			NumberOperator.compare(ls[it - 1], ls[it], ln) <= 0
+		ValueNode((1..ls.size - 1).all {
+			compare(ls[it - 1], ls[it], ln) <= 0
 		}, ln)
 	})
 	defineFunction("&", { ln, ls ->

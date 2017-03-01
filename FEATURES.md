@@ -30,6 +30,19 @@
 (format "%d %d" 233 233)
 ```
 
++ Compare
+
+```lisp
+(== 1 1) ; number comparison,
+         ; is actually "1 == 1"
+(== 1 1N) ; true
+(== 1 (int->double 1)) ; true
+(=== a b) ; is actually a.equals(b)
+(=== 1 1N) ; false
+
+; also != !==
+```
+
 + Literals
 
 ```lisp
