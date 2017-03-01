@@ -19,7 +19,7 @@ class LevelerTest {
 		println(plusValue(1L, 1.0).javaClass)
 		println(plusValue(1L, 1F).javaClass)
 		println(plusValue(1F, 1F).javaClass)
-		println(plusValue(1.0, 1F).javaClass)
+		println(plusValue(1F, 1.0).javaClass)
 		println(plusValue(1, BigInteger("1")).javaClass)
 		println(plusValue(BigInteger("1"), BigInteger("1")).javaClass)
 		println(plusValue(1.0, BigInteger("1")).javaClass)
@@ -51,5 +51,14 @@ class LevelerTest {
 	fun compare() {
 		println(NumberOperator.compare(1, 2))
 		println(NumberOperator.compare(2, 1))
+		println(NumberOperator.compare(1, 1))
+		println(NumberOperator.compare(1, 1.0))
+		println(NumberOperator.compare(1F, 1.0))
+		println(NumberOperator.compare(1L, 1.0))
+		println(NumberOperator.compare(1L, 3.0))
+		println(NumberOperator.compare(6L, 3.0))
+		println(NumberOperator.compare(BigInteger("1"), BigDecimal("1.0")))
+		println(NumberOperator.compare(BigInteger("2"), BigDecimal("1.0")))
+		println(NumberOperator.compare(BigInteger("2"), BigDecimal("4.0")))
 	}
 }

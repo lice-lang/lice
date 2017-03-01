@@ -96,27 +96,27 @@ inline fun SymbolList.addNumberFunctions() {
 		}, ln)
 	})
 	defineFunction("<", { ln, list ->
-		val ls = list.map(Node::eval)
-		ValueNode((1..ls.size - 1).all {
-			(ls[it - 1].o as Int) < (ls[it].o as Int)
+		val ls = list.map { it.eval().o as Number }
+		ValueNode((1..ls.size).all {
+			NumberOperator.compare(ls[it - 1], ls[it], ln) < 0
 		}, ln)
 	})
 	defineFunction(">", { ln, list ->
-		val ls = list.map(Node::eval)
-		ValueNode((1..ls.size - 1).all {
-			ls[it - 1].o as Int > (ls[it].o as Int)
+		val ls = list.map { it.eval().o as Number }
+		ValueNode((1..ls.size).all {
+			NumberOperator.compare(ls[it - 1], ls[it], ln) > 0
 		}, ln)
 	})
 	defineFunction(">=", { ln, list ->
-		val ls = list.map(Node::eval)
-		ValueNode((1..ls.size - 1).all {
-			(ls[it - 1].o as Int) >= (ls[it].o as Int)
+		val ls = list.map { it.eval().o as Number }
+		ValueNode((1..ls.size).all {
+			NumberOperator.compare(ls[it - 1], ls[it], ln) >= 0
 		}, ln)
 	})
-	defineFunction("<=", { ln, ls ->
-		val list = ls.map(Node::eval)
-		ValueNode((1..list.size - 1).all {
-			(list[it - 1].o as Int) <= (list[it].o as Int)
+	defineFunction("<=", { ln, list ->
+		val ls = list.map { it.eval().o as Number }
+		ValueNode((1..ls.size).all {
+			NumberOperator.compare(ls[it - 1], ls[it], ln) <= 0
 		}, ln)
 	})
 	defineFunction("&", { ln, ls ->
