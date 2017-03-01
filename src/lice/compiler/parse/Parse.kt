@@ -39,13 +39,13 @@ fun buildNode(code: String): StringNode {
 	code.forEachIndexed { index, c ->
 		if (c == '\n') commentStarted = false
 		if (!commentStarted) when (c) {
-			';' -> if (!quoteStarted) commentStarted = true
-			'(' -> if (!quoteStarted) {
+			';', '；' -> if (!quoteStarted) commentStarted = true
+			'(', '（' -> if (!quoteStarted) {
 				check(index)
 				currentNodeStack.push(StringMiddleNode(lineNumber))
 				++beginIndex
 			}
-			')' -> if (!quoteStarted) {
+			')', '）' -> if (!quoteStarted) {
 				check(index)
 				if (currentNodeStack.size <= 1) {
 					showError("Braces not match at line $lineNumber: Unexpected \')\'.", true)
@@ -59,7 +59,7 @@ fun buildNode(code: String): StringNode {
 						.peek()
 						.add(son)
 			}
-			' ', '\n', '\t', '\r', ',' -> {
+			' ', '\n', '\t', '\r', ',', '，' -> {
 				if (!quoteStarted) {
 					check(index)
 					beginIndex = index + 1
@@ -69,7 +69,7 @@ fun buildNode(code: String): StringNode {
 					commentStarted = false
 				}
 			}
-			'\"' -> if (!quoteStarted) {
+			'“', '”', '\"' -> if (!quoteStarted) {
 				quoteStarted = true
 				lastQuoteIndex = index
 			} else {

@@ -25,6 +25,10 @@ class InterpretException(string: String) : RuntimeException(string) {
 				throw InterpretException("""type mismatch: expected: $expected, found: ${actual.type.name}
 at line: $lineNumber""")
 
+		fun typeMisMatch(expected: String, actual: Any, lineNumber: Int): Nothing =
+				throw InterpretException("""type mismatch: expected: $expected, found: ${actual.javaClass.name}
+at line: $lineNumber""")
+
 		fun tooFewArgument(expected: Int, actual: Int, lineNumber: Int): Nothing {
 			throw InterpretException("""expected $expected or more arguments, found: $actual
 at line: $lineNumber""")
