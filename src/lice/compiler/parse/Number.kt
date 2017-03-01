@@ -8,6 +8,7 @@
 
 package lice.compiler.parse
 
+import java.math.BigDecimal
 import java.math.BigInteger
 
 //val Char.isDigit: Boolean
@@ -42,9 +43,11 @@ fun String.isBigInt(): Boolean {
 	if (this[0] == '-') return substring(1).isBigInt()
 	return when {
 		length <= 1 -> false
-		this[length - 1].safeLower() != 'm' -> false
-		else -> (0..length - 2)
-				.all { this[it].isDigit() }
+		this[length - 1].safeLower() != 'n' -> false
+		else -> {
+			val a = substring(0..length - 2)
+			a.isInt() || a.isHexInt() || a.isBinInt() || a.isOctInt()
+		}
 	}
 }
 
@@ -91,6 +94,7 @@ fun String.toBinInt(): Int {
 }
 
 fun String.toBigInt() = BigInteger(this.substring(0, length - 1))
+fun String.toBigDec() = BigDecimal(this.substring(0, length - 1))
 
 fun String.toOctInt(): Int {
 	if (this[0] == '-') return -substring(1).toBinInt()

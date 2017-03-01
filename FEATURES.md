@@ -41,7 +41,27 @@ false ; false
 010 ; 8
 0x10 : 16
 0b10 ; 2
+233N ; BigInteger("233")
 "deep" ; "deep"
+```
+
++ Primitives
+
+```lisp
+Lice > (- 1N 10)
+-9 => java.math.BigInteger
+
+Lice > (- 10N 1)
+9 => java.math.BigInteger
+
+Lice > (+ 1 1)
+2 => java.lang.Integer
+
+Lice > (+ 9999999999999999999999999999999999999N 9999999999N)
+10000000000000000000000000009999999998 => java.math.BigInteger
+
+Lice > (- 9999999999999999999999999999999999999N 9999999999N)
+9999999999999999999999999990000000000 => java.math.BigInteger
 ```
 
 + File/URL APIs

@@ -81,11 +81,19 @@ class NumberKtTest {
 		assertEquals(0B01100010, "0B01100010".toBinInt())
 	}
 
+	@Test
+	fun isBigInt() {
+		assertTrue("1273983189279n".isBigInt())
+		assertTrue("1273983189279N".isBigInt())
+		assertTrue("-1273983189279N".isBigInt())
+		assertFalse("-12739831dsf9N".isBigInt())
+	}
+
 	@Test(timeout = 1000)
 	fun toBigInt() {
-		assertEquals(BigInteger("12903829108"), "12903829108M".toBigInt())
-		assertEquals(BigInteger("-21893219"), "-21893219M".toBigInt())
-		assertEquals(BigInteger("-21893219"), "-21893219m".toBigInt())
+		assertEquals(BigInteger("12903829108"), "12903829108N".toBigInt())
+		assertEquals(BigInteger("-21893219"), "-21893219N".toBigInt())
+		assertEquals(BigInteger("-21893219"), "-21893219n".toBigInt())
 	}
 
 }

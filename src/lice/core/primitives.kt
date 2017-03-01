@@ -11,8 +11,10 @@ package lice.core
 
 import lice.compiler.model.Node
 import lice.compiler.model.ValueNode
-import lice.compiler.util.InterpretException
+import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
+import lice.lang.NumberOperator
+import java.util.*
 
 
 inline fun SymbolList.addNumberFunctions() {
@@ -20,23 +22,28 @@ inline fun SymbolList.addNumberFunctions() {
 		ValueNode((ls[0].eval().o as Int).toDouble(), ln)
 	})
 	defineFunction("+", { ln, list ->
-		ValueNode(list.fold(0) { sum, value ->
+		ValueNode(list.fold(NumberOperator()) { sum, value ->
 			val res = value.eval()
 			when (res.o) {
-				is Int -> res.o + sum
-				else -> InterpretException.typeMisMatch("Int", res, ln)
+				is Number -> sum.plus(res.o, ln)
+				else -> typeMisMatch("Number", res, ln)
 			}
-		}, ln)
+		}.result, ln)
 	})
 	defineFunction("-", { ln, ls ->
 		when (ls.size) {
 			0 -> ValueNode(0, ln)
 			1 -> ValueNode(ls[0].eval(), ln)
 			else -> {
-				var res = ls[0].eval().o as Int
-				for (i in 1..ls.size - 1)
-					res -= ls[i].eval().o as Int
-				ValueNode(res, ln)
+				ValueNode(ls
+						.subList(1, ls.size)
+						.fold(NumberOperator(ls[0].eval().o as Number)) { sum, value ->
+					val res = value.eval()
+					when (res.o) {
+						is Number -> sum.minus(res.o, ln)
+						else -> typeMisMatch("Number", res, ln)
+					}
+				}.result, ln)
 			}
 		}
 	})
@@ -66,13 +73,13 @@ inline fun SymbolList.addNumberFunctions() {
 		}
 	})
 	defineFunction("*", { ln, ls ->
-		ValueNode(ls.fold(1) { sum, value ->
+		ValueNode(ls.fold(NumberOperator(1)) { sum, value ->
 			val res = value.eval()
 			when (res.o) {
-				is Int -> res.o * sum
-				else -> InterpretException.typeMisMatch("Int", res, ln)
+				is Number -> sum.times(res.o, ln)
+				else -> typeMisMatch("Number", res, ln)
 			}
-		}, ln)
+		}.result, ln)
 	})
 	defineFunction("==", { ln, list ->
 		val ls = list.map(Node::eval)
@@ -136,7 +143,7 @@ inline fun SymbolList.addBoolFunctions() {
 			val o = value.eval()
 			when {
 				o.o is Boolean -> o.o && sum
-				else -> InterpretException.typeMisMatch("Boolean", o, ln)
+				else -> typeMisMatch("Boolean", o, ln)
 			}
 		}, ln)
 	})
@@ -145,7 +152,7 @@ inline fun SymbolList.addBoolFunctions() {
 			val o = value.eval()
 			when {
 				o.o is Boolean -> o.o || sum
-				else -> InterpretException.typeMisMatch("Boolean", o, ln)
+				else -> typeMisMatch("Boolean", o, ln)
 			}
 		}, ln)
 	})
