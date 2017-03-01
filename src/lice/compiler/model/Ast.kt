@@ -60,8 +60,10 @@ constructor(
 			lineNumber
 	)
 
-	override fun eval() =
-			value
+	override fun eval(): Value {
+//		println("老子求值了：${value.o}")
+		return value
+	}
 }
 
 //class JvmReflectionNode(

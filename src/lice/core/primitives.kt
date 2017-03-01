@@ -14,7 +14,6 @@ import lice.compiler.model.ValueNode
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 import lice.lang.NumberOperator
-import java.util.*
 
 
 inline fun SymbolList.addNumberFunctions() {
@@ -49,13 +48,18 @@ inline fun SymbolList.addNumberFunctions() {
 	})
 	defineFunction("/", { ln, ls ->
 		when (ls.size) {
-			0 -> ValueNode(1, ln)
+			0 -> ValueNode(0, ln)
 			1 -> ValueNode(ls[0].eval(), ln)
 			else -> {
-				var res = ls[0].eval().o as Int
-				for (i in 1..ls.size - 1)
-					res /= ls[i].eval().o as Int
-				ValueNode(res, ln)
+				ValueNode(ls
+						.subList(1, ls.size)
+						.fold(NumberOperator(ls[0].eval().o as Number)) { sum, value ->
+							val res = value.eval()
+							when (res.o) {
+								is Number -> sum.div(res.o, ln)
+								else -> typeMisMatch("Number", res, ln)
+							}
+						}.result, ln)
 			}
 		}
 	})
@@ -64,11 +68,15 @@ inline fun SymbolList.addNumberFunctions() {
 			0 -> ValueNode(0, ln)
 			1 -> ValueNode(ls[0].eval(), ln)
 			else -> {
-				var res = ls[0].eval().o as Int
-				@Suppress("DEPRECATION")
-				for (i in 1..ls.size - 1)
-					res = res.mod(ls[i].eval().o as Int)
-				ValueNode(res, ln)
+				ValueNode(ls
+						.subList(1, ls.size)
+						.fold(NumberOperator(ls[0].eval().o as Number)) { sum, value ->
+							val res = value.eval()
+							when (res.o) {
+								is Number -> sum.rem(res.o, ln)
+								else -> typeMisMatch("Number", res, ln)
+							}
+						}.result, ln)
 			}
 		}
 	})
