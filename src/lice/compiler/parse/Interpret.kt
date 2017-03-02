@@ -11,6 +11,7 @@ package lice.compiler.parse
 import lice.compiler.model.*
 import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.util.SymbolList
+import lice.compiler.util.forceRun
 import lice.lang.Symbol
 import java.io.File
 
@@ -24,39 +25,38 @@ import java.io.File
 fun parseValue(
 		str: String,
 		lineNumber: Int): Node {
-	return when {
-		str.isEmpty() or str.isBlank() ->
-			EmptyNode(lineNumber)
-		str.isString() ->
-			ValueNode(str
-					.substring(
-							startIndex = 1,
-							endIndex = str.length - 1
-					)
-					.apply {
-						// TODO replace \n, \t, etc.
-					}, lineNumber)
-		str.isOctInt() ->
-			ValueNode(str.toOctInt(), lineNumber)
-		str.isInt() ->
-			ValueNode(str.toInt(), lineNumber)
-		str.isHexInt() ->
-			ValueNode(str.toHexInt(), lineNumber)
-		str.isBinInt() ->
-			ValueNode(str.toBinInt(), lineNumber)
-		str.isBigInt() ->
-			ValueNode(str.toBigInt(), lineNumber)
-		"null" == str ->
-			ValueNode(Nullptr, lineNumber)
-		"true" == str ->
-			ValueNode(true, lineNumber)
-		"false" == str ->
-			ValueNode(false, lineNumber)
-// TODO() is float
-// TODO() is double
-		else ->
-			ValueNode(Symbol(str), lineNumber)
+	if (str.isEmpty() or str.isBlank())
+		return EmptyNode(lineNumber)
+	else if (str.isString()) return ValueNode(str
+			.substring(
+					startIndex = 1,
+					endIndex = str.length - 1
+			)
+			.apply {
+				// TODO replace \n, \t, etc.
+			}, lineNumber)
+	if (str.isOctInt())
+		return ValueNode(str.toOctInt(), lineNumber)
+	if (str.isInt())
+		return ValueNode(str.toInt(), lineNumber)
+	if (str.isHexInt())
+		return ValueNode(str.toHexInt(), lineNumber)
+	if (str.isBinInt())
+		return ValueNode(str.toBinInt(), lineNumber)
+	if (str.isBigInt())
+		return ValueNode(str.toBigInt(), lineNumber)
+	if ("null" == str)
+		return ValueNode(Nullptr, lineNumber)
+	if ("true" == str)
+		return ValueNode(true, lineNumber)
+	if ("false" == str)
+		return ValueNode(false, lineNumber)
+	forceRun {
+		return if (str.length < 32)
+			ValueNode(str.toFloat(), lineNumber)
+		else ValueNode(str.toDouble(), lineNumber)
 	}
+	return ValueNode(Symbol(str), lineNumber)
 }
 
 /**
