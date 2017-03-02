@@ -1,6 +1,24 @@
 
 ; SICP 1.2.6
+; (load-file "sample/sicp/1-2-6.lice")
 
-; (def expmod
-;   )
+; error
 
+(def exp-mod (|>
+  (-> ret 1)
+
+  (while (!= 0 (<- b)) (|>
+
+    (if (!= 0 (& (<- b) 1))
+      (-> ret (% (* (<- a) (<- ret)) (<- m))))
+    ; (print (<- b))
+    (-> b (/ (<- b) 2))
+    (-> a (% (* (<- a) (<- a)) (<- m)))))
+    (<- ret)))
+
+(|> (-> a 23)
+    (-> b 2)
+    (-> m 6)
+    "param values set.")
+
+(println "result: " (exp-mod))
