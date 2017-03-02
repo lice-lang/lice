@@ -31,33 +31,52 @@ trait Parsers[ParseError, Parser[+ _]] {
 
 }
 
+
+sealed trait ParserTrait[T] {
+	def matches(t: T): T
+}
+
 /**
 	* my parser
 	*
 	* @author ice1000
-	* @tparam Parser parser
 	*/
-class LiceParser[Parser[+ _]] extends Parsers[ParseException, Parser] {
-	override def run[A](p: Parser[A])(input: String): Either[ParseException, A] = {
-//		new Right()
+class LiceParsers extends Parsers[ParseException, ParserTrait] {
+	override def run[A](p: ParserTrait[A])(input: String): Either[ParseException, A] = {
+		//		new Right()
 		???
 	}
 
-	override def char(c: Char): Parser[Char] = {
-		???
+	override def char(c: Char): ParserTrait[Char] = {
+		new OneParser(c)
 	}
 
-	override def or[A](s1: Parser[A], s2: Parser[A]): Parser[A] = {
-		???
+	override def or[A](s1: ParserTrait[A], s2: ParserTrait[A]): ParserTrait[A] = {
+		new TwoParser[A](s1, s2)
 	}
 
-	override implicit def string(s: String): Parser[String] = {
-		???
+	override implicit def string(s: String): ParserTrait[String] = {
+		new OneParser(s)
 	}
-}
 
-object Main {
-	def main(args: Array[String]): Unit = {
-		//
+	class OneParser[T](value: T) extends ParserTrait[T] {
+		override def matches(t: T): T = {
+			if (t == this.value) t
+			else throw new ParseException("")
+		}
 	}
+
+	class TwoParser[T](p1: ParserTrait[T], p2: ParserTrait[T]) extends ParserTrait[T] {
+		override def matches(t: T): T = try {
+			p1.matches(t)
+		} catch {
+			case ParseException => p2.matches(t)
+		}
+	}
+
+	object Main {
+		def main(args: Array[String]): Unit = {
+		}
+	}
+
 }
