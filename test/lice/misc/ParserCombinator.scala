@@ -32,8 +32,8 @@ trait Parsers[ParseError, Parser[+ _]] {
 }
 
 
-sealed trait ParserTrait[T] {
-	def matches(t: T): T
+sealed trait ParserTrait[+T] {
+	def matches[E](t: E): T
 }
 
 /**
@@ -60,17 +60,17 @@ class LiceParsers extends Parsers[ParseException, ParserTrait] {
 	}
 
 	class OneParser[T](value: T) extends ParserTrait[T] {
-		override def matches(t: T): T = {
-			if (t == this.value) t
-			else throw new ParseException("")
+		override def matches[E](t: E): T = {
+			if (t == this.value) value
+			else throw new ParseException(s"$t is not valid!")
 		}
 	}
 
 	class TwoParser[T](p1: ParserTrait[T], p2: ParserTrait[T]) extends ParserTrait[T] {
-		override def matches(t: T): T = try {
+		override def matches[E](t: E): T = try {
 			p1.matches(t)
 		} catch {
-			case ParseException => p2.matches(t)
+			case _: Exception => p2.matches(t)
 		}
 	}
 
