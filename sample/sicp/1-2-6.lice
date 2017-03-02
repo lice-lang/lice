@@ -2,8 +2,6 @@
 ; SICP 1.2.6
 ; (load-file "sample/sicp/1-2-6.lice")
 
-; error
-
 (def exp-mod (|>
   (-> ret 1)
 
