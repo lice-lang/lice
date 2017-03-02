@@ -9,6 +9,7 @@
 
 package lice.core
 
+import lice.compiler.model.EmptyNode
 import lice.compiler.model.Node.Objects.getNullNode
 import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.model.ValueNode
@@ -87,21 +88,21 @@ inline fun SymbolList.addStandard() {
 
 	defineFunction("print", { ln, ls ->
 		ls.forEach { print(it.eval().o) }
-		ls.last()
+		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
 	})
 	defineFunction("print-err", { ln, ls ->
 		ls.forEach { System.err.print(it.eval().o.toString()) }
-		ls.last()
+		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
 	})
 	defineFunction("println-err", { ln, ls ->
 		ls.forEach { System.err.print(it.eval().o.toString()) }
 		System.err.println()
-		ls.last()
+		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
 	})
 	defineFunction("println", { ln, ls ->
 		ls.forEach { print(it.eval().o) }
 		println()
-		ls.last()
+		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
 	})
 
 	defineFunction("new", { ln, ls ->

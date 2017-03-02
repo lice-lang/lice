@@ -31,7 +31,7 @@ interface Node {
 
 	companion object Objects {
 		fun getNullNode(lineNumber: Int) =
-				ValueNode(Nullptr, lineNumber)
+				EmptyNode(lineNumber)
 	}
 }
 
