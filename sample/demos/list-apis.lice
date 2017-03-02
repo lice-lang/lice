@@ -18,7 +18,7 @@
 
 (for-each i
   (.. 10 15)
-  (print (<- i)))
+  (print (<- i) " "))
 
 (for-each j
   (list "My" "name" "is" "Van")
@@ -47,18 +47,8 @@
 ; false => java.lang.Boolean
 ; true => java.lang.Boolean
 ; false => java.lang.Boolean
-; 10
-; 11
-; 12
-; 13
-; 14
-; 15
-; 15 => java.lang.Integer
-; My
-; name
-; is
-; Van
-;   => java.lang.String
+; 10 11 12 13 14 15   => java.lang.String
+; My name is Van   => java.lang.String
 ; [ice1000 [Eldath [Phosphorus [Glavo [AGS null]]]]] => lice.lang.Pair
 ; ice1000 => java.lang.String
 ; [Eldath [Phosphorus [Glavo [AGS null]]]] => lice.lang.Pair

@@ -87,20 +87,20 @@ inline fun SymbolList.addStandard() {
 
 	defineFunction("print", { ln, ls ->
 		ls.forEach { print(it.eval().o) }
-		println("")
 		ls.last()
 	})
 	defineFunction("print-err", { ln, ls ->
 		ls.forEach { System.err.print(it.eval().o.toString()) }
-		serr("")
 		ls.last()
 	})
 	defineFunction("println-err", { ln, ls ->
-		ls.forEach { serr(it.eval().o.toString()) }
+		ls.forEach { System.err.print(it.eval().o.toString()) }
+		System.err.println()
 		ls.last()
 	})
 	defineFunction("println", { ln, ls ->
-		ls.forEach { println(it.eval().o) }
+		ls.forEach { print(it.eval().o) }
+		println()
 		ls.last()
 	})
 
