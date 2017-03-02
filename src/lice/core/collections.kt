@@ -10,6 +10,7 @@
 package lice.core
 
 import lice.compiler.model.EmptyNode
+import lice.compiler.model.Node
 import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.model.ValueNode
 import lice.compiler.util.InterpretException.Factory.tooFewArgument
@@ -57,6 +58,9 @@ inline fun SymbolList.addCollectionsFunctions() {
 			else -> (begin..end).reversed()
 		}
 		ValueNode(progression.toList(), ln)
+	})
+	defineFunction("list", { ln, ls ->
+		ValueNode(ls.map { it.eval().o }, ln)
 	})
 	defineFunction("for-each", { ln, ls ->
 		if (ls.size < 3)

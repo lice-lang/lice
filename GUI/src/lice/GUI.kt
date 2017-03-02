@@ -5,6 +5,7 @@
  */
 package lice
 
+import com.sun.java.swing.plaf.windows.WindowsLookAndFeel
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
 import lice.repl.Main
@@ -35,6 +36,7 @@ fun JTextPane.append(
 
 fun main(args: Array<String>) {
 	if (args.isNotEmpty() && args[0] == "-cui") Main.main(emptyArray())
+	UIManager.setLookAndFeel(WindowsLookAndFeel())
 	val sl = SymbolList()
 	val output = JTextPane()
 	output.isEditable = false

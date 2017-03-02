@@ -1,4 +1,67 @@
-(import lice.io)
+(require lice.io)
 
-()
+(-> consed (cons 1 2 3 4 4))
+
+(reverse (<- consed))
+
+(count (<- consed) 4)
+
+(size (<- consed))
+
+(in? (<- consed) 4)
+
+(in? (<- consed) 5)
+
+(empty? (cons))
+
+(empty? (<- consed))
+
+(for-each i
+  (.. 10 15)
+  (print (<- i)))
+
+(for-each j
+  (list "My" "name" "is" "Van")
+  (print (<- j) " "))
+
+(-> pairs
+  ([|] "ice1000"
+       "Eldath"
+       "Phosphorus"
+       "Glavo"
+       "AGS"))
+
+(head (<- pairs))
+
+(tail (<- pairs))
+
+
+; the output
+;
+; false => java.lang.Boolean
+; [1, 2, 3, 4, 4] => java.util.ArrayList
+; [4, 4, 3, 2, 1] => java.util.ArrayList
+; 2 => java.lang.Integer
+; 5 => java.lang.Integer
+; true => java.lang.Boolean
+; false => java.lang.Boolean
+; true => java.lang.Boolean
+; false => java.lang.Boolean
+; 10
+; 11
+; 12
+; 13
+; 14
+; 15
+; 15 => java.lang.Integer
+; My
+; name
+; is
+; Van
+;   => java.lang.String
+; [ice1000 [Eldath [Phosphorus [Glavo [AGS null]]]]] => lice.lang.Pair
+; ice1000 => java.lang.String
+; [Eldath [Phosphorus [Glavo [AGS null]]]] => lice.lang.Pair
+; null => java.lang.Object
+
 
