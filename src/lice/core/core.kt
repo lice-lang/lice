@@ -17,6 +17,7 @@ import lice.compiler.parse.buildNode
 import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
 import lice.compiler.util.InterpretException
+import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.ParseException.Factory.undefinedFunction
 import lice.compiler.util.SymbolList
@@ -181,12 +182,20 @@ inline fun SymbolList.addStandard() {
 			else -> typeMisMatch("String", a, ln)
 		}
 	})
+
+	defineFunction("sym->str", { ln, ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is Symbol -> ValueNode(a.o.name, ln)
+			else -> typeMisMatch("Symbol", a, ln)
+		}
+	})
 }
 
 inline fun SymbolList.addGetSetFunction() {
 	defineFunction("->", { ln, ls ->
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size, ln)
+			tooFewArgument(2, ls.size, ln)
 		val str = ls[0].eval()
 		val res = ValueNode(ls[1].eval(), ln)
 		when (str.o) {
@@ -197,7 +206,7 @@ inline fun SymbolList.addGetSetFunction() {
 	})
 	defineFunction("<-", { ln, ls ->
 		if (ls.isEmpty())
-			InterpretException.tooFewArgument(1, ls.size, ln)
+			tooFewArgument(1, ls.size, ln)
 		val str = ls[0].eval()
 		when (str.o) {
 			is Symbol -> getVariable(str.o) ?: getNullNode(ln)
@@ -206,15 +215,18 @@ inline fun SymbolList.addGetSetFunction() {
 	})
 	defineFunction("<->", { ln, ls ->
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size, ln)
+			tooFewArgument(2, ls.size, ln)
 		val str = ls[0].eval()
 		when (str.o) {
 			is Symbol -> {
-				if (getVariable(name = str.o) == null)
+				if (getVariable(name = str.o) == null) {
+					val node = ValueNode(ls[1].eval(), ln)
 					setVariable(
 							name = str.o,
-							value = ValueNode(ls[1].eval(), ln)
+							value = node
 					)
+					return@defineFunction node
+				}
 				getVariable(name = str.o)!!
 			}
 			else -> typeMisMatch("Symbol", str, ln)
@@ -226,7 +238,7 @@ inline fun SymbolList.addGetSetFunction() {
 inline fun SymbolList.addControlFlowFunctions() {
 	defineFunction("if", { ln, ls ->
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size, ln)
+			tooFewArgument(2, ls.size, ln)
 		val a = ls[0].eval().o
 		val condition = a as? Boolean ?: (a != null)
 		val ret = when {
@@ -241,7 +253,7 @@ inline fun SymbolList.addControlFlowFunctions() {
 	})
 	defineFunction("while", { ln, ls ->
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size, ln)
+			tooFewArgument(2, ls.size, ln)
 		var a = ls[0].eval().o
 		var ret: Any? = null
 		while (a as? Boolean ?: (a != null)) {
