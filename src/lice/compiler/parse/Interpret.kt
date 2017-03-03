@@ -24,7 +24,7 @@ import java.io.File
  */
 fun parseValue(
 		str: String,
-		lineNumber: Int): Node {
+		lineNumber: Int): Node? {
 	if (str.isEmpty() or str.isBlank())
 		return EmptyNode(lineNumber)
 	else if (str.isString()) return ValueNode(str
@@ -56,7 +56,7 @@ fun parseValue(
 			ValueNode(str.toFloat(), lineNumber)
 		else ValueNode(str.toDouble(), lineNumber)
 	}
-	return ValueNode(Symbol(str), lineNumber)
+	return null
 }
 
 /**
@@ -92,6 +92,10 @@ fun mapAst(
 	is StringLeafNode ->
 		parseValue(
 				str = node.str,
+				lineNumber = node.lineNumber
+		) ?: SymbolNode(
+				symbolList = symbolList,
+				name = node.str,
 				lineNumber = node.lineNumber
 		)
 	else -> // empty

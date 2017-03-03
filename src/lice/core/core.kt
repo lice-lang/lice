@@ -11,18 +11,17 @@ package lice.core
 
 import lice.compiler.model.EmptyNode
 import lice.compiler.model.Node.Objects.getNullNode
+import lice.compiler.model.SymbolNode
 import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.model.ValueNode
 import lice.compiler.parse.buildNode
 import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
-import lice.compiler.util.InterpretException
 import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.ParseException.Factory.undefinedFunction
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
-import lice.compiler.util.serr
 import lice.lang.Symbol
 import java.io.File
 
@@ -196,23 +195,20 @@ inline fun SymbolList.addGetSetFunction() {
 	defineFunction("->", { ln, ls ->
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)
-		val str = ls[0].eval()
+		val str = (ls[0] as SymbolNode).name
 		val res = ValueNode(ls[1].eval(), ln)
-		when (str.o) {
-			is Symbol -> setVariable(str.o, res)
-			else -> typeMisMatch("Symbol", str, ln)
-		}
+		setVariable(str, res)
 		res
 	})
-	defineFunction("<-", { ln, ls ->
-		if (ls.isEmpty())
-			tooFewArgument(1, ls.size, ln)
-		val str = ls[0].eval()
-		when (str.o) {
-			is Symbol -> getVariable(str.o) ?: getNullNode(ln)
-			else -> typeMisMatch("Symbol", str, ln)
-		}
-	})
+//	defineFunction("<-", { ln, ls ->
+//		if (ls.isEmpty())
+//			tooFewArgument(1, ls.size, ln)
+//		val str = ls[0].eval()
+//		when (str.o) {
+//			is Symbol -> getVariable(str.o) ?: getNullNode(ln)
+//			else -> typeMisMatch("Symbol", str, ln)
+//		}
+//	})
 	defineFunction("<->", { ln, ls ->
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)

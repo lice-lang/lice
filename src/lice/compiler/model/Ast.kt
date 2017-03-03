@@ -10,6 +10,7 @@ package lice.compiler.model
 
 import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.util.ParseException.Factory.undefinedFunction
+import lice.compiler.util.ParseException.Factory.undefinedVariable
 import lice.compiler.util.SymbolList
 
 class Value(
@@ -102,8 +103,20 @@ class ExpressionNode(
 	)
 
 	override fun eval() =
-			(symbolList.getFunction(function) ?: undefinedFunction(function, lineNumber))
+			(symbolList.getFunction(function)
+					?: undefinedFunction(function, lineNumber))
 					.invoke(lineNumber, params).eval()
+}
+
+class SymbolNode(
+		val symbolList: SymbolList,
+		val name: String,
+		override val lineNumber: Int) : Node {
+
+	override fun eval() =
+			(symbolList.getVariable(name)
+					?: undefinedVariable(name, lineNumber))
+					.eval()
 }
 
 class EmptyNode(override val lineNumber: Int) : Node {

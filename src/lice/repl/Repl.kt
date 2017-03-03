@@ -51,10 +51,11 @@ version: check the version"""
 Lice language interpreter $VERSION_CODE
 by ice1000""".println()
 			else -> try {
-				Ast(mapAst(
+				val ast = Ast(mapAst(
 						node = buildNode(str),
 						symbolList = symbolList)
-				).root.eval()
+				).root
+				ast.eval()
 			} catch(e: Throwable) {
 				stackTrace = e
 				serr(e.message ?: "")
