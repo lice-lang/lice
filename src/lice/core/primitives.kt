@@ -17,16 +17,13 @@ import lice.compiler.util.SymbolList
 import lice.lang.NumberOperator
 import lice.lang.NumberOperator.Leveler.compare
 
-
 inline fun SymbolList.addNumberFunctions() {
 	defineFunction("int->double", { ln, ls ->
 		ValueNode((ls[0].eval().o as Int).toDouble(), ln)
 	})
 	defineFunction("+", { ln, list ->
-		ValueNode(list.fold(NumberOperator()) { sum, value ->
-			val res = value
-					.eval()
-					.apply { println(this) }
+		ValueNode(list.fold(NumberOperator(0)) { sum, value ->
+			val res = value.eval()
 			when (res.o) {
 				is Number -> sum.plus(res.o, ln)
 				else -> typeMisMatch("Number", res, ln)

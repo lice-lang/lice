@@ -12,14 +12,12 @@ import lice.core.*
 import lice.lang.Symbol
 import java.util.*
 
-@Suppress("NOTHING_TO_INLINE")
-
-typealias func = (Int, List<Node>) -> Node
+//typealias func = (Int, List<Node>) -> Node
 
 class SymbolList
 @JvmOverloads
 constructor(init: Boolean = true) {
-	val functions = mutableMapOf<String, func>()
+	val functions = mutableMapOf<String, (Int, List<Node>) -> Node>()
 	val variables = mutableMapOf<String, Node>()
 
 	val rand = Random(System.currentTimeMillis())
@@ -54,10 +52,10 @@ constructor(init: Boolean = true) {
 		addStandard()
 	}
 
-	fun defineFunction(name: Symbol, node: func) =
+	fun defineFunction(name: Symbol, node: (Int, List<Node>) -> Node) =
 			defineFunction(name.name, node)
 
-	fun defineFunction(name: String, node: func) {
+	fun defineFunction(name: String, node: (Int, List<Node>) -> Node) {
 		functions.put(name, node)
 	}
 

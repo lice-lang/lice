@@ -21,13 +21,12 @@
             <option name="_commonCompilerArguments">
               <DummyImpl>
                 <option name="languageVersion" value="1.1" />
-                <option name="apiVersion" value="1.0" />
+                <option name="apiVersion" value="1.1" />
                 <option name="coroutinesWarn" value="true" />
               </DummyImpl>
             </option>
           </KotlinCompilerInfo>
         </option>
-        <option name="useProjectSettings" value="false" />
         <option name="versionInfo">
           <KotlinVersionInfo>
             <option name="apiLevel" value="1.1" />
@@ -46,5 +45,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
+    <orderEntry type="module" module-name="Lice" />
   </component>
 </module>
