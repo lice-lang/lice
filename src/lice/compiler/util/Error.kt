@@ -39,6 +39,11 @@ at line: $lineNumber""")
 			throw InterpretException("""expected $expected or more arguments, found: $actual
 at line: $lineNumber""")
 		}
+
+		inline fun numberOfArgumentNotMatch(expected: Int, actual: Int, lineNumber: Int): Nothing {
+			throw InterpretException("""expected $expected arguments, found: $actual
+at line: $lineNumber""")
+		}
 	}
 }
 

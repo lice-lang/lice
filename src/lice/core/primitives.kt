@@ -24,7 +24,9 @@ inline fun SymbolList.addNumberFunctions() {
 	})
 	defineFunction("+", { ln, list ->
 		ValueNode(list.fold(NumberOperator()) { sum, value ->
-			val res = value.eval()
+			val res = value
+					.eval()
+					.apply { println(this) }
 			when (res.o) {
 				is Number -> sum.plus(res.o, ln)
 				else -> typeMisMatch("Number", res, ln)

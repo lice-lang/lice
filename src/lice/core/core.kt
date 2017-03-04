@@ -17,6 +17,7 @@ import lice.compiler.model.ValueNode
 import lice.compiler.parse.buildNode
 import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
+import lice.compiler.util.InterpretException.Factory.numberOfArgumentNotMatch
 import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.ParseException.Factory.undefinedFunction
@@ -35,38 +36,42 @@ inline fun SymbolList.addStandard() {
 	addListFunctions()
 
 	defineFunction("def", { ln, ls ->
-		val a = ls[0].eval()
+		val name = (ls[0] as SymbolNode).name
 		val body = ls.last()
-		val params = ls.subList(1, ls.size - 1)
-		when (a.o) {
-			is Symbol ->
-				defineFunction(a.o, { ln, args ->
-					ValueNode(body.eval(), ln)
-				})
-			is String ->
-				defineFunction(a.o, { ln, args ->
-					ValueNode(body.eval(), ln)
-				})
-		}
+		val params = ls
+				.subList(1, ls.size - 1)
+				.map {
+					when (it) {
+						is SymbolNode -> it.name
+						else -> typeMisMatch("Symbol", it.eval(), ln)
+					}
+				}
+		defineFunction(name, { ln, args ->
+			val backup = params.map { getVariable(it) }
+			if (args.size != params.size)
+				numberOfArgumentNotMatch(params.size, args.size, ln)
+			args.forEachIndexed { index, node ->
+				setVariable(params[index], ValueNode(node.eval().o ?: Nullptr))
+			}
+			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
+			backup.forEachIndexed { index, node ->
+				if (node != null)
+					setVariable(params[index], node)
+			}
+			ret
+		})
 		getNullNode(ln)
 	})
 	defineFunction("def?", { ln, ls ->
-		val a = ls[0].eval()
-		when (a.o) {
-			is Symbol -> ValueNode(isFunctionDefined(a.o), ln)
-			is String -> ValueNode(isFunctionDefined(a.o), ln)
-			else -> ValueNode(false, ln)
-		}
+		val a = (ls[0] as SymbolNode).name
+		ValueNode(isFunctionDefined(a), ln)
 	})
 	defineFunction("undef", { ln, ls ->
-		val a = ls[0].eval()
-		when (a.o) {
-			is String -> removeFunction(a.o)
-			is Symbol -> removeFunction(a.o)
-		}
+		val a = (ls[0] as SymbolNode).name
+		removeFunction(a)
 		getNullNode(ln)
 	})
-	defineFunction("call", { ln, ls ->
+	defineFunction("invoke", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is String -> (getFunction(a.o) ?: undefinedFunction(a.o, ln))
