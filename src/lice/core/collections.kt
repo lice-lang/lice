@@ -10,13 +10,13 @@
 package lice.core
 
 import lice.compiler.model.EmptyNode
+import lice.compiler.model.SymbolNode
 import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.model.ValueNode
 import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 import lice.lang.Pair
-import lice.lang.Symbol
 
 inline fun SymbolList.addListFunctions() {
 	defineFunction("[|]", { ln, ls ->
@@ -63,14 +63,13 @@ inline fun SymbolList.addCollectionsFunctions() {
 	defineFunction("for-each", { ln, ls ->
 		if (ls.size < 3)
 			tooFewArgument(3, ls.size, ln)
-		val i = ls[0].eval()
-		if (i.o !is Symbol) typeMisMatch("Symbol", i, ln)
+		val i = (ls[0] as SymbolNode).name
 		val a = ls[1].eval()
 		when (a.o) {
 			is Collection<*> -> {
 				var ret: Any? = null
 				a.o.forEach {
-					setVariable(i.o, ValueNode(it ?: Nullptr, ln))
+					setVariable(i, ValueNode(it ?: Nullptr, ln))
 					ret = ls[2].eval().o
 				}
 				ValueNode(ret ?: Nullptr, ln)

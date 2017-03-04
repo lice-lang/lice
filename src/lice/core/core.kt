@@ -176,10 +176,10 @@ inline fun SymbolList.addStandard() {
 		getNullNode(ln)
 	})
 
-	defineFunction("null?", { ln, ls -> ValueNode(null == ls[0].eval().o, ln) })
-	defineFunction("!null?", { ln, ls -> ValueNode(null != ls[0].eval().o, ln) })
-	defineFunction("true?", { ln, ls -> ValueNode(true == ls[0].eval().o, ln) })
-	defineFunction("false?", { ln, ls -> ValueNode(false == ls[0].eval().o, ln) })
+//	defineFunction("null?", { ln, ls -> ValueNode(null == ls[0].eval().o, ln) })
+//	defineFunction("!null?", { ln, ls -> ValueNode(null != ls[0].eval().o, ln) })
+//	defineFunction("true?", { ln, ls -> ValueNode(true == ls[0].eval().o, ln) })
+//	defineFunction("false?", { ln, ls -> ValueNode(false == ls[0].eval().o, ln) })
 
 	defineFunction("str->sym", { ln, ls ->
 		val a = ls[0].eval()
@@ -207,33 +207,19 @@ inline fun SymbolList.addGetSetFunction() {
 		setVariable(str, res)
 		res
 	})
-//	defineFunction("<-", { ln, ls ->
-//		if (ls.isEmpty())
-//			tooFewArgument(1, ls.size, ln)
-//		val str = ls[0].eval()
-//		when (str.o) {
-//			is Symbol -> getVariable(str.o) ?: getNullNode(ln)
-//			else -> typeMisMatch("Symbol", str, ln)
-//		}
-//	})
 	defineFunction("<->", { ln, ls ->
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)
-		val str = ls[0].eval()
-		when (str.o) {
-			is Symbol -> {
-				if (getVariable(name = str.o) == null) {
-					val node = ValueNode(ls[1].eval(), ln)
-					setVariable(
-							name = str.o,
-							value = node
-					)
-					return@defineFunction node
-				}
-				getVariable(name = str.o)!!
-			}
-			else -> typeMisMatch("Symbol", str, ln)
+		val str = (ls[0] as SymbolNode).name
+		if (getVariable(name = str) == null) {
+			val node = ValueNode(ls[1].eval(), ln)
+			setVariable(
+					name = str,
+					value = node
+			)
+			return@defineFunction node
 		}
+		getVariable(name = str)!!
 	})
 }
 

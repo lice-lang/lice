@@ -136,19 +136,19 @@ Lice > (+ 1 1.1287391873917392379372193792137198237189237291)
 ```lisp
 (-> var "actual") ; put "actual" into "var"
 
-(<- var) ; returns "actual"
+(print var) ; prints "actual"
 
 (<-> var "darkholm")
-; if (<- var) is null,
+; if var is null,
 ; (-> var "darkholm"),
 ; then return "darkholm".
-; if not, return (<- var).
+; if not, return var.
 ```
 
 + List processing
 
 ```lisp
-(for-each i (.. 1 10) (print (<- i)))
+(for-each i (.. 1 10) (print i))
 ; prints: from 1 to 10
 ```
 
@@ -158,11 +158,12 @@ Lice > (+ 1 1.1287391873917392379372193792137198237189237291)
 (require lice.io)
 
 (while (> 10 (<-> i 0))
-       (|> (print (<- i))
-           (-> i (+ 1 (<- i)))
+       (|> (print i)
+           (-> i (+ 1 i))
        )
 )
 ; |> means to evaluate every parameters given
+; just like 'run' in clojure, 'begin' in scheme
 ; this prints from 0 to 9
 ```
 
