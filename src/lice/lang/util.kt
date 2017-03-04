@@ -9,7 +9,6 @@
 package lice.lang
 
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
-import lice.compiler.util.func
 import java.math.BigDecimal
 import java.math.BigInteger
 

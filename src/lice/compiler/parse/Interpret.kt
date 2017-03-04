@@ -12,7 +12,6 @@ import lice.compiler.model.*
 import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
-import lice.lang.Symbol
 import java.io.File
 
 

@@ -2,8 +2,6 @@ package lice.lang
 
 import lice.lang.NumberOperator.Leveler.plusValue
 import org.junit.Test
-
-import org.junit.Assert.*
 import java.math.BigDecimal
 import java.math.BigInteger
 
@@ -37,7 +35,7 @@ class LevelerTest {
 		println(pluser.result.javaClass)
 		pluser.plus(BigInteger("1"))
 		println(pluser.result.javaClass)
-		pluser.plus(1.toInt())
+		pluser.plus(1)
 		println(pluser.result.javaClass)
 		pluser.plus(1.toFloat())
 		println(pluser.result.javaClass)

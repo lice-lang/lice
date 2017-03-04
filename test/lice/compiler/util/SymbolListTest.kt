@@ -1,8 +1,5 @@
 package lice.compiler.util
 
-import lice.compiler.model.Value
-import org.junit.Test
-
 /**
  * Created by ice1000 on 2017/2/18.
  *

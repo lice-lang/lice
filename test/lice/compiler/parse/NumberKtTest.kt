@@ -1,9 +1,7 @@
 package lice.compiler.parse
 
-import lice.compiler.util.println
-import org.junit.Test
-
 import org.junit.Assert.*
+import org.junit.Test
 import java.math.BigInteger
 
 /**

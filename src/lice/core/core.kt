@@ -36,17 +36,19 @@ inline fun SymbolList.addStandard() {
 
 	defineFunction("def", { ln, ls ->
 		val a = ls[0].eval()
+		val body = ls.last()
+		val params = ls.subList(1, ls.size - 1)
 		when (a.o) {
-			is Symbol -> {
-				defineFunction(a.o, { ln, ignored -> ls[1] })
-				ValueNode(a.o, ln)
-			}
-			is String -> {
-				defineFunction(a.o, { ln, ignored -> ls[1] })
-				ValueNode(a.o, ln)
-			}
-			else -> getNullNode(ln)
+			is Symbol ->
+				defineFunction(a.o, { ln, args ->
+					ValueNode(body.eval(), ln)
+				})
+			is String ->
+				defineFunction(a.o, { ln, args ->
+					ValueNode(body.eval(), ln)
+				})
 		}
+		getNullNode(ln)
 	})
 	defineFunction("def?", { ln, ls ->
 		val a = ls[0].eval()

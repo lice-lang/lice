@@ -10,13 +10,11 @@
 package lice.core
 
 import lice.compiler.model.EmptyNode
-import lice.compiler.model.Node
 import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.model.ValueNode
 import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
-
 import lice.lang.Pair
 import lice.lang.Symbol
 

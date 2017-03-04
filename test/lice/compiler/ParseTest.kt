@@ -7,7 +7,6 @@ import lice.compiler.parse.createAst
 import lice.compiler.parse.mapAst
 import lice.compiler.util.DEBUGGING
 import lice.compiler.util.VERBOSE
-import lice.compiler.util.println
 import org.junit.Test
 import java.io.File
 
