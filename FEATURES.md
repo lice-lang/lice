@@ -155,7 +155,8 @@ Lice > (+ 1 1.1287391873917392379372193792137198237189237291)
 + Loop
 
 ```lisp
-(require lice.io)
+
+; (require lice.io)
 
 (while (> 10 (<-> i 0))
        (|> (print i)
@@ -220,11 +221,11 @@ null => java.lang.Object
 
 Lice > (eval "(+ 1 1)")
 2 => java.lang.Integer
-2 => java.lang.Integer
+null => java.lang.Object
 
 Lice > (eval (str-con "(+ " "1 " "1)"))
 2 => java.lang.Integer
-2 => java.lang.Integer
+null => java.lang.Object
 
 Lice > (cons 1 11 1)
 [1, 11, 1] => java.util.ArrayList
