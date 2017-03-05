@@ -1,4 +1,4 @@
-(require lice.thread)
+(require "lice.thread")
 
 ; This is an example for
 ; the worst practise of for-each
@@ -11,6 +11,8 @@
   (thread|>
 
     ; not safe!
-    (println (<- i))
-    (sleep (* 100 (<- i)))
+    (println i)
+    (sleep (* 100 i))
     (print "I'm alive")))
+
+; (load-file "sample/tests/test11.lice")

@@ -1,4 +1,4 @@
-(require lice.str)
+(require "lice.str")
 
 ; integer calculations
 ; hex number
@@ -7,3 +7,4 @@
 ; string connecting
 (str-con "My name is Van, " "I'm an artist")
 
+; (load-file "sample/tests/test1.lice")

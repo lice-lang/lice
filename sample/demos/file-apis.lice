@@ -1,12 +1,12 @@
-(require lice.io)
+(require "lice.io")
 
 (if (== 0 (<-> cnt 10))
     (exit))
 
-(-> cnt (- (<- cnt) 1))
+(-> cnt (- cnt 1))
 
 (eval (read-file
-  (file (<- FILE_PATH))))
+  (file FILE_PATH)))
 
 ; also
 ; (load-file "sample/demos/file-apis.lice")

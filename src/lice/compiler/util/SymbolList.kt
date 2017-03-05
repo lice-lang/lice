@@ -12,16 +12,16 @@ import lice.core.*
 import lice.lang.Symbol
 import java.util.*
 
-//typealias func = (Int, List<Node>) -> Node
+typealias func = (Int, List<Node>) -> Node
 
 class SymbolList
 @JvmOverloads
 constructor(init: Boolean = true) {
-	val functions = mutableMapOf<String, (Int, List<Node>) -> Node>()
+	val functions = mutableMapOf<String, func>()
 	val variables = mutableMapOf<String, Node>()
 
 	val rand = Random(System.currentTimeMillis())
-	val loadedModules = mutableListOf<Symbol>()
+	val loadedModules = mutableListOf<String>()
 
 	init {
 		if (init) initialize()
@@ -31,10 +31,10 @@ constructor(init: Boolean = true) {
 		defineFunction("require", { ln, ls ->
 			ls.forEach { node ->
 				val res = node.eval()
-				if (res.o is Symbol) {
+				if (res.o is String) {
 					if (res.o in loadedModules) return@defineFunction ValueNode(false, ln)
 					loadedModules.add(res.o)
-					when (res.o.name) {
+					when (res.o) {
 						"lice.io" -> addFileFunctions()
 						"lice.gui" -> addGUIFunctions()
 						"lice.math" -> addMathFunctions()
@@ -52,10 +52,10 @@ constructor(init: Boolean = true) {
 		addStandard()
 	}
 
-	fun defineFunction(name: Symbol, node: (Int, List<Node>) -> Node) =
+	fun defineFunction(name: Symbol, node: func) =
 			defineFunction(name.name, node)
 
-	fun defineFunction(name: String, node: (Int, List<Node>) -> Node) {
+	fun defineFunction(name: String, node: func) {
 		functions.put(name, node)
 	}
 

@@ -1,28 +1,28 @@
-(require lice.io)
+(require "lice.io")
 
 (-> consed (cons 1 2 3 4 4))
 
-(reverse (<- consed))
+(reverse consed)
 
-(count (<- consed) 4)
+(count consed 4)
 
-(size (<- consed))
+(size consed)
 
-(in? (<- consed) 4)
+(in? consed 4)
 
-(in? (<- consed) 5)
+(in? consed 5)
 
 (empty? (cons))
 
-(empty? (<- consed))
+(empty? consed)
 
 (for-each i
   (.. 10 15)
-  (print (<- i) " "))
+  (print i " "))
 
 (for-each j
   (list "My" "name" "is" "Van")
-  (print (<- j) " "))
+  (print j " "))
 
 (-> pairs
   ([|] "ice1000"
@@ -31,9 +31,9 @@
        "Glavo"
        "AGS"))
 
-(head (<- pairs))
+(head pairs)
 
-(tail (<- pairs))
+(tail pairs)
 
 
 ; the output

@@ -1,11 +1,12 @@
-(require lice.io)
-(require lice.str)
+(require "lice.io")
+(require "lice.str")
 
 ; evaluate this file
 
-(-> file (file (->str (<- FILE_PATH))))
+(-> file (file (->str FILE_PATH)))
 
-; (print (<- file))
+; (print file)
 
-(load-file (<- file))
+(load-file file)
 
+; (load-file "sample/tests/test5.lice")

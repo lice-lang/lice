@@ -1,17 +1,18 @@
-(print (require lice.io))
-(require lice.str)
+(print (require "lice.io"))
+(require "lice.str")
+(require "lice.thread")
 
 (for-each
   i
   (.. 1000 1500)
-;  (print (<- i))
+;  (print i)
   (thread|> (force|>
-    (println (<- i))
+    (println i)
     (write-file
-      (file (format "%d.html" (<- i)))
-      (read-url (url (str-con "https://vijos.org/p/" (<- i))))
+      (file (format "%d.html" i))
+      (read-url (url (str-con "https://vijos.org/p/" i)))
     )))
 )
 
 
-
+; (load-file "sample/test9.lice")

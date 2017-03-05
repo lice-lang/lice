@@ -65,7 +65,7 @@ constructor(var initial: Number = 0) {
 
 	@JvmOverloads
 	fun rem(o: Number, lineNumber: Int = -1) =
-			minusLikeFunctionsImpl(o, lineNumber, { a, b, c, d -> minusValue(a, b, c, d) })
+			minusLikeFunctionsImpl(o, lineNumber, { a, b, c, d -> remValue(a, b, c, d) })
 
 companion object Leveler {
 	fun compare(
