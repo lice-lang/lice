@@ -20,7 +20,6 @@ import lice.compiler.util.InterpretException
 import lice.compiler.util.InterpretException.Factory.numberOfArgumentNotMatch
 import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
-import lice.compiler.util.ParseException.Factory.undefinedFunction
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
 import lice.lang.Pair
@@ -65,33 +64,31 @@ inline fun SymbolList.addStandard() {
 		})
 		getNullNode(ln)
 	})
-	defineFunction("def", { ln, ls ->
-		val name = (ls[0] as SymbolNode).name
-		val body = ls.last()
-		val params = ls
-				.subList(1, ls.size - 1)
-				.map {
-					when (it) {
-						is SymbolNode -> it.name
-						else -> typeMisMatch("Symbol", it.eval(), ln)
-					}
-				}
-		defineFunction(name, { ln, args ->
-			val backup = params.map { getVariable(it) }
-			if (args.size != params.size)
-				numberOfArgumentNotMatch(params.size, args.size, ln)
-			args.forEachIndexed { index, node ->
-				setVariable(params[index], ValueNode(node.eval().o ?: Nullptr))
-			}
-			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
-			backup.forEachIndexed { index, node ->
-				if (node != null)
-					setVariable(params[index], node)
-			}
-			ret
-		})
-		getNullNode(ln)
-	})
+//	defineFunction("lambda", { ln, ls ->
+//		val body = ls.last()
+//		val params = ls
+//				.subList(0, ls.size - 1)
+//				.map {
+//					when (it) {
+//						is SymbolNode -> it.name
+//						else -> typeMisMatch("Symbol", it.eval(), ln)
+//					}
+//				}
+//		LambdaNode({ ln, args ->
+//			val backup = params.map { getVariable(it) }
+//			if (args.size != params.size)
+//				numberOfArgumentNotMatch(params.size, args.size, ln)
+//			args.forEachIndexed { index, node ->
+//				setVariable(params[index], ValueNode(node.eval().o ?: Nullptr))
+//			}
+//			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
+//			backup.forEachIndexed { index, node ->
+//				if (node != null)
+//					setVariable(params[index], node)
+//			}
+//			ret
+//		})
+//	})
 	defineFunction("def?", { ln, ls ->
 		val a = (ls[0] as SymbolNode).name
 		ValueNode(isFunctionDefined(a), ln)
@@ -100,16 +97,6 @@ inline fun SymbolList.addStandard() {
 		val a = (ls[0] as SymbolNode).name
 		removeFunction(a)
 		getNullNode(ln)
-	})
-	defineFunction("invoke", { ln, ls ->
-		val a = ls[0].eval()
-		when (a.o) {
-			is String -> (getFunction(a.o) ?: undefinedFunction(a.o, ln))
-					.invoke(ln, ls.subList(1, ls.size))
-			is Symbol -> (getFunction(a.o) ?: undefinedFunction(a.o.name, ln))
-					.invoke(ln, ls.subList(1, ls.size))
-			else -> getNullNode(ln)
-		}
 	})
 
 	defineFunction("eval", { ln, ls ->
@@ -161,11 +148,11 @@ inline fun SymbolList.addStandard() {
 		}
 		getNullNode(ln)
 	})
-	defineFunction("type", { ln, ls ->
+	defineFunction("type", { _, ls ->
 		ls.forEach { println(it.eval().type.canonicalName) }
 		ls.last()
 	})
-	defineFunction("gc", { ln, ls ->
+	defineFunction("gc", { ln, _ ->
 		System.gc()
 		getNullNode(ln)
 	})
@@ -180,7 +167,7 @@ inline fun SymbolList.addStandard() {
 		forceRun { ls.forEach { node -> ret = node.eval() } }
 		ValueNode(ret, ln)
 	})
-	defineFunction("no-run|>", { ln, ls -> getNullNode(ln) })
+	defineFunction("no-run|>", { ln, _ -> getNullNode(ln) })
 
 	defineFunction("load-file", { ln, ls ->
 		val o = ls[0].eval()
@@ -201,15 +188,10 @@ inline fun SymbolList.addStandard() {
 		}
 	})
 
-	defineFunction("exit", { ln, ls ->
+	defineFunction("exit", { ln, _ ->
 		System.exit(0)
 		getNullNode(ln)
 	})
-
-//	defineFunction("null?", { ln, ls -> ValueNode(null == ls[0].eval().o, ln) })
-//	defineFunction("!null?", { ln, ls -> ValueNode(null != ls[0].eval().o, ln) })
-//	defineFunction("true?", { ln, ls -> ValueNode(true == ls[0].eval().o, ln) })
-//	defineFunction("false?", { ln, ls -> ValueNode(false == ls[0].eval().o, ln) })
 
 	defineFunction("str->sym", { ln, ls ->
 		val a = ls[0].eval()
@@ -252,7 +234,6 @@ inline fun SymbolList.addGetSetFunction() {
 		getVariable(name = str)!!
 	})
 }
-
 
 inline fun SymbolList.addControlFlowFunctions() {
 	defineFunction("if", { ln, ls ->
@@ -359,7 +340,6 @@ inline fun SymbolList.addFileFunctions() {
 		ValueNode(b.o.toString(), ln)
 	})
 }
-
 
 inline fun SymbolList.addMathFunctions() {
 	defineFunction("sqrt", { ln, ls ->
@@ -484,9 +464,6 @@ inline fun SymbolList.addListFunctions() {
 }
 
 inline fun SymbolList.addCollectionsFunctions() {
-	defineFunction("cons", { ln, ls ->
-		ValueNode(ls.map { it.eval().o }, ln)
-	})
 	defineFunction("..", { ln, ls ->
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)

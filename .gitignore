@@ -20,3 +20,4 @@ build
 gradlew
 gradlew.bat
 local.properties
+# .gitignore

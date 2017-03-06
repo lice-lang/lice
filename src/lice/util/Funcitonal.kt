@@ -5,6 +5,7 @@
  */
 @file:JvmName("Utilities")
 @file:JvmMultifileClass
+
 package lice.util
 
 
@@ -22,3 +23,7 @@ open class Left<T> : Either<T, Nothing>
 open class Right<T> : Either<Nothing, T>
 
 
+//interface Monad<T> {
+//	fun unit(t: T): Monad<T>
+//	fun <E> flatMap(f: (T) -> E): Monad<E>
+//}

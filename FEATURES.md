@@ -14,6 +14,19 @@
 (print 233) ; OK: 233 is a java.lang.Integer
 ```
 
++ Variables
+
+```lisp
+Lice > 12903
+12903 => java.lang.Integer
+
+Lice > (-> fuck 9320)
+9320 => java.lang.Integer
+
+Lice > fuck
+9320 => java.lang.Integer
+```
+
 + Basic functions
 
 ```lisp

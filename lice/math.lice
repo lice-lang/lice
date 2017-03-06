@@ -24,6 +24,8 @@
   1
   (* n (product (- n 1)))))
 
+
+
 (def even? a (& a 1))
 
 (def odd? a (! (& a 1)))
