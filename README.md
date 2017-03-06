@@ -11,9 +11,8 @@ this language is very naive, I write it to practise programming, and it can do s
 ## It looks like:
 
 ```lisp
-(require lice.io)
-
-(for-each i (.. 1 10) (print (<- i)))
+(println "Hello " "World")
+(for-each i (.. 1 10) (print i))
 ```
 
 ## Code style

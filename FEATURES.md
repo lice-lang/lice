@@ -15,8 +15,6 @@
 + Basic functions
 
 ```lisp
-(require lice.io)
-
 (+ 2 3 4 (* 2 5)) ; result: 19
 
 (sqrt 100) ; result: 10.0
@@ -89,8 +87,6 @@ Lice > (+ 1 1.1287391873917392379372193792137198237189237291)
 + File/URL APIs
 
 ```lisp
-(require lice.io)
-
 (if (! (file-exists? "save"))
     (run (write-file (file "save") "0")
          (print "fuck"))
@@ -123,8 +119,6 @@ Lice > (+ 1 1.1287391873917392379372193792137198237189237291)
 + Lazy evaluation
 
 ```lisp
-(require lice.io)
-
 (print (if (>= 1 2)
     (read-file (file "out")) ; will not be read
     (read-file (file "in"))
@@ -155,9 +149,6 @@ Lice > (+ 1 1.1287391873917392379372193792137198237189237291)
 + Loop
 
 ```lisp
-
-; (require lice.io)
-
 (while (> 10 (<-> i 0))
        (|> (print i)
            (-> i (+ 1 i))
@@ -192,7 +183,6 @@ class Main {
 
 ```lisp
 ; Lice
-(require lice.io)
 
 (print (java-api-invoking))
 ```
@@ -204,15 +194,6 @@ The repl has two versions, a GUI one based on swing, and a CUI one.
 Here are some examples.
 
 ```lisp
-Lice > (require lice.io)
-true => java.lang.Boolean
-
-Lice > (require lice.gui)
-true => java.lang.Boolean
-
-Lice > (require lice.gui)
-false => java.lang.Boolean
-
 Lice > (+ 1 1)
 2 => java.lang.Integer
 
