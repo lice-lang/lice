@@ -1,10 +1,6 @@
-package lice.gui
+package lice.tools
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel
-import lice.compiler.model.StringLeafNode
-import lice.compiler.model.StringMiddleNode
-import lice.compiler.model.StringNode
-import lice.compiler.parse.buildNode
 import lice.repl.VERSION_CODE
 import java.awt.BorderLayout
 import java.io.File
@@ -16,12 +12,12 @@ import javax.swing.tree.DefaultMutableTreeNode
  * map the ast
  */
 private fun rec(
-		node: StringNode,
+		node: lice.compiler.model.StringNode,
 		viewRoot: DefaultMutableTreeNode
 ): DefaultMutableTreeNode {
 	return when (node) {
-		is StringLeafNode -> DefaultMutableTreeNode(node)
-		is StringMiddleNode -> viewRoot.apply {
+		is lice.compiler.model.StringLeafNode -> DefaultMutableTreeNode(node)
+		is lice.compiler.model.StringMiddleNode -> viewRoot.apply {
 			node.list
 					.subList(1, node.list.size)
 					.forEachIndexed { index, stringNode ->
@@ -36,7 +32,7 @@ private fun rec(
 }
 
 fun createTreeFromFile(file: File): JTree {
-	val ast = buildNode(file.readText())
+	val ast = lice.compiler.parse.buildNode(file.readText())
 	return JTree(rec(ast, DefaultMutableTreeNode(ast)))
 }
 
