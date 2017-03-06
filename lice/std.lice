@@ -3,3 +3,7 @@
 
 (def not a (! a))
 
+(def null? a (=== null a))
+
+
+
