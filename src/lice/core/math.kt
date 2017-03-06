@@ -35,7 +35,7 @@ inline fun SymbolList.addMathFunctions() {
 	defineFunction("tanh", { ln, ls ->
 		ValueNode(Math.tanh((ls[0].eval().o as Number).toDouble()), ln)
 	})
-	defineFunction("rand", { ln, ls -> ValueNode(rand.nextInt(), ln) })
+	defineFunction("rand", { ln, _ -> ValueNode(rand.nextInt(), ln) })
 	defineFunction("abs", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {

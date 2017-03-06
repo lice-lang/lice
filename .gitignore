@@ -14,3 +14,9 @@ build
 .idea
 .gradle
 
+## unnecessary ##
+
+*.gradle
+gradlew
+gradlew.bat
+local.properties

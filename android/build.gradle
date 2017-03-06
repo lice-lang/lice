@@ -7,13 +7,13 @@ android {
 	defaultConfig {
 		applicationId "lice.android"
 		minSdkVersion 15
-		targetSdkVersion 24
+		targetSdkVersion 23
 		versionCode 1
 		versionName "1.0"
 	}
 	buildTypes {
 		release {
-			minifyEnabled false
+			minifyEnabled true
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 		}
 	}
