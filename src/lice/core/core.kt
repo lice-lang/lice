@@ -10,21 +10,24 @@
 package lice.core
 
 import lice.compiler.model.EmptyNode
+import lice.compiler.model.Node
 import lice.compiler.model.Node.Objects.getNullNode
 import lice.compiler.model.SymbolNode
 import lice.compiler.model.Value.Objects.Nullptr
 import lice.compiler.model.ValueNode
-import lice.compiler.parse.buildNode
-import lice.compiler.parse.createAst
-import lice.compiler.parse.mapAst
+import lice.compiler.parse.*
+import lice.compiler.util.InterpretException
 import lice.compiler.util.InterpretException.Factory.numberOfArgumentNotMatch
 import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.ParseException.Factory.undefinedFunction
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
+import lice.lang.Pair
 import lice.lang.Symbol
 import java.io.File
+import java.net.URL
+import kotlin.concurrent.thread
 
 inline fun SymbolList.addStandard() {
 	addGetSetFunction()
@@ -281,6 +284,271 @@ inline fun SymbolList.addControlFlowFunctions() {
 		when {
 			ret != null -> ValueNode(ret, ln)
 			else -> getNullNode(ln)
+		}
+	})
+}
+
+inline fun SymbolList.addConcurrentFunctions() {
+	defineFunction("thread|>", { ln, ls ->
+		var ret: Node = getNullNode(ln)
+		thread { ls.forEach { node -> ret = ValueNode(node.eval()) } }
+		ret
+	})
+	defineFunction("sleep", { ln, ls ->
+		val a = ls[0].eval()
+		when {
+			a.o is Number -> Thread.sleep(a.o.toLong())
+			else -> InterpretException.typeMisMatch("Number", a, ln)
+		}
+		getNullNode(ln)
+	})
+}
+
+inline fun SymbolList.addFileFunctions() {
+	defineFunction("file", { ln, ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is String -> ValueNode(File(a.o)
+					.apply { if (!exists()) createNewFile() }, ln)
+			else -> InterpretException.typeMisMatch("String", a, ln)
+		}
+	})
+	defineFunction("directory", { ln, ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is String -> ValueNode(File(a.o)
+					.apply { if (!exists()) mkdirs() }, ln)
+			else -> InterpretException.typeMisMatch("String", a, ln)
+		}
+	})
+	defineFunction("file-exists?", { ln, ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is String -> ValueNode(File(a.o).exists(), ln)
+			else -> InterpretException.typeMisMatch("String", a, ln)
+		}
+	})
+	defineFunction("read-file", { ln, ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is File -> ValueNode(a.o.readText(), ln)
+			else -> InterpretException.typeMisMatch("File", a, ln)
+		}
+	})
+	defineFunction("url", { ln, ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is String -> ValueNode(URL(a.o), ln)
+			else -> InterpretException.typeMisMatch("String", a, ln)
+		}
+	})
+	defineFunction("read-url", { ln, ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is URL -> ValueNode(a.o.readText(), ln)
+			else -> InterpretException.typeMisMatch("URL", a, ln)
+		}
+	})
+	defineFunction("write-file", { ln, ls ->
+		val a = ls[0].eval()
+		val b = ls[1].eval()
+		when (a.o) {
+			is File -> a.o.writeText(b.o.toString())
+			else -> InterpretException.typeMisMatch("File", a, ln)
+		}
+		ValueNode(b.o.toString(), ln)
+	})
+}
+
+
+inline fun SymbolList.addMathFunctions() {
+	defineFunction("sqrt", { ln, ls ->
+		ValueNode(Math.sqrt((ls[0].eval().o as Number).toDouble()), ln)
+	})
+	defineFunction("sin", { ln, ls ->
+		ValueNode(Math.sin((ls[0].eval().o as Number).toDouble()), ln)
+	})
+	defineFunction("sinh", { ln, ls ->
+		ValueNode(Math.sinh((ls[0].eval().o as Number).toDouble()), ln)
+	})
+	defineFunction("cos", { ln, ls ->
+		ValueNode(Math.cos((ls[0].eval().o as Number).toDouble()), ln)
+	})
+	defineFunction("cosh", { ln, ls ->
+		ValueNode(Math.cosh((ls[0].eval().o as Number).toDouble()), ln)
+	})
+	defineFunction("tan", { ln, ls ->
+		ValueNode(Math.tan((ls[0].eval().o as Number).toDouble()), ln)
+	})
+	defineFunction("tanh", { ln, ls ->
+		ValueNode(Math.tanh((ls[0].eval().o as Number).toDouble()), ln)
+	})
+	defineFunction("rand", { ln, _ -> ValueNode(rand.nextInt(), ln) })
+}
+
+
+inline fun SymbolList.addStringFunctions() {
+	defineFunction("->str", { ln, ls -> ValueNode(ls[0].eval().o.toString(), ln) })
+	defineFunction("str->int", { ln, ls ->
+		val res = ls[0].eval()
+		when (res.o) {
+			is String -> ValueNode(when {
+				res.o.isOctInt() -> res.o.toOctInt()
+				res.o.isInt() -> res.o.toInt()
+				res.o.isBinInt() -> res.o.toBinInt()
+				res.o.isHexInt() -> res.o.toHexInt()
+				else -> throw InterpretException("give string: \"${res.o}\" cannot be parsed as a number!")
+			}, ln)
+			else -> typeMisMatch("String", res, ln)
+		}
+	})
+	defineFunction("int->hex", { ln, ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is Int -> ValueNode("0x${Integer.toHexString(a.o)}", ln)
+			else -> typeMisMatch("Int", a, ln)
+		}
+	})
+	defineFunction("int->bin", { ln, ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is Int -> ValueNode("0b${Integer.toBinaryString(a.o)}", ln)
+			else -> typeMisMatch("Int", a, ln)
+		}
+	})
+	defineFunction("int->oct", { ln, ls ->
+		val a = ls[0].eval()
+		when (a.o) {
+			is Int -> ValueNode("0${Integer.toOctalString(a.o)}", ln)
+			else -> typeMisMatch("Int", a, ln)
+		}
+	})
+	defineFunction("str-con", { ln, ls ->
+		ValueNode(ls.fold(StringBuilder(ls.size)) { sb, value ->
+			sb.append(value.eval().o.toString())
+		}.toString(), ln)
+	})
+	defineFunction("format", { ln, ls ->
+		if (ls.isEmpty()) InterpretException.tooFewArgument(1, ls.size, ln)
+		val format = ls[0].eval()
+		when (format.o) {
+			is String -> ValueNode(kotlin.String.format(format.o, *ls
+					.subList(1, ls.size)
+					.map { it.eval().o }
+					.toTypedArray()
+			), ln)
+			else -> typeMisMatch("String", format, ln)
+		}
+	})
+	defineFunction("->chars", { ln, ls ->
+		ValueNode(ls.fold(StringBuilder(ls.size)) { sb, value ->
+			sb.append(value.eval().o.toString())
+		}
+				.toString()
+				.toCharArray()
+				.toList(), ln)
+	})
+	defineFunction("split", { ln, ls ->
+		val str = ls[0].eval()
+		val regex = ls[1].eval()
+		ValueNode(str
+				.o
+				.toString()
+				.split(regex.o.toString())
+				.toList(), ln)
+	})
+}
+
+inline fun SymbolList.addListFunctions() {
+	defineFunction("[|]", { ln, ls ->
+		ValueNode(ls.foldRight(null) { value, pairs: Any? ->
+			Pair(value.eval().o, pairs)
+		}, Pair::class.java, ln)
+	})
+	defineFunction("head", { ln, ls ->
+		val a = ls[0].eval()
+		if (a.o is Pair<*, *>) when (a.o.first) {
+			null -> EmptyNode(ln)
+			else -> ValueNode(a.o.first, ln)
+		}
+		else typeMisMatch("Pair", a, ln)
+	})
+	defineFunction("tail", { ln, ls ->
+		val a = ls[0].eval()
+		if (a.o is Pair<*, *>) when (a.o.second) {
+			null -> EmptyNode(ln)
+			else -> ValueNode(a.o.second, ln)
+		}
+		else typeMisMatch("Pair", a, ln)
+	})
+}
+
+inline fun SymbolList.addCollectionsFunctions() {
+	defineFunction("cons", { ln, ls ->
+		ValueNode(ls.map { it.eval().o }, ln)
+	})
+	defineFunction("..", { ln, ls ->
+		if (ls.size < 2)
+			tooFewArgument(2, ls.size, ln)
+		val begin = ls[0].eval().o as Int
+		val end = ls[1].eval().o as Int
+		val progression = when {
+			begin <= end -> begin..end
+			else -> (begin..end).reversed()
+		}
+		ValueNode(progression.toList(), ln)
+	})
+	defineFunction("list", { ln, ls ->
+		ValueNode(ls.map { it.eval().o }, ln)
+	})
+	defineFunction("for-each", { ln, ls ->
+		if (ls.size < 3)
+			tooFewArgument(3, ls.size, ln)
+		val i = (ls[0] as SymbolNode).name
+		val a = ls[1].eval()
+		when (a.o) {
+			is Collection<*> -> {
+				var ret: Any? = null
+				a.o.forEach {
+					setVariable(i, ValueNode(it ?: Nullptr, ln))
+					ret = ls[2].eval().o
+				}
+				ValueNode(ret ?: Nullptr, ln)
+			}
+			else -> typeMisMatch("List", a, ln)
+		}
+	})
+	defineFunction("size", { ln, ls ->
+		val i = ls[0].eval()
+		when (i.o) {
+			is Collection<*> -> ValueNode(i.o.size, ln)
+			else -> ValueNode(ls.size, ln)
+		}
+	})
+	defineFunction("reverse", { ln, ls ->
+		val i = ls[0].eval()
+		when (i.o) {
+			is Collection<*> -> ValueNode(i.o.reversed(), ln)
+			else -> ValueNode(ls.size, ln)
+		}
+	})
+	defineFunction("count", { ln, ls ->
+		val i = ls[0].eval()
+		val e = ls[1].eval()
+		when (i.o) {
+			is Collection<*> -> ValueNode(i.o.count { e.o == it }, ln)
+			else -> ValueNode(0, ln)
+		}
+	})
+	defineFunction("empty?", { ln, ls ->
+		ValueNode((ls[0].eval().o as? Collection<*>)?.isEmpty() ?: true, ln)
+	})
+	defineFunction("in?", { ln, ls ->
+		val i = ls[0].eval()
+		val e = ls[1].eval()
+		when (i.o) {
+			is Collection<*> -> ValueNode(e.o in i.o, ln)
+			else -> ValueNode(false, ln)
 		}
 	})
 }
