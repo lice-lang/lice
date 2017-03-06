@@ -16,11 +16,26 @@
 	<TextView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:id="@+id/code_output" android:textAppearance="@android:style/TextAppearance" android:autoLink="web|email|phone|map|all"
-			android:allowUndo="true"/>
-	<EditText
+			android:id="@+id/code_output"
+			android:layout_weight="1"
+			android:textAppearance="@android:style/TextAppearance"
+			android:autoLink="web|email|phone|map|all"
+			android:enabled="true"/>
+	<LinearLayout
+			android:orientation="horizontal"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			tools:ignore="TextFields"
-			android:id="@+id/code_input"/>
+			android:layout_height="wrap_content">
+		<EditText
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				tools:ignore="TextFields"
+				android:layout_weight="1"
+				android:hint="@string/type_your_code_here"
+				android:id="@+id/code_input"/>
+		<Button
+				android:text="@string/submit"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/submit"/>
+	</LinearLayout>
 </LinearLayout>
