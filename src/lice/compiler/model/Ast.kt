@@ -39,6 +39,8 @@ interface Node {
 	fun eval(): Value
 	val meta: MetaData
 
+	override fun toString(): String
+
 	companion object Objects {
 		fun getNullNode(meta: MetaData) =
 				EmptyNode(meta)
@@ -74,6 +76,8 @@ constructor(
 //		println("老子求值了：${value.o}")
 		return value
 	}
+
+	override fun toString() = "value: <${value.o}> => ${value.type}"
 }
 
 //class JvmReflectionNode(
@@ -115,6 +119,8 @@ class ExpressionNode(
 			(symbolList.getFunction(function)
 					?: undefinedFunction(function, meta))
 					.invoke(meta, params).eval()
+
+	override fun toString() = "function: <$function> with ${params.size} params"
 }
 
 class LambdaNode(
@@ -122,6 +128,8 @@ class LambdaNode(
 		val params: List<Node>,
 		override val meta: MetaData) : Node {
 	override fun eval() = lambda.invoke(meta, params).eval()
+
+	override fun toString() = "lambda: <$${super.toString()}>"
 }
 
 class SymbolNode(
@@ -133,10 +141,13 @@ class SymbolNode(
 			(symbolList.getVariable(name)
 					?: undefinedVariable(name, meta))
 					.eval()
+
+	override fun toString() = "symbol: <$name>"
 }
 
 class EmptyNode(override val meta: MetaData) : Node {
 	override fun eval() = Nullptr
+	override fun toString() = "null: <null>"
 }
 
 class Ast(
