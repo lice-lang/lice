@@ -9,6 +9,12 @@
 
 (def max a b (if (< a b) b a))
 
+(def even? a (& a 1))
+
+(def odd? a (! (& a 1)))
+
+(def zero? a (== 0 a))
+
 ; constants
 
 (-> PI 3.14159265358979323846)

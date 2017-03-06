@@ -211,7 +211,7 @@ null => java.lang.Object
 Lice > (cons 1 11 1)
 [1, 11, 1] => java.util.ArrayList
 
-Lice > (eval (read-file (file "sample/test3.lice")))
+Lice > (eval (read-file (file "sample/tests/test3.lice")))
 16769025 => java.lang.Integer
 My name is Van, I'm an artist => java.lang.String
 My name is Van, I'm an artist => java.lang.String
@@ -222,10 +222,10 @@ Lice > (if (> 2 1) 1 2)
 Lice > (-> file (file "fuck_you"))
 fuck_you => java.io.File
 
-Lice > (write-file (<- file) (str-con "deep" " dark fantasy"))
+Lice > (write-file file (str-con "deep" " dark fantasy"))
 deep dark fantasy => java.lang.String
 
-Lice > (read-file (<- file))
+Lice > (read-file file)
 deep dark fantasy => java.lang.String
 
 Lice > ([|] 1 2 3 4 5)
@@ -234,6 +234,6 @@ Lice > ([|] 1 2 3 4 5)
 Lice > (-> i ([|] 1 2 3 4 5 6 7))
 [1 [2 [3 [4 [5 [6 [7 null]]]]]]] => lice.core.Pair
 
-Lice > (tail (tail (<- i)))
+Lice > (tail (tail i))
 [3 [4 [5 [6 [7 null]]]]] => lice.core.Pair
 ```
