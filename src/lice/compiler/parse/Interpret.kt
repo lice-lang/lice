@@ -30,10 +30,7 @@ fun parseValue(
 			.substring(
 					startIndex = 1,
 					endIndex = str.length - 1
-			)
-			.apply {
-				// TODO replace \n, \t, etc.
-			}, meta)
+			), meta)
 	if (str.isOctInt())
 		return ValueNode(str.toOctInt(), meta)
 	if (str.isInt())
@@ -51,7 +48,7 @@ fun parseValue(
 	if ("false" == str)
 		return ValueNode(false, meta)
 	forceRun {
-		return if (str.length < 32)
+		return if (str.length < 0xF)
 			ValueNode(str.toFloat(), meta)
 		else ValueNode(str.toDouble(), meta)
 	}
@@ -101,6 +98,13 @@ fun mapAst(
 		EmptyNode(node.meta)
 }
 
+/**
+ * create an abstract syntax tree
+ *
+ * @param file source code file
+ * @param symbolList symbol list, with a default value
+ * @return generated ast
+ */
 fun createAst(
 		file: File,
 		symbolList: SymbolList = SymbolList(init = true)): Ast {

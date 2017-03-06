@@ -9,5 +9,7 @@
 package lice.compiler.parse
 
 fun String.isString() =
-		length >= 2 && this[0] == '\"' && this[length - 1] == '\"'
+		length >= 2 &&
+				(this[0] == '\"' || this[0] == '“') &&
+				(this[length - 1] == '\"' || this[length - 1] == '”')
 
