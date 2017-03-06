@@ -9,6 +9,7 @@ import lice.repl.VERSION_CODE
 import java.awt.BorderLayout
 import java.io.File
 import javax.swing.*
+import javax.swing.filechooser.FileFilter
 import javax.swing.tree.DefaultMutableTreeNode
 
 /**
@@ -16,7 +17,8 @@ import javax.swing.tree.DefaultMutableTreeNode
  */
 private fun rec(
 		node: StringNode,
-		viewRoot: DefaultMutableTreeNode): DefaultMutableTreeNode {
+		viewRoot: DefaultMutableTreeNode
+): DefaultMutableTreeNode {
 	return when (node) {
 		is StringLeafNode -> DefaultMutableTreeNode(node)
 		is StringMiddleNode -> viewRoot.apply {
@@ -29,7 +31,7 @@ private fun rec(
 						)
 					}
 		}
-		else -> DefaultMutableTreeNode()
+		else -> DefaultMutableTreeNode("null")
 	}
 }
 
@@ -44,23 +46,42 @@ fun createTreeFromFile(file: File): JTree {
 fun main(args: Array<String>) {
 	UIManager.setLookAndFeel(WindowsLookAndFeel())
 //	tree.isEditable = true
-	val frame = JFrame("Lice language AST Viewer ${VERSION_CODE}")
+	val frame = JFrame("Lice language AST Viewer $VERSION_CODE")
 	frame.layout = BorderLayout()
 	frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 	frame.setLocation(80, 80)
 	frame.setSize(480, 480)
-	frame.add(
-			JScrollPane(createTreeFromFile(File("sample/test9.lice"))),
-			BorderLayout.CENTER
-	)
-	val button = JButton("Open ...")
-	button.addActionListener { _ ->
-		val f = JFileChooser()
-		f.showDialog(frame, "Parse")
-		f.selectedFile?.let {
-			frame.add(createTreeFromFile(f.selectedFile))
+	val f = JFileChooser()
+	f.fileFilter = object : FileFilter() {
+		override fun accept(f: File?): Boolean {
+			if (f != null)
+				return f.name.endsWith(".lice") or f.isDirectory
+			return false
 		}
+
+		override fun getDescription() = "(.lice) lice source code"
 	}
-	frame.add(button, BorderLayout.SOUTH)
-	frame.isVisible = true
+	f.showDialog(frame, "Parse")
+	if (f.selectedFile != null) {
+		frame.add(
+				JScrollPane(createTreeFromFile(f.selectedFile)),
+				BorderLayout.CENTER
+		)
+		frame.isVisible = true
+	} else {
+		System.exit(0)
+	}
+//	frame.add(
+//			JScrollPane(createTreeFromFile(File("sample/test9.lice"))),
+//			BorderLayout.CENTER
+//	)
+//	val button = JButton("Open ...")
+//	frame.add(button, BorderLayout.SOUTH)
+//	button.addActionListener { _ ->
+//		val f = JFileChooser()
+//		f.showDialog(frame, "Parse")
+//		f.selectedFile?.let {
+//			frame.add(createTreeFromFile(f.selectedFile), BorderLayout.CENTER)
+//		}
+//	}
 }
