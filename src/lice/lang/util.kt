@@ -8,6 +8,8 @@
 
 package lice.lang
 
+import lice.compiler.model.MetaData
+import lice.compiler.model.MetaData.Factory.EmptyMetaData
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -21,13 +23,13 @@ constructor(var initial: Number = 0) {
 
 	fun plusLikeFunctionsImpl(
 			o: Number,
-			lineNumber: Int,
-			function: (Number, Number, Int) -> Number): NumberOperator {
-		val hisLevel = getLevel(o, lineNumber)
+			meta: MetaData,
+			function: (Number, Number, MetaData) -> Number): NumberOperator {
+		val hisLevel = getLevel(o, meta)
 		if (hisLevel <= level) {
-			initial = function(o, initial, lineNumber)
+			initial = function(o, initial, meta)
 		} else {
-			initial = function(initial, o, lineNumber)
+			initial = function(initial, o, meta)
 			level = getLevel(initial)
 		}
 		return this
@@ -35,47 +37,47 @@ constructor(var initial: Number = 0) {
 
 	fun minusLikeFunctionsImpl(
 			o: Number,
-			lineNumber: Int,
-			function: (Number, Number, Int, Boolean) -> Number): NumberOperator {
-		val hisLevel = getLevel(o, lineNumber)
+			meta: MetaData,
+			function: (Number, Number, MetaData, Boolean) -> Number): NumberOperator {
+		val hisLevel = getLevel(o, meta)
 		if (hisLevel <= level) {
-			initial = function(o, initial, lineNumber, false)
+			initial = function(o, initial, meta, false)
 		} else {
-			initial = function(initial, o, lineNumber, true)
+			initial = function(initial, o, meta, true)
 			level = getLevel(initial)
 		}
 		return this
 	}
 
 	@JvmOverloads
-	fun plus(o: Number, lineNumber: Int = -1) =
-			plusLikeFunctionsImpl(o, lineNumber, { a, b, c -> plusValue(a, b, c) })
+	fun plus(o: Number, meta: MetaData = EmptyMetaData) =
+			plusLikeFunctionsImpl(o, meta, { a, b, c -> plusValue(a, b, c) })
 
 	@JvmOverloads
-	fun minus(o: Number, lineNumber: Int = -1) =
-			minusLikeFunctionsImpl(o, lineNumber, { a, b, c, d -> minusValue(a, b, c, d) })
+	fun minus(o: Number, meta: MetaData = EmptyMetaData) =
+			minusLikeFunctionsImpl(o, meta, { a, b, c, d -> minusValue(a, b, c, d) })
 
 	@JvmOverloads
-	fun times(o: Number, lineNumber: Int = -1) =
-			plusLikeFunctionsImpl(o, lineNumber, { a, b, c -> timesValue(a, b, c) })
+	fun times(o: Number, meta: MetaData = EmptyMetaData) =
+			plusLikeFunctionsImpl(o, meta, { a, b, c -> timesValue(a, b, c) })
 
 	@JvmOverloads
-	fun div(o: Number, lineNumber: Int = -1) =
-			minusLikeFunctionsImpl(o, lineNumber, { a, b, c, d -> divValue(a, b, c, d) })
+	fun div(o: Number, meta: MetaData = EmptyMetaData) =
+			minusLikeFunctionsImpl(o, meta, { a, b, c, d -> divValue(a, b, c, d) })
 
 	@JvmOverloads
-	fun rem(o: Number, lineNumber: Int = -1) =
-			minusLikeFunctionsImpl(o, lineNumber, { a, b, c, d -> remValue(a, b, c, d) })
+	fun rem(o: Number, meta: MetaData = EmptyMetaData) =
+			minusLikeFunctionsImpl(o, meta, { a, b, c, d -> remValue(a, b, c, d) })
 
 companion object Leveler {
 	fun compare(
 			o1: Number,
 			o2: Number,
-			lineNumber: Int = -1): Int {
-		if (getLevel(o2, lineNumber) <= getLevel(o1, lineNumber))
-			return compareValue(o2, o1, lineNumber)
+			meta: MetaData = EmptyMetaData): Int {
+		if (getLevel(o2, meta) <= getLevel(o1, meta))
+			return compareValue(o2, o1, meta)
 		else
-			return compareValue(o1, o2, lineNumber).negative()
+			return compareValue(o1, o2, meta).negative()
 	}
 
 	internal fun Int.negative() = when {
@@ -84,7 +86,7 @@ companion object Leveler {
 		else -> 0
 	}
 
-	internal fun getLevel(o: Number, lineNumber: Int = -1) = when (o) {
+	internal fun getLevel(o: Number, meta: MetaData = EmptyMetaData) = when (o) {
 		is Byte -> 0
 //			is Char -> 1
 		is Short -> 2
@@ -94,13 +96,13 @@ companion object Leveler {
 		is Double -> 6
 		is BigInteger -> 7
 		is BigDecimal -> 8
-		else -> typeMisMatch("Numberic", o, lineNumber)
+		else -> typeMisMatch("Numberic", o, meta)
 	}
 
 	internal fun plusValue(
 			lowLevel: Number,
 			highLevel: Number,
-			lineNumber: Int = -1): Number = when (highLevel) {
+			meta: MetaData = EmptyMetaData): Number = when (highLevel) {
 		is Byte -> highLevel + lowLevel.toByte()
 		is Short -> highLevel + lowLevel.toShort()
 		is Int -> highLevel + lowLevel.toInt()
@@ -124,13 +126,13 @@ companion object Leveler {
 		}
 		is BigDecimal ->
 			highLevel + BigDecimal(lowLevel.toString())
-		else -> typeMisMatch("Numberic", lowLevel, lineNumber)
+		else -> typeMisMatch("Numberic", lowLevel, meta)
 	}
 
 	internal fun timesValue(
 			lowLevel: Number,
 			highLevel: Number,
-			lineNumber: Int = -1): Number = when (highLevel) {
+			meta: MetaData = EmptyMetaData): Number = when (highLevel) {
 		is Byte -> highLevel * lowLevel.toByte()
 		is Short -> highLevel * lowLevel.toShort()
 		is Int -> highLevel * lowLevel.toInt()
@@ -154,13 +156,13 @@ companion object Leveler {
 		}
 		is BigDecimal ->
 			highLevel * BigDecimal(lowLevel.toString())
-		else -> typeMisMatch("Numberic", lowLevel, lineNumber)
+		else -> typeMisMatch("Numberic", lowLevel, meta)
 	}
 
 	internal fun minusValue(
 			lowLevel: Number,
 			highLevel: Number,
-			lineNumber: Int = -1,
+			meta: MetaData = EmptyMetaData,
 			reverse: Boolean = false): Number = when (highLevel) {
 		is Byte ->
 			if (!reverse) (highLevel - lowLevel.toByte())
@@ -200,13 +202,13 @@ companion object Leveler {
 		}
 		is BigDecimal ->
 			highLevel - BigDecimal(lowLevel.toString())
-		else -> typeMisMatch("Numberic", lowLevel, lineNumber)
+		else -> typeMisMatch("Numberic", lowLevel, meta)
 	}
 
 	internal fun remValue(
 			lowLevel: Number,
 			highLevel: Number,
-			lineNumber: Int = -1,
+			meta: MetaData = EmptyMetaData,
 			reverse: Boolean = false): Number = when (highLevel) {
 		is Byte ->
 			if (!reverse) (highLevel % lowLevel.toByte())
@@ -246,13 +248,13 @@ companion object Leveler {
 		}
 		is BigDecimal ->
 			highLevel % BigDecimal(lowLevel.toString())
-		else -> typeMisMatch("Numberic", lowLevel, lineNumber)
+		else -> typeMisMatch("Numberic", lowLevel, meta)
 	}
 
 	internal fun compareValue(
 			lowLevel: Number,
 			highLevel: Number,
-			lineNumber: Int = -1): Int = when (highLevel) {
+			meta: MetaData = EmptyMetaData): Int = when (highLevel) {
 		is Byte -> highLevel.compareTo(lowLevel.toByte())
 		is Short -> highLevel.compareTo(lowLevel.toShort())
 		is Int -> highLevel.compareTo(lowLevel.toInt())
@@ -276,14 +278,14 @@ companion object Leveler {
 		}
 		is BigDecimal ->
 			highLevel.compareTo(BigDecimal(lowLevel.toString()))
-		else -> typeMisMatch("Numberic", lowLevel, lineNumber)
+		else -> typeMisMatch("Numberic", lowLevel, meta)
 	}
 
 	@JvmOverloads
 	fun divValue(
 			lowLevel: Number,
 			highLevel: Number,
-			lineNumber: Int = -1,
+			meta: MetaData = EmptyMetaData,
 			reverse: Boolean = false): Number = when (highLevel) {
 		is Byte ->
 			if (!reverse) (highLevel / lowLevel.toByte())
@@ -323,7 +325,7 @@ companion object Leveler {
 		}
 		is BigDecimal ->
 			highLevel / BigDecimal(lowLevel.toString())
-		else -> typeMisMatch("Numberic", lowLevel, lineNumber)
+		else -> typeMisMatch("Numberic", lowLevel, meta)
 	}
 }
 

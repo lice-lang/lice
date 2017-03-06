@@ -5,6 +5,7 @@
  */
 package lice.compiler.util
 
+import lice.compiler.model.MetaData
 import lice.compiler.model.Node
 import lice.compiler.model.Node.Objects.getNullNode
 import lice.compiler.model.ValueNode
@@ -12,12 +13,12 @@ import lice.core.*
 import lice.lang.Symbol
 import java.util.*
 
-typealias func = (Int, List<Node>) -> Node
+typealias Func = (MetaData, List<Node>) -> Node
 
 class SymbolList
 @JvmOverloads
 constructor(init: Boolean = true) {
-	val functions = mutableMapOf<String, func>()
+	val functions = mutableMapOf<String, Func>()
 	val variables = mutableMapOf<String, Node>()
 
 	val rand = Random(System.currentTimeMillis())
@@ -52,10 +53,10 @@ constructor(init: Boolean = true) {
 		addStandard()
 	}
 
-	fun defineFunction(name: Symbol, node: func) =
+	fun defineFunction(name: Symbol, node: Func) =
 			defineFunction(name.name, node)
 
-	fun defineFunction(name: String, node: func) {
+	fun defineFunction(name: String, node: Func) {
 		functions.put(name, node)
 	}
 

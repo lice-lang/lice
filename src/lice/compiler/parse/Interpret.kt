@@ -23,9 +23,9 @@ import java.io.File
  */
 fun parseValue(
 		str: String,
-		lineNumber: Int): Node? {
+		meta: MetaData): Node? {
 	if (str.isEmpty() or str.isBlank())
-		return EmptyNode(lineNumber)
+		return EmptyNode(meta)
 	else if (str.isString()) return ValueNode(str
 			.substring(
 					startIndex = 1,
@@ -33,27 +33,27 @@ fun parseValue(
 			)
 			.apply {
 				// TODO replace \n, \t, etc.
-			}, lineNumber)
+			}, meta)
 	if (str.isOctInt())
-		return ValueNode(str.toOctInt(), lineNumber)
+		return ValueNode(str.toOctInt(), meta)
 	if (str.isInt())
-		return ValueNode(str.toInt(), lineNumber)
+		return ValueNode(str.toInt(), meta)
 	if (str.isHexInt())
-		return ValueNode(str.toHexInt(), lineNumber)
+		return ValueNode(str.toHexInt(), meta)
 	if (str.isBinInt())
-		return ValueNode(str.toBinInt(), lineNumber)
+		return ValueNode(str.toBinInt(), meta)
 	if (str.isBigInt())
-		return ValueNode(str.toBigInt(), lineNumber)
+		return ValueNode(str.toBigInt(), meta)
 	if ("null" == str)
-		return ValueNode(Nullptr, lineNumber)
+		return ValueNode(Nullptr, meta)
 	if ("true" == str)
-		return ValueNode(true, lineNumber)
+		return ValueNode(true, meta)
 	if ("false" == str)
-		return ValueNode(false, lineNumber)
+		return ValueNode(false, meta)
 	forceRun {
 		return if (str.length < 32)
-			ValueNode(str.toFloat(), lineNumber)
-		else ValueNode(str.toDouble(), lineNumber)
+			ValueNode(str.toFloat(), meta)
+		else ValueNode(str.toDouble(), meta)
 	}
 	return null
 }
@@ -73,7 +73,7 @@ fun mapAst(
 		ExpressionNode(
 				symbolList = symbolList,
 				function = str,
-				lineNumber = node.lineNumber,
+				meta = MetaData(node.lineNumber),
 				params = node
 						.list
 						.subList(
@@ -91,14 +91,14 @@ fun mapAst(
 	is StringLeafNode ->
 		parseValue(
 				str = node.str,
-				lineNumber = node.lineNumber
+				meta = MetaData(node.lineNumber)
 		) ?: SymbolNode(
 				symbolList = symbolList,
 				name = node.str,
-				lineNumber = node.lineNumber
+				meta = MetaData(node.lineNumber)
 		)
 	else -> // empty
-		EmptyNode(node.lineNumber)
+		EmptyNode(MetaData(node.lineNumber))
 }
 
 fun createAst(
@@ -109,10 +109,7 @@ fun createAst(
 	if (symbolList.getVariable(name = fp) == null)
 		symbolList.setVariable(
 				name = fp,
-				value = ValueNode(
-						any = file.absolutePath,
-						lineNumber = -1
-				)
+				value = ValueNode(any = file.absolutePath)
 		)
 	val stringTreeRoot = buildNode(code)
 	return Ast(

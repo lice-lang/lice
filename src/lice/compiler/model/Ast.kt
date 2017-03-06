@@ -8,10 +8,19 @@
 
 package lice.compiler.model
 
+import lice.compiler.model.MetaData.Factory.EmptyMetaData
 import lice.compiler.model.Value.Objects.Nullptr
+import lice.compiler.util.Func
 import lice.compiler.util.ParseException.Factory.undefinedFunction
 import lice.compiler.util.ParseException.Factory.undefinedVariable
 import lice.compiler.util.SymbolList
+
+class MetaData(
+		val lineNumber: Int) {
+	companion object Factory {
+		val EmptyMetaData = MetaData(-1)
+	}
+}
 
 class Value(
 		val o: Any?,
@@ -28,11 +37,11 @@ class Value(
 
 interface Node {
 	fun eval(): Value
-	val lineNumber: Int
+	val meta: MetaData
 
 	companion object Objects {
-		fun getNullNode(lineNumber: Int) =
-				EmptyNode(lineNumber)
+		fun getNullNode(meta: MetaData) =
+				EmptyNode(meta)
 	}
 }
 
@@ -40,25 +49,25 @@ class ValueNode
 @JvmOverloads
 constructor(
 		val value: Value,
-		override val lineNumber: Int = -1) : Node {
+		override val meta: MetaData = EmptyMetaData) : Node {
 
 	@JvmOverloads
 	constructor(
 			any: Any,
-			lineNumber: Int = -1
+			meta: MetaData = EmptyMetaData
 	) : this(
 			Value(any),
-			lineNumber
+			meta
 	)
 
 	@JvmOverloads
 	constructor(
 			any: Any?,
 			type: Class<*>,
-			lineNumber: Int = -1
+			meta: MetaData = EmptyMetaData
 	) : this(
 			Value(any, type),
-			lineNumber
+			meta
 	)
 
 	override fun eval(): Value {
@@ -87,39 +96,46 @@ constructor(
 class ExpressionNode(
 		val symbolList: SymbolList,
 		val function: String,
-		override val lineNumber: Int,
+		override val meta: MetaData,
 		val params: List<Node>) : Node {
 
 	constructor(
 			symbolList: SymbolList,
 			function: String,
-			lineNumber: Int,
+			meta: MetaData,
 			vararg params: Node
 	) : this(
 			symbolList,
 			function,
-			lineNumber,
+			meta,
 			params.toList()
 	)
 
 	override fun eval() =
 			(symbolList.getFunction(function)
-					?: undefinedFunction(function, lineNumber))
-					.invoke(lineNumber, params).eval()
+					?: undefinedFunction(function, meta))
+					.invoke(meta, params).eval()
+}
+
+class LambdaNode(
+		val lambda: Func,
+		val params: List<Node>,
+		override val meta: MetaData) : Node {
+	override fun eval() = lambda.invoke(meta, params).eval()
 }
 
 class SymbolNode(
 		val symbolList: SymbolList,
 		val name: String,
-		override val lineNumber: Int) : Node {
+		override val meta: MetaData) : Node {
 
 	override fun eval() =
 			(symbolList.getVariable(name)
-					?: undefinedVariable(name, lineNumber))
+					?: undefinedVariable(name, meta))
 					.eval()
 }
 
-class EmptyNode(override val lineNumber: Int) : Node {
+class EmptyNode(override val meta: MetaData) : Node {
 	override fun eval() = Nullptr
 }
 

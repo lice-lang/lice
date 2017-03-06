@@ -62,6 +62,33 @@ inline fun SymbolList.addStandard() {
 		})
 		getNullNode(ln)
 	})
+	defineFunction("def", { ln, ls ->
+		val name = (ls[0] as SymbolNode).name
+		val body = ls.last()
+		val params = ls
+				.subList(1, ls.size - 1)
+				.map {
+					when (it) {
+						is SymbolNode -> it.name
+						else -> typeMisMatch("Symbol", it.eval(), ln)
+					}
+				}
+		defineFunction(name, { ln, args ->
+			val backup = params.map { getVariable(it) }
+			if (args.size != params.size)
+				numberOfArgumentNotMatch(params.size, args.size, ln)
+			args.forEachIndexed { index, node ->
+				setVariable(params[index], ValueNode(node.eval().o ?: Nullptr))
+			}
+			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
+			backup.forEachIndexed { index, node ->
+				if (node != null)
+					setVariable(params[index], node)
+			}
+			ret
+		})
+		getNullNode(ln)
+	})
 	defineFunction("def?", { ln, ls ->
 		val a = (ls[0] as SymbolNode).name
 		ValueNode(isFunctionDefined(a), ln)
@@ -120,7 +147,7 @@ inline fun SymbolList.addStandard() {
 			else -> typeMisMatch(
 					expected = "String or Symbol",
 					actual = a,
-					lineNumber = ln
+					meta = ln
 			)
 		}
 	})
@@ -166,7 +193,7 @@ inline fun SymbolList.addStandard() {
 			else -> typeMisMatch(
 					expected = "File",
 					actual = o,
-					lineNumber = ln
+					meta = ln
 			)
 		}
 	})

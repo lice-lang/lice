@@ -9,40 +9,41 @@
 
 package lice.compiler.util
 
+import lice.compiler.model.MetaData
 import lice.compiler.model.Value
 
 class ParseException(string: String) : RuntimeException(string) {
 	companion object Factory {
-		inline fun undefinedFunction(name: String, lineNumber: Int): Nothing {
+		inline fun undefinedFunction(name: String, meta: MetaData): Nothing {
 			throw ParseException("""undefined function: $name
-at line: $lineNumber""")
+at line: ${meta.lineNumber}""")
 		}
 
-		inline fun undefinedVariable(name: String, lineNumber: Int): Nothing {
+		inline fun undefinedVariable(name: String, meta: MetaData): Nothing {
 			throw ParseException("""undefined variable: $name
-at line: $lineNumber""")
+at line: ${meta.lineNumber}""")
 		}
 	}
 }
 
 class InterpretException(string: String) : RuntimeException(string) {
 	companion object Factory {
-		inline fun typeMisMatch(expected: String, actual: Value, lineNumber: Int): Nothing =
+		inline fun typeMisMatch(expected: String, actual: Value, meta: MetaData): Nothing =
 				throw InterpretException("""type mismatch: expected: $expected, found: ${actual.type.name}
-at line: $lineNumber""")
+at line: ${meta.lineNumber}""")
 
-		inline fun typeMisMatch(expected: String, actual: Any, lineNumber: Int): Nothing =
+		inline fun typeMisMatch(expected: String, actual: Any, meta: MetaData): Nothing =
 				throw InterpretException("""type mismatch: expected: $expected, found: ${actual.javaClass.name}
-at line: $lineNumber""")
+at line: ${meta.lineNumber}""")
 
-		inline fun tooFewArgument(expected: Int, actual: Int, lineNumber: Int): Nothing {
+		inline fun tooFewArgument(expected: Int, actual: Int, meta: MetaData): Nothing {
 			throw InterpretException("""expected $expected or more arguments, found: $actual
-at line: $lineNumber""")
+at line: ${meta.lineNumber}""")
 		}
 
-		inline fun numberOfArgumentNotMatch(expected: Int, actual: Int, lineNumber: Int): Nothing {
+		inline fun numberOfArgumentNotMatch(expected: Int, actual: Int, meta: MetaData): Nothing {
 			throw InterpretException("""expected $expected arguments, found: $actual
-at line: $lineNumber""")
+at line: ${meta.lineNumber}""")
 		}
 	}
 }
