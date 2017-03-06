@@ -11,6 +11,7 @@ package lice.compiler.model
 interface StringNode {
 	val strRepr: String
 	val meta: MetaData
+	override fun toString(): String
 }
 
 class StringMiddleNode(
@@ -33,15 +34,19 @@ class StringMiddleNode(
 	fun add(n: StringNode) {
 		list.add(n)
 	}
+
+	override fun toString() = list.first().strRepr
 }
 
 class StringLeafNode(
 		override val meta: MetaData,
 		val str: String) : StringNode {
 	override val strRepr = str
+	override fun toString() = strRepr
 }
 
 class EmptyStringNode(
 		override val meta: MetaData) : StringNode {
 	override val strRepr = ""
+	override fun toString() = strRepr
 }

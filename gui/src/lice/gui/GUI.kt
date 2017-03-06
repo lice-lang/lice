@@ -3,7 +3,7 @@
  *
  * @author ice1000
  */
-package lice
+package lice.gui
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel
 import lice.compiler.util.SymbolList
@@ -61,7 +61,7 @@ fun main(args: Array<String>) {
 		override fun write(b: ByteArray) =
 				output.append(String(b), Color(0xBC3F3C))
 	}))
-	output.append("This is the GUI repl $VERSION_CODE for Lice language.\n", Color(0xCC7832))
+	output.append("This is the GUI repl ${VERSION_CODE} for Lice language.\n", Color(0xCC7832))
 	val repl = Repl()
 	val input = JTextField()
 	input.addKeyListener(object : KeyListener {
@@ -80,7 +80,7 @@ fun main(args: Array<String>) {
 		input.font = Font(FONT_NAME, 0, 16)
 		output.font = Font(FONT_NAME, 0, 12)
 	}
-	val frame = JFrame("Lice language interpreter $VERSION_CODE")
+	val frame = JFrame("Lice language interpreter ${VERSION_CODE}")
 	frame.layout = BorderLayout()
 	frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 	frame.add(JScrollPane(output), BorderLayout.CENTER)

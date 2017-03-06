@@ -96,6 +96,7 @@ fun String.toBinInt(): Int {
 }
 
 fun String.toBigInt() = BigInteger(this.substring(0, length - 1))
+
 fun String.toBigDec() = BigDecimal(this.substring(0, length - 1))
 
 fun String.toOctInt(): Int {

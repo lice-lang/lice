@@ -46,3 +46,13 @@ class TheJavaClass2 {
 	}
 }
 
+class TheJavaClass3 {
+	public static void main(String[] args) {
+		SymbolList sl = new SymbolList();
+		sl.defineFunction(
+				"quote",
+				(meta, ls) -> new ValueNode("\"", meta)
+		);
+		Lice.run(new File("test.lice"), sl);
+	}
+}
