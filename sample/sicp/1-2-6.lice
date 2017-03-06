@@ -15,4 +15,26 @@
   ret))
 
 
-(println "result: " (exp-mod 23 2 6))
+; (println "result: " (exp-mod 23 2 6))
+
+; try fermat test
+(def try-it a n
+  (== (exp-mod a n n) a))
+
+; fermat test
+(def fermat-test n
+  (try-it (+ 1 (rand (- n 1))) n))
+
+; printing the result
+(def say n
+  (println n " => " (fermat-test n)))
+
+; tests
+(|>
+  (say 101)
+  (say 233)
+  (say 777)
+  (say 666)
+  ()
+)
+

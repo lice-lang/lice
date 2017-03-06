@@ -26,9 +26,9 @@
 
 
 
-(def even? a (& a 1))
+(def odd? a (& a 1))
 
-(def odd? a (! (& a 1)))
+(def even? a (! (& a 1)))
 
 (def zero? a (== 0 a))
 

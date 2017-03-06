@@ -363,7 +363,10 @@ inline fun SymbolList.addMathFunctions() {
 	defineFunction("tanh", { ln, ls ->
 		ValueNode(Math.tanh((ls[0].eval().o as Number).toDouble()), ln)
 	})
-	defineFunction("rand", { ln, _ -> ValueNode(rand.nextInt(), ln) })
+	defineFunction("rand", { ln, ls ->
+		if (ls.isNotEmpty()) ValueNode(rand.nextInt(ls[0].eval().o as Int), ln)
+		else ValueNode(rand.nextInt(), ln)
+	})
 }
 
 
