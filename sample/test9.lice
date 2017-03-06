@@ -1,6 +1,6 @@
-(print (require "lice.io"))
-(require "lice.str")
-(require "lice.thread")
+; (print (require "lice.io"))
+; (require "lice.str")
+; (require "lice.thread")
 
 (for-each
   i

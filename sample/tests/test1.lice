@@ -1,6 +1,6 @@
-(require "lice.str")
-(require "lice.gui")
-(require "lice.io")
+; (require "lice.str")
+; (require "lice.gui")
+; (require "lice.io")
 
 (for-each i
   (.. 1 5)

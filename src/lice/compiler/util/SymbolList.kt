@@ -5,12 +5,14 @@
  */
 package lice.compiler.util
 
+import lice.Lice
 import lice.compiler.model.MetaData
 import lice.compiler.model.Node
 import lice.compiler.model.Node.Objects.getNullNode
 import lice.compiler.model.ValueNode
 import lice.core.*
 import lice.lang.Symbol
+import java.io.File
 import java.util.*
 
 typealias Func = (MetaData, List<Node>) -> Node
@@ -29,18 +31,22 @@ constructor(init: Boolean = true) {
 	}
 
 	fun initialize() {
-		defineFunction("require", { ln, ls ->
+		addFileFunctions()
+		addGUIFunctions()
+		addMathFunctions()
+		addStringFunctions()
+		addConcurrentFunctions()
+		addStandard()
+		defineFunction("load", { ln, ls ->
 			ls.forEach { node ->
 				val res = node.eval()
 				if (res.o is String) {
-					if (res.o in loadedModules) return@defineFunction ValueNode(false, ln)
+					if (res.o in loadedModules)
+						return@defineFunction ValueNode(false, ln)
 					loadedModules.add(res.o)
-					when (res.o) {
-						"lice.io" -> addFileFunctions()
-						"lice.gui" -> addGUIFunctions()
-						"lice.math" -> addMathFunctions()
-						"lice.str" -> addStringFunctions()
-						"lice.thread" -> addConcurrentFunctions()
+					val file = File(res.o)
+					when {
+						file.exists() -> Lice.run(file, this)
 						else -> {
 							serr("${res.o} not found!")
 							return@defineFunction getNullNode(ln)
@@ -50,7 +56,6 @@ constructor(init: Boolean = true) {
 			}
 			ValueNode(true, ln)
 		})
-		addStandard()
 	}
 
 	fun defineFunction(name: Symbol, node: Func) =

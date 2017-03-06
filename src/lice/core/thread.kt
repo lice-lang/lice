@@ -9,22 +9,25 @@
 
 package lice.core
 
+import lice.compiler.model.Node
 import lice.compiler.model.Node.Objects.getNullNode
+import lice.compiler.model.ValueNode
+import lice.compiler.util.InterpretException
 import lice.compiler.util.SymbolList
 import java.lang.Thread.sleep
 import kotlin.concurrent.thread
 
 inline fun SymbolList.addConcurrentFunctions() {
 	defineFunction("thread|>", { ln, ls ->
-		thread { ls.forEach { node -> node.eval() } }
-		getNullNode(ln)
+		var ret: Node = getNullNode(ln)
+		thread { ls.forEach { node -> ret = ValueNode(node.eval()) } }
+		ret
 	})
 	defineFunction("sleep", { ln, ls ->
 		val a = ls[0].eval()
-		when (a.o) {
-			is Long -> sleep(a.o)
-			is Int -> sleep(a.o.toLong())
-			is Short -> sleep(a.o.toLong())
+		when {
+			a.o is Number -> sleep(a.o.toLong())
+			else -> InterpretException.typeMisMatch("Number", a, ln)
 		}
 		getNullNode(ln)
 	})

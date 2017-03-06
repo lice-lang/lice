@@ -1,0 +1,16 @@
+
+; stubs
+
+; real functions
+
+(def abs a (if (>= a 0) a (- 0 a)))
+
+(def min a b (if (> a b) b a))
+
+(def max a b (if (< a b) b a))
+
+; constants
+
+(-> PI 3.14159265358979323846)
+
+(-> E  2.7182818284590452354)

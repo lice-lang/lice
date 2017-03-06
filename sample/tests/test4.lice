@@ -1,4 +1,4 @@
-(require "lice.io")
+; (require "lice.io")
 
 ; evaluate this file
 

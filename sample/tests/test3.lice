@@ -1,4 +1,4 @@
-(require "lice.str")
+; (require "lice.str")
 
 ; integer calculations
 ; hex number

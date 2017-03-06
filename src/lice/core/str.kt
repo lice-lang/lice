@@ -12,6 +12,7 @@ package lice.core
 import lice.compiler.model.ValueNode
 import lice.compiler.parse.*
 import lice.compiler.util.InterpretException
+import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 
 
@@ -27,28 +28,28 @@ inline fun SymbolList.addStringFunctions() {
 				res.o.isHexInt() -> res.o.toHexInt()
 				else -> throw InterpretException("give string: \"${res.o}\" cannot be parsed as a number!")
 			}, ln)
-			else -> InterpretException.typeMisMatch("String", res, ln)
+			else -> typeMisMatch("String", res, ln)
 		}
 	})
 	defineFunction("int->hex", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is Int -> ValueNode("0x${Integer.toHexString(a.o)}", ln)
-			else -> InterpretException.typeMisMatch("Int", a, ln)
+			else -> typeMisMatch("Int", a, ln)
 		}
 	})
 	defineFunction("int->bin", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is Int -> ValueNode("0b${Integer.toBinaryString(a.o)}", ln)
-			else -> InterpretException.typeMisMatch("Int", a, ln)
+			else -> typeMisMatch("Int", a, ln)
 		}
 	})
 	defineFunction("int->oct", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is Int -> ValueNode("0${Integer.toOctalString(a.o)}", ln)
-			else -> InterpretException.typeMisMatch("Int", a, ln)
+			else -> typeMisMatch("Int", a, ln)
 		}
 	})
 	defineFunction("str-con", { ln, ls ->
@@ -65,7 +66,7 @@ inline fun SymbolList.addStringFunctions() {
 					.map { it.eval().o }
 					.toTypedArray()
 			), ln)
-			else -> InterpretException.typeMisMatch("String", format, ln)
+			else -> typeMisMatch("String", format, ln)
 		}
 	})
 	defineFunction("->chars", { ln, ls ->
@@ -79,6 +80,10 @@ inline fun SymbolList.addStringFunctions() {
 	defineFunction("split", { ln, ls ->
 		val str = ls[0].eval()
 		val regex = ls[1].eval()
-		ValueNode(str.o.toString().split(regex.o.toString()).toList(), ln)
+		ValueNode(str
+				.o
+				.toString()
+				.split(regex.o.toString())
+				.toList(), ln)
 	})
 }
