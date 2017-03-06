@@ -14,10 +14,12 @@ import java.math.BigInteger
 //val Char.isDigit: Boolean
 //	get() = this >= '0' && this <= '9'
 
-fun String.isInt() =
-		fold(true, { res, char ->
-			res && char.isDigit()
-		})
+fun String.isInt(isNegative: Boolean = false): Boolean {
+	if (!isNegative && this[0] == '-') return substring(1).isInt(true)
+	return fold(true, { res, char ->
+		res && char.isDigit()
+	})
+}
 
 fun Char.isOctalInt() =
 		this in '0'..'8'
@@ -28,8 +30,8 @@ fun Char.safeLower() =
 			else -> this
 		}
 
-fun String.isHexInt(): Boolean {
-	if (this[0] == '-') return substring(1).isHexInt()
+fun String.isHexInt(isNegative: Boolean = false): Boolean {
+	if (!isNegative && this[0] == '-') return substring(1).isHexInt(true)
 	return when {
 		length <= 2 -> false
 		this[0] != '0' || this[1].safeLower() != 'x' -> false
@@ -39,8 +41,8 @@ fun String.isHexInt(): Boolean {
 	}
 }
 
-fun String.isBigInt(): Boolean {
-	if (this[0] == '-') return substring(1).isBigInt()
+fun String.isBigInt(isNegative: Boolean = false): Boolean {
+	if (!isNegative && this[0] == '-') return substring(1).isBigInt(true)
 	return when {
 		length <= 1 -> false
 		this[length - 1].safeLower() != 'n' -> false
@@ -51,8 +53,8 @@ fun String.isBigInt(): Boolean {
 	}
 }
 
-fun String.isBinInt(): Boolean {
-	if (this[0] == '-') return substring(1).isBinInt()
+fun String.isBinInt(isNegative: Boolean = false): Boolean {
+	if (!isNegative && this[0] == '-') return substring(1).isBinInt(true)
 	return when {
 		length <= 2 -> false
 		this[0] != '0' || this[1].safeLower() != 'b' -> false
@@ -60,8 +62,8 @@ fun String.isBinInt(): Boolean {
 	}
 }
 
-fun String.isOctInt(): Boolean {
-	if (this[0] == '-') return substring(1).isOctInt()
+fun String.isOctInt(isNegative: Boolean = false): Boolean {
+	if (!isNegative && this[0] == '-') return substring(1).isOctInt(true)
 	return when {
 		length <= 1 -> false
 		this[0] != '0' -> false

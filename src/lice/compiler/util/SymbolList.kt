@@ -15,6 +15,7 @@ import lice.lang.Symbol
 import java.io.File
 import java.util.*
 
+@SinceKotlin("1.1")
 typealias Func = (MetaData, List<Node>) -> Node
 
 class SymbolList

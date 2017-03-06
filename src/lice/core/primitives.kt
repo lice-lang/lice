@@ -154,21 +154,15 @@ inline fun SymbolList.addNumberFunctions() {
 
 inline fun SymbolList.addBoolFunctions() {
 	defineFunction("&&", { ln, ls ->
-		ValueNode(ls.fold(true) { sum, value ->
-			val o = value.eval()
-			when {
-				o.o is Boolean -> o.o && sum
-				else -> typeMisMatch("Boolean", o, ln)
-			}
+		ValueNode(ls.all {
+			val o = it.eval()
+			o.o as? Boolean ?: typeMisMatch("Boolean", o, ln)
 		}, ln)
 	})
 	defineFunction("||", { ln, ls ->
-		ValueNode(ls.fold(false) { sum, value ->
-			val o = value.eval()
-			when {
-				o.o is Boolean -> o.o || sum
-				else -> typeMisMatch("Boolean", o, ln)
-			}
+		ValueNode(ls.any {
+			val o = it.eval()
+			o.o as? Boolean ?: typeMisMatch("Boolean", o, ln)
 		}, ln)
 	})
 }
