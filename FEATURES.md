@@ -9,6 +9,8 @@
 
 (233) ; Error: 233 isn't a function
 
+233 ; OK: 233 is a value
+
 (print 233) ; OK: 233 is a java.lang.Integer
 ```
 
