@@ -98,6 +98,16 @@ inline fun SymbolList.addStandard() {
 		removeFunction(a)
 		getNullNode(ln)
 	})
+	defineFunction("alias", { meta, ls ->
+		val a = getFunction((ls[0] as SymbolNode).name)
+		a?.let { function ->
+			ls.forEachIndexed { index, node ->
+				if (index != 0)
+					defineFunction((node as SymbolNode).name, function)
+			}
+		}
+		getNullNode(meta)
+	})
 
 	defineFunction("eval", { ln, ls ->
 		val value = ls[0].eval()

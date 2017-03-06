@@ -1,0 +1,26 @@
+; (load-file "sample/demos/meta-apis.lice")
+
+(def? van)
+
+(def van 1)
+
+(van)
+
+(def? van)
+
+(undef van)
+
+(def? van)
+
+(alias def 定义一个函数)
+
+(undef def)
+
+(undef undef)
+
+; (undef def?)
+
+(定义一个函数 你好世界 (println "大佬您好，您正在Mac上使用易语言编程"))
+
+
+(你好世界)
