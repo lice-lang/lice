@@ -18,6 +18,8 @@ import java.util.*
 
 fun buildNode(code: String): StringNode {
 	if (code.isEmpty() || code.isBlank()) return EmptyStringNode(0)
+	@Suppress("NAME_SHADOWING")
+	val code = " $code "
 	var beginIndex = 0
 	val currentNodeStack = Stack<StringMiddleNode>()
 	currentNodeStack.push(StringMiddleNode(1))

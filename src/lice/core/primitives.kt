@@ -171,9 +171,6 @@ inline fun SymbolList.addBoolFunctions() {
 			}
 		}, ln)
 	})
-	defineFunction("!", { ln, ls ->
-		ValueNode(!(ls[0].eval().o as Boolean), ln)
-	})
 }
 
 

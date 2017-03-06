@@ -1,4 +1,3 @@
-
 ; SICP 1.2.4
 
 (def expt
@@ -15,3 +14,4 @@
   (.. 1 32)
   (println b "^" n " == " (expt)))
 
+; (load-file "sample/sicp/1-2-4.lice")

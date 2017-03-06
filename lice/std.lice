@@ -1,0 +1,5 @@
+
+(def ! a (if a false true))
+
+(def not a (! a))
+

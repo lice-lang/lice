@@ -36,7 +36,6 @@
 
 ; the output
 ;
-; true => java.lang.Boolean
 ; [1, 2, 3, 4, 4] => java.util.ArrayList
 ; [4, 4, 3, 2, 1] => java.util.ArrayList
 ; 2 => java.lang.Integer
