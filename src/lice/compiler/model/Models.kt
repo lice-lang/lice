@@ -10,11 +10,11 @@ package lice.compiler.model
 
 interface StringNode {
 	val strRepr: String
-	val lineNumber: Int
+	val meta: MetaData
 }
 
 class StringMiddleNode(
-		override val lineNumber: Int,
+		override val meta: MetaData,
 		val list: MutableList<StringNode> = mutableListOf<StringNode>()) : StringNode {
 
 	val empty: Boolean
@@ -36,12 +36,12 @@ class StringMiddleNode(
 }
 
 class StringLeafNode(
-		override val lineNumber: Int,
+		override val meta: MetaData,
 		val str: String) : StringNode {
 	override val strRepr = str
 }
 
 class EmptyStringNode(
-		override val lineNumber: Int) : StringNode {
+		override val meta: MetaData) : StringNode {
 	override val strRepr = ""
 }

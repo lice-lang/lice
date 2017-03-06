@@ -19,10 +19,10 @@
   1
   (+ (fib (- n 1)) (fib (- n 2)))))
 
-(def product n (if
+(def factorial n (if
   (in? (list 0 1) n)
   1
-  (* n (product (- n 1)))))
+  (* n (factorial (- n 1)))))
 
 
 

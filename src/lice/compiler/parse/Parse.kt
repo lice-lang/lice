@@ -9,20 +9,17 @@
 
 package lice.compiler.parse
 
-import lice.compiler.model.EmptyStringNode
-import lice.compiler.model.StringLeafNode
-import lice.compiler.model.StringMiddleNode
-import lice.compiler.model.StringNode
+import lice.compiler.model.*
 import lice.compiler.util.showError
 import java.util.*
 
 fun buildNode(code: String): StringNode {
-	if (code.isEmpty() || code.isBlank()) return EmptyStringNode(0)
+	if (code.isEmpty() || code.isBlank()) return EmptyStringNode(MetaData(1))
 	@Suppress("NAME_SHADOWING")
 	val code = " $code "
 	var beginIndex = 0
 	val currentNodeStack = Stack<StringMiddleNode>()
-	currentNodeStack.push(StringMiddleNode(1))
+	currentNodeStack.push(StringMiddleNode(MetaData(1)))
 	var elementStarted = true
 	var lineNumber = 1
 	var lastQuoteIndex = 0
@@ -33,7 +30,7 @@ fun buildNode(code: String): StringNode {
 			elementStarted = false
 			currentNodeStack
 					.peek()
-					.add(StringLeafNode(lineNumber, code
+					.add(StringLeafNode(MetaData(lineNumber), code
 							.substring(startIndex = beginIndex, endIndex = index)
 					))
 		}
@@ -44,17 +41,17 @@ fun buildNode(code: String): StringNode {
 			';', '；' -> if (!quoteStarted) commentStarted = true
 			'(', '（' -> if (!quoteStarted) {
 				check(index)
-				currentNodeStack.push(StringMiddleNode(lineNumber))
+				currentNodeStack.push(StringMiddleNode(MetaData(lineNumber)))
 				++beginIndex
 			}
 			')', '）' -> if (!quoteStarted) {
 				check(index)
 				if (currentNodeStack.size <= 1) {
 					showError("Braces not match at line $lineNumber: Unexpected \')\'.", true)
-					return EmptyStringNode(lineNumber)
+					return EmptyStringNode(MetaData(lineNumber))
 				}
 				val son =
-						if (currentNodeStack.peek().empty) EmptyStringNode(lineNumber)
+						if (currentNodeStack.peek().empty) EmptyStringNode(MetaData(lineNumber))
 						else currentNodeStack.peek()
 				currentNodeStack.pop()
 				currentNodeStack
@@ -76,7 +73,7 @@ fun buildNode(code: String): StringNode {
 				lastQuoteIndex = index
 			} else {
 				quoteStarted = false
-				currentNodeStack.peek().add(StringLeafNode(lineNumber, code
+				currentNodeStack.peek().add(StringLeafNode(MetaData(lineNumber), code
 						.substring(startIndex = lastQuoteIndex, endIndex = index + 1)
 				))
 			}

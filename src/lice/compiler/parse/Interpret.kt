@@ -73,7 +73,7 @@ fun mapAst(
 		ExpressionNode(
 				symbolList = symbolList,
 				function = str,
-				meta = MetaData(node.lineNumber),
+				meta = node.meta,
 				params = node
 						.list
 						.subList(
@@ -91,14 +91,14 @@ fun mapAst(
 	is StringLeafNode ->
 		parseValue(
 				str = node.str,
-				meta = MetaData(node.lineNumber)
+				meta = node.meta
 		) ?: SymbolNode(
 				symbolList = symbolList,
 				name = node.str,
-				meta = MetaData(node.lineNumber)
+				meta = node.meta
 		)
 	else -> // empty
-		EmptyNode(MetaData(node.lineNumber))
+		EmptyNode(node.meta)
 }
 
 fun createAst(
