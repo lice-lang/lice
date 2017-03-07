@@ -24,13 +24,19 @@
   1
   (* n (factorial (- n 1)))))
 
+(def square a (* a a))
 
+(def cube a (* a a a))
 
 (def odd? a (& a 1))
 
 (def even? a (! (& a 1)))
 
 (def zero? a (== 0 a))
+
+(def tan a (/ (sin a) (cos a))
+
+(def cot a (/ (cos a) (sin a))
 
 ; constants
 

@@ -13,3 +13,9 @@ fun String.isString() =
 				(this[0] == '\"' || this[0] == '“') &&
 				(this[length - 1] == '\"' || this[length - 1] == '”')
 
+
+fun String.repeat(times: Int): String {
+	val sb = StringBuilder()
+	for (i in 1..times) sb.append(this)
+	return sb.toString()
+}

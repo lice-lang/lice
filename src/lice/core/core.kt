@@ -103,7 +103,7 @@ inline fun SymbolList.addStandard() {
 		a?.let { function ->
 			ls.forEachIndexed { index, node ->
 				if (index != 0)
-					defineFunction((node as SymbolNode).name, function)
+					defineFunction((ls[0] as SymbolNode).name, function)
 			}
 		}
 		getNullNode(meta)
@@ -366,9 +366,6 @@ inline fun SymbolList.addMathFunctions() {
 	})
 	defineFunction("cosh", { ln, ls ->
 		ValueNode(Math.cosh((ls[0].eval().o as Number).toDouble()), ln)
-	})
-	defineFunction("tan", { ln, ls ->
-		ValueNode(Math.tan((ls[0].eval().o as Number).toDouble()), ln)
 	})
 	defineFunction("tanh", { ln, ls ->
 		ValueNode(Math.tanh((ls[0].eval().o as Number).toDouble()), ln)
