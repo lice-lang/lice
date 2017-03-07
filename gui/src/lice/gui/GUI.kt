@@ -25,7 +25,7 @@ import javax.swing.*
 import javax.swing.text.SimpleAttributeSet
 import javax.swing.text.StyleConstants
 
-val FONT_NAME = "Consolas"
+val FONT_NAME = "Microsoft YaHei"
 
 fun JTextPane.append(
 		string: String,

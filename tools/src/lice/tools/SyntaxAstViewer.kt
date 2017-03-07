@@ -47,6 +47,7 @@ private fun mapDisplay2Ast(
 		node: UINode,
 		gen: StringBuilder,
 		numOfIndents: Int = 0) {
+	if (numOfIndents == 0) gen.append("\n")
 	when {
 		node.isLeaf -> gen
 				.append(" ")
@@ -60,7 +61,7 @@ private fun mapDisplay2Ast(
 					.append(node.userObject.toString())
 			node.children()
 					.toList()
-//					.map { it as DefaultMutableTreeNode }
+//					.map { it as UINode }
 					.forEach {
 						mapDisplay2Ast(
 								it as UINode,
@@ -110,19 +111,19 @@ fun main(args: Array<String>) {
 				BorderLayout.CENTER
 		)
 		frame.isVisible = true
-		frame.add(JButton("Export Lice Code").apply {
-			addActionListener {
-				val sb = StringBuilder()
-				root.children()
-						.toList()
-						.forEach {
-							mapDisplay2Ast(it as UINode, sb)
-						}
-				File(f.selectedFile.neighbour())
-						.apply { if (!exists()) createNewFile() }
-						.writeText(sb.toString())
-			}
-		}, BorderLayout.SOUTH)
+		val button = JButton("Export Lice Code")
+		button.addActionListener {
+			val sb = StringBuilder()
+			root.children()
+					.toList()
+					.forEach {
+						mapDisplay2Ast(it as UINode, sb)
+					}
+			File(f.selectedFile.neighbour())
+					.apply { if (!exists()) createNewFile() }
+					.writeText(sb.toString())
+		}
+		frame.add(button, BorderLayout.SOUTH)
 	} else {
 		System.exit(0)
 	}

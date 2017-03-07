@@ -18,6 +18,8 @@ class Repl {
 		println("""Lice language repl $VERSION_CODE
 see: https://github.com/ice1000/lice
 
+Stay young stay simple, and make yourself naive.
+
 for help please input: help
 """)
 		print(HINT)
