@@ -101,7 +101,7 @@ inline fun SymbolList.addStandard() {
 	defineFunction("alias", { meta, ls ->
 		val a = getFunction((ls[0] as SymbolNode).name)
 		a?.let { function ->
-			ls.forEachIndexed { index, node ->
+			ls.forEachIndexed { index, _ ->
 				if (index != 0)
 					defineFunction((ls[0] as SymbolNode).name, function)
 			}

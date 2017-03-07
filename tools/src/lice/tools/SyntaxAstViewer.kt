@@ -6,6 +6,7 @@
 package lice.tools
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel
+import lice.Lice
 import lice.compiler.model.StringLeafNode
 import lice.compiler.model.StringMiddleNode
 import lice.compiler.model.StringNode
@@ -13,6 +14,7 @@ import lice.compiler.parse.buildNode
 import lice.repl.VERSION_CODE
 import java.awt.BorderLayout
 import java.io.File
+import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.filechooser.FileFilter
 import javax.swing.tree.DefaultMutableTreeNode
@@ -40,23 +42,30 @@ private fun mapAst2Display(
  */
 private fun mapDisplay2Ast(
 		node: DefaultMutableTreeNode,
-		gen: StringBuilder) {
+		gen: StringBuilder,
+		numOfIndents: Int = 0) {
 	when {
 		node.isLeaf -> gen
 				.append(" ")
 				.append(node.userObject.toString())
-				.append(" ")
+				.append("")
 		else -> {
 			gen
-					.append(" (")
+					.append("\n")
+					.append("  ".repeat(numOfIndents))
+					.append("(")
 					.append(node.userObject.toString())
 			node.children()
 					.toList()
 //					.map { it as DefaultMutableTreeNode }
 					.forEach {
-						(mapDisplay2Ast(it as DefaultMutableTreeNode, gen))
+						mapDisplay2Ast(
+								it as DefaultMutableTreeNode,
+								gen,
+								numOfIndents + 1
+						)
 					}
-			gen.append(")\n")
+			gen.append(")")
 		}
 	}
 }
@@ -73,7 +82,7 @@ fun main(args: Array<String>) {
 	UIManager.setLookAndFeel(WindowsLookAndFeel())
 //	tree.isEditable = true
 	val frame = JFrame("Lice language Syntax Tree Viewer $VERSION_CODE")
-//	frame.iconImage = ImageIO.read(Lice::class.java.getResource("icon.jpg"))
+	frame.iconImage = ImageIO.read(Lice::class.java.getResource("icon.jpg"))
 	frame.layout = BorderLayout()
 	frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 	frame.setLocation(80, 80)
@@ -89,6 +98,7 @@ fun main(args: Array<String>) {
 		override fun getDescription() = "(.lice) lice source code"
 	}
 	f.showDialog(frame, "Parse")
+	var fileCount = 0
 	if (f.selectedFile != null) {
 		val root = createTreeRootFromFile(f.selectedFile)
 		frame.add(
@@ -104,7 +114,9 @@ fun main(args: Array<String>) {
 						.forEach {
 							(mapDisplay2Ast(it as DefaultMutableTreeNode, sb))
 						}
-				println(sb)
+				File("${f.selectedFile.parentFile.path}${f.selectedFile.name}-edited-${fileCount++}.lice")
+						.apply { if (!exists()) createNewFile() }
+						.writeText(sb.toString())
 			}
 		}, BorderLayout.SOUTH)
 	} else {
