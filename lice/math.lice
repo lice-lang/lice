@@ -1,6 +1,12 @@
 
 ; stubs
 
+; constants
+
+(-> PI 3.14159265358979323846)
+
+(-> E  2.7182818284590452354)
+
 ; real functions
 
 (def abs a (if (>= a 0) a (- 0 a)))
@@ -24,6 +30,19 @@
   1
   (* n (factorial (- n 1)))))
 
+; fast-exp returns a^b % m
+; returning fast-exp-res,
+; please escape the usage of this variable.
+(def fast-exp a b m (|>
+  (-> fast-exp-res 1)
+  (while (!= 0 b) (|>
+    (if (!= 0 (& b 1))
+      (-> ret (% (* a ret) m)))
+    ; (println "b = " b)
+    (-> b (/ b 2))
+    (-> a (% (* a a) m))))
+  fast-exp-res))
+
 (def square a (* a a))
 
 (def cube a (* a a a))
@@ -42,8 +61,5 @@
 (def tan a (/ (sin a) (cos a)))
 (def cot a (/ (cos a) (sin a)))
 
-; constants
-
-(-> PI 3.14159265358979323846)
-
-(-> E  2.7182818284590452354)
+(def ->radians a (* (/ a 180) PI))
+(def ->degrees a (/ (* a 180) PI))

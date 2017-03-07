@@ -8,4 +8,6 @@
 
 (alias in? contains?)
 
+(def unless condition a b (if condition b a))
 
+(def until condition a (while (! condition) a))
