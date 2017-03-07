@@ -7,12 +7,14 @@
 package lice.tools
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel
+import lice.Lice
 import lice.compiler.model.*
 import lice.compiler.parse.buildNode
 import lice.compiler.parse.mapAst
 import lice.repl.VERSION_CODE
 import java.awt.BorderLayout
 import java.io.File
+import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.filechooser.FileFilter
 import javax.swing.tree.DefaultMutableTreeNode
@@ -50,6 +52,7 @@ fun main(args: Array<String>) {
 	UIManager.setLookAndFeel(WindowsLookAndFeel())
 //	tree.isEditable = true
 	val frame = JFrame("Lice language Semantic AST Viewer $VERSION_CODE")
+	frame.iconImage = ImageIO.read(Lice::class.java.getResource("icon.jpg"))
 	frame.layout = BorderLayout()
 	frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 	frame.setLocation(80, 80)

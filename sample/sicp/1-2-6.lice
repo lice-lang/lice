@@ -25,16 +25,20 @@
 (def fermat-test n
   (try-it (+ 1 (rand (- n 1))) n))
 
+; you shouldn't delete the function
+; because Lice uses dynamic scoping
+; (undef try-it)
+
 ; printing the result
 (def say n
   (println n " => " (fermat-test n)))
 
 ; tests
-(|>
+(force|>
   (say 101)
   (say 233)
   (say 777)
   (say 666)
-  ()
+  "tests finished"
 )
 
