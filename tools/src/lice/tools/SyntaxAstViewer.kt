@@ -6,7 +6,6 @@
 package lice.tools
 
 import com.sun.java.swing.plaf.windows.WindowsLookAndFeel
-import lice.Lice
 import lice.compiler.model.StringLeafNode
 import lice.compiler.model.StringMiddleNode
 import lice.compiler.model.StringNode
@@ -14,7 +13,6 @@ import lice.compiler.parse.buildNode
 import lice.repl.VERSION_CODE
 import java.awt.BorderLayout
 import java.io.File
-import javax.imageio.ImageIO
 import javax.swing.*
 import javax.swing.filechooser.FileFilter
 import javax.swing.tree.DefaultMutableTreeNode
@@ -22,7 +20,7 @@ import javax.swing.tree.DefaultMutableTreeNode
 /**
  * map the ast
  */
-private fun rec(
+private fun mapAst2Display(
 		node: StringNode,
 		viewRoot: DefaultMutableTreeNode
 ): DefaultMutableTreeNode {
@@ -31,20 +29,41 @@ private fun rec(
 		is StringMiddleNode -> viewRoot.apply {
 			node.list
 					.subList(1, node.list.size)
-					.forEachIndexed { index, stringNode ->
-						insert(
-								rec(stringNode, DefaultMutableTreeNode(stringNode)),
-								index
-						)
-					}
+					.forEach { add(mapAst2Display(it, DefaultMutableTreeNode(it))) }
 		}
 		else -> DefaultMutableTreeNode("null")
 	}
 }
 
-private fun createTreeFromFile(file: File): JTree {
+/**
+ * map the ast
+ */
+private fun mapDisplay2Ast(
+		node: DefaultMutableTreeNode,
+		gen: StringBuilder) {
+	when {
+		node.isLeaf -> gen
+				.append(" ")
+				.append(node.userObject.toString())
+				.append(" ")
+		else -> {
+			gen
+					.append(" (")
+					.append(node.userObject.toString())
+			node.children()
+					.toList()
+//					.map { it as DefaultMutableTreeNode }
+					.forEach {
+						(mapDisplay2Ast(it as DefaultMutableTreeNode, gen))
+					}
+			gen.append(")\n")
+		}
+	}
+}
+
+private fun createTreeRootFromFile(file: File): DefaultMutableTreeNode {
 	val ast = buildNode(file.readText())
-	return JTree(rec(ast, DefaultMutableTreeNode(ast)))
+	return mapAst2Display(ast, DefaultMutableTreeNode(ast))
 }
 
 /**
@@ -54,7 +73,7 @@ fun main(args: Array<String>) {
 	UIManager.setLookAndFeel(WindowsLookAndFeel())
 //	tree.isEditable = true
 	val frame = JFrame("Lice language Syntax Tree Viewer $VERSION_CODE")
-	frame.iconImage = ImageIO.read(Lice::class.java.getResource("icon.jpg"))
+//	frame.iconImage = ImageIO.read(Lice::class.java.getResource("icon.jpg"))
 	frame.layout = BorderLayout()
 	frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
 	frame.setLocation(80, 80)
@@ -71,16 +90,28 @@ fun main(args: Array<String>) {
 	}
 	f.showDialog(frame, "Parse")
 	if (f.selectedFile != null) {
+		val root = createTreeRootFromFile(f.selectedFile)
 		frame.add(
-				JScrollPane(createTreeFromFile(f.selectedFile)),
+				JScrollPane(JTree(root).apply { isEditable = true }),
 				BorderLayout.CENTER
 		)
 		frame.isVisible = true
+		frame.add(JButton("Export Lice Code").apply {
+			addActionListener {
+				val sb = StringBuilder()
+				root.children()
+						.toList()
+						.forEach {
+							(mapDisplay2Ast(it as DefaultMutableTreeNode, sb))
+						}
+				println(sb)
+			}
+		}, BorderLayout.SOUTH)
 	} else {
 		System.exit(0)
 	}
 //	frame.add(
-//			JScrollPane(createTreeFromFile(File("sample/test9.lice"))),
+//			JScrollPane(createTreeRootFromFile(File("sample/test9.lice"))),
 //			BorderLayout.CENTER
 //	)
 //	val button = JButton("Open ...")
@@ -89,7 +120,7 @@ fun main(args: Array<String>) {
 //		val f = JFileChooser()
 //		f.showDialog(frame, "Parse")
 //		f.selectedFile?.let {
-//			frame.add(createTreeFromFile(f.selectedFile), BorderLayout.CENTER)
+//			frame.add(createTreeRootFromFile(f.selectedFile), BorderLayout.CENTER)
 //		}
 //	}
 }

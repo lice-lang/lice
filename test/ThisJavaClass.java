@@ -1,12 +1,18 @@
+import kotlin.jvm.Synchronized;
+import kotlin.jvm.Transient;
 import lice.Lice;
 import lice.compiler.model.ValueNode;
 import lice.compiler.util.SymbolList;
+
 import java.io.File;
 
 /**
  * @author ice1000
  */
 class TheJavaClass {
+	@Transient
+	private transient int a = 1;
+	@Synchronized
 	public static void main(String[] args) {
 		// 创建一个符号表，可以往里面添加方法。
 		// 构造函数调用默认的就行了

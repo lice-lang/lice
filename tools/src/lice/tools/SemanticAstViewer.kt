@@ -22,27 +22,22 @@ import javax.swing.tree.DefaultMutableTreeNode
 /**
  * map the ast
  */
-private fun rec(
+private fun mapAst2Display(
 		node: Node,
 		viewRoot: DefaultMutableTreeNode
 ): DefaultMutableTreeNode {
 	return when (node) {
 		is ValueNode, is SymbolNode, is LambdaNode -> DefaultMutableTreeNode(node)
 		is ExpressionNode -> viewRoot.apply {
-			node.params.forEachIndexed { index, subNode ->
-				insert(
-						rec(subNode, DefaultMutableTreeNode(subNode)),
-						index
-				)
-			}
+			node.params.forEach { add(mapAst2Display(it, DefaultMutableTreeNode(it))) }
 		}
 		else -> DefaultMutableTreeNode("unknown node")
 	}
 }
 
-private fun createTreeFromFile(file: File): JTree {
+private fun createTreeRootFromFile(file: File): JTree {
 	val ast = mapAst(buildNode(file.readText()))
-	return JTree(rec(ast, DefaultMutableTreeNode(ast)))
+	return JTree(mapAst2Display(ast, DefaultMutableTreeNode(ast)))
 }
 
 /**
@@ -70,7 +65,7 @@ fun main(args: Array<String>) {
 	f.showDialog(frame, "Parse")
 	if (f.selectedFile != null) {
 		frame.add(
-				JScrollPane(createTreeFromFile(f.selectedFile)),
+				JScrollPane(createTreeRootFromFile(f.selectedFile)),
 				BorderLayout.CENTER
 		)
 		frame.isVisible = true
@@ -79,7 +74,7 @@ fun main(args: Array<String>) {
 	}
 	print("")
 //	frame.add(
-//			JScrollPane(createTreeFromFile(File("sample/test9.lice"))),
+//			JScrollPane(createTreeRootFromFile(File("sample/test9.lice"))),
 //			BorderLayout.CENTER
 //	)
 //	val button = JButton("Open ...")
@@ -88,7 +83,7 @@ fun main(args: Array<String>) {
 //		val f = JFileChooser()
 //		f.showDialog(frame, "Parse")
 //		f.selectedFile?.let {
-//			frame.add(createTreeFromFile(f.selectedFile), BorderLayout.CENTER)
+//			frame.add(createTreeRootFromFile(f.selectedFile), BorderLayout.CENTER)
 //		}
 //	}
 }
