@@ -34,9 +34,13 @@
 
 (def zero? a (== 0 a))
 
-(def tan a (/ (sin a) (cos a))
+; trigonometric functions
 
-(def cot a (/ (cos a) (sin a))
+; (def cos a (- 1 (sqrt (square (sin a)))))
+(def csc a (/ 1 (sin a)))
+(def sec a (/ 1 (cos a)))
+(def tan a (/ (sin a) (cos a)))
+(def cot a (/ (cos a) (sin a)))
 
 ; constants
 

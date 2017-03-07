@@ -1,7 +1,13 @@
 
+; C style #ifdef
 (alias def? ifdef)
 
+; C style #define
 (alias def define)
 
+; C style #include
 (alias load include)
+
+; C style #error
+(alias exit error)
 

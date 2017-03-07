@@ -2,3 +2,12 @@
 (alias [|] cons)
 
 (alias |> run)
+
+; def-family functions
+(alias def defn)
+(alias def defmethod)
+(alias def defmethod-)
+(alias def def-)
+(alias def defn-)
+
+(alias ->str .toString)

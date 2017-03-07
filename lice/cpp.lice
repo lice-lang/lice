@@ -8,4 +8,6 @@
 (alias | bitor)
 (alias ^ xor)
 
+(alias load using)
 
+(alias -> auto)

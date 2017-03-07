@@ -477,13 +477,20 @@ inline fun SymbolList.addCollectionsFunctions() {
 	defineFunction("..", { ln, ls ->
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)
-		val begin = ls[0].eval().o as Int
-		val end = ls[1].eval().o as Int
-		val progression = when {
-			begin <= end -> begin..end
-			else -> (begin..end).reversed()
+		val a = ls[0].eval()
+		val b = ls[1].eval()
+		return@defineFunction when {
+			a.o is Number && b.o is Number -> {
+				val begin = a.o.toInt()
+				val end = b.o.toInt()
+				val progression = when {
+					begin <= end -> begin..end
+					else -> (begin..end).reversed()
+				}
+				ValueNode(progression.toList(), ln)
+			}
+			else -> typeMisMatch("Number", if (a.o is Number) a else b, ln)
 		}
-		ValueNode(progression.toList(), ln)
 	})
 	defineFunction("list", { ln, ls ->
 		ValueNode(ls.map { it.eval().o }, ln)

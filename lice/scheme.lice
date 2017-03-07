@@ -4,8 +4,16 @@
 (alias && and)
 (alias || or)
 
-(alias [|] cons)
-
 (alias def define)
 
 (alias |> begin)
+
+(alias -> set!)
+
+(alias [|] cons)
+(alias head car)
+(alias tail cdr)
+
+(def newline (println))
+
+(def display o (print o))
