@@ -16,24 +16,27 @@ import java.awt.BorderLayout
 import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.*
+import javax.swing.WindowConstants.EXIT_ON_CLOSE
 import javax.swing.filechooser.FileFilter
 import javax.swing.tree.DefaultMutableTreeNode
+
+typealias UINode = DefaultMutableTreeNode
 
 /**
  * map the ast
  */
 private fun mapAst2Display(
 		node: StringNode,
-		viewRoot: DefaultMutableTreeNode
-): DefaultMutableTreeNode {
+		viewRoot: UINode
+): UINode {
 	return when (node) {
-		is StringLeafNode -> DefaultMutableTreeNode(node)
+		is StringLeafNode -> UINode(node)
 		is StringMiddleNode -> viewRoot.apply {
 			node.list
 					.subList(1, node.list.size)
-					.forEach { add(mapAst2Display(it, DefaultMutableTreeNode(it))) }
+					.forEach { add(mapAst2Display(it, UINode(it))) }
 		}
-		else -> DefaultMutableTreeNode("null")
+		else -> UINode("null")
 	}
 }
 
@@ -41,7 +44,7 @@ private fun mapAst2Display(
  * map the ast
  */
 private fun mapDisplay2Ast(
-		node: DefaultMutableTreeNode,
+		node: UINode,
 		gen: StringBuilder,
 		numOfIndents: Int = 0) {
 	when {
@@ -60,7 +63,7 @@ private fun mapDisplay2Ast(
 //					.map { it as DefaultMutableTreeNode }
 					.forEach {
 						mapDisplay2Ast(
-								it as DefaultMutableTreeNode,
+								it as UINode,
 								gen,
 								numOfIndents + 1
 						)
@@ -70,9 +73,9 @@ private fun mapDisplay2Ast(
 	}
 }
 
-private fun createTreeRootFromFile(file: File): DefaultMutableTreeNode {
+private fun createTreeRootFromFile(file: File): UINode {
 	val ast = buildNode(file.readText())
-	return mapAst2Display(ast, DefaultMutableTreeNode(ast))
+	return mapAst2Display(ast, UINode(ast))
 }
 
 /**
@@ -84,7 +87,7 @@ fun main(args: Array<String>) {
 	val frame = JFrame("Lice language Syntax Tree Viewer $VERSION_CODE")
 	frame.iconImage = ImageIO.read(Lice::class.java.getResource("icon.jpg"))
 	frame.layout = BorderLayout()
-	frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
+	frame.defaultCloseOperation = EXIT_ON_CLOSE
 	frame.setLocation(80, 80)
 	frame.setSize(480, 480)
 	val f = JFileChooser()
@@ -99,6 +102,7 @@ fun main(args: Array<String>) {
 	}
 	f.showDialog(frame, "Parse")
 	var fileCount = 0
+	fun File.neighbour() = "$parent/$name-edited-${fileCount++}.lice"
 	if (f.selectedFile != null) {
 		val root = createTreeRootFromFile(f.selectedFile)
 		frame.add(
@@ -112,9 +116,9 @@ fun main(args: Array<String>) {
 				root.children()
 						.toList()
 						.forEach {
-							(mapDisplay2Ast(it as DefaultMutableTreeNode, sb))
+							mapDisplay2Ast(it as UINode, sb)
 						}
-				File("${f.selectedFile.parentFile.path}${f.selectedFile.name}-edited-${fileCount++}.lice")
+				File(f.selectedFile.neighbour())
 						.apply { if (!exists()) createNewFile() }
 						.writeText(sb.toString())
 			}

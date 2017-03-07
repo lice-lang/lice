@@ -16,28 +16,30 @@ import java.awt.BorderLayout
 import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.*
+import javax.swing.WindowConstants.EXIT_ON_CLOSE
 import javax.swing.filechooser.FileFilter
-import javax.swing.tree.DefaultMutableTreeNode
 
 /**
  * map the ast
  */
 private fun mapAst2Display(
 		node: Node,
-		viewRoot: DefaultMutableTreeNode
-): DefaultMutableTreeNode {
+		viewRoot: UINode
+): UINode {
 	return when (node) {
-		is ValueNode, is SymbolNode, is LambdaNode -> DefaultMutableTreeNode(node)
+		is ValueNode,
+		is SymbolNode,
+		is LambdaNode -> UINode(node)
 		is ExpressionNode -> viewRoot.apply {
-			node.params.forEach { add(mapAst2Display(it, DefaultMutableTreeNode(it))) }
+			node.params.forEach { add(mapAst2Display(it, UINode(it))) }
 		}
-		else -> DefaultMutableTreeNode("unknown node")
+		else -> UINode("unknown node")
 	}
 }
 
 private fun createTreeRootFromFile(file: File): JTree {
 	val ast = mapAst(buildNode(file.readText()))
-	return JTree(mapAst2Display(ast, DefaultMutableTreeNode(ast)))
+	return JTree(mapAst2Display(ast, UINode(ast)))
 }
 
 /**
@@ -49,7 +51,7 @@ fun main(args: Array<String>) {
 	val frame = JFrame("Lice language Semantic AST Viewer $VERSION_CODE")
 	frame.iconImage = ImageIO.read(Lice::class.java.getResource("icon.jpg"))
 	frame.layout = BorderLayout()
-	frame.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
+	frame.defaultCloseOperation = EXIT_ON_CLOSE
 	frame.setLocation(80, 80)
 	frame.setSize(480, 480)
 	val f = JFileChooser()
