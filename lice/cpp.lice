@@ -1,0 +1,11 @@
+
+(alias ! not)
+
+(alias && and)
+(alias || or)
+
+(alias & bitand)
+(alias | bitor)
+(alias ^ xor)
+
+

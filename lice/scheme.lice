@@ -1,0 +1,11 @@
+
+(alias ! not)
+
+(alias && and)
+(alias || or)
+
+(alias [|] cons)
+
+(alias def define)
+
+(alias |> begin)

@@ -1,24 +1,10 @@
 ; standard lib
 
 (def ! a (if a false true))
-(alias ! not)
 
 (def null? a (=== null a))
 (def !null a (not (null? a)))
 (def !empty? a (not (empty? a)))
-
-(alias && and)
-(alias || or)
-
-(alias & bitand)
-(alias | bitor)
-(alias ^ xor)
-
-(alias def? ifdef)
-
-(alias load include)
-
-(alias [|] cons)
 
 (alias in? contains?)
 
