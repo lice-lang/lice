@@ -8,6 +8,8 @@
 
 (alias in? contains?)
 
-(def unless condition a b (if condition b a))
+; not lazy
+; (def unless condition a b (if condition b a))
 
-(def until condition a (while (! condition) a))
+; not lazy
+; (def until condition a (while (! condition) a))

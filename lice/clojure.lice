@@ -1,7 +1,10 @@
-
+; make a list
 (alias [|] cons)
+(undef [|])
 
+; function which let side-effects comes out
 (alias |> run)
+(undef |>)
 
 ; def-family functions
 (alias def defn)
@@ -11,3 +14,4 @@
 (alias def defn-)
 
 (alias ->str .toString)
+(undef ->str)

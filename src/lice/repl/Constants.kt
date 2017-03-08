@@ -6,4 +6,4 @@
  */
 package lice.repl
 
-val VERSION_CODE = "v2.0"
+val VERSION_CODE = "v2.1"

@@ -12,7 +12,7 @@ this language is very naive, I write it to practise programming, and it can do s
 
 ```lisp
 (println "Hello " "World")
-(for-each i (.. 1 10) (print i))
+(for-each i (.. 1 10) (println i))
 ```
 
 ## Code style
@@ -28,4 +28,3 @@ this language is very naive, I write it to practise programming, and it can do s
 
 0. Use symbols like '-\>', '?' to represent 'to', 'orNot'.
 0. Use lisp-style function names.
-

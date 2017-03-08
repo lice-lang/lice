@@ -1,13 +1,20 @@
-
 (alias ! not)
+(undef !)
 
 (alias && and)
 (alias || or)
+(undef &&)
+(undef ||)
 
 (alias & bitand)
 (alias | bitor)
 (alias ^ xor)
+(undef &)
+(undef |)
+(undef ^)
 
 (alias load using)
+(undef load)
 
 (alias -> auto)
+(undef ->)
