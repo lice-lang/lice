@@ -1,0 +1,36 @@
+
+; (load-file "sample/demos/control-flow-apis.lice")
+
+(def get-max a b (|>
+  (print "the bigger one is:")
+  (if (> a b) a b)))
+
+(def print-range from to
+  (while (< from to)
+         (|> (println from)
+             (-> from (+ 1 from)))))
+
+(def judge-score score (when
+  (>= score 100), "full score! congratulations!"
+  (>= score 90), "nice job!"
+  (>= score 80), "come on! you can do it!"
+  (>= score 70), "please study hard!"
+  (>= score 60), "fortunately, you passed."
+  (>= score 0 ), "you die!"
+  "WTF! you must be kidding."))
+
+
+(get-max 10 23)
+(get-max 10 -1)
+
+(print-range 27 33)
+
+(judge-score 100)
+(judge-score 95)
+(judge-score 87)
+(judge-score 73)
+(judge-score 66)
+(judge-score 60)
+(judge-score 21)
+(judge-score 1)
+(judge-score -1)
