@@ -35,13 +35,19 @@ inline fun make2DDrawer(
 				typeMisMatch("BufferedImage", image, meta)
 			val x1 = ls[1].eval()
 			val y1 = ls[2].eval()
-			if (x1.o !is Int) typeMisMatch("Int", x1, meta)
-			if (y1.o !is Int) typeMisMatch("Int", y1, meta)
+			if (x1.o !is Number) typeMisMatch("Number", x1, meta)
+			if (y1.o !is Number) typeMisMatch("Number", y1, meta)
 			val x2 = ls[3].eval()
 			val y2 = ls[4].eval()
-			if (x2.o !is Int) typeMisMatch("Int", x2, meta)
-			if (y2.o !is Int) typeMisMatch("Int", y2, meta)
-			draw(image.o.graphics as Graphics2D, x1.o, y1.o, x2.o, y2.o)
+			if (x2.o !is Number) typeMisMatch("Number", x2, meta)
+			if (y2.o !is Number) typeMisMatch("Number", y2, meta)
+			draw(
+					image.o.graphics as Graphics2D,
+					x1.o.toInt(),
+					y1.o.toInt(),
+					x2.o.toInt(),
+					y2.o.toInt()
+			)
 			ValueNode(image.o)
 		}
 
@@ -58,10 +64,14 @@ inline fun SymbolList.addGUIFunctions() {
 		when (o.o) {
 			is File -> ValueNode(ImageIO.read(o.o), ln)
 			is URL -> ValueNode(ImageIO.read(o.o), ln)
-			is Int -> {
+			is Number -> {
 				val q = if (ls.size >= 2) ls[1].eval() else o
-				if (q.o !is Int) typeMisMatch("Int", q, ln)
-				ValueNode(BufferedImage(o.o, q.o, BufferedImage.TYPE_INT_ARGB), ln)
+				if (q.o !is Number) typeMisMatch("Number", q, ln)
+				ValueNode(BufferedImage(
+						o.o.toInt(),
+						q.o.toInt(),
+						BufferedImage.TYPE_INT_ARGB
+				), ln)
 			}
 			else -> typeMisMatch("File or URL", o, ln)
 		}
@@ -101,11 +111,11 @@ inline fun SymbolList.addGUIFunctions() {
 		if (image.o !is BufferedImage) typeMisMatch("BufferedImage", image, meta)
 		val x1 = ls[1].eval()
 		val y1 = ls[2].eval()
-		if (x1.o !is Int) typeMisMatch("Int", x1, meta)
-		if (y1.o !is Int) typeMisMatch("Int", y1, meta)
+		if (x1.o !is Number) typeMisMatch("Number", x1, meta)
+		if (y1.o !is Number) typeMisMatch("Number", y1, meta)
 		image.o.graphics.run {
 			color = Color.BLUE
-			drawRect(x1.o, y1.o, 1, 1)
+			drawRect(x1.o.toInt(), y1.o.toInt(), 1, 1)
 		}
 		ValueNode(image.o)
 	})

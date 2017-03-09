@@ -24,8 +24,11 @@ import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
 import lice.lang.Pair
 import lice.lang.Symbol
+import java.awt.Image
+import java.awt.image.RenderedImage
 import java.io.File
 import java.net.URL
+import javax.imageio.ImageIO
 import kotlin.concurrent.thread
 
 inline fun SymbolList.addStandard() {
@@ -103,7 +106,7 @@ inline fun SymbolList.addStandard() {
 		a?.let { function ->
 			ls.forEachIndexed { index, _ ->
 				if (index != 0)
-					defineFunction((ls[0] as SymbolNode).name, function)
+					defineFunction((ls[index] as SymbolNode).name, function)
 			}
 		}
 		getNullNode(meta)
@@ -302,7 +305,7 @@ inline fun SymbolList.addConcurrentFunctions() {
 		val a = ls[0].eval()
 		when {
 			a.o is Number -> Thread.sleep(a.o.toLong())
-			else -> InterpretException.typeMisMatch("Number", a, ln)
+			else -> typeMisMatch("Number", a, ln)
 		}
 		getNullNode(ln)
 	})
@@ -314,7 +317,7 @@ inline fun SymbolList.addFileFunctions() {
 		when (a.o) {
 			is String -> ValueNode(File(a.o)
 					.apply { if (!exists()) createNewFile() }, ln)
-			else -> InterpretException.typeMisMatch("String", a, ln)
+			else -> typeMisMatch("String", a, ln)
 		}
 	})
 	defineFunction("directory", { ln, ls ->
@@ -322,45 +325,50 @@ inline fun SymbolList.addFileFunctions() {
 		when (a.o) {
 			is String -> ValueNode(File(a.o)
 					.apply { if (!exists()) mkdirs() }, ln)
-			else -> InterpretException.typeMisMatch("String", a, ln)
+			else -> typeMisMatch("String", a, ln)
 		}
 	})
 	defineFunction("file-exists?", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is String -> ValueNode(File(a.o).exists(), ln)
-			else -> InterpretException.typeMisMatch("String", a, ln)
+			else -> typeMisMatch("String", a, ln)
 		}
 	})
 	defineFunction("read-file", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is File -> ValueNode(a.o.readText(), ln)
-			else -> InterpretException.typeMisMatch("File", a, ln)
+			else -> typeMisMatch("File", a, ln)
 		}
 	})
 	defineFunction("url", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is String -> ValueNode(URL(a.o), ln)
-			else -> InterpretException.typeMisMatch("String", a, ln)
+			else -> typeMisMatch("String", a, ln)
 		}
 	})
 	defineFunction("read-url", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
 			is URL -> ValueNode(a.o.readText(), ln)
-			else -> InterpretException.typeMisMatch("URL", a, ln)
+			else -> typeMisMatch("URL", a, ln)
 		}
 	})
 	defineFunction("write-file", { ln, ls ->
 		val a = ls[0].eval()
 		val b = ls[1].eval()
 		when (a.o) {
-			is File -> a.o.writeText(b.o.toString())
-			else -> InterpretException.typeMisMatch("File", a, ln)
+			is File -> {
+				when (b.o) {
+					is Image -> ImageIO.write(b.o as RenderedImage, "PNG", a.o)
+					else -> a.o.writeText(b.o.toString())
+				}
+			}
+			else -> typeMisMatch("File", a, ln)
 		}
-		ValueNode(b.o.toString(), ln)
+		ValueNode(a.o, ln)
 	})
 }
 
