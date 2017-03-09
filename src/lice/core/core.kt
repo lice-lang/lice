@@ -376,6 +376,9 @@ inline fun SymbolList.addMathFunctions() {
 	defineFunction("sqrt", { ln, ls ->
 		ValueNode(Math.sqrt((ls[0].eval().o as Number).toDouble()), ln)
 	})
+	defineFunction("cbrt", { ln, ls ->
+		ValueNode(Math.cbrt((ls[0].eval().o as Number).toDouble()), ln)
+	})
 	defineFunction("sin", { ln, ls ->
 		ValueNode(Math.sin((ls[0].eval().o as Number).toDouble()), ln)
 	})
