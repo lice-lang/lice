@@ -9,12 +9,16 @@
 
 package lice.core
 
+import lice.compiler.model.MetaData
+import lice.compiler.model.Node
 import lice.compiler.model.Node.Objects.getNullNode
 import lice.compiler.model.ValueNode
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 import java.awt.BorderLayout
+import java.awt.Color
 import java.awt.Graphics
+import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import java.io.File
 import java.net.URL
@@ -22,6 +26,24 @@ import javax.imageio.ImageIO
 import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.WindowConstants
+
+inline fun make2DDrawer(
+		crossinline draw: Graphics2D.(Int, Int, Int, Int) -> Unit) =
+		{ meta: MetaData, ls: List<Node> ->
+			val image = ls[0].eval()
+			if (image.o !is BufferedImage)
+				typeMisMatch("BufferedImage", image, meta)
+			val x1 = ls[1].eval()
+			val y1 = ls[2].eval()
+			if (x1.o !is Int) typeMisMatch("Int", x1, meta)
+			if (y1.o !is Int) typeMisMatch("Int", y1, meta)
+			val x2 = ls[3].eval()
+			val y2 = ls[4].eval()
+			if (x2.o !is Int) typeMisMatch("Int", x2, meta)
+			if (y2.o !is Int) typeMisMatch("Int", y2, meta)
+			draw(image.o.graphics as Graphics2D, x1.o, y1.o, x2.o, y2.o)
+			ValueNode(image.o)
+		}
 
 inline fun SymbolList.addGUIFunctions() {
 	defineFunction("frame", { ln, ls ->
@@ -38,7 +60,8 @@ inline fun SymbolList.addGUIFunctions() {
 			is URL -> ValueNode(ImageIO.read(o.o), ln)
 			is Int -> {
 				val q = if (ls.size >= 2) ls[1].eval() else o
-				ValueNode(BufferedImage(o.o, q.o as Int, BufferedImage.TYPE_INT_ARGB), ln)
+				if (q.o !is Int) typeMisMatch("Int", q, ln)
+				ValueNode(BufferedImage(o.o, q.o, BufferedImage.TYPE_INT_ARGB), ln)
 			}
 			else -> typeMisMatch("File or URL", o, ln)
 		}
@@ -65,6 +88,50 @@ inline fun SymbolList.addGUIFunctions() {
 			}
 			else -> getNullNode(ln)
 		}
+	})
+
+	defineFunction("draw-line", { meta, ls ->
+		make2DDrawer { x1, y1, x2, y2 ->
+			color = Color.BLUE
+			drawLine(x1, y1, x2, y2)
+		}(meta, ls)
+	})
+	defineFunction("draw-point", { meta, ls ->
+		val image = ls[0].eval()
+		if (image.o !is BufferedImage) typeMisMatch("BufferedImage", image, meta)
+		val x1 = ls[1].eval()
+		val y1 = ls[2].eval()
+		if (x1.o !is Int) typeMisMatch("Int", x1, meta)
+		if (y1.o !is Int) typeMisMatch("Int", y1, meta)
+		image.o.graphics.run {
+			color = Color.BLUE
+			drawRect(x1.o, y1.o, 1, 1)
+		}
+		ValueNode(image.o)
+	})
+	defineFunction("draw-rect", { meta, ls ->
+		make2DDrawer { x1, y1, x2, y2 ->
+			color = Color.BLUE
+			drawRect(x1, y1, x2, y2)
+		}(meta, ls)
+	})
+	defineFunction("draw-oval", { meta, ls ->
+		make2DDrawer { x1, y1, x2, y2 ->
+			color = Color.BLUE
+			drawOval(x1, y1, x2, y2)
+		}(meta, ls)
+	})
+	defineFunction("draw-filled-rect", { meta, ls ->
+		make2DDrawer { x1, y1, x2, y2 ->
+			color = Color.BLUE
+			fillRect(x1, y1, x2, y2)
+		}(meta, ls)
+	})
+	defineFunction("draw-filled-oval", { meta, ls ->
+		make2DDrawer { x1, y1, x2, y2 ->
+			color = Color.BLUE
+			fillOval(x1, y1, x2, y2)
+		}(meta, ls)
 	})
 }
 

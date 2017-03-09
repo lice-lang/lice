@@ -18,6 +18,7 @@ class Repl {
 		println("""Lice language repl $VERSION_CODE
 see: https://github.com/ice1000/lice
 
+回首向来萧瑟处,也无风雨也无晴。
 Stay young stay simple, and make yourself naive.
 
 for help please input: help
