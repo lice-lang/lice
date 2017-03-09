@@ -5,8 +5,6 @@
 + Lisp-style comments
 
 ```lisp
-(require lice.io)
-
 (233) ; Error: 233 isn't a function
 
 233 ; OK: 233 is a value
@@ -49,7 +47,7 @@ Lice > fuck
 (== 1 1) ; number comparison,
          ; is actually "1 == 1"
 (== 1 1N) ; true
-(== 1 (int->double 1)) ; true
+(== 1 (->double 1)) ; true
 (=== a b) ; is actually a.equals(b)
 (=== 1 1N) ; false
 
@@ -103,9 +101,9 @@ Lice > (+ 1 1.1287391873917392379372193792137198237189237291)
 
 ```lisp
 (if (! (file-exists? "save"))
-    (run (write-file (file "save") "0")
-         (print "fuck"))
-    (print "shit")
+    (|> (write-file (file "save") "0")
+         (println "fuck"))
+    (println "shit")
 )
 
 (print (read-url (url "http://ice1000.tech")))
@@ -134,7 +132,7 @@ Lice > (+ 1 1.1287391873917392379372193792137198237189237291)
 + Lazy evaluation
 
 ```lisp
-(print (if (>= 1 2)
+(println (if (>= 1 2)
     (read-file (file "out")) ; will not be read
     (read-file (file "in"))
 ))
@@ -159,6 +157,12 @@ Lice > (+ 1 1.1287391873917392379372193792137198237189237291)
 ```lisp
 (for-each i (.. 1 10) (print i))
 ; prints: from 1 to 10
+
+(list "233" 1 3 "666")
+; make a list
+
+([|] 1 2 3 4)
+; a pair: <1, <2, <3, <4, null>>>>
 ```
 
 + Loop

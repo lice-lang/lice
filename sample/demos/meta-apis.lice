@@ -22,8 +22,32 @@
 
 (定义一个函数
   你好世界
+  语言
   (println
-    "大佬您好，您正在逼格最高的 Mac OS X 上使用中文编程的翘楚——易语言进行程序设计"))
+    "大佬您好，
+您正在逼格最高的 Mac OS X 上使用中文编程的翘楚——
+", 语言, "进行程序设计"))
 
 
-(你好世界)
+(你好世界, "易语言")
+(你好世界, "习语言")
+
+; false => java.lang.Boolean
+; null => java.lang.Object
+; 1 => java.lang.Integer
+; true => java.lang.Boolean
+; null => java.lang.Object
+; false => java.lang.Boolean
+; null => java.lang.Object
+; null => java.lang.Object
+; null => java.lang.Object
+; null => java.lang.Object
+; 大佬您好，
+; 您正在逼格最高的 Mac OS X 上使用中文编程的翘楚——
+; 易语言进行程序设计
+; 进行程序设计 => java.lang.String
+; 大佬您好，
+; 您正在逼格最高的 Mac OS X 上使用中文编程的翘楚——
+; 习语言进行程序设计
+; 进行程序设计 => java.lang.String
+; null => java.lang.Object

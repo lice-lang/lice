@@ -1,0 +1,45 @@
+; (load-file "sample/demos/gui-apis.lice")
+(-> img (image 400 400))
+
+(def pt x y
+  (draw-point img x (+ y 150)))
+
+; sin function
+(for-each i (.. 0 400)
+  (pt i (* 100 (sin (/ (->double i) 30)))))
+
+(show-image img)
+
+; the above code displays a sin function
+
+; here we draw a symbol: ♂
+
+(-> img (image 600 600))
+
+(draw-line img 350, 300, 480, 120)
+(draw-line img 480, 120, 370, 115)
+(draw-line img 480, 120, 500, 230)
+
+(draw-oval img 155, 250, 245, 245)
+
+(show-image img)
+
+(write-file (file "save.png"), img)
+
+; the output
+;
+; BufferedImage@3d646c37: type = 2 DirectColorModel: rmask=ff0000 gmask=ff00 bmask=ff amask=ff000000 IntegerInterleavedRaster: width = 400 height = 400 #Bands = 4 xOff = 0 yOff = 0 dataOffset[0] 0 => java.awt.image.BufferedImage
+; null => java.lang.Object
+; BufferedImage@3d646c37: type = 2 DirectColorModel: rmask=ff0000 gmask=ff00 bmask=ff amask=ff000000 IntegerInterleavedRaster: width = 400 height = 400 #Bands = 4 xOff = 0 yOff = 0 dataOffset[0] 0 => java.awt.image.BufferedImage
+; javax.swing.JFrame[frame0,0,0,408x408,layout=java.awt.BorderLayout,title=width: 400, height: 400,resizable,normal,defaultCloseOperation=DISPOSE_ON_CLOSE,rootPane=javax.swing.JRootPane[,8,31,392x369,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=16777673,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true] => javax.swing.JFrame
+; BufferedImage@619a5dff: type = 2 DirectColorModel: rmask=ff0000 gmask=ff00 bmask=ff amask=ff000000 IntegerInterleavedRaster: width = 600 height = 600 #Bands = 4 xOff = 0 yOff = 0 dataOffset[0] 0 => java.awt.image.BufferedImage
+; BufferedImage@619a5dff: type = 2 DirectColorModel: rmask=ff0000 gmask=ff00 bmask=ff amask=ff000000 IntegerInterleavedRaster: width = 600 height = 600 #Bands = 4 xOff = 0 yOff = 0 dataOffset[0] 0 => java.awt.image.BufferedImage
+; BufferedImage@619a5dff: type = 2 DirectColorModel: rmask=ff0000 gmask=ff00 bmask=ff amask=ff000000 IntegerInterleavedRaster: width = 600 height = 600 #Bands = 4 xOff = 0 yOff = 0 dataOffset[0] 0 => java.awt.image.BufferedImage
+; BufferedImage@619a5dff: type = 2 DirectColorModel: rmask=ff0000 gmask=ff00 bmask=ff amask=ff000000 IntegerInterleavedRaster: width = 600 height = 600 #Bands = 4 xOff = 0 yOff = 0 dataOffset[0] 0 => java.awt.image.BufferedImage
+; BufferedImage@619a5dff: type = 2 DirectColorModel: rmask=ff0000 gmask=ff00 bmask=ff amask=ff000000 IntegerInterleavedRaster: width = 600 height = 600 #Bands = 4 xOff = 0 yOff = 0 dataOffset[0] 0 => java.awt.image.BufferedImage
+; javax.swing.JFrame[frame1,0,0,608x608,layout=java.awt.BorderLayout,title=width: 600, height: 600,resizable,normal,defaultCloseOperation=DISPOSE_ON_CLOSE,rootPane=javax.swing.JRootPane[,8,31,592x569,layout=javax.swing.JRootPane$RootLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=16777673,maximumSize=,minimumSize=,preferredSize=],rootPaneCheckingEnabled=true] => javax.swing.JFrame
+; save.png => java.io.File
+; null => java.lang.Object
+
+; and you will find a file, named save.png, at the same directory of the interpreter,
+; it's the image created by the code above.

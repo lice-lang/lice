@@ -35,3 +35,28 @@
 (judge-score 21)
 (judge-score 1)
 (judge-score -1)
+
+; output
+;
+; null => java.lang.Object
+; null => java.lang.Object
+; null => java.lang.Object
+; the bigger one is:23 => java.lang.Integer
+; the bigger one is:10 => java.lang.Integer
+; 27
+; 28
+; 29
+; 30
+; 31
+; 32
+; 33 => java.lang.Integer
+; full score! congratulations! => java.lang.String
+; nice job! => java.lang.String
+; come on! you can do it! => java.lang.String
+; please study hard! => java.lang.String
+; fortunately, you passed. => java.lang.String
+; fortunately, you passed. => java.lang.String
+; you die! => java.lang.String
+; you die! => java.lang.String
+; WTF! you must be kidding. => java.lang.String
+; null => java.lang.Object

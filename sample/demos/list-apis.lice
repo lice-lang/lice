@@ -1,4 +1,5 @@
-(-> consed (cons 1 2 3 4 4))
+; (load-file "sample/demos/list-apis.lice")
+(-> consed (list 1 2 3 4 4))
 
 (reverse consed)
 
@@ -6,13 +7,19 @@
 
 (size consed)
 
-(in? consed 4)
+(def in-consed? n (in? consed n))
 
-(in? consed 5)
+(in-consed? 4)
+(in-consed? 5)
+(in-consed? 6)
 
-(empty? (cons))
+(empty? (list))
 
 (empty? consed)
+
+(for-each i
+  (.. 2 5)
+  (println i, (in-consed? i)))
 
 (for-each i
   (.. 10 15)
@@ -29,6 +36,13 @@
        "Glavo"
        "AGS"))
 
+(-> ls
+  (list "ice1000"
+       "Eldath"
+       "Phosphorus"
+       "Glavo"
+       "AGS"))
+
 (head pairs)
 
 (tail pairs)
@@ -40,13 +54,21 @@
 ; [4, 4, 3, 2, 1] => java.util.ArrayList
 ; 2 => java.lang.Integer
 ; 5 => java.lang.Integer
+; null => java.lang.Object
 ; true => java.lang.Boolean
 ; false => java.lang.Boolean
+; false => java.lang.Boolean
 ; true => java.lang.Boolean
+; false => java.lang.Boolean
+; 2true
+; 3true
+; 4true
+; 5false
 ; false => java.lang.Boolean
 ; 10 11 12 13 14 15   => java.lang.String
 ; My name is Van   => java.lang.String
 ; [ice1000 [Eldath [Phosphorus [Glavo [AGS null]]]]] => lice.lang.Pair
+; [ice1000, Eldath, Phosphorus, Glavo, AGS] => java.util.ArrayList
 ; ice1000 => java.lang.String
 ; [Eldath [Phosphorus [Glavo [AGS null]]]] => lice.lang.Pair
 ; null => java.lang.Object
