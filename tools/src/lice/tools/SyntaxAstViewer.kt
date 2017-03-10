@@ -28,16 +28,14 @@ typealias UINode = DefaultMutableTreeNode
 private fun mapAst2Display(
 		node: StringNode,
 		viewRoot: UINode
-): UINode {
-	return when (node) {
-		is StringLeafNode -> UINode(node)
-		is StringMiddleNode -> viewRoot.apply {
-			node.list
-					.subList(1, node.list.size)
-					.forEach { add(mapAst2Display(it, UINode(it))) }
-		}
-		else -> UINode("null")
+): UINode = when (node) {
+	is StringLeafNode -> UINode(node)
+	is StringMiddleNode -> viewRoot.apply {
+		node.list
+				.subList(1, node.list.size)
+				.forEach { add(mapAst2Display(it, UINode(it))) }
 	}
+	else -> UINode("null")
 }
 
 /**

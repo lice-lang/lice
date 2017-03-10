@@ -25,16 +25,14 @@ import javax.swing.filechooser.FileFilter
 private fun mapAst2Display(
 		node: Node,
 		viewRoot: UINode
-): UINode {
-	return when (node) {
-		is ValueNode,
-		is SymbolNode,
-		is LambdaNode -> UINode(node)
-		is ExpressionNode -> viewRoot.apply {
-			node.params.forEach { add(mapAst2Display(it, UINode(it))) }
-		}
-		else -> UINode("unknown node")
+): UINode = when (node) {
+	is ValueNode,
+	is SymbolNode,
+	is LambdaNode -> UINode(node)
+	is ExpressionNode -> viewRoot.apply {
+		node.params.forEach { add(mapAst2Display(it, UINode(it))) }
 	}
+	else -> UINode("unknown node")
 }
 
 private fun createTreeRootFromFile(file: File): JTree {
@@ -74,7 +72,6 @@ fun main(args: Array<String>) {
 	} else {
 		System.exit(0)
 	}
-	print("")
 //	frame.add(
 //			JScrollPane(createTreeRootFromFile(File("sample/test9.lice"))),
 //			BorderLayout.CENTER
