@@ -1,4 +1,4 @@
-![](./GUI/icon.jpg)
+![](./src/lice/icon.jpg)
 
 # Lice
 
