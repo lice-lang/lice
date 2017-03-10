@@ -1,12 +1,14 @@
 ; (load-file "sample/demos/gui-apis.lice")
 (-> img (image 400 400))
 
+(def fun x (/ (sin x) (cos x)))
+
 (def pt x y
   (draw-point img x (+ y 150)))
 
 ; sin function
 (for-each i (.. 0 400)
-  (pt i (* 100 (sin (/ (->double i) 30)))))
+  (pt i (* 100 (fun (/ (->double i) 30)))))
 
 (show-image img)
 
