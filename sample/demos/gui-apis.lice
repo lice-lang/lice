@@ -1,7 +1,7 @@
 ; (load-file "sample/demos/gui-apis.lice")
 (-> img (image 400 400))
 
-(def fun x (/ (sin x) (cos x)))
+(def fun x (* 2 (sin x) (cos x)))
 
 (def pt x y
   (draw-point img x (+ y 150)))
