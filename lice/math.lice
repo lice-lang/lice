@@ -16,10 +16,10 @@
 
 (def max a b (if (< a b) b a))
 
-; (def gcd a b
-;   (if (== b 0)
-;       a
-;       (gcd b (% a b))))
+(def gcd a b
+  (if (== b 0)
+      a
+      (gcd b (% a b))))
 
 ; (def expt)
 

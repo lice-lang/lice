@@ -52,3 +52,10 @@ class Symbol(val name: String) {
 }
 
 
+class DefineResult(val res: String) {
+	override fun toString() = res
+}
+
+class NoElseBranch() {
+	override fun toString() = ""
+}

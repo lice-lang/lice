@@ -22,6 +22,7 @@ import lice.compiler.util.InterpretException.Factory.tooFewArgument
 import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
+import lice.lang.DefineResult
 import lice.lang.Pair
 import lice.lang.Symbol
 import java.awt.Image
@@ -41,6 +42,7 @@ inline fun SymbolList.addStandard() {
 	addListFunctions()
 
 	defineFunction("def", { ln, ls ->
+		if (ls.size < 2) tooFewArgument(2, ls.size, ln)
 		val name = (ls[0] as SymbolNode).name
 		val body = ls.last()
 		val params = ls
@@ -51,21 +53,29 @@ inline fun SymbolList.addStandard() {
 						else -> typeMisMatch("Symbol", it.eval(), ln)
 					}
 				}
+		val override = isFunctionDefined(name)
 		defineFunction(name, { ln, args ->
 			val backup = params.map { getVariable(it) }
 			if (args.size != params.size)
 				numberOfArgumentNotMatch(params.size, args.size, ln)
-			args.forEachIndexed { index, node ->
-				setVariable(params[index], ValueNode(node.eval().o ?: Nullptr))
-			}
+			args
+					.map { node ->
+						node.eval().o ?: Nullptr
+					}
+					.forEachIndexed { index, obj ->
+						setVariable(params[index], ValueNode(obj))
+					}
 			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
 			backup.forEachIndexed { index, node ->
 				if (node != null)
 					setVariable(params[index], node)
+				else
+					removeVariable(params[index])
 			}
 			ret
 		})
-		getNullNode(ln)
+		return@defineFunction ValueNode(DefineResult(
+				"${if (override) "overriding" else "new function defined"}: $name"))
 	})
 //	defineFunction("lambda", { ln, ls ->
 //		val body = ls.last()
@@ -88,6 +98,8 @@ inline fun SymbolList.addStandard() {
 //			backup.forEachIndexed { index, node ->
 //				if (node != null)
 //					setVariable(params[index], node)
+//				else
+//					removeVariable(params[index])
 //			}
 //			ret
 //		})

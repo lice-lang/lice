@@ -84,6 +84,12 @@ constructor(init: Boolean = true) {
 		variables[name] = value
 	}
 
+	fun removeVariable(name: String) {
+		variables.remove(name)
+	}
+
+	fun removeVariable(name: Symbol) = removeVariable(name.name)
+
 	fun getVariable(name: String) =
 			variables[name]
 
