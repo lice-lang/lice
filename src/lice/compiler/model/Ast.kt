@@ -124,10 +124,18 @@ class ExpressionNode(
 }
 
 class LambdaNode(
-		val lambda: Func,
+		val lambda: Node,
+		val symbolList: SymbolList,
 		val params: List<Node>,
 		override val meta: MetaData) : Node {
-	override fun eval() = lambda.invoke(meta, params).eval()
+
+	@Deprecated("difficult to achieve!")
+	override fun eval(): Value {
+		val str = lambda.eval().o
+		return (symbolList.getFunction(str.toString())
+				?: undefinedFunction(str.toString(), meta))
+				.invoke(meta, params).eval()
+	}
 
 	override fun toString() = "lambda: <$${super.toString()}>"
 }

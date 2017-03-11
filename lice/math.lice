@@ -21,6 +21,8 @@
       a
       (gcd b (% a b))))
 
+(def )
+
 ; (def expt)
 
 (def fib n (if
@@ -33,6 +35,16 @@
   1
   (* n (factorial (- n 1)))))
 
+(def fast-mul a b m (|>
+  (-> fast-mul-res 1)
+  (while (!= 0 b) (|>
+    (if (!= 0 (& b 1))
+      (-> ret (% (+ a ret) m)))
+    ; (println "b = " b)
+    (-> b (/ b 2))
+    (-> a (% (+ a a) m))))
+  fast-mul-res))
+
 ; fast-exp returns a^b % m
 ; returning fast-exp-res,
 ; please escape the usage of this variable.
@@ -40,10 +52,10 @@
   (-> fast-exp-res 1)
   (while (!= 0 b) (|>
     (if (!= 0 (& b 1))
-      (-> ret (% (* a ret) m)))
+      (-> ret (fast-mul a ret m)))
     ; (println "b = " b)
     (-> b (/ b 2))
-    (-> a (% (* a a) m))))
+    (-> a (fast-mul a a m))))
   fast-exp-res))
 
 (def square a (* a a))
@@ -58,7 +70,7 @@
 
 ; trigonometric functions
 
-; (def cos a (- 1 (sqrt (square (sin a)))))
+; (def cos a (sqrt (- 1 (square (sin a)))))
 (def csc a (/ 1 (sin a)))
 (def sec a (/ 1 (cos a)))
 (def tan a (/ (sin a) (cos a)))
