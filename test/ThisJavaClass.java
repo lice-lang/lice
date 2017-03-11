@@ -4,6 +4,7 @@ import lice.Lice;
 import lice.compiler.model.ValueNode;
 import lice.compiler.util.SymbolList;
 
+import javax.swing.*;
 import java.io.File;
 
 /**
@@ -12,6 +13,7 @@ import java.io.File;
 class TheJavaClass {
 	@Transient
 	private transient int a = 1;
+
 	@Synchronized
 	public static void main(String[] args) {
 		// 创建一个符号表，可以往里面添加方法。
@@ -62,3 +64,28 @@ class TheJavaClass3 {
 		Lice.run(new File("test.lice"), sl);
 	}
 }
+
+class TheJavaClass4 {
+	static int fucker = 0;
+
+	private static void fuck() {
+		JFrame frame = new JFrame("fuck you");
+		frame.setSize(200 + fucker * 100, 200 + fucker * 100);
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		frame.setVisible(true);
+		fucker++;
+	}
+
+	public static void main(String[] args) {
+		SymbolList list = new SymbolList();
+		list.defineFunction("fuck-invoke", (meta, params) -> {
+			fuck();
+			return new ValueNode("fucking slaves", meta);
+		});
+		Lice.run(
+				new File("./boyNextDoor.lice"),
+				list
+		);
+	}
+}
+
