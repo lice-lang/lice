@@ -10,6 +10,7 @@ package lice.compiler.parse
 
 import lice.compiler.model.*
 import lice.compiler.model.Value.Objects.Nullptr
+import lice.compiler.util.InterpretException
 import lice.compiler.util.SymbolList
 import lice.compiler.util.forceRun
 import java.io.File
@@ -65,25 +66,27 @@ fun parseValue(
 fun mapAst(
 		node: StringNode,
 		symbolList: SymbolList = SymbolList()): Node = when (node) {
-	is StringMiddleNode -> {
-		val str = node.list[0].strRepr
-		ExpressionNode(
-				symbolList = symbolList,
-				function = str,
-				meta = node.meta,
-				params = node
-						.list
-						.subList(
-								fromIndex = 1,
-								toIndex = node.list.size
-						)
-						.map { strNode ->
-							mapAst(
-									node = strNode,
-									symbolList = symbolList
+	is StringMiddleNode -> when (node) {
+		is StringLeafNode ->
+			ExpressionNode(
+					symbolList = symbolList,
+					function = node.list[0].strRepr,
+					meta = node.meta,
+					params = node
+							.list
+							.subList(
+									fromIndex = 1,
+									toIndex = node.list.size
 							)
-						}
-		)
+							.map { strNode ->
+								mapAst(
+										node = strNode,
+										symbolList = symbolList
+								)
+							}
+			)
+		else -> throw InterpretException("""Using expression as lambda is not supported yet.
+at line: ${node.meta.lineNumber}""")
 	}
 	is StringLeafNode ->
 		parseValue(

@@ -13,10 +13,10 @@ import lice.compiler.model.*
 import lice.compiler.util.showError
 import java.util.*
 
-fun buildNode(code: String): StringNode {
-	if (code.isEmpty() || code.isBlank()) return EmptyStringNode(MetaData(1))
-	@Suppress("NAME_SHADOWING")
-	val code = " $code "
+fun buildNode(originalCode: String): StringNode {
+	if (originalCode.isEmpty() || originalCode.isBlank())
+		return EmptyStringNode(MetaData(1))
+	val code = " $originalCode "
 	var beginIndex = 0
 	val currentNodeStack = Stack<StringMiddleNode>()
 	currentNodeStack.push(StringMiddleNode(MetaData(1)))
@@ -58,7 +58,7 @@ fun buildNode(code: String): StringNode {
 						.peek()
 						.add(son)
 			}
-			' ', '\n', '\t', '\r', ',', '，' -> {
+			' ', '\n', '\t', '\r', ',', '，', '　' -> {
 				if (!quoteStarted) {
 					check(index)
 					beginIndex = index + 1
