@@ -59,3 +59,5 @@ class DefineResult(val res: String) {
 class NoElseBranch() {
 	override fun toString() = ""
 }
+
+class FExprType()

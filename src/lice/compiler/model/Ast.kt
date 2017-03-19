@@ -14,6 +14,7 @@ import lice.compiler.util.Func
 import lice.compiler.util.ParseException.Factory.undefinedFunction
 import lice.compiler.util.ParseException.Factory.undefinedVariable
 import lice.compiler.util.SymbolList
+import lice.lang.FExprType
 
 class MetaData(
 		val lineNumber: Int) {
@@ -22,9 +23,14 @@ class MetaData(
 	}
 }
 
+interface AbstractValue {
+	val o: Any?
+	val type: Class<*>
+}
+
 class Value(
-		val o: Any?,
-		val type: Class<*>) {
+		override val o: Any?,
+		override val type: Class<*>) : AbstractValue {
 	constructor(
 			o: Any
 	) : this(o, o.javaClass)
@@ -33,6 +39,13 @@ class Value(
 		val Nullptr =
 				Value(null, Any::class.java)
 	}
+}
+
+class FValue(val fexpr: () -> Any?) : AbstractValue {
+	override val o: Any?
+		get() = fexpr()
+	override val type: Class<*>
+		get() = FExprType::class.java
 }
 
 interface Node {
