@@ -3,8 +3,8 @@
  *
  * @author ice1000
  */
-@file:JvmName("Model")
-@file:JvmMultifileClass
+//@file:JvmName("Model")
+//@file:JvmMultifileClass
 
 package lice.compiler.model
 

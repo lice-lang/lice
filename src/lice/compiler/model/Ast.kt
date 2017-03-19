@@ -3,18 +3,16 @@
  *
  * @author ice1000
  */
-@file:JvmName("Model")
-@file:JvmMultifileClass
+//@file:JvmName("Model")
+//@file:JvmMultifileClass
 
 package lice.compiler.model
 
 import lice.compiler.model.MetaData.Factory.EmptyMetaData
 import lice.compiler.model.Value.Objects.Nullptr
-import lice.compiler.util.Func
 import lice.compiler.util.ParseException.Factory.undefinedFunction
 import lice.compiler.util.ParseException.Factory.undefinedVariable
 import lice.compiler.util.SymbolList
-import lice.lang.FExprType
 
 class MetaData(
 		val lineNumber: Int) {
@@ -41,13 +39,6 @@ class Value(
 	}
 }
 
-class FValue(val fexpr: () -> Any?) : AbstractValue {
-	override val o: Any?
-		get() = fexpr()
-	override val type: Class<*>
-		get() = FExprType::class.java
-}
-
 interface Node {
 	fun eval(): Value
 	val meta: MetaData
@@ -55,8 +46,7 @@ interface Node {
 	override fun toString(): String
 
 	companion object Objects {
-		fun getNullNode(meta: MetaData) =
-				EmptyNode(meta)
+		fun getNullNode(meta: MetaData) = EmptyNode(meta)
 	}
 }
 
@@ -85,12 +75,22 @@ constructor(
 			meta
 	)
 
-	override fun eval(): Value {
-//		println("老子求值了：${value.o}")
-		return value
-	}
+	override fun eval() = value
 
 	override fun toString() = "value: <${value.o}> => ${value.type}"
+}
+
+class FExprValueNode
+@JvmOverloads
+constructor(
+		val fexpr: () -> Any?,
+		override val meta: MetaData = EmptyMetaData) : Node {
+	override fun eval(): Value {
+		val ret = fexpr()
+		return if (ret != null) Value(ret) else Nullptr
+	}
+
+	override fun toString() = "fexpr: <not evaluated, unknown>"
 }
 
 //class JvmReflectionNode(

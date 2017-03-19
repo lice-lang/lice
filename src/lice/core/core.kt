@@ -9,12 +9,9 @@
 
 package lice.core
 
-import lice.compiler.model.EmptyNode
-import lice.compiler.model.Node
+import lice.compiler.model.*
 import lice.compiler.model.Node.Objects.getNullNode
-import lice.compiler.model.SymbolNode
 import lice.compiler.model.Value.Objects.Nullptr
-import lice.compiler.model.ValueNode
 import lice.compiler.parse.*
 import lice.compiler.util.InterpretException
 import lice.compiler.util.InterpretException.Factory.numberOfArgumentNotMatch
@@ -77,33 +74,40 @@ inline fun SymbolList.addStandard() {
 		return@defineFunction ValueNode(DefineResult(
 				"${if (override) "overriding" else "new function defined"}: $name"))
 	})
-//	defineFunction("lambda", { ln, ls ->
-//		val body = ls.last()
-//		val params = ls
-//				.subList(0, ls.size - 1)
-//				.map {
-//					when (it) {
-//						is SymbolNode -> it.name
-//						else -> typeMisMatch("Symbol", it.eval(), ln)
-//					}
-//				}
-//		LambdaNode({ ln, args ->
-//			val backup = params.map { getVariable(it) }
-//			if (args.size != params.size)
-//				numberOfArgumentNotMatch(params.size, args.size, ln)
-//			args.forEachIndexed { index, node ->
-//				setVariable(params[index], ValueNode(node.eval().o ?: Nullptr))
-//			}
-//			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
-//			backup.forEachIndexed { index, node ->
-//				if (node != null)
-//					setVariable(params[index], node)
-//				else
-//					removeVariable(params[index])
-//			}
-//			ret
-//		})
-//	})
+	defineFunction("defexpr", { ln, ls ->
+		if (ls.size < 2) tooFewArgument(2, ls.size, ln)
+		val name = (ls[0] as SymbolNode).name
+		val body = ls.last()
+		val params = ls
+				.subList(1, ls.size - 1)
+				.map {
+					when (it) {
+						is SymbolNode -> it.name
+						else -> typeMisMatch("Symbol", it.eval(), ln)
+					}
+				}
+		val override = isFunctionDefined(name)
+		defineFunction(name, { ln, args ->
+			val backup = params.map { getVariable(it) }
+			if (args.size != params.size)
+				numberOfArgumentNotMatch(params.size, args.size, ln)
+			args
+					.map { node -> FExprValueNode({ node.eval().o }) }
+					.forEachIndexed { index, fexpr ->
+						setVariable(params[index], fexpr)
+					}
+			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
+			backup.forEachIndexed { index, node ->
+				if (node != null)
+					setVariable(params[index], node)
+				else
+					removeVariable(params[index])
+			}
+			ret
+		})
+		return@defineFunction ValueNode(DefineResult(
+				"${if (override) "overriding" else "new function defined"}: $name"))
+	})
 	defineFunction("def?", { ln, ls ->
 		val a = (ls[0] as SymbolNode).name
 		ValueNode(isFunctionDefined(a), ln)

@@ -66,7 +66,7 @@ fun parseValue(
 fun mapAst(
 		node: StringNode,
 		symbolList: SymbolList = SymbolList()): Node = when (node) {
-	is StringMiddleNode -> when (node) {
+	is StringMiddleNode -> when (node.list[0]) {
 		is StringLeafNode ->
 			ExpressionNode(
 					symbolList = symbolList,
@@ -85,8 +85,7 @@ fun mapAst(
 								)
 							}
 			)
-		else -> throw InterpretException("""Using expression as lambda is not supported yet.
-at line: ${node.meta.lineNumber}""")
+		else -> throw InterpretException("Using expression as lambda is not supported yet.", node.meta)
 	}
 	is StringLeafNode ->
 		parseValue(
