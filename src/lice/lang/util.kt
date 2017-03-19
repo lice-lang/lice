@@ -14,17 +14,20 @@ import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import java.math.BigDecimal
 import java.math.BigInteger
 
-class NumberOperator
-@JvmOverloads
-constructor(var initial: Number = 0) {
+@SinceKotlin("1.1")
+typealias PlusLikeFunc = (Number, Number, MetaData) -> Number
+@SinceKotlin("1.1")
+typealias MinusLikeFunc = (Number, Number, MetaData, Boolean) -> Number
+
+class NumberOperator(var initial: Number) {
 	var level = getLevel(initial)
 	val result: Number
 		get() = initial
 
-	fun plusLikeFunctionsImpl(
+	private inline fun plusLikeFunctionsImpl(
 			o: Number,
 			meta: MetaData,
-			function: (Number, Number, MetaData) -> Number): NumberOperator {
+			function: PlusLikeFunc): NumberOperator {
 		val hisLevel = getLevel(o, meta)
 		if (hisLevel <= level) {
 			initial = function(o, initial, meta)
@@ -35,10 +38,10 @@ constructor(var initial: Number = 0) {
 		return this
 	}
 
-	fun minusLikeFunctionsImpl(
+	private inline fun minusLikeFunctionsImpl(
 			o: Number,
 			meta: MetaData,
-			function: (Number, Number, MetaData, Boolean) -> Number): NumberOperator {
+			function: MinusLikeFunc): NumberOperator {
 		val hisLevel = getLevel(o, meta)
 		if (hisLevel <= level) {
 			initial = function(o, initial, meta, false)
@@ -73,12 +76,10 @@ companion object Leveler {
 	fun compare(
 			o1: Number,
 			o2: Number,
-			meta: MetaData = EmptyMetaData): Int {
-		if (getLevel(o2, meta) <= getLevel(o1, meta))
-			return compareValue(o2, o1, meta)
-		else
-			return compareValue(o1, o2, meta).negative()
-	}
+			meta: MetaData = EmptyMetaData) = when {
+				getLevel(o2, meta) <= getLevel(o1, meta) -> compareValue(o2, o1, meta)
+				else -> compareValue(o1, o2, meta).negative()
+			}
 
 	internal fun Int.negative() = when {
 		this > 0 -> -1

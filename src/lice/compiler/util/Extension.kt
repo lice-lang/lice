@@ -58,58 +58,58 @@ fun sout(str: String) = println(str)
 
 fun Int.squared() = this * this
 
-fun <A, B, C> ((a: A, b: B) -> C).curry() =
-		{ a: A ->
-			{ b: B ->
-				invoke(a, b)
-			}
-		}
-
-fun <A, B, C, D> ((a: A, b: B, c: C) -> D).curry() =
-		{ a: A ->
-			{ b: B ->
-				{ c: C ->
-					invoke(a, b, c)
-				}
-			}
-		}
-
-fun <A, B, C, D, E> ((a: A, b: B, c: C, d: D) -> E).curry() =
-		{ a: A ->
-			{ b: B ->
-				{ c: C ->
-					{ d: D ->
-						invoke(a, b, c, d)
-					}
-				}
-			}
-		}
-
-fun <A, B, C, D, E, F> ((a: A, b: B, c: C, d: D, e: E) -> F).curry() =
-		{ a: A ->
-			{ b: B ->
-				{ c: C ->
-					{ d: D ->
-						{ e: E ->
-							invoke(a, b, c, d, e)
-						}
-					}
-				}
-			}
-		}
-
-fun <A, B, C, D, E, F, G> ((a: A, b: B, c: C, d: D, e: E, f: F) -> G).curry() =
-		{ a: A ->
-			{ b: B ->
-				{ c: C ->
-					{ d: D ->
-						{ e: E ->
-							{ f: F ->
-								invoke(a, b, c, d, e, f)
-							}
-						}
-					}
-				}
-			}
-		}
-
+//fun <A, B, C> ((a: A, b: B) -> C).curry() =
+//		{ a: A ->
+//			{ b: B ->
+//				invoke(a, b)
+//			}
+//		}
+//
+//fun <A, B, C, D> ((a: A, b: B, c: C) -> D).curry() =
+//		{ a: A ->
+//			{ b: B ->
+//				{ c: C ->
+//					invoke(a, b, c)
+//				}
+//			}
+//		}
+//
+//fun <A, B, C, D, E> ((a: A, b: B, c: C, d: D) -> E).curry() =
+//		{ a: A ->
+//			{ b: B ->
+//				{ c: C ->
+//					{ d: D ->
+//						invoke(a, b, c, d)
+//					}
+//				}
+//			}
+//		}
+//
+//fun <A, B, C, D, E, F> ((a: A, b: B, c: C, d: D, e: E) -> F).curry() =
+//		{ a: A ->
+//			{ b: B ->
+//				{ c: C ->
+//					{ d: D ->
+//						{ e: E ->
+//							invoke(a, b, c, d, e)
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//fun <A, B, C, D, E, F, G> ((a: A, b: B, c: C, d: D, e: E, f: F) -> G).curry() =
+//		{ a: A ->
+//			{ b: B ->
+//				{ c: C ->
+//					{ d: D ->
+//						{ e: E ->
+//							{ f: F ->
+//								invoke(a, b, c, d, e, f)
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//

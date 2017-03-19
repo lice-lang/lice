@@ -14,12 +14,12 @@ import lice.compiler.model.Value
 
 class ParseException(string: String) : RuntimeException(string) {
 	companion object Factory {
-		inline fun undefinedFunction(name: String, meta: MetaData): Nothing {
+		fun undefinedFunction(name: String, meta: MetaData): Nothing {
 			throw ParseException("""undefined function: $name
 at line: ${meta.lineNumber}""")
 		}
 
-		inline fun undefinedVariable(name: String, meta: MetaData): Nothing {
+		fun undefinedVariable(name: String, meta: MetaData): Nothing {
 			throw ParseException("""undefined variable: $name
 at line: ${meta.lineNumber}""")
 		}
@@ -27,23 +27,21 @@ at line: ${meta.lineNumber}""")
 }
 
 class InterpretException(string: String) : RuntimeException(string) {
+	constructor(string: String, meta: MetaData) : this("$string\nat line: ${meta.lineNumber}")
+
 	companion object Factory {
-		inline fun typeMisMatch(expected: String, actual: Value, meta: MetaData): Nothing =
-				throw InterpretException("""type mismatch: expected: $expected, found: ${actual.type.name}
-at line: ${meta.lineNumber}""")
+		fun typeMisMatch(expected: String, actual: Value, meta: MetaData): Nothing =
+				throw InterpretException("type mismatch: expected: $expected, found: ${actual.type.name}", meta)
 
-		inline fun typeMisMatch(expected: String, actual: Any, meta: MetaData): Nothing =
-				throw InterpretException("""type mismatch: expected: $expected, found: ${actual.javaClass.name}
-at line: ${meta.lineNumber}""")
+		fun typeMisMatch(expected: String, actual: Any, meta: MetaData): Nothing =
+				throw InterpretException("type mismatch: expected: $expected, found: ${actual.javaClass.name}", meta)
 
-		inline fun tooFewArgument(expected: Int, actual: Int, meta: MetaData): Nothing {
-			throw InterpretException("""expected $expected or more arguments, found: $actual
-at line: ${meta.lineNumber}""")
+		fun tooFewArgument(expected: Int, actual: Int, meta: MetaData): Nothing {
+			throw InterpretException("expected $expected or more arguments, found: $actual", meta)
 		}
 
-		inline fun numberOfArgumentNotMatch(expected: Int, actual: Int, meta: MetaData): Nothing {
-			throw InterpretException("""expected $expected arguments, found: $actual
-at line: ${meta.lineNumber}""")
+		fun numberOfArgumentNotMatch(expected: Int, actual: Int, meta: MetaData): Nothing {
+			throw InterpretException("expected $expected arguments, found: $actual", meta)
 		}
 	}
 }

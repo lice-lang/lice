@@ -9,18 +9,18 @@
 package lice.util
 
 
-interface Option<T>
-
-object None : Option<Nothing>
-
-open class Some<T> : Option<T>
-
-
-interface Either<L, R>
-
-open class Left<T> : Either<T, Nothing>
-
-open class Right<T> : Either<Nothing, T>
+//interface Option<T>
+//
+//object None : Option<Nothing>
+//
+//open class Some<T> : Option<T>
+//
+//
+//interface Either<L, R>
+//
+//open class Left<T> : Either<T, Nothing>
+//
+//open class Right<T> : Either<Nothing, T>
 
 
 //interface Monad<T> {

@@ -417,7 +417,7 @@ inline fun SymbolList.addStringFunctions() {
 				res.o.isInt() -> res.o.toInt()
 				res.o.isBinInt() -> res.o.toBinInt()
 				res.o.isHexInt() -> res.o.toHexInt()
-				else -> throw InterpretException("give string: \"${res.o}\" cannot be parsed as a number!")
+				else -> throw InterpretException("give string: \"${res.o}\" cannot be parsed as a number!", ln)
 			}, ln)
 			else -> typeMisMatch("String", res, ln)
 		}
