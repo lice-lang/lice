@@ -397,14 +397,8 @@ inline fun SymbolList.addMathFunctions() {
 	defineFunction("sinh", { ln, ls ->
 		ValueNode(Math.sinh((ls[0].eval().o as Number).toDouble()), ln)
 	})
-	defineFunction("cos", { ln, ls ->
-		ValueNode(Math.cos((ls[0].eval().o as Number).toDouble()), ln)
-	})
 	defineFunction("cosh", { ln, ls ->
 		ValueNode(Math.cosh((ls[0].eval().o as Number).toDouble()), ln)
-	})
-	defineFunction("tanh", { ln, ls ->
-		ValueNode(Math.tanh((ls[0].eval().o as Number).toDouble()), ln)
 	})
 	defineFunction("rand", { ln, ls ->
 		if (ls.isNotEmpty()) ValueNode(rand.nextInt(ls[0].eval().o as Int), ln)

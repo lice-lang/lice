@@ -70,11 +70,17 @@
 
 ; trigonometric functions
 
-; (def cos a (sqrt (- 1 (square (sin a)))))
+(def cos a (sin (- 1.570796326 a)))
 (def csc a (/ 1 (sin a)))
 (def sec a (/ 1 (cos a)))
 (def tan a (/ (sin a) (cos a)))
 (def cot a (/ (cos a) (sin a)))
+
+(def tanh a (/ (sinh a) (cosh a)))
+(def coth a (/ (cosh a) (sinh a)))
+(def csch a (/ 1 (sinh a)))
+(def sech a (/ 1 (cosh a)))
+
 
 (def ->radians a (* (/ a 180) PI))
 (def ->degrees a (/ (* a 180) PI))
