@@ -1,0 +1,33 @@
+group 'org.lice'
+version '0.0.1-SNAPSHOT'
+
+buildscript {
+	ext.kotlin_version = '1.1.1'
+
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+	}
+
+}
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+sourceSets {
+	main.kotlin.srcDirs += 'src/main/kotlin'
+	main.java.srcDirs += 'src/main/java'
+}
+
+dependencies {
+	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+	testCompile group: 'junit', name: 'junit', version: '4.12'
+}

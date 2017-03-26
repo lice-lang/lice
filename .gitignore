@@ -17,7 +17,7 @@ build
 ## unnecessary ##
 
 .gradle/
-gradle/
+#gradle/
 local.properties
 # .gitignore
 
