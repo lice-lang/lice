@@ -1,20 +1,36 @@
-![](./src/lice/icon.jpg)
+![](./src/main/kotlin/org/lice/icon.jpg)
 
 # Lice
 
-It's entirely working in progress!
+[![Release](https://jitpack.io/v/lice-lang/lice.svg)]
+(https://jitpack.io/#lice-lang/lice)
 
 This is an interpreter for a dialect of lisp, running on JVM.
 
-this language is very naive, I write it to practise programming, and it can do some scripting jobs.
-
-## [About the language](./FEATURES.md)
+## [About the language](https://github.com/lice-lang/lice-reference)
 
 ## It looks like:
 
 ```lisp
 (println "Hello " "World")
 (for-each i (.. 1 10) (println i))
+```
+
+## Build
+
+You can simply use gradle by adding JitPack to your repository set and add the dependency:
+
+```groovy
+allprojects {
+  repositories {
+    // ...
+    maven { url 'https://jitpack.io' }
+  }
+}
+
+dependencies {
+  compile 'com.github.lice-lang:lice:v2.4'
+}
 ```
 
 ## Code style
