@@ -14,9 +14,9 @@ import lice.compiler.util.InterpretException.Factory.typeMisMatch
 import java.math.BigDecimal
 import java.math.BigInteger
 
-@SinceKotlin("1.1")
+//@SinceKotlin("1.1")
 typealias PlusLikeFunc = (Number, Number, MetaData) -> Number
-@SinceKotlin("1.1")
+//@SinceKotlin("1.1")
 typealias MinusLikeFunc = (Number, Number, MetaData, Boolean) -> Number
 
 class NumberOperator(var initial: Number) {
