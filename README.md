@@ -33,6 +33,22 @@ dependencies {
 }
 ```
 
+But if you use Scala, you can add it to your sbt dependency, by adding the stuffs below:
+
+```sbtshell
+resolvers += "jitpack" at "https://jitpack.io"
+
+libraryDependencies += "com.github.lice-lang" % "lice" % "v2.4"
+```
+
+And if you're a Clojure developer, why not try build it with leiningen?
+
+```leiningen
+:repositories [["jitpack" "https://jitpack.io"]]
+
+:dependencies [[com.github.lice-lang/lice "v2.4"]]
+```
+
 ## Code style
 
 ### compiler
