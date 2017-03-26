@@ -11,21 +11,19 @@ build
 
 ## config ##
 
-.idea
+#.idea
 .gradle
 
 ## unnecessary ##
 
-*.gradle
-gradlew
-gradlew.bat
+.gradle/
+gradle/
 local.properties
 # .gitignore
 
 ## Android
 
 *.iml
-.gradle
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
