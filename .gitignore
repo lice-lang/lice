@@ -5,7 +5,7 @@ out
 bin
 build
 *.class
-*.jar
+#*.jar
 *.war
 *.exe
 
