@@ -160,6 +160,7 @@ class SymbolNode(
 
 	override fun eval() =
 			(symbolList.getVariable(name)
+					?: symbolList.getFunction(name)?.invoke(meta, emptyList())
 					?: undefinedVariable(name, meta))
 					.eval()
 
