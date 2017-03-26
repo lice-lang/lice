@@ -1,4 +1,4 @@
-group 'org.lice'
+group 'org.org.lice'
 version '0.0.1-SNAPSHOT'
 
 buildscript {
