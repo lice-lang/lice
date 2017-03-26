@@ -2,8 +2,7 @@
 
 # Lice
 
-[![Release](https://jitpack.io/v/lice-lang/lice.svg)]
-(https://jitpack.io/#lice-lang/lice)
+[![](https://jitpack.io/v/lice-lang/lice.svg)](https://jitpack.io/#lice-lang/lice)
 
 This is an interpreter for a dialect of lisp, running on JVM.
 
