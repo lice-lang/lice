@@ -45,8 +45,7 @@ class GRepl {
                     .println()
             "version" -> """
                 |Lice language interpreter $VERSION_CODE
-                |GRepl $Version
-                |by ice1000""".stripMargin().println()
+                |GRepl $Version""".stripMargin().println()
             else -> try {
                 val ast = Ast(mapAst(
                         node = buildNode(str),
