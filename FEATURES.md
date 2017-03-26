@@ -248,11 +248,11 @@ Lice > (read-file file)
 deep dark fantasy => java.lang.String
 
 Lice > ([|] 1 2 3 4 5)
-[1 [2 [3 [4 [5 null]]]]] => lice.core.Pair
+[1 [2 [3 [4 [5 null]]]]] => org.lice.core.Pair
 
 Lice > (-> i ([|] 1 2 3 4 5 6 7))
-[1 [2 [3 [4 [5 [6 [7 null]]]]]]] => lice.core.Pair
+[1 [2 [3 [4 [5 [6 [7 null]]]]]]] => org.lice.core.Pair
 
 Lice > (tail (tail i))
-[3 [4 [5 [6 [7 null]]]]] => lice.core.Pair
+[3 [4 [5 [6 [7 null]]]]] => org.lice.core.Pair
 ```
