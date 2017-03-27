@@ -1,5 +1,2 @@
 language: java
 language: kotlin
-
-
-gradle build
