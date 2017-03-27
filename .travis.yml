@@ -1,2 +1,5 @@
+sudo: required
+
+
 language: java
 language: kotlin
