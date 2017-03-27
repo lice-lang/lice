@@ -2,4 +2,4 @@ language: java
 language: kotlin
 
 
-./gradlew check
+gradle build
