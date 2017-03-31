@@ -39,6 +39,6 @@ object Main {
 				if (!exists()) serr("file not found: ${args[0]}")
 			})
 		}
-		System.exit(0)
+//		System.exit(0)
 	}
 }
