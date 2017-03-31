@@ -172,6 +172,7 @@ class EmptyNode(override val meta: MetaData) : Node {
 	override fun toString() = "null: <null>"
 }
 
+@Deprecated(message =  "", level = DeprecationLevel.WARNING)
 class Ast(
 		val root: Node
 )

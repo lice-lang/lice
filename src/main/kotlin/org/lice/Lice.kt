@@ -5,7 +5,6 @@
  */
 package org.lice
 
-import org.lice.compiler.model.Ast
 import org.lice.compiler.parse.buildNode
 import org.lice.compiler.parse.mapAst
 import org.lice.compiler.util.SymbolList
@@ -25,9 +24,8 @@ object Lice {
 	fun run(
 			code: String,
 			symbolList: SymbolList = SymbolList()) {
-		Ast(mapAst(
+		mapAst(
 				node = buildNode(code),
-				symbolList = symbolList)
-		).root.eval()
+				symbolList = symbolList).eval()
 	}
 }
