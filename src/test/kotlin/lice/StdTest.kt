@@ -24,26 +24,30 @@ class StdTest {
 
 	@Test(timeout = 1000)
 	fun test2() {
-		val clazz = Class.forName("java.io.File")
-		val file = clazz
-				.getConstructor(String::class.java)
-				.newInstance("sample/test2.lice")
-		createRootNode(file as File).eval()
+		forceRun {
+			val clazz = Class.forName("java.io.File")
+			val file = clazz
+					.getConstructor(String::class.java)
+					.newInstance("sample/test2.lice")
+			createRootNode(file as File).eval()
+		}
 	}
 
 	@Test(timeout = 1000)
 	fun test3() {
-		val ls = listOf("sample/test3.lice")
-		var obj: Any? = null
-		Class
-				.forName("java.io.File")
-				.constructors
-				.forEach {
-					if (obj == null) forceRun {
-						obj = it.newInstance(*ls.toTypedArray())
+		forceRun {
+			val ls = listOf("sample/test3.lice")
+			var obj: Any? = null
+			Class
+					.forName("java.io.File")
+					.constructors
+					.forEach {
+						if (obj == null) forceRun {
+							obj = it.newInstance(*ls.toTypedArray())
+						}
 					}
-				}
-		createRootNode(obj as File).eval()
+			createRootNode(obj as File).eval()
+		}
 	}
 
 	@Test(timeout = 1000)
