@@ -10,7 +10,7 @@ import java.io.Reader
  * Created by glavo on 17-3-31.
  *
  * @author Glavo
- * @version v2.5
+ * @since v2.5
  */
 interface Parser {
 

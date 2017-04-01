@@ -11,7 +11,7 @@ import kotlin.text.isBlank
  * Created by glavo on 17-4-2.
  *
  * @author Glavo
- * @version v3.0
+ * @since v3.0
  */
 class LiceParser(private val reader: Reader) : Parser {
 	private var line: Int = 1
@@ -28,7 +28,7 @@ class LiceParser(private val reader: Reader) : Parser {
 
 	override fun stringNode(): StringNode = node
 
-	fun read(): Char? {
+	private fun read(): Char? {
 		val i = reader.read()
 		if (i == -1) {
 			c = 0.toChar()
@@ -39,13 +39,30 @@ class LiceParser(private val reader: Reader) : Parser {
 		return i.toChar()
 	}
 
-	fun skip(): Unit {
-		while (c == ' ' || c == '\n' || c == '\b' || c == 'r' || c == '\t') read()
+	private fun skip(): Unit {
+		while (c.isBlank())
+			read()
+	}
+
+	private fun nextToken(): Token {
+
+
+		TODO("")
 	}
 }
 
 private interface Token {
 	val value: String
+
+	companion object {
+		val LP: Token = object : Token {
+			override val value: String = "("
+		}
+
+		val RP: Token = object : Token {
+			override val value: String = ")"
+		}
+	}
 }
 
 private data class StringToken(override val value: String) : Token
