@@ -13,7 +13,11 @@ import java.io.Reader
  * @version 1.0.0
  */
 interface Parser {
-	fun stringNode(str: String): StringNode
+
+	@Deprecated("", level = DeprecationLevel.WARNING, replaceWith = ReplaceWith("stringNode()"))
+	fun stringNode(str: String): StringNode = stringNode()
+
+	fun stringNode(): StringNode
 
 	fun mapAst(symbol: SymbolList): Node
 
@@ -26,7 +30,7 @@ interface Parser {
 
 				override fun mapAst(symbol: SymbolList): Node = org.lice.compiler.parse.mapAst(node)
 
-				override fun stringNode(str: String): StringNode  = node
+				override fun stringNode(): StringNode = node
 
 			}
 		}
