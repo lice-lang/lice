@@ -30,8 +30,7 @@ object Main {
 			val sl = SymbolList()
 			val scanner = Scanner(System.`in`)
 			val repl = Repl()
-			while (true)
-				repl.handle(scanner.nextLine(), sl)
+			while (repl.handle(scanner.nextLine(), sl));
 		} else {
 			interpret(File(args[0]).apply {
 				if (!exists()) serr("file not found: ${args[0]}")

@@ -1,9 +1,8 @@
 group 'org.lice'
-version '2.4'
+version '2.6'
 
 buildscript {
 	ext.kotlin_version = '1.1.1'
-
 	repositories {
 		mavenCentral()
 	}
@@ -35,4 +34,10 @@ dependencies {
 
 	testCompile group: 'junit', name: 'junit', version: '4.12'
 	testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+}
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'org.lice.repl.Main'
+	}
 }

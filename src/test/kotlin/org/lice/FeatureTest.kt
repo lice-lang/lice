@@ -1,7 +1,6 @@
 package org.lice
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -22,6 +21,7 @@ class FeatureTest {
 		assertEquals("fuck", Lice.run("""
 (print "fuck")
 """).o)
+		assertEquals("lover~lover~fucker~fucker~", Lice.run(""""lover~lover~fucker~fucker~"""").o)
 	}
 
 	/**
@@ -32,6 +32,7 @@ class FeatureTest {
 		assertEquals(233666, Lice.run("""
 (print 233666)
 """).o)
+		assertEquals(233666, Lice.run("233666").o)
 	}
 
 	/**
@@ -101,5 +102,26 @@ class FeatureTest {
 		assertEquals(2, Lice.run("""
 (eval "(+ 1 1)")
 """).o)
+	}
+
+	/**
+	 * run/begin block
+	 */
+	@Test
+	fun test10() {
+		assertEquals(4, Lice.run("""
+(|> (+ 1 1) (+ 2 2))
+""").o)
+	}
+
+	/**
+	 * force running
+	 */
+	@Test
+	fun test11() {
+		assertNull(Lice.run("""
+(force|> (+ () ()))
+""").o)
+		assertNull(Lice.run("()").o)
 	}
 }

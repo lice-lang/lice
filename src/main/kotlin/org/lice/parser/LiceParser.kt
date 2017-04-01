@@ -32,7 +32,7 @@ class LiceParser(private val reader: Reader) : Parser {
 		if (i == -1) return null
 
 		if (i == '\n'.toInt()) line++
-
+		
 		return i.toChar()
 	}
 

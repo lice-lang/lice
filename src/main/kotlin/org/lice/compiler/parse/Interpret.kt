@@ -85,6 +85,7 @@ fun mapAst(
 								)
 							}
 			)
+		// FIXME add lambda support
 		else -> throw InterpretException("Using expression as lambda is not supported yet.", node.meta)
 	}
 	is StringLeafNode ->
@@ -133,6 +134,13 @@ fun createAst(
 	)
 }
 
+/**
+ * create an executable node
+ *
+ * @param file source code file
+ * @param symbolList symbol list, with a default value
+ * @return generated root node of the ast
+ */
 fun createRootNode(
 		file: File,
 		symbolList: SymbolList = SymbolList(init = true)

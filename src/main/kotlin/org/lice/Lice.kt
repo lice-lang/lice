@@ -19,6 +19,15 @@ object Lice {
 			symbolList: SymbolList = SymbolList()
 	) = Main.interpret(file, symbolList)
 
+	@JvmStatic
+	fun runBarely(file: File) = Main.interpret(file, SymbolList(false))
+
+	@JvmStatic
+	fun runBarely(code: String) = mapAst(
+			node = buildNode(code),
+			symbolList = SymbolList(false)
+	).eval()
+
 	@JvmOverloads
 	@JvmStatic
 	fun run(

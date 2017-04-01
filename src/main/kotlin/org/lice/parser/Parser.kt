@@ -14,28 +14,26 @@ import java.io.Reader
  */
 interface Parser {
 
-	@Deprecated("", level = DeprecationLevel.WARNING, replaceWith = ReplaceWith("stringNode()"))
-	fun stringNode(str: String): StringNode = stringNode()
+	@Deprecated(
+			"str is not used, so do not pass any parameter!",
+			level = DeprecationLevel.ERROR,
+			replaceWith = ReplaceWith("stringNode()")
+	)
+	fun stringNode(str: String) = stringNode()
 
 	fun stringNode(): StringNode
 
 	fun mapAst(symbol: SymbolList): Node = org.lice.compiler.parse.mapAst(stringNode())
 
-	companion object {
+	companion object Default {
 		fun defaultParser(str: String): Parser {
 			return object : Parser {
-				val node: StringNode by lazy {
-					buildNode(str)
-				}
-
+				val node: StringNode by lazy { buildNode(str) }
 				override fun mapAst(symbol: SymbolList): Node = org.lice.compiler.parse.mapAst(node)
-
 				override fun stringNode(): StringNode = node
-
 			}
 		}
 
 		fun defaultParser(reader: Reader): Parser = defaultParser(reader.readText())
-
 	}
 }
