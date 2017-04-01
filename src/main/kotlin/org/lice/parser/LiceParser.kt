@@ -13,14 +13,12 @@ import java.io.StringReader
  * @version 1.0.0
  */
 class LiceParser(val reader: Reader) : Parser {
-	private var line: Int = 1
-	private var c: Char = 0.toChar()
+	private var line = 1
+	private var c = 0.toChar()
 
 	constructor(str: String) : this(StringReader(str))
 
-	override fun stringNode(str: String): StringNode {
-
-
+	override fun stringNode(): StringNode {
 		TODO("not implemented")
 	}
 
