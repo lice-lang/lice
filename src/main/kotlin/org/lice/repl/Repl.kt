@@ -1,7 +1,5 @@
 package org.lice.repl
 
-import org.lice.compiler.parse.buildNode
-import org.lice.compiler.parse.mapAst
 import org.lice.compiler.util.*
 import org.lice.parser.Parser
 
@@ -31,11 +29,11 @@ class Repl {
 	@JvmOverloads
 	fun handle(
 			str: String,
-			symbolList: SymbolList = SymbolList(true)) {
+			symbolList: SymbolList = SymbolList(true)): Boolean {
 		when (str) {
 			"exit" -> {
 				"Have a nice day :)".println()
-				System.exit(0)
+				return false
 			}
 			"pst" ->
 				if (stackTrace != null) stackTrace?.printStackTrace()
@@ -54,14 +52,17 @@ class Repl {
 				|Lice language interpreter $VERSION_CODE
 				|by ice1000""".trimMargin()
 			else -> try {
-				val ast = Parser.defaultParser(str).mapAst(symbolList)
-				ast.eval()
+				Parser
+						.defaultParser(str)
+						.mapAst(symbolList)
+						.eval()
 			} catch(e: Throwable) {
 				stackTrace = e
 				serr(e.message ?: "")
 			}
 		}
 		print("\n$HINT")
+		return true
 	}
 
 	companion object {

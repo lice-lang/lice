@@ -227,15 +227,15 @@ inline fun SymbolList.addStandard() {
 	defineFunction("str->sym", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
-			is String -> ValueNode(Symbol(a.o), ln)
+			is String -> SymbolNode(this, a.o, ln)
 			else -> typeMisMatch("String", a, ln)
 		}
 	})
 
 	defineFunction("sym->str", { ln, ls ->
-		val a = ls[0].eval()
-		when (a.o) {
-			is Symbol -> ValueNode(a.o.name, ln)
+		val a = ls[0]
+		when (a) {
+			is SymbolNode -> ValueNode(a.name, ln)
 			else -> typeMisMatch("Symbol", a, ln)
 		}
 	})
