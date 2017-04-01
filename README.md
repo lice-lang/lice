@@ -5,6 +5,7 @@
 [![JitPack](https://jitpack.io/v/lice-lang/lice.svg)](https://jitpack.io/#lice-lang/lice)
 [![Gitter](https://badges.gitter.im/lice-lang/lice.svg)](https://gitter.im/lice-lang/lice)
 [![Build Status](https://travis-ci.org/lice-lang/lice.svg?branch=master)](https://travis-ci.org/lice-lang/lice)
+[![Dependency Status](https://www.versioneye.com/user/projects/58df5b1c24ef3e00425cf73f/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58df5b1c24ef3e00425cf73f)
 
 This is an interpreter for a dialect of lisp, running on JVM.
 
