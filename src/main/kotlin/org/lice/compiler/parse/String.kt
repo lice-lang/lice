@@ -13,73 +13,65 @@ import java.io.StringReader
 import java.util.regex.Pattern
 
 @Language("RegExp")
-val pattern = Pattern.compile("\"" + """([^"\x00-\x1F\x7F\\]|\\[\\'"bnrt]|\\u[a-fA-F0-9]{4})*""" + "\"")!!
+val pattern = Pattern.compile(""""([^"\x00-\x1F\x7F\\]|\\[\\'"bnrt]|\\u[a-fA-F0-9]{4})*"""")!!
 
-fun String.isString(): Boolean = pattern.matcher(this).matches()
+fun String.isString() = pattern.matcher(this).matches()
 
 fun String.escape(): String {
 	val sr = StringReader(this.substring(1, this.length - 1))
 	val sb = StringBuilder()
 
 	loop@ while (true) {
-		var ci: Int
-		var c: Char
-
-		ci = sr.read()
+		var ci = sr.read()
 		if (ci == -1) break
+		var c = ci.toChar()
 
-		c = ci.toChar()
-
-		when (c) {
-			'\\' -> {
-				ci = sr.read()
-				if (ci == -1) return "" //TODO
-				c = ci.toChar()
-				when (c) {
-					'\\' -> {
-						sb.append('\\')
-						continue@loop
-					}
-					'\"' -> {
-						sb.append('\"')
-						continue@loop
-					}
-					'/' -> {
-						sb.append('/')
-						continue@loop
-					}
-					'b' -> {
-						sb.append('\b')
-						continue@loop
-					}
-					'n' -> {
-						sb.append('\n')
-						continue@loop
-					}
-					'r' -> {
-						sb.append('\r')
-						continue@loop
-					}
-					't' -> {
-						sb.append('\t')
-						continue@loop
-					}
-					'u' -> {
-						val sbb = StringBuilder()
-						sbb.append(sr.read().toChar())
-						sbb.append(sr.read().toChar())
-						sbb.append(sr.read().toChar())
-						sbb.append(sr.read().toChar())
-						val ii = Integer.parseInt(sbb.toString(), 16)
-
-						sb.append(ii.toChar())
-						continue@loop
-					}
+		if (c == '\\') {
+			ci = sr.read()
+			if (ci == -1) return "" //TODO
+			c = ci.toChar()
+			when (c) {
+				'\\' -> {
+					sb.append('\\')
+					continue@loop
 				}
-				sb.append(c)
+				'\"' -> {
+					sb.append('\"')
+					continue@loop
+				}
+				'/' -> {
+					sb.append('/')
+					continue@loop
+				}
+				'b' -> {
+					sb.append('\b')
+					continue@loop
+				}
+				'n' -> {
+					sb.append('\n')
+					continue@loop
+				}
+				'r' -> {
+					sb.append('\r')
+					continue@loop
+				}
+				't' -> {
+					sb.append('\t')
+					continue@loop
+				}
+				'u' -> {
+					val ii = Integer.parseInt(StringBuilder()
+							.append(sr.read().toChar())
+							.append(sr.read().toChar())
+							.append(sr.read().toChar())
+							.append(sr.read().toChar()).toString(), 16)
+					sb.append(ii.toChar())
+					continue@loop
+				}
 			}
-			else -> sb.append(c)
+			sb.append(c)
 		}
+		else sb.append(c)
 	}
 	return sb.toString()
 }
