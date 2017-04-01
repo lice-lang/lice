@@ -5,7 +5,8 @@
 [![JitPack](https://jitpack.io/v/lice-lang/lice.svg)](https://jitpack.io/#lice-lang/lice)
 [![Gitter](https://badges.gitter.im/lice-lang/lice.svg)](https://gitter.im/lice-lang/lice)
 [![Build Status](https://travis-ci.org/lice-lang/lice.svg?branch=master)](https://travis-ci.org/lice-lang/lice)
-[![Dependency Status](https://www.versioneye.com/user/projects/58df5b1c24ef3e00425cf73f/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58df5b1c24ef3e00425cf73f)
+[![Dependency Status](https://www.versioneye.com/user/projects/58df5b1c24ef3e00425cf73f/badge.svg?style=square)](https://www.versioneye.com/user/projects/58df5b1c24ef3e00425cf73f)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 This is an interpreter for a dialect of lisp, running on JVM.
 
@@ -31,7 +32,7 @@ allprojects {
 }
 
 dependencies {
-  compile 'com.github.lice-lang:lice:v2.4'
+  compile 'com.github.lice-lang:lice:v2.5'
 }
 ```
 
@@ -40,7 +41,7 @@ But if you use Scala, you can add it to your sbt dependency, by adding the stuff
 ```sbtshell
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.lice-lang" % "lice" % "v2.4"
+libraryDependencies += "com.github.lice-lang" % "lice" % "v2.5"
 ```
 
 And if you're a Clojure developer, why not try build it with leiningen?
@@ -48,7 +49,7 @@ And if you're a Clojure developer, why not try build it with leiningen?
 ```leiningen
 :repositories [["jitpack" "https://jitpack.io"]]
 
-:dependencies [[com.github.lice-lang/lice "v2.4"]]
+:dependencies [[com.github.lice-lang/lice "v2.5"]]
 ```
 
 ## Code style
