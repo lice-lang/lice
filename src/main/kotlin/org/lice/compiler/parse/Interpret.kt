@@ -107,6 +107,7 @@ fun mapAst(
  * @param symbolList symbol list, with a default value
  * @return generated ast
  */
+@Deprecated(message = "")
 fun createAst(
 		file: File,
 		symbolList: SymbolList = SymbolList(init = true)): Ast {
