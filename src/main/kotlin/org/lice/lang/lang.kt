@@ -10,8 +10,8 @@ package org.lice.lang
 
 
 class Pair<out A, out B>(
-		val first: A,
-		val second: B) {
+	val first: A,
+	val second: B) {
 	override fun toString(): String {
 		return "[$first $second]"
 	}
@@ -48,7 +48,7 @@ class Symbol(val name: String) {
 	}
 
 	override fun hashCode() =
-			name.hashCode()
+		name.hashCode()
 }
 
 

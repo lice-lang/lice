@@ -5,6 +5,7 @@ import org.lice.compiler.model.StringNode
 import org.lice.compiler.util.SymbolList
 import java.io.Reader
 import java.io.StringReader
+import kotlin.text.isBlank
 
 /**
  * Created by glavo on 17-4-2.
@@ -29,14 +30,18 @@ class LiceParser(private val reader: Reader) : Parser {
 
 	fun read(): Char? {
 		val i = reader.read()
-		if (i == -1) return null
-
+		if (i == -1) {
+			c = 0.toChar()
+			return null
+		}
 		if (i == '\n'.toInt()) line++
-		
+		c = i.toChar()
 		return i.toChar()
 	}
 
-
+	fun skip(): Unit {
+		while (c == ' ' || c == '\n' || c == '\b' || c == 'r' || c == '\t') read()
+	}
 }
 
 private interface Token {
@@ -44,4 +49,8 @@ private interface Token {
 }
 
 private data class StringToken(override val value: String) : Token
+
+private data class SymbolToken(override val value: String) : Token
+
+
 
