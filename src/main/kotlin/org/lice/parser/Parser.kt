@@ -2,9 +2,8 @@ package org.lice.parser
 
 import org.lice.compiler.model.Node
 import org.lice.compiler.model.StringNode
-import org.lice.compiler.util.SymbolList
 import org.lice.compiler.parse.buildNode
-import java.io.BufferedReader
+import org.lice.compiler.util.SymbolList
 import java.io.Reader
 
 /**

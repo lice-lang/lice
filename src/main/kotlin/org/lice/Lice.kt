@@ -23,9 +23,9 @@ object Lice {
 	@JvmStatic
 	fun run(
 			code: String,
-			symbolList: SymbolList = SymbolList()) {
-		mapAst(
-				node = buildNode(code),
-				symbolList = symbolList).eval()
-	}
+			symbolList: SymbolList = SymbolList()
+	) = mapAst(
+			node = buildNode(code),
+			symbolList = symbolList
+	).eval()
 }

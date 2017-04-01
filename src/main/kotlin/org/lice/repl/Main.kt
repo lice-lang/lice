@@ -1,6 +1,6 @@
 package org.lice.repl
 
-import org.lice.compiler.parse.createAst
+import org.lice.compiler.parse.createRootNode
 import org.lice.compiler.util.SymbolList
 import org.lice.compiler.util.serr
 import java.io.File
@@ -21,10 +21,8 @@ object Main {
 	@JvmOverloads
 	fun interpret(
 			file: File,
-			symbolList: SymbolList = SymbolList()) {
-		val ast = createAst(file, symbolList)
-		ast.root.eval()
-	}
+			symbolList: SymbolList = SymbolList()
+	) = createRootNode(file, symbolList).eval()
 
 	@JvmStatic
 	fun main(args: Array<String>) {

@@ -201,14 +201,14 @@ inline fun SymbolList.addStandard() {
 	defineFunction("load-file", { ln, ls ->
 		val o = ls[0].eval()
 		when (o.o) {
-			is File -> ValueNode(createAst(
+			is File -> ValueNode(createRootNode(
 					file = o.o,
 					symbolList = this
-			).root.eval(), ln)
-			is String -> ValueNode(createAst(
+			).eval(), ln)
+			is String -> ValueNode(createRootNode(
 					file = File(o.o),
 					symbolList = this
-			).root.eval(), ln)
+			).eval(), ln)
 			else -> typeMisMatch(
 					expected = "File",
 					actual = o,

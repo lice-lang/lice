@@ -107,10 +107,16 @@ fun mapAst(
  * @param symbolList symbol list, with a default value
  * @return generated ast
  */
-@Deprecated(message = "")
+@Suppress("DEPRECATION")
+@Deprecated(
+		message = "",
+		level = DeprecationLevel.WARNING,
+		replaceWith = ReplaceWith("createRootNode")
+)
 fun createAst(
 		file: File,
-		symbolList: SymbolList = SymbolList(init = true)): Ast {
+		symbolList: SymbolList = SymbolList(init = true)
+): Ast {
 	val code = file.readText()
 	val fp = "FILE_PATH"
 	if (symbolList.getVariable(name = fp) == null)
@@ -124,5 +130,23 @@ fun createAst(
 					node = stringTreeRoot,
 					symbolList = symbolList
 			)
+	)
+}
+
+fun createRootNode(
+		file: File,
+		symbolList: SymbolList = SymbolList(init = true)
+): Node {
+	val code = file.readText()
+	val fp = "FILE_PATH"
+	if (symbolList.getVariable(name = fp) == null)
+		symbolList.setVariable(
+				name = fp,
+				value = ValueNode(any = file.absolutePath)
+		)
+	val stringTreeRoot = buildNode(code)
+	return mapAst(
+			node = stringTreeRoot,
+			symbolList = symbolList
 	)
 }

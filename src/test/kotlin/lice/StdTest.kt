@@ -1,9 +1,9 @@
 package lice
 
-import org.lice.compiler.parse.createAst
+import org.junit.Test
+import org.lice.compiler.parse.createRootNode
 import org.lice.compiler.util.forceRun
 import org.lice.compiler.util.println
-import org.junit.Test
 import java.io.File
 
 /**
@@ -28,7 +28,7 @@ class StdTest {
 		val file = clazz
 				.getConstructor(String::class.java)
 				.newInstance("sample/test2.lice")
-		createAst(file as File).root.eval()
+		createRootNode(file as File).eval()
 	}
 
 	@Test(timeout = 1000)
@@ -43,7 +43,7 @@ class StdTest {
 						obj = it.newInstance(*ls.toTypedArray())
 					}
 				}
-		createAst(obj as File).root.eval()
+		createRootNode(obj as File).eval()
 	}
 
 	@Test(timeout = 1000)
