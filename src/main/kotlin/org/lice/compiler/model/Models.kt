@@ -14,7 +14,7 @@ interface StringNode {
 	override fun toString(): String
 }
 
-class StringMiddleNode(
+data class StringMiddleNode(
 		override val meta: MetaData,
 		val list: MutableList<StringNode> = mutableListOf<StringNode>()) : StringNode {
 
@@ -38,14 +38,14 @@ class StringMiddleNode(
 	override fun toString() = list.first().strRepr
 }
 
-class StringLeafNode(
+data class StringLeafNode(
 		override val meta: MetaData,
 		val str: String) : StringNode {
 	override val strRepr = str
 	override fun toString() = strRepr
 }
 
-class EmptyStringNode(
+data class EmptyStringNode(
 		override val meta: MetaData) : StringNode {
 	override val strRepr = ""
 	override fun toString() = strRepr

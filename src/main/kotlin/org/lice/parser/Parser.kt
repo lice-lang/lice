@@ -10,7 +10,7 @@ import java.io.Reader
  * Created by glavo on 17-3-31.
  *
  * @author Glavo
- * @version 1.0.0
+ * @version v2.5
  */
 interface Parser {
 
@@ -19,7 +19,7 @@ interface Parser {
 
 	fun stringNode(): StringNode
 
-	fun mapAst(symbol: SymbolList): Node
+	fun mapAst(symbol: SymbolList): Node = org.lice.compiler.parse.mapAst(stringNode())
 
 	companion object {
 		fun defaultParser(str: String): Parser {

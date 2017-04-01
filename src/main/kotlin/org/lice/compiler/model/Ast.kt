@@ -14,7 +14,7 @@ import org.lice.compiler.util.ParseException.Factory.undefinedFunction
 import org.lice.compiler.util.ParseException.Factory.undefinedVariable
 import org.lice.compiler.util.SymbolList
 
-class MetaData(
+data class MetaData(
 		val lineNumber: Int) {
 	companion object Factory {
 		val EmptyMetaData = MetaData(-1)
@@ -26,7 +26,7 @@ interface AbstractValue {
 	val type: Class<*>
 }
 
-class Value(
+data class Value(
 		override val o: Any?,
 		override val type: Class<*>) : AbstractValue {
 	constructor(
@@ -50,7 +50,7 @@ interface Node {
 	}
 }
 
-class ValueNode
+data class ValueNode
 @JvmOverloads
 constructor(
 		val value: Value,
@@ -80,7 +80,7 @@ constructor(
 	override fun toString() = "value: <${value.o}> => ${value.type}"
 }
 
-class FExprValueNode
+data class FExprValueNode
 @JvmOverloads
 constructor(
 		val fexpr: () -> Any?,
@@ -110,7 +110,7 @@ constructor(
 //	))
 //}
 
-class ExpressionNode(
+data class ExpressionNode(
 		val symbolList: SymbolList,
 		val function: String,
 		override val meta: MetaData,
@@ -136,7 +136,7 @@ class ExpressionNode(
 	override fun toString() = "function: <$function> with ${params.size} params"
 }
 
-class LambdaNode(
+data class LambdaNode(
 		val lambda: Node,
 		val symbolList: SymbolList,
 		val params: List<Node>,
@@ -153,7 +153,7 @@ class LambdaNode(
 	override fun toString() = "lambda: <$${super.toString()}>"
 }
 
-class SymbolNode(
+data class SymbolNode(
 		val symbolList: SymbolList,
 		val name: String,
 		override val meta: MetaData) : Node {
@@ -167,7 +167,7 @@ class SymbolNode(
 	override fun toString() = "symbol: <$name>"
 }
 
-class EmptyNode(override val meta: MetaData) : Node {
+data class EmptyNode(override val meta: MetaData) : Node {
 	override fun eval() = Nullptr
 	override fun toString() = "null: <null>"
 }

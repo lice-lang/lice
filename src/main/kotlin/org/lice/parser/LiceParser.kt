@@ -10,21 +10,38 @@ import java.io.StringReader
  * Created by glavo on 17-4-2.
  *
  * @author Glavo
- * @version 1.0.0
+ * @version v3.0
  */
-class LiceParser(val reader: Reader) : Parser {
+class LiceParser(private val reader: Reader) : Parser {
 	private var line: Int = 1
 	private var c: Char = 0.toChar()
+	private var eof: Boolean = false
+
+	private val node: StringNode by lazy {
+
+
+		TODO("")
+	}
 
 	constructor(str: String) : this(StringReader(str))
 
-	override fun stringNode(str: String): StringNode {
+	override fun stringNode(): StringNode = node
 
+	fun read(): Char? {
+		val i = reader.read()
+		if (i == -1) return null
 
-		TODO("not implemented")
+		if (i == '\n'.toInt()) line++
+
+		return i.toChar()
 	}
 
-	override fun mapAst(symbol: SymbolList): Node {
-		TODO("not implemented")
-	}
+
 }
+
+private interface Token {
+	val value: String
+}
+
+private data class StringToken(override val value: String) : Token
+
