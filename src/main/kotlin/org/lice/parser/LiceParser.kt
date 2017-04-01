@@ -51,7 +51,7 @@ class LiceParser(private val reader: Reader) : Parser {
 	}
 }
 
-private interface Token {
+interface Token {
 	val value: String
 
 	companion object {
@@ -60,7 +60,7 @@ private interface Token {
 		}
 
 		val RP: Token = object : Token {
-			override val value: String = ")"
+			override val value: String = ""
 		}
 	}
 }
@@ -69,5 +69,8 @@ private data class StringToken(override val value: String) : Token
 
 private data class SymbolToken(override val value: String) : Token
 
+private data class NumberToken(override val value: String) : Token {
+
+}
 
 
