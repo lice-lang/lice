@@ -1,4 +1,4 @@
-package lice.compiler.parse;
+package org.lice.compiler.parse;
 
 import org.junit.Test;
 

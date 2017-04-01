@@ -1,4 +1,4 @@
-package lice
+package org.lice
 
 import org.junit.Test
 import org.lice.compiler.parse.createRootNode

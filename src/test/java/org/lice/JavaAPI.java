@@ -1,7 +1,9 @@
 package org.lice;
 
+import kotlin.Unit;
 import org.lice.compiler.model.ValueNode;
 import org.lice.compiler.util.SymbolList;
+import org.lice.compiler.util.Utilities;
 
 import java.io.File;
 
@@ -17,7 +19,9 @@ public class JavaAPI {
 		SymbolList sl = new SymbolList();
 		final int[] a = {0};
 		sl.defineFunction("java-api-invoking", (ln, ls) -> new ValueNode(a[0]++, ln));
-
-		createRootNode(new File("sample/test10.lice"), sl).eval();
+		Utilities.forceRun(() -> {
+			createRootNode(new File("sample/test10.lice"), sl).eval();
+			return Unit.INSTANCE;
+		});
 	}
 }

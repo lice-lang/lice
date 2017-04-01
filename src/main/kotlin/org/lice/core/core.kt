@@ -170,12 +170,14 @@ inline fun SymbolList.addStandard() {
 			)
 		}
 	})
-	defineFunction("", { ln, ls ->
+	defineFunction("", { _, ls ->
+		var ret = Nullptr
 		ls.forEach {
 			val res = it.eval()
+			ret = res
 			println("${res.o.toString()} => ${res.type.name}")
 		}
-		getNullNode(ln)
+		ValueNode(ret)
 	})
 	defineFunction("type", { _, ls ->
 		ls.forEach { println(it.eval().type.canonicalName) }
