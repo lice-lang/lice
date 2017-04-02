@@ -32,3 +32,4 @@ local.properties
 /captures
 .externalNativeBuild
 .idea/
+/classes/
