@@ -8,17 +8,20 @@ import java.io.Reader
  * Created by glavo on 17-3-31.
  *
  * @author Glavo
- * @since v2.5
+ * @since 2.5
  */
 interface Parser {
 
 	@Deprecated(
-			"str is not used, so do not pass any parameter!",
-			level = DeprecationLevel.ERROR,
-			replaceWith = ReplaceWith("stringNode()")
+		"Since 2.5, str is not used, so do not pass any parameter!",
+		level = DeprecationLevel.ERROR,
+		replaceWith = ReplaceWith("stringNode()")
 	)
 	fun stringNode(str: String) = stringNode()
 
+	@Deprecated(
+		message = "Since 3.0"
+	)
 	fun stringNode(): StringNode
 
 	fun mapAst(symbol: SymbolList): Node = org.lice.compiler.parse.mapAst(stringNode())

@@ -8,7 +8,7 @@ import org.lice.parser.Parser
  * Created by ice1000 on 2017/2/23.
  *
  * @author ice1000
- * @since v1.0.0
+ * @since 1.0.0
  */
 class Repl {
 	var stackTrace: Throwable? = null

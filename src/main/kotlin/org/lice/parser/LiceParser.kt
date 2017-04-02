@@ -8,7 +8,7 @@ import java.io.StringReader
  * Created by glavo on 17-4-2.
  *
  * @author Glavo
- * @since v3.0
+ * @since 3.0
  */
 class LiceParser(private val reader: Reader) : Parser {
 	private var line: Int = 1
@@ -16,14 +16,21 @@ class LiceParser(private val reader: Reader) : Parser {
 	private var eof: Boolean = false
 
 	private val node: StringNode by lazy {
-
-
-		TODO("")
+		mkNode()
 	}
 
 	constructor(str: String) : this(StringReader(str))
 
 	override fun stringNode(): StringNode = node
+
+	private fun mkNode(): StringNode {
+		val t = nextToken()
+		when (t) {
+			Token.LP -> {
+
+			}
+		}
+	}
 
 	private fun read(): Char? {
 		val i = reader.read()
@@ -284,7 +291,7 @@ class LiceParser(private val reader: Reader) : Parser {
 				return SymbolToken(sb.toString())
 			}
 		}
-		
+
 	}
 }
 

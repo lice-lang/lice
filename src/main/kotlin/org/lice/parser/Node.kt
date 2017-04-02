@@ -2,7 +2,7 @@
  * Created by glavo on 17-4-2.
  *
  * @author Glavo
- * @version v3.0
+ * @since 3.0
  */
 package org.lice.parser
 

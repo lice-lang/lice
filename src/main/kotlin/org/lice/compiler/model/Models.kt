@@ -2,7 +2,7 @@
  * Created by ice1000 on 2017/2/16.
  *
  * @author ice1000
- * @since v1.0.0
+ * @since 1.0.0
  */
 //@file:JvmName("Model")
 //@file:JvmMultifileClass
