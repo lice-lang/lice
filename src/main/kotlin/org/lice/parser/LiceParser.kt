@@ -3,6 +3,7 @@ package org.lice.parser
 import org.lice.compiler.model.Node
 import java.io.Reader
 import java.io.StringReader
+
 /**
  * Created by glavo on 17-4-2.
  *
@@ -15,7 +16,7 @@ class LiceParser(private val reader: Reader) : Parser {
 	private var c: Char? = null
 	private var eof: Boolean = false
 
-	private val node: Ast by lazy {
+	val node: Ast by lazy {
 		mkAst()
 	}
 
@@ -25,8 +26,7 @@ class LiceParser(private val reader: Reader) : Parser {
 		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
-
-	private fun mkAst(): Ast {
+	fun mkAst(): Ast {
 		val t = nextToken()
 		when (t) {
 			Token.LP -> {
@@ -43,7 +43,7 @@ class LiceParser(private val reader: Reader) : Parser {
 		}
 	}
 
-	private fun read(): Char? {
+	fun read(): Char? {
 		val i = reader.read()
 		if (i == -1) {
 			c = null
@@ -57,12 +57,12 @@ class LiceParser(private val reader: Reader) : Parser {
 		return i.toChar()
 	}
 
-	private fun skip(): Unit {
+	fun skip(): Unit {
 		while (c.isBlank())
 			read()
 	}
 
-	private fun nextToken(): Token {
+	fun nextToken(): Token {
 		skip()
 
 		if (c == null)
@@ -128,7 +128,7 @@ class LiceParser(private val reader: Reader) : Parser {
 									throw ParserException("error: unclosed string literal at line $line")
 
 								else ->
-									throw ParserException("error: invalid escape character: $c at line  at line $line" )
+									throw ParserException("error: invalid escape character: $c at line  at line $line")
 							}
 						}
 						'\"' -> {
@@ -283,17 +283,35 @@ class LiceParser(private val reader: Reader) : Parser {
 
 			}
 
-			'(' -> return Token.LP
+			'(' -> {
+				read()
+				return Token.LP
+			}
 
-			')' -> return Token.RP
+			')' -> {
+				read()
+				return Token.RP
+			}
 
-			'[' -> return Token.LBT
+			'[' -> {
+				read()
+				return Token.LBT
+			}
 
-			']' -> return Token.RBT
+			']' -> {
+				read()
+				return Token.RBT
+			}
 
-			'{' -> return Token.LBE
+			'{' -> {
+				read()
+				return Token.LBE
+			}
 
-			'}' -> return Token.RBE
+			'}' -> {
+				read()
+				return Token.RBE
+			}
 
 			else -> {
 				while (!c.isBlank() && !c.isBracket()) {
@@ -307,13 +325,13 @@ class LiceParser(private val reader: Reader) : Parser {
 
 	}
 
-	private fun parserBlock(): Ast {
+	fun parserBlock(): Ast {
 		val l = mutableListOf<Ast>()
 		while (true) {
 			val t = nextToken()
 			when (t) {
 				EmptyToken -> {
-					throw ParserException("error: ')' not found at line: $line" )
+					throw ParserException("error: ')' not found at line: $line")
 				}
 
 				Token.LP -> {
