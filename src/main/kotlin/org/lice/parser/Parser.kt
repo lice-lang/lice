@@ -1,14 +1,8 @@
 package org.lice.parser
 
 import org.lice.compiler.model.Node
-import org.lice.compiler.model.StringNode
 import org.lice.compiler.parse.buildNode
-import org.lice.compiler.util.SymbolList
 import java.io.Reader
-
-typealias MetaData = org.lice.compiler.model.MetaData
-typealias StringNode = org.lice.compiler.model.StringNode
-
 
 /**
  * Created by glavo on 17-3-31.

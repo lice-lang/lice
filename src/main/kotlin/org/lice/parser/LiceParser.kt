@@ -1,11 +1,8 @@
 package org.lice.parser
 
-import org.lice.compiler.model.Node
 import org.lice.compiler.model.StringNode
-import org.lice.compiler.util.SymbolList
 import java.io.Reader
 import java.io.StringReader
-import kotlin.text.isBlank
 
 /**
  * Created by glavo on 17-4-2.
@@ -70,6 +67,11 @@ class LiceParser(private val reader: Reader) : Parser {
 									sb.append('\"')
 									continue@loop
 								}
+								'\'' -> {
+									sb.append('\'')
+									continue@loop
+								}
+
 								'/' -> {
 									sb.append('/')
 									continue@loop
@@ -121,7 +123,145 @@ class LiceParser(private val reader: Reader) : Parser {
 
 			}
 
+			'\'' -> {
+				loop@
+				while (true) {
+					when (read()) {
+						'\\' -> {
+							when (read()) {
+								'\\' -> {
+									sb.append('\\')
+									continue@loop
+								}
+								'\"' -> {
+									sb.append('\"')
+									continue@loop
+								}
+								'\'' -> {
+									sb.append('\'')
+									continue@loop
+								}
 
+								'/' -> {
+									sb.append('/')
+									continue@loop
+								}
+								'b' -> {
+									sb.append('\b')
+									continue@loop
+								}
+								'n' -> {
+									sb.append('\n')
+									continue@loop
+								}
+								'r' -> {
+									sb.append('\r')
+									continue@loop
+								}
+								't' -> {
+									sb.append('\t')
+									continue@loop
+								}
+								'u' -> {
+									val ii = Integer.parseInt(StringBuilder()
+										.append(read()
+											?: throw ParserException("error: unclosed string literal"))
+										.append(read()
+											?: throw ParserException("error: unclosed string literal"))
+										.append(read()
+											?: throw ParserException("error: unclosed string literal"))
+										.append(read()
+											?: throw ParserException("error: unclosed string literal"))
+										.toString(), 16)
+									sb.append(ii.toChar())
+									continue@loop
+								}
+								null -> throw ParserException("error: unclosed string literal")
+
+								else -> throw ParserException("error: invalid escape character: " + c)
+							}
+						}
+						'\'' -> {
+							read()
+							return StringToken(sb.toString())
+						}
+						else -> {
+							sb.append(c ?: throw ParserException("error: unclosed string literal"))
+						}
+					}
+				}
+
+			}
+
+			'“' -> {
+				loop@
+				while (true) {
+					when (read()) {
+						'\\' -> {
+							when (read()) {
+								'\\' -> {
+									sb.append('\\')
+									continue@loop
+								}
+								'\"' -> {
+									sb.append('\"')
+									continue@loop
+								}
+								'\'' -> {
+									sb.append('\'')
+									continue@loop
+								}
+
+								'/' -> {
+									sb.append('/')
+									continue@loop
+								}
+								'b' -> {
+									sb.append('\b')
+									continue@loop
+								}
+								'n' -> {
+									sb.append('\n')
+									continue@loop
+								}
+								'r' -> {
+									sb.append('\r')
+									continue@loop
+								}
+								't' -> {
+									sb.append('\t')
+									continue@loop
+								}
+								'u' -> {
+									val ii = Integer.parseInt(StringBuilder()
+										.append(read()
+											?: throw ParserException("error: unclosed string literal"))
+										.append(read()
+											?: throw ParserException("error: unclosed string literal"))
+										.append(read()
+											?: throw ParserException("error: unclosed string literal"))
+										.append(read()
+											?: throw ParserException("error: unclosed string literal"))
+										.toString(), 16)
+									sb.append(ii.toChar())
+									continue@loop
+								}
+								null -> throw ParserException("error: unclosed string literal")
+
+								else -> throw ParserException("error: invalid escape character: " + c)
+							}
+						}
+						'”' -> {
+							read()
+							return StringToken(sb.toString())
+						}
+						else -> {
+							sb.append(c ?: throw ParserException("error: unclosed string literal"))
+						}
+					}
+				}
+
+			}
 		}
 
 		TODO("")
