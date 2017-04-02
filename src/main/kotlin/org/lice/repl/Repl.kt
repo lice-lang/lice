@@ -28,8 +28,8 @@ class Repl {
 
 	@JvmOverloads
 	fun handle(
-			str: String,
-			symbolList: SymbolList = SymbolList(true)): Boolean {
+		str: String,
+		symbolList: SymbolList = SymbolList(true)): Boolean {
 		when (str) {
 			"exit" -> {
 				"Have a nice day :)".println()
@@ -47,15 +47,15 @@ class Repl {
                 |pst: print the most recent stack trace
                 |help: print this doc
 				|version: check the version""".trimMargin()
-					.println()
+				.println()
 			"version" -> """
 				|Lice language interpreter $VERSION_CODE
 				|by ice1000""".trimMargin()
 			else -> try {
 				Parser
-						.defaultParser(str)
-						.mapAst(symbolList)
-						.eval()
+					.defaultParser(str)
+					.mapAst(symbolList)
+					.eval()
 			} catch(e: Throwable) {
 				stackTrace = e
 				serr(e.message ?: "")

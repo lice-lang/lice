@@ -6,6 +6,10 @@ import org.lice.compiler.parse.buildNode
 import org.lice.compiler.util.SymbolList
 import java.io.Reader
 
+typealias MetaData = org.lice.compiler.model.MetaData
+typealias StringNode = org.lice.compiler.model.StringNode
+
+
 /**
  * Created by glavo on 17-3-31.
  *
@@ -29,7 +33,6 @@ interface Parser {
 		fun defaultParser(str: String): Parser {
 			return object : Parser {
 				val node: StringNode by lazy { buildNode(str) }
-				override fun mapAst(symbol: SymbolList): Node = org.lice.compiler.parse.mapAst(node)
 				override fun stringNode(): StringNode = node
 			}
 		}

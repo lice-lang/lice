@@ -15,7 +15,7 @@ import kotlin.text.isBlank
  */
 class LiceParser(private val reader: Reader) : Parser {
 	private var line: Int = 1
-	private var c: Char = 0.toChar()
+	private var c: Char? = null
 	private var eof: Boolean = false
 
 	private val node: StringNode by lazy {
@@ -31,11 +31,14 @@ class LiceParser(private val reader: Reader) : Parser {
 	private fun read(): Char? {
 		val i = reader.read()
 		if (i == -1) {
-			c = 0.toChar()
+			c = null
 			return null
 		}
-		if (i == '\n'.toInt()) line++
+
 		c = i.toChar()
+		if (c == '\n')
+			line++
+
 		return i.toChar()
 	}
 
@@ -45,7 +48,81 @@ class LiceParser(private val reader: Reader) : Parser {
 	}
 
 	private fun nextToken(): Token {
+		skip()
 
+		if (c == null)
+			return EmptyToken
+
+		val sb = StringBuilder()
+
+		when (c) {
+			'\"' -> {
+				loop@
+				while (true) {
+					when (read()) {
+						'\\' -> {
+							when (read()) {
+								'\\' -> {
+									sb.append('\\')
+									continue@loop
+								}
+								'\"' -> {
+									sb.append('\"')
+									continue@loop
+								}
+								'/' -> {
+									sb.append('/')
+									continue@loop
+								}
+								'b' -> {
+									sb.append('\b')
+									continue@loop
+								}
+								'n' -> {
+									sb.append('\n')
+									continue@loop
+								}
+								'r' -> {
+									sb.append('\r')
+									continue@loop
+								}
+								't' -> {
+									sb.append('\t')
+									continue@loop
+								}
+								'u' -> {
+									val ii = Integer.parseInt(StringBuilder()
+										.append(read()
+											?: throw ParserException("error: unclosed string literal"))
+										.append(read()
+											?: throw ParserException("error: unclosed string literal"))
+										.append(read()
+											?: throw ParserException("error: unclosed string literal"))
+										.append(read()
+											?: throw ParserException("error: unclosed string literal"))
+										.toString(), 16)
+									sb.append(ii.toChar())
+									continue@loop
+								}
+								null -> throw ParserException("error: unclosed string literal")
+
+								else -> throw ParserException("error: invalid escape character: " + c)
+							}
+						}
+						'\"' -> {
+							read()
+							return StringToken(sb.toString())
+						}
+						else -> {
+							sb.append(c ?: throw ParserException("error: unclosed string literal"))
+						}
+					}
+				}
+
+			}
+
+
+		}
 
 		TODO("")
 	}
@@ -73,4 +150,7 @@ private data class NumberToken(override val value: String) : Token {
 
 }
 
+private object EmptyToken : Token {
+	override val value: String = ""
+}
 

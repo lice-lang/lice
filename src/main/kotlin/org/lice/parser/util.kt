@@ -7,6 +7,6 @@ package org.lice.parser
  * @since v3.0
  */
 
-fun Char.isBlank(): Boolean =
+fun Char?.isBlank(): Boolean =
 	this == ' ' || this == '\n' || this == '\b' || this == 'r'
-		|| this == '\t' || this == 0.toChar()
+		|| this == '\t' || this == null
