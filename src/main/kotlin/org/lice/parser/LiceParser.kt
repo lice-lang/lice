@@ -276,11 +276,15 @@ class LiceParser(private val reader: Reader) : Parser {
 			'}' -> return Token.RBE
 
 			else -> {
-				while(!c.isBlank())
+				while(!c.isBlank() && !c.isBracket()) {
+					sb.append(c ?: break)
+					read()
+				}
+
+				return SymbolToken(sb.toString())
 			}
 		}
-
-		TODO("")
+		
 	}
 }
 
