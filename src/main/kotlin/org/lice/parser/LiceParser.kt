@@ -262,6 +262,22 @@ class LiceParser(private val reader: Reader) : Parser {
 				}
 
 			}
+
+			'(' -> return Token.LP
+
+			')' -> return Token.RP
+
+			'[' -> return Token.LBT
+
+			']' -> return Token.RBT
+
+			'{' -> return Token.LBE
+
+			'}' -> return Token.RBE
+
+			else -> {
+				while(!c.isBlank())
+			}
 		}
 
 		TODO("")
@@ -277,7 +293,23 @@ interface Token {
 		}
 
 		val RP: Token = object : Token {
-			override val value: String = ""
+			override val value: String = ")"
+		}
+
+		val LBT: Token = object : Token {
+			override val value: String = "["
+		}
+
+		val RBT: Token = object : Token {
+			override val value: String = "]"
+		}
+
+		val LBE: Token = object : Token {
+			override val value: String = "{"
+		}
+
+		val RBE: Token = object : Token {
+			override val value: String = "}"
 		}
 	}
 }
