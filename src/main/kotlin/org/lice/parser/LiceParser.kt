@@ -1,5 +1,6 @@
 package org.lice.parser
 
+import org.lice.compiler.model.Node
 import org.lice.compiler.model.StringNode
 import java.io.Reader
 import java.io.StringReader
@@ -11,6 +12,7 @@ import java.io.StringReader
  * @since 3.0
  */
 class LiceParser(private val reader: Reader) : Parser {
+
 	private var line: Int = 1
 	private var c: Char? = null
 	private var eof: Boolean = false
@@ -21,7 +23,10 @@ class LiceParser(private val reader: Reader) : Parser {
 
 	constructor(str: String) : this(StringReader(str))
 
-	override fun stringNode(): StringNode = node
+	override fun mapAst(symbol: SymbolList): Node {
+		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+	}
+
 
 	private fun mkNode(): StringNode {
 		val t = nextToken()
@@ -283,7 +288,7 @@ class LiceParser(private val reader: Reader) : Parser {
 			'}' -> return Token.RBE
 
 			else -> {
-				while(!c.isBlank() && !c.isBracket()) {
+				while (!c.isBlank() && !c.isBracket()) {
 					sb.append(c ?: break)
 					read()
 				}
@@ -293,47 +298,70 @@ class LiceParser(private val reader: Reader) : Parser {
 		}
 
 	}
-}
 
-interface Token {
-	val value: String
+	private fun parserBlock() {
+		val l = mutableListOf<Token>()
+		while (true) {
+			val t = nextToken()
+			when (t) {
+				EmptyToken -> {
+					throw ParserException("error: ')' not found")
+				}
+
+				Token.LP -> {
+
+				}
+			}
+		}
+	}
 
 	companion object {
-		val LP: Token = object : Token {
-			override val value: String = "("
+		interface Token {
+			val value: String
+
+			companion object {
+				val LP: Token = object : Token {
+					override val value: String = "("
+				}
+
+				val RP: Token = object : Token {
+					override val value: String = ")"
+				}
+
+				val LBT: Token = object : Token {
+					override val value: String = "["
+				}
+
+				val RBT: Token = object : Token {
+					override val value: String = "]"
+				}
+
+				val LBE: Token = object : Token {
+					override val value: String = "{"
+				}
+
+				val RBE: Token = object : Token {
+					override val value: String = "}"
+				}
+			}
 		}
 
-		val RP: Token = object : Token {
-			override val value: String = ")"
+		data class StringToken(override val value: String) : Token
+
+		data class SymbolToken(override val value: String) : Token
+
+		data class NumberToken(override val value: String) : Token
+
+		object EmptyToken : Token {
+			override val value: String = ""
 		}
 
-		val LBT: Token = object : Token {
-			override val value: String = "["
-		}
+		interface Ast
 
-		val RBT: Token = object : Token {
-			override val value: String = "]"
-		}
+		data class Leaf(val value: Token) : Ast
 
-		val LBE: Token = object : Token {
-			override val value: String = "{"
-		}
-
-		val RBE: Token = object : Token {
-			override val value: String = "}"
-		}
+		data class Middle(val values: MutableList<Ast>) : Ast
 	}
 }
 
-private data class StringToken(override val value: String) : Token
-
-private data class SymbolToken(override val value: String) : Token
-
-private data class NumberToken(override val value: String) : Token {
-
-}
-
-private object EmptyToken : Token {
-	override val value: String = ""
-}
 

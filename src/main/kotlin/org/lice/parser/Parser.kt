@@ -17,21 +17,19 @@ interface Parser {
 		level = DeprecationLevel.ERROR,
 		replaceWith = ReplaceWith("stringNode()")
 	)
-	fun stringNode(str: String) = stringNode()
+	fun stringNode(str: String): StringNode = throw RuntimeException("")
 
 	@Deprecated(
-		message = "Since 3.0"
+		message = "Since 3.0",
+		level = DeprecationLevel.ERROR
 	)
-	fun stringNode(): StringNode
+	fun stringNode(): StringNode = throw RuntimeException("")
 
-	fun mapAst(symbol: SymbolList): Node = org.lice.compiler.parse.mapAst(stringNode())
+	fun mapAst(symbol: SymbolList): Node
 
 	companion object Default {
 		fun defaultParser(str: String): Parser {
-			return object : Parser {
-				val node: StringNode by lazy { buildNode(str) }
-				override fun stringNode(): StringNode = node
-			}
+			TODO("")
 		}
 
 		fun defaultParser(reader: Reader): Parser = defaultParser(reader.readText())
