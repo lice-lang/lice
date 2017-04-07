@@ -7,4 +7,6 @@
 
 package org.lice.parser
 
-typealias SymbolList = org.lice.compiler.util.SymbolList
+import org.lice.compiler.util.SymbolList as OriginalSymbolList
+
+typealias SymbolList = OriginalSymbolList

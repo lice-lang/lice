@@ -6,6 +6,9 @@
  */
 package org.lice.parser
 
-typealias MetaData = org.lice.compiler.model.MetaData
-typealias StringNode = org.lice.compiler.model.StringNode
+import org.lice.compiler.model.MetaData as OriginalMetaData
+import org.lice.compiler.model.StringNode as OriginalStringNode
+
+typealias MetaData = OriginalMetaData
+typealias StringNode = OriginalStringNode
 

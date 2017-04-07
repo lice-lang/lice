@@ -12,33 +12,24 @@ import java.io.StringReader
  */
 class LiceParser(private val reader: Reader) : Parser {
 
-	private var line: Int = 1
+	private var line = 1
 	private var c: Char? = null
-	private var eof: Boolean = false
+	private var eof = false
 
-	val node: Ast by lazy {
-		mkAst()
-	}
+	val node: Ast by lazy { mkAst() }
 
 	constructor(str: String) : this(StringReader(str))
 
 	override fun mapAst(symbol: SymbolList): Node {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		TODO("not implemented")
 	}
 
 	fun mkAst(): Ast {
 		val t = nextToken()
-		when (t) {
-			Token.LP -> {
-				return parserBlock()
-			}
-
-			Token.RBE, Token.RBT, Token.RP ->
-				throw ParserException("error: at line $line")
-
-			is StringToken, is NumberToken, is SymbolToken ->
-				return Leaf(t)
-
+		return when (t) {
+			Token.LP -> parserBlock()
+			Token.RBE, Token.RBT, Token.RP -> throw ParseException("error: at line $line")
+			is StringToken, is NumberToken, is SymbolToken -> Leaf(t)
 			else -> TODO("")
 		}
 	}
@@ -51,29 +42,27 @@ class LiceParser(private val reader: Reader) : Parser {
 		}
 
 		c = i.toChar()
-		if (c == '\n')
-			line++
+		if (c == '\n') line++
 
 		return i.toChar()
 	}
 
-	fun skip(): Unit {
-		while (c.isBlank())
-			read()
+	fun readOrThrow(str: String) = read() ?: throw ParseException(str)
+
+	fun skip() {
+		while (c.isBlank()) read()
 	}
 
 	fun nextToken(): Token {
 		skip()
 
-		if (c == null)
-			return EmptyToken
+		if (c == null) return EmptyToken
 
 		val sb = StringBuilder()
 
 		when (c) {
 			'\"' -> {
-				loop@
-				while (true) {
+				loop@ while (true) {
 					when (read()) {
 						'\\' -> {
 							when (read()) {
@@ -89,7 +78,6 @@ class LiceParser(private val reader: Reader) : Parser {
 									sb.append('\'')
 									continue@loop
 								}
-
 								'/' -> {
 									sb.append('/')
 									continue@loop
@@ -112,32 +100,23 @@ class LiceParser(private val reader: Reader) : Parser {
 								}
 								'u' -> {
 									val ii = Integer.parseInt(StringBuilder()
-										.append(read()
-											?: throw ParserException("error: unclosed string literal at line $line"))
-										.append(read()
-											?: throw ParserException("error: unclosed string literal at line $line"))
-										.append(read()
-											?: throw ParserException("error: unclosed string literal at line $line"))
-										.append(read()
-											?: throw ParserException("error: unclosed string literal at line $line"))
-										.toString(), 16)
+											.append(readOrThrow("error: unclosed string literal at line $line"))
+											.append(readOrThrow("error: unclosed string literal at line $line"))
+											.append(readOrThrow("error: unclosed string literal at line $line"))
+											.append(readOrThrow("error: unclosed string literal at line $line"))
+											.toString(), 16)
 									sb.append(ii.toChar())
 									continue@loop
 								}
-								null ->
-									throw ParserException("error: unclosed string literal at line $line")
-
-								else ->
-									throw ParserException("error: invalid escape character: $c at line  at line $line")
+								null -> throw ParseException("error: unclosed string literal at line $line")
+								else -> throw ParseException("error: invalid escape character: $c at line  at line $line")
 							}
 						}
 						'\"' -> {
 							read()
 							return StringToken(sb.toString())
 						}
-						else -> {
-							sb.append(c ?: throw ParserException("error: unclosed string literal at line $line"))
-						}
+						else -> sb.append(c ?: throw ParseException("error: unclosed string literal at line $line"))
 					}
 				}
 
@@ -161,7 +140,6 @@ class LiceParser(private val reader: Reader) : Parser {
 									sb.append('\'')
 									continue@loop
 								}
-
 								'/' -> {
 									sb.append('/')
 									continue@loop
@@ -184,30 +162,23 @@ class LiceParser(private val reader: Reader) : Parser {
 								}
 								'u' -> {
 									val ii = Integer.parseInt(StringBuilder()
-										.append(read()
-											?: throw ParserException("error: unclosed string literal"))
-										.append(read()
-											?: throw ParserException("error: unclosed string literal"))
-										.append(read()
-											?: throw ParserException("error: unclosed string literal"))
-										.append(read()
-											?: throw ParserException("error: unclosed string literal"))
-										.toString(), 16)
+											.append(readOrThrow("error: unclosed string literal"))
+											.append(readOrThrow("error: unclosed string literal"))
+											.append(readOrThrow("error: unclosed string literal"))
+											.append(readOrThrow("error: unclosed string literal"))
+											.toString(), 16)
 									sb.append(ii.toChar())
 									continue@loop
 								}
-								null -> throw ParserException("error: unclosed string literal")
-
-								else -> throw ParserException("error: invalid escape character: " + c)
+								null -> throw ParseException("error: unclosed string literal")
+								else -> throw ParseException("error: invalid escape character: " + c)
 							}
 						}
 						'\'' -> {
 							read()
 							return StringToken(sb.toString())
 						}
-						else -> {
-							sb.append(c ?: throw ParserException("error: unclosed string literal"))
-						}
+						else -> sb.append(c ?: throw ParseException("error: unclosed string literal"))
 					}
 				}
 
@@ -254,33 +225,25 @@ class LiceParser(private val reader: Reader) : Parser {
 								}
 								'u' -> {
 									val ii = Integer.parseInt(StringBuilder()
-										.append(read()
-											?: throw ParserException("error: unclosed string literal"))
-										.append(read()
-											?: throw ParserException("error: unclosed string literal"))
-										.append(read()
-											?: throw ParserException("error: unclosed string literal"))
-										.append(read()
-											?: throw ParserException("error: unclosed string literal"))
-										.toString(), 16)
+											.append(readOrThrow("error: unclosed string literal"))
+											.append(readOrThrow("error: unclosed string literal"))
+											.append(readOrThrow("error: unclosed string literal"))
+											.append(readOrThrow("error: unclosed string literal"))
+											.toString(), 16)
 									sb.append(ii.toChar())
 									continue@loop
 								}
-								null -> throw ParserException("error: unclosed string literal")
-
-								else -> throw ParserException("error: invalid escape character: " + c)
+								null -> throw ParseException("error: unclosed string literal")
+								else -> throw ParseException("error: invalid escape character: " + c)
 							}
 						}
 						'”' -> {
 							read()
 							return StringToken(sb.toString())
 						}
-						else -> {
-							sb.append(c ?: throw ParserException("error: unclosed string literal"))
-						}
+						else -> sb.append(c ?: throw ParseException("error: unclosed string literal"))
 					}
 				}
-
 			}
 
 			'(' -> {
@@ -330,24 +293,15 @@ class LiceParser(private val reader: Reader) : Parser {
 		while (true) {
 			val t = nextToken()
 			when (t) {
-				EmptyToken -> {
-					throw ParserException("error: ')' not found at line: $line")
-				}
-
-				Token.LP -> {
-					l.add(parserBlock())
-				}
-
-				Token.RP -> {
-					return Middle(l)
-				}
-
+				EmptyToken -> throw ParseException("error: ')' not found at line: $line")
+				Token.LP -> l.add(parserBlock())
+				Token.RP -> return Middle(l)
 				else -> l.add(Leaf(t))
 			}
 		}
 	}
 
-	companion object {
+	companion object TOKEN {
 		interface Token {
 			val value: String
 

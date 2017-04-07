@@ -6,6 +6,9 @@
  */
 package org.lice.parser
 
-typealias ParserException = org.lice.compiler.util.ParseException
+import org.lice.compiler.util.InterpretException as OriginalInterpretException
+import org.lice.compiler.util.ParseException as OriginalParseException
 
-typealias InterpretException = org.lice.compiler.util.InterpretException
+typealias ParseException = OriginalParseException
+
+typealias InterpretException = OriginalInterpretException

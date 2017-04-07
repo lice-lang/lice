@@ -23,16 +23,14 @@ data class StringMiddleNode(
 		get() = list.isEmpty()
 
 	override val strRepr: String
-		get() {
-			return list.fold(StringBuilder("{")) { stringBuilder, last ->
-				stringBuilder
-					.append(" [")
-					.append(last.strRepr)
-					.append("]")
-			}
-				.append(" }")
-				.toString()
+		get() = list.fold(StringBuilder("{")) { stringBuilder, last ->
+			stringBuilder
+				.append(" [")
+				.append(last.strRepr)
+				.append("]")
 		}
+			.append(" }")
+			.toString()
 
 	fun add(n: StringNode) {
 		list.add(n)
