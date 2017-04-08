@@ -118,7 +118,7 @@ class LiceParser(private val reader: Reader) : Parser {
 							read()
 							return StringToken(sb.toString())
 						}
-						else -> sb.append(c ?: throw ParseException("error: unclosed string literal at line $line"))
+						else -> sb.append(c)
 					}
 				}
 
@@ -180,7 +180,7 @@ class LiceParser(private val reader: Reader) : Parser {
 							read()
 							return StringToken(sb.toString())
 						}
-						else -> sb.append(c ?: throw ParseException("error: unclosed string literal"))
+						else -> sb.append(c)
 					}
 				}
 
@@ -243,14 +243,14 @@ class LiceParser(private val reader: Reader) : Parser {
 							read()
 							return StringToken(sb.toString())
 						}
-						else -> sb.append(c ?: throw ParseException("error: unclosed string literal"))
+						else -> sb.append(c)
 					}
 				}
 			}
 
 			else -> {
 				while (!c.isBlank() && !c.isBracket()) {
-					sb.append(c ?: break)
+					sb.append(c)
 					read()
 				}
 
