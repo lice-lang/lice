@@ -55,8 +55,10 @@ class LiceParser(private val reader: Reader) : Parser {
 
 	fun nextToken(): Token {
 		skip()
-
-		if (c == null) return EmptyToken
+		val c = c ?: return EmptyToken
+		Token.BRACES_CHARS.forEach { braceToken ->
+			if (braceToken.charValue == c) return braceToken
+		}
 
 		val sb = StringBuilder()
 
@@ -184,7 +186,7 @@ class LiceParser(private val reader: Reader) : Parser {
 
 			}
 
-			'“' -> {
+			'“', '”' -> {
 				loop@
 				while (true) {
 					when (read()) {
@@ -237,43 +239,13 @@ class LiceParser(private val reader: Reader) : Parser {
 								else -> throw ParseException("error: invalid escape character: " + c)
 							}
 						}
-						'”' -> {
+						'”', '“' -> {
 							read()
 							return StringToken(sb.toString())
 						}
 						else -> sb.append(c ?: throw ParseException("error: unclosed string literal"))
 					}
 				}
-			}
-
-			'(' -> {
-				read()
-				return Token.LP
-			}
-
-			')' -> {
-				read()
-				return Token.RP
-			}
-
-			'[' -> {
-				read()
-				return Token.LBT
-			}
-
-			']' -> {
-				read()
-				return Token.RBT
-			}
-
-			'{' -> {
-				read()
-				return Token.LBE
-			}
-
-			'}' -> {
-				read()
-				return Token.RBE
 			}
 
 			else -> {
@@ -306,20 +278,24 @@ class LiceParser(private val reader: Reader) : Parser {
 			val value: String
 
 			companion object BraceTokens {
-				val RP: Token = BraceToken(")")
-				val LP: Token = BraceToken("(")
-				val RP_C: Token = BraceToken("）")
-				val LP_C: Token = BraceToken("（")
-				val LBT: Token = BraceToken("[")
-				val RBT: Token = BraceToken("]")
-				val LBT_C: Token = BraceToken("【")
-				val RBT_C: Token = BraceToken("】")
-				val LBE: Token = BraceToken("{")
-				val RBE: Token = BraceToken("}")
+				val RP = CharToken(')')
+				val LP = CharToken('(')
+				val RP_C = CharToken('）')
+				val LP_C = CharToken('（')
+				val LBT = CharToken('[')
+				val RBT = CharToken(']')
+				val LBT_C = CharToken('【')
+				val RBT_C = CharToken('】')
+				val LBE = CharToken('{')
+				val RBE = CharToken('}')
+				val BRACES_CHARS = listOf(RP, LP, RP_C, LP_C, LBT, RBT, LBT_C, RBT_C, LBE, RBE)
+//						.map { it.charValue }
 			}
 		}
 
-		class BraceToken(override val value: String) : Token
+		class CharToken(val charValue: Char) : Token {
+			override val value = charValue.toString()
+		}
 
 		data class StringToken(override val value: String) : Token
 
