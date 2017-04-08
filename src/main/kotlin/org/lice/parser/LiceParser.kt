@@ -308,8 +308,12 @@ class LiceParser(private val reader: Reader) : Parser {
 			companion object BraceTokens {
 				val RP: Token = BraceToken(")")
 				val LP: Token = BraceToken("(")
+				val RP_C: Token = BraceToken("）")
+				val LP_C: Token = BraceToken("（")
 				val LBT: Token = BraceToken("[")
 				val RBT: Token = BraceToken("]")
+				val LBT_C: Token = BraceToken("【")
+				val RBT_C: Token = BraceToken("】")
 				val LBE: Token = BraceToken("{")
 				val RBE: Token = BraceToken("}")
 			}

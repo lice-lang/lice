@@ -22,3 +22,7 @@ fun Char?.isBracket() = '(' == this
 		|| ']' == this
 		|| '{' == this
 		|| '}' == this
+		|| '（' == this
+		|| '）' == this
+		|| '【' == this
+		|| '】' == this
