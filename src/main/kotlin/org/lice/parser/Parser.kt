@@ -11,20 +11,6 @@ import java.io.Reader
  */
 interface Parser {
 
-	@Deprecated(
-			"Since 2.5, str is not used, so do not pass any parameter!",
-			level = DeprecationLevel.ERROR,
-			replaceWith = ReplaceWith("stringNode()")
-	)
-	fun stringNode(str: String): StringNode = throw RuntimeException("")
-
-	@Deprecated(
-			message = "Since 3.0",
-			level = DeprecationLevel.ERROR,
-			replaceWith = ReplaceWith("stringNode()")
-	)
-	fun stringNode(): StringNode = throw RuntimeException("")
-
 	fun mapAst(symbol: SymbolList): Node
 
 	companion object Default {

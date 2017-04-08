@@ -11,8 +11,9 @@ package org.lice.parser
 fun Char?.isBlank() = ' ' == this
 		|| '\n' == this
 		|| '\b' == this
-		|| 'r' == this
+		|| '\r' == this
 		|| '\t' == this
+		|| '　' == this
 		|| null == this
 
 fun Char?.isBracket() = '(' == this

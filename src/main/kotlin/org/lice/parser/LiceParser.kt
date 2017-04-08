@@ -305,32 +305,17 @@ class LiceParser(private val reader: Reader) : Parser {
 		interface Token {
 			val value: String
 
-			companion object {
-				val LP: Token = object : Token {
-					override val value: String = "("
-				}
-
-				val RP: Token = object : Token {
-					override val value: String = ")"
-				}
-
-				val LBT: Token = object : Token {
-					override val value: String = "["
-				}
-
-				val RBT: Token = object : Token {
-					override val value: String = "]"
-				}
-
-				val LBE: Token = object : Token {
-					override val value: String = "{"
-				}
-
-				val RBE: Token = object : Token {
-					override val value: String = "}"
-				}
+			companion object BraceTokens {
+				val RP: Token = BraceToken(")")
+				val LP: Token = BraceToken("(")
+				val LBT: Token = BraceToken("[")
+				val RBT: Token = BraceToken("]")
+				val LBE: Token = BraceToken("{")
+				val RBE: Token = BraceToken("}")
 			}
 		}
+
+		class BraceToken(override val value: String) : Token
 
 		data class StringToken(override val value: String) : Token
 
