@@ -12,7 +12,10 @@ package org.lice.lang
 
 object Echoer {
 	var printer: (Any?) -> Unit = ::print
+		get
 	var printerErr: (Any?) -> Unit = System.out::print
+		get
+
 	fun echo(a: Any? = "") = printer(a)
 	fun echoln(a: Any? = "") = echo("$a\n")
 	fun echoErr(a: Any? = "") = printerErr(a)

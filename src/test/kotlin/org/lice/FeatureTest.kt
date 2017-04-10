@@ -149,6 +149,7 @@ ice1000
 
 ice1000
 """).o)
+		//language=TEXT
 		assertEquals(233, Lice.run("""
 (defexpr ice1000 a a)
 
@@ -161,8 +162,11 @@ ice1000
 	 */
 	@Test
 	fun test14() {
+		//language=TEXT
 		assertEquals(5, Lice.run("""
-(def gcd a b (if (=== b 0) a (% a b))
-"""))
+(def gcd a b (if (=== b 0) a (gcd b (% a b))))
+
+(gcd 15 20)
+""").o)
 	}
 }

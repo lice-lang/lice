@@ -101,22 +101,12 @@ data class ExpressionNode(
 		override val meta: MetaData,
 		val params: List<Node>) : Node {
 
-	constructor(
-			symbolList: SymbolList,
-			function: String,
-			meta: MetaData,
-			vararg params: Node
-	) : this(
-			symbolList,
-			function,
-			meta,
-			params.toList()
-	)
-
-	override fun eval() =
-			(symbolList.getFunction(function)
-					?: undefinedFunction(function, meta))
-					.invoke(meta, params).eval()
+	override fun eval(): Value {
+		val func = function
+		return (symbolList.getFunction(func)
+				?: undefinedFunction(func, meta))
+				.invoke(meta, params).eval()
+	}
 
 	override fun toString() = "function: <$function> with ${params.size} params"
 }

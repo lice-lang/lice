@@ -20,6 +20,7 @@ import org.lice.compiler.util.InterpretException.Factory.tooFewArgument
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
 import org.lice.compiler.util.SymbolList
 import org.lice.compiler.util.forceRun
+import org.lice.compiler.util.invoke
 import org.lice.lang.DefineResult
 import org.lice.lang.Echoer
 import org.lice.lang.Pair
@@ -54,8 +55,7 @@ inline fun SymbolList.addStandard() {
 				}
 		val override = isFunctionDefined(name)
 		defineFunction(name, { ln, args ->
-//			val backup = params.map { getVariable(it) }
-			val backup = params.map { functions[it]?.invoke(ln, emptyList()) }
+			val backup = params.map { functions[it]?.invoke(ln) }
 			if (args.size != params.size)
 				numberOfArgumentNotMatch(params.size, args.size, ln)
 			args
@@ -95,7 +95,7 @@ inline fun SymbolList.addStandard() {
 		val override = isFunctionDefined(name)
 		defineFunction(name, { ln, args ->
 			//			val backup = params.map { getVariable(it) }
-			val backup = params.map { functions[it]?.invoke(ln, emptyList()) }
+			val backup = params.map { functions[it]?.invoke(ln) }
 			if (args.size != params.size)
 				numberOfArgumentNotMatch(params.size, args.size, ln)
 			args

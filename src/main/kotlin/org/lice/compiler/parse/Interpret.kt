@@ -90,17 +90,30 @@ fun mapAst(
 		else -> throw InterpretException("Using expression as lambda is not supported yet.", node.meta)
 	}
 	is StringLeafNode ->
-		parseValue(
-				str = node.str,
-				meta = node.meta
-		) ?: SymbolNode(
-				symbolList = symbolList,
-				name = node.str,
-				meta = node.meta
-		)
+		wrapValue(node, symbolList)
 	else -> // empty
 		EmptyNode(node.meta)
 }
+
+private fun choose(
+		fst: StringNode,
+		symbolList: SymbolList
+): Node = when (fst) {
+	is StringLeafNode -> wrapValue(fst, symbolList)
+	else -> mapAst(fst, symbolList)
+}
+
+private fun wrapValue(
+		node: StringLeafNode,
+		symbolList: SymbolList
+): Node = parseValue(
+		str = node.str,
+		meta = node.meta
+) ?: SymbolNode(
+		symbolList = symbolList,
+		name = node.str,
+		meta = node.meta
+)
 
 /**
  * create an executable node

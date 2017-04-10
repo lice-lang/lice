@@ -19,6 +19,8 @@ import java.util.*
 @SinceKotlin("1.1")
 typealias Func = (MetaData, List<Node>) -> Node
 
+operator fun Func.invoke(e: MetaData) = invoke(e, emptyList())
+
 class SymbolList
 @JvmOverloads
 constructor(init: Boolean = true) {
