@@ -32,7 +32,7 @@ allprojects {
 }
 
 dependencies {
-  compile 'com.github.lice-lang:lice:v2.5'
+  compile 'com.github.lice-lang:lice:v2.6'
 }
 ```
 
@@ -41,7 +41,7 @@ But if you use Scala, you can add it to your sbt dependency, by adding the stuff
 ```sbtshell
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.lice-lang" % "lice" % "v2.5"
+libraryDependencies += "com.github.lice-lang" % "lice" % "v2.6"
 ```
 
 And if you're a Clojure developer, why not try build it with leiningen?
@@ -49,7 +49,7 @@ And if you're a Clojure developer, why not try build it with leiningen?
 ```leiningen
 :repositories [["jitpack" "https://jitpack.io"]]
 
-:dependencies [[com.github.lice-lang/lice "v2.5"]]
+:dependencies [[com.github.lice-lang/lice "v2.6"]]
 ```
 
 ## Code style
