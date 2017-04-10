@@ -129,10 +129,6 @@ fun createRootNode(
 	val code = file.readText()
 	val fp = "FILE_PATH"
 	if (symbolList.functions[fp]?.invoke(MetaData.EmptyMetaData, emptyList()) == null)
-//		symbolList.setVariable(
-//				name = fp,
-//				value = ValueNode(any = file.absolutePath)
-//		)
 		symbolList.defineFunction(fp, { _, _ -> ValueNode(any = file.absolutePath) })
 	val stringTreeRoot = buildNode(code)
 	return mapAst(

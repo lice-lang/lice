@@ -208,7 +208,6 @@ ice1000
 
     (if (!= 0 (& b 1))
       (-> ret (% (* a ret) m)))
-    ; (println "b = " b)
     (-> b (/ b 2))
     (-> a (% (* a a) m))))
   ret))

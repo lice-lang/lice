@@ -17,8 +17,6 @@ build
 ## unnecessary ##
 
 .gradle/
-#gradle/
-local.properties
 # .gitignore
 
 ## Android
