@@ -9,17 +9,19 @@
 
 package org.lice.compiler.util
 
+import org.lice.lang.Echoer
+
 var DEBUGGING = true
 
 var VERBOSE = true
 
 fun <T> T.println(): T {
-	println(this)
+	Echoer.echoln(this)
 	return this
 }
 
 fun <T> T.debugOutput(): T {
-	if (DEBUGGING) println(this)
+	if (DEBUGGING) Echoer.echoln(this)
 	return this
 }
 
@@ -37,7 +39,7 @@ inline fun verbose(block: () -> Unit) {
 }
 
 fun <T> T.verboseOutput(): T {
-	if (VERBOSE) println(this)
+	if (VERBOSE) Echoer.echoln(this)
 	return this
 }
 
@@ -53,8 +55,6 @@ inline fun forceRun(block: () -> Unit) {
 	}
 }
 
-fun serr(str: String) = System.err.println(str)
+fun serr(str: String) = Echoer.echoln(str)
 
-fun sout(str: String) = println(str)
-
-fun Int.squared() = this * this
+fun sout(str: String) = Echoer.echoln(str)

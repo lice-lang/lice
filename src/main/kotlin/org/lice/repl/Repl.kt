@@ -1,7 +1,9 @@
 package org.lice.repl
 
+import org.lice.compiler.parse.buildNode
+import org.lice.compiler.parse.mapAst
 import org.lice.compiler.util.*
-import org.lice.parser.Parser
+import org.lice.lang.Echoer
 
 /**
  * starting the read-eval-print-loop machine
@@ -14,15 +16,16 @@ class Repl {
 	var stackTrace: Throwable? = null
 
 	init {
-		println("""Lice language repl $VERSION_CODE
+		"""Lice language repl $VERSION_CODE
 			|see: https://github.com/ice1000/org.lice
 
 			|回首向来萧瑟处,也无风雨也无晴。
 			|Stay young stay simple, and make yourself naive.
 
-			|for help please input: help
-			|""".trimMargin())
-		print(HINT)
+			|for help please input: help"""
+				.trimMargin()
+				.println()
+		Echoer.echo(HINT)
 		DEBUGGING = false
 		VERBOSE = false
 	}
@@ -53,10 +56,11 @@ class Repl {
 				|Lice language interpreter $VERSION_CODE
 				|by ice1000""".trimMargin()
 			else -> try {
-				Parser
-					.defaultParser(str)
-					.mapAst(symbolList)
-					.eval()
+//				Parser
+//					.defaultParser(str)
+//					.mapAst(symbolList)
+//					.eval()
+				mapAst(buildNode(str), symbolList).eval()
 			} catch(e: Throwable) {
 				stackTrace = e
 				serr(e.message ?: "")

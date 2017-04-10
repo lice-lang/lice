@@ -21,6 +21,7 @@ import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
 import org.lice.compiler.util.SymbolList
 import org.lice.compiler.util.forceRun
 import org.lice.lang.DefineResult
+import org.lice.lang.Echoer
 import org.lice.lang.Pair
 import org.lice.lang.Symbol
 import java.awt.Image
@@ -149,21 +150,21 @@ inline fun SymbolList.addStandard() {
 	})
 
 	defineFunction("print", { ln, ls ->
-		ls.forEach { print(it.eval().o) }
+		ls.forEach { Echoer.echo(it.eval().o) }
 		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
 	})
 	defineFunction("print-err", { ln, ls ->
-		ls.forEach { System.err.print(it.eval().o.toString()) }
+		ls.forEach { Echoer.echoErr(it.eval().o.toString()) }
 		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
 	})
 	defineFunction("println-err", { ln, ls ->
-		ls.forEach { System.err.print(it.eval().o.toString()) }
-		System.err.println()
+		ls.forEach { Echoer.echolnErr(it.eval().o.toString()) }
+		Echoer.echolnErr()
 		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
 	})
 	defineFunction("println", { ln, ls ->
-		ls.forEach { print(it.eval().o) }
-		println()
+		ls.forEach { Echoer.echo(it.eval().o) }
+		Echoer.echoln()
 		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
 	})
 
@@ -184,12 +185,12 @@ inline fun SymbolList.addStandard() {
 		ls.forEach {
 			val res = it.eval()
 			ret = res
-			println("${res.o.toString()} => ${res.type.name}")
+			Echoer.echoln("${res.o.toString()} => ${res.type.name}")
 		}
 		ValueNode(ret)
 	})
 	defineFunction("type", { _, ls ->
-		ls.forEach { println(it.eval().type.canonicalName) }
+		ls.forEach { Echoer.echoln(it.eval().type.canonicalName) }
 		ls.last()
 	})
 	defineFunction("gc", { ln, _ ->

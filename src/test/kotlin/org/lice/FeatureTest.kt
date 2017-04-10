@@ -155,4 +155,14 @@ ice1000
 (ice1000 233)
 """).o)
 	}
+
+	/**
+	 * recursion
+	 */
+	@Test
+	fun test14() {
+		assertEquals(5, Lice.run("""
+(def gcd a b (if (=== b 0) a (% a b))
+"""))
+	}
 }
