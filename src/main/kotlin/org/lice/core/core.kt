@@ -53,7 +53,8 @@ inline fun SymbolList.addStandard() {
 				}
 		val override = isFunctionDefined(name)
 		defineFunction(name, { ln, args ->
-			val backup = params.map { getVariable(it) }
+//			val backup = params.map { getVariable(it) }
+			val backup = params.map { functions[it]?.invoke(ln, emptyList()) }
 			if (args.size != params.size)
 				numberOfArgumentNotMatch(params.size, args.size, ln)
 			args
@@ -61,14 +62,17 @@ inline fun SymbolList.addStandard() {
 						node.eval().o ?: Nullptr
 					}
 					.forEachIndexed { index, obj ->
-						setVariable(params[index], ValueNode(obj))
+						// setVariable(params[index], ValueNode(obj))
+						defineFunction(params[index], { _, _ -> ValueNode(obj) })
 					}
 			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
 			backup.forEachIndexed { index, node ->
 				if (node != null)
-					setVariable(params[index], node)
+//					setVariable(params[index], node)
+					defineFunction(params[index], { _, _ -> node })
 				else
-					removeVariable(params[index])
+//					removeVariable(params[index])
+					removeFunction(params[index])
 			}
 			ret
 		})
@@ -89,20 +93,24 @@ inline fun SymbolList.addStandard() {
 				}
 		val override = isFunctionDefined(name)
 		defineFunction(name, { ln, args ->
-			val backup = params.map { getVariable(it) }
+			//			val backup = params.map { getVariable(it) }
+			val backup = params.map { functions[it]?.invoke(ln, emptyList()) }
 			if (args.size != params.size)
 				numberOfArgumentNotMatch(params.size, args.size, ln)
 			args
 					.map { node -> FExprValueNode({ node.eval().o }) }
 					.forEachIndexed { index, fexpr ->
-						setVariable(params[index], fexpr)
+						// setVariable(params[index], fexpr)
+						defineFunction(params[index], { _, _ -> fexpr })
 					}
 			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
 			backup.forEachIndexed { index, node ->
 				if (node != null)
-					setVariable(params[index], node)
+//					setVariable(params[index], node)
+					defineFunction(params[index], { _, _ -> node })
 				else
-					removeVariable(params[index])
+//					removeVariable(params[index])
+					removeFunction(params[index])
 			}
 			ret
 		})
@@ -248,22 +256,24 @@ inline fun SymbolList.addGetSetFunction() {
 			tooFewArgument(2, ls.size, ln)
 		val str = (ls[0] as SymbolNode).name
 		val res = ValueNode(ls[1].eval(), ln)
-		setVariable(str, res)
+//		setVariable(str, res)
+		defineFunction(str, { _, _ -> res })
 		res
 	})
 	defineFunction("<->", { ln, ls ->
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)
 		val str = (ls[0] as SymbolNode).name
-		if (getVariable(name = str) == null) {
+		if (functions[str]?.invoke(ln, emptyList()) == null) {
 			val node = ValueNode(ls[1].eval(), ln)
-			setVariable(
-					name = str,
-					value = node
-			)
+//			setVariable(
+//					name = str,
+//					value = node
+//			)
+			defineFunction(str, { _, _ -> node })
 			return@defineFunction node
 		}
-		getVariable(name = str)!!
+		functions[str]?.invoke(ln, emptyList()) ?: getNullNode(ln)
 	})
 }
 
@@ -541,7 +551,8 @@ inline fun SymbolList.addCollectionsFunctions() {
 			is Collection<*> -> {
 				var ret: Any? = null
 				a.o.forEach {
-					setVariable(i, ValueNode(it ?: Nullptr, ln))
+					// setVariable(i, ValueNode(it ?: Nullptr, ln))
+					defineFunction(i, { _, _ -> ValueNode(it ?: Nullptr, ln) })
 					ret = ls[2].eval().o
 				}
 				ValueNode(ret ?: Nullptr, ln)

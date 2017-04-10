@@ -1,5 +1,6 @@
 package org.lice
 
+import org.jetbrains.annotations.TestOnly
 import org.junit.Assert.*
 import org.junit.Test
 import java.math.BigDecimal
@@ -11,6 +12,7 @@ import java.math.BigInteger
  * @author ice1000
  */
 
+@TestOnly
 class FeatureTest {
 
 	/**
@@ -123,5 +125,17 @@ class FeatureTest {
 (force|> (+ () ()))
 """).o)
 		assertNull(Lice.run("()").o)
+	}
+
+	/**
+	 * run/begin block
+	 */
+	@Test
+	fun test12() {
+		assertEquals(233, Lice.run("""
+(-> ice1000 233)
+
+ice1000
+""").o)
 	}
 }

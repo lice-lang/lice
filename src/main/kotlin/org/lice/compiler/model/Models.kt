@@ -4,8 +4,8 @@
  * @author ice1000
  * @since 1.0.0
  */
-//@file:JvmName("Model")
-//@file:JvmMultifileClass
+@file:JvmName("Model")
+@file:JvmMultifileClass
 
 package org.lice.compiler.model
 

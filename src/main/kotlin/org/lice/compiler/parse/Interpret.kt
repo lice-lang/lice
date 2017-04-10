@@ -86,7 +86,7 @@ fun mapAst(
 								)
 							}
 			)
-		// FIXME add lambda support
+	// FIXME add lambda support
 		else -> throw InterpretException("Using expression as lambda is not supported yet.", node.meta)
 	}
 	is StringLeafNode ->
@@ -103,39 +103,6 @@ fun mapAst(
 }
 
 /**
- * create an abstract syntax tree
- *
- * @param file source code file
- * @param symbolList symbol list, with a default value
- * @return generated ast
- */
-@Suppress("DEPRECATION")
-@Deprecated(
-		message = "",
-		level = DeprecationLevel.WARNING,
-		replaceWith = ReplaceWith("createRootNode")
-)
-fun createAst(
-		file: File,
-		symbolList: SymbolList = SymbolList(init = true)
-): Ast {
-	val code = file.readText()
-	val fp = "FILE_PATH"
-	if (symbolList.getVariable(name = fp) == null)
-		symbolList.setVariable(
-				name = fp,
-				value = ValueNode(any = file.absolutePath)
-		)
-	val stringTreeRoot = buildNode(code)
-	return Ast(
-			mapAst(
-					node = stringTreeRoot,
-					symbolList = symbolList
-			)
-	)
-}
-
-/**
  * create an executable node
  *
  * @param file source code file
@@ -148,11 +115,12 @@ fun createRootNode(
 ): Node {
 	val code = file.readText()
 	val fp = "FILE_PATH"
-	if (symbolList.getVariable(name = fp) == null)
-		symbolList.setVariable(
-				name = fp,
-				value = ValueNode(any = file.absolutePath)
-		)
+	if (symbolList.functions[fp]?.invoke(MetaData.EmptyMetaData, emptyList()) == null)
+//		symbolList.setVariable(
+//				name = fp,
+//				value = ValueNode(any = file.absolutePath)
+//		)
+		symbolList.defineFunction(fp, { _, _ -> ValueNode(any = file.absolutePath) })
 	val stringTreeRoot = buildNode(code)
 	return mapAst(
 			node = stringTreeRoot,

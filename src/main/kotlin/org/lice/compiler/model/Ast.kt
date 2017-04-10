@@ -4,8 +4,8 @@
  * @author ice1000
  * @since 1.0.0
  */
-//@file:JvmName("Model")
-//@file:JvmMultifileClass
+@file:JvmName("Model")
+@file:JvmMultifileClass
 
 package org.lice.compiler.model
 
@@ -144,8 +144,7 @@ data class SymbolNode(
 		override val meta: MetaData) : Node {
 
 	override fun eval() =
-			(symbolList.getVariable(name)
-					?: symbolList.getFunction(name)?.invoke(meta, emptyList())
+			(symbolList.getFunction(name)?.invoke(meta, emptyList())
 					?: undefinedVariable(name, meta))
 					.eval()
 

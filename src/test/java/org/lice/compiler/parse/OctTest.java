@@ -1,5 +1,6 @@
 package org.lice.compiler.parse;
 
+import org.jetbrains.annotations.TestOnly;
 import org.junit.Test;
 
 import static org.lice.compiler.parse.Parse.toOctInt;
@@ -15,7 +16,8 @@ import static org.junit.Assert.assertEquals;
  */
 public class OctTest {
 	@SuppressWarnings("OctalInteger")
-	@Test
+	@TestOnly
+	@Test(timeout = 1000)
 	public void toOctTest() {
 		assertEquals(01010, toOctInt("01010"));
 		assertEquals(01267120, toOctInt("01267120"));
