@@ -23,7 +23,7 @@ class SymbolList
 @JvmOverloads
 constructor(init: Boolean = true) {
 	val functions = mutableMapOf<String, Func>()
-	val variables = mutableMapOf<String, Node>()
+//	val variables = mutableMapOf<String, Node>()
 
 	val rand = Random(System.currentTimeMillis())
 	val loadedModules = mutableListOf<String>()
@@ -85,11 +85,11 @@ constructor(init: Boolean = true) {
 //		variables[name] = value
 //	}
 
-	fun removeVariable(name: String) {
-		variables.remove(name)
-	}
+//	fun removeVariable(name: String) {
+//		variables.remove(name)
+//	}
 
-	fun removeVariable(name: Symbol) = removeVariable(name.name)
+//	fun removeVariable(name: Symbol) = removeVariable(name.name)
 
 //	fun getVariable(name: String) =
 //			variables[name]

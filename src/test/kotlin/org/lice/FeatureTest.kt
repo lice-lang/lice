@@ -128,7 +128,7 @@ class FeatureTest {
 	}
 
 	/**
-	 * run/begin block
+	 * variable
 	 */
 	@Test
 	fun test12() {
@@ -136,6 +136,23 @@ class FeatureTest {
 (-> ice1000 233)
 
 ice1000
+""").o)
+	}
+
+	/**
+	 * function
+	 */
+	@Test
+	fun test13() {
+		assertEquals(233, Lice.run("""
+(defexpr ice1000 233)
+
+ice1000
+""").o)
+		assertEquals(233, Lice.run("""
+(defexpr ice1000 a a)
+
+(ice1000 233)
 """).o)
 	}
 }
