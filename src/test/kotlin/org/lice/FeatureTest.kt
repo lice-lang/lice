@@ -169,4 +169,31 @@ ice1000
 (gcd 15 20)
 """).o)
 	}
+
+	/**
+	 * if condition
+	 */
+	@Test
+	fun test15() {
+		assertEquals(1, Lice.run("(if (>= 9 8 7 7 6 6 6 5 4 3 1 -1) 1 (+ 1 1))").o)
+		assertEquals(2, Lice.run("(if (>= 9 8 7 7 6 6 6 5 8 3 1 -1) 1 (+ 1 1))").o)
+	}
+
+
+	/**
+	 * when condition
+	 */
+	@Test
+	fun test16() {
+		assertEquals(666, Lice.run("""(when
+(!== 1 1), 233
+(=== 1 1), 666
+)""").o)
+		assertEquals(123, Lice.run("""(when
+(!== 1 1), 233
+(=== 2 1), 666
+123
+)""").o)
+	}
+
 }

@@ -284,13 +284,9 @@ inline fun SymbolList.addControlFlowFunctions() {
 			tooFewArgument(2, ls.size, ln)
 		val a = ls[0].eval().o
 		val condition = a as? Boolean ?: (a != null)
-		val ret = when {
-			condition -> ls[1].eval().o
-			ls.size >= 3 -> ls[2].eval().o
-			else -> null
-		}
 		when {
-			ret != null -> ValueNode(ret, ln)
+			condition -> ls[1]
+			ls.size >= 3 -> ls[2]
 			else -> getNullNode(ln)
 		}
 	})
@@ -305,7 +301,7 @@ inline fun SymbolList.addControlFlowFunctions() {
 			if (ret != null) return@defineFunction ValueNode(ret, ln)
 		}
 		if (ls.size % 2 == 0) getNullNode(ln)
-		else ValueNode(ls.last().eval())
+		else ls.last()
 	})
 	defineFunction("while", { ln, ls ->
 		if (ls.size < 2)
