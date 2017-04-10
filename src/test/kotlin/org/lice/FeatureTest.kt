@@ -179,7 +179,6 @@ ice1000
 		assertEquals(2, Lice.run("(if (>= 9 8 7 7 6 6 6 5 8 3 1 -1) 1 (+ 1 1))").o)
 	}
 
-
 	/**
 	 * when condition
 	 */
@@ -196,4 +195,25 @@ ice1000
 )""").o)
 	}
 
+	/**
+	 * while loop
+	 */
+	@Test
+	fun test17() {
+		assertEquals(9, Lice.run("""
+(def exp-mod a b m (|>
+  (-> ret 1)
+
+  (while (!= 0 b) (|>
+
+    (if (!= 0 (& b 1))
+      (-> ret (% (* a ret) m)))
+    ; (println "b = " b)
+    (-> b (/ b 2))
+    (-> a (% (* a a) m))))
+  ret))
+
+(exp-mod 23 2 26)
+""").o)
+	}
 }

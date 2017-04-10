@@ -307,17 +307,15 @@ inline fun SymbolList.addControlFlowFunctions() {
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)
 		var a = ls[0].eval().o
-		var ret: Any? = null
+		var ret: Node = EmptyNode(ln)
 		while (a as? Boolean ?: (a != null)) {
 			// execute loop
-			ret = ls[1].eval().o
+			ret.eval()
+			ret = ls[1]
 			// update a
 			a = ls[0].eval().o
 		}
-		when {
-			ret != null -> ValueNode(ret, ln)
-			else -> getNullNode(ln)
-		}
+		ret
 	})
 }
 
