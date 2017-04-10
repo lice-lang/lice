@@ -321,9 +321,9 @@ inline fun SymbolList.addControlFlowFunctions() {
 
 inline fun SymbolList.addConcurrentFunctions() {
 	defineFunction("thread|>", { ln, ls ->
-		var ret: Node = getNullNode(ln)
-		thread { ls.forEach { node -> ret = ValueNode(node.eval()) } }
-		ret
+		var ret: Any? = null
+		thread { ls.forEach { node -> ret = node.eval().o } }
+		ValueNode(ret, ret?.javaClass ?: Any::class.java, ln)
 	})
 	defineFunction("sleep", { ln, ls ->
 		val a = ls[0].eval()
@@ -331,7 +331,7 @@ inline fun SymbolList.addConcurrentFunctions() {
 			a.o is Number -> Thread.sleep(a.o.toLong())
 			else -> typeMisMatch("Number", a, ln)
 		}
-		getNullNode(ln)
+		ValueNode(ls, ln)
 	})
 }
 
