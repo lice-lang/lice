@@ -32,6 +32,8 @@ import java.net.URL
 import javax.imageio.ImageIO
 import kotlin.concurrent.thread
 
+inline fun Any?.booleanValue() = this as? Boolean ?: (this != null)
+
 inline fun SymbolList.addStandard() {
 	addGetSetFunction()
 	addControlFlowFunctions()
@@ -91,11 +93,11 @@ inline fun SymbolList.addStandard() {
 				}
 		val override = isFunctionDefined(name)
 		defineFunction(name, { ln, args ->
-			val backup = params.map { functions[it]?.invoke(ln) }
+			val backup = params.map { getFunction(it)?.invoke(ln) }
 			if (args.size != params.size)
 				numberOfArgumentNotMatch(params.size, args.size, ln)
 			args
-					.map { node -> FExprValueNode({ node.eval().o }) }
+					.map { node -> LazyValueNode({ node.eval() }) }
 					.forEachIndexed { index, fexpr ->
 						defineFunction(params[index], { _, _ -> fexpr })
 					}
@@ -271,7 +273,7 @@ inline fun SymbolList.addControlFlowFunctions() {
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)
 		val a = ls[0].eval().o
-		val condition = a as? Boolean ?: (a != null)
+		val condition = a.booleanValue()
 		when {
 			condition -> ls[1]
 			ls.size >= 3 -> ls[2]
@@ -281,12 +283,8 @@ inline fun SymbolList.addControlFlowFunctions() {
 	defineFunction("when", { ln, ls ->
 		for (i in (0..ls.size - 2) step 2) {
 			val a = ls[i].eval().o
-			val condition = a as? Boolean ?: (a != null)
-			val ret = when {
-				condition -> ls[i + 1].eval().o
-				else -> null
-			}
-			if (ret != null) return@defineFunction ValueNode(ret, ln)
+			val condition = a.booleanValue()
+			if (condition) return@defineFunction ls[i + 1]
 		}
 		if (ls.size % 2 == 0) getNullNode(ln)
 		else ls.last()
@@ -296,7 +294,7 @@ inline fun SymbolList.addControlFlowFunctions() {
 			tooFewArgument(2, ls.size, ln)
 		var a = ls[0].eval().o
 		var ret: Node = EmptyNode(ln)
-		while (a as? Boolean ?: (a != null)) {
+		while (a.booleanValue()) {
 			// execute loop
 			ret.eval()
 			ret = ls[1]

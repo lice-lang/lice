@@ -215,4 +215,20 @@ ice1000
 (exp-mod 23 2 26)
 """).o)
 	}
+
+	/**
+	 * lazy evaluation
+	 */
+	@Test
+	fun test18() {
+		assertEquals(233, Lice.run("""
+(defexpr fuck a b b)
+
+(-> lover 233)
+
+(fuck (-> lover 666) ())
+
+lover
+""").o)
+	}
 }

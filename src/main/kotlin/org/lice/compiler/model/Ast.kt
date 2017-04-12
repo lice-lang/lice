@@ -27,7 +27,7 @@ interface AbstractValue {
 	val type: Class<*>
 }
 
-data class Value(
+class Value(
 		override val o: Any?,
 		override val type: Class<*>) : AbstractValue {
 	constructor(
@@ -51,7 +51,7 @@ interface Node {
 	}
 }
 
-data class ValueNode
+class ValueNode
 @JvmOverloads
 constructor(
 		val value: Value,
@@ -81,7 +81,17 @@ constructor(
 	override fun toString() = "value: <${value.o}> => ${value.type}"
 }
 
-data class FExprValueNode
+class LazyValueNode
+@JvmOverloads
+constructor(
+		lambda: () -> Value,
+		override val meta: MetaData = EmptyMetaData) : Node {
+	val value: Value by lazy(lambda)
+	override fun eval() = value
+	override fun toString() = "lazy value, not evaluated"
+}
+
+class FExprValueNode
 @JvmOverloads
 constructor(
 		val fexpr: () -> Any?,
@@ -147,7 +157,7 @@ data class EmptyNode(override val meta: MetaData) : Node {
 }
 
 @Deprecated(
-		message =  "",
+		message = "",
 		level = DeprecationLevel.WARNING,
 		replaceWith = ReplaceWith("Node")
 )
