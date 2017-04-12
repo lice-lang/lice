@@ -17,7 +17,7 @@ class Repl {
 
 	init {
 		"""Lice language repl $VERSION_CODE
-			|see: https://github.com/ice1000/org.lice
+			|see: https://github.com/lice-lang/lice
 
 			|回首向来萧瑟处,也无风雨也无晴。
 			|Stay young stay simple, and make yourself naive.
@@ -32,39 +32,16 @@ class Repl {
 
 	@JvmOverloads
 	fun handle(
-		str: String,
-		symbolList: SymbolList = SymbolList(true)): Boolean {
-		when (str) {
-			"exit" -> {
-				"Have a nice day :)".println()
-				return false
-			}
-			"pst" ->
-				if (stackTrace != null) stackTrace?.printStackTrace()
-				else "No stack trace.".println()
-			"help" -> """
-				|This is the repl for org.lice language.
-
-				|You have 4 special commands which you cannot use in the language but the repl:
-
-				|exit: exit the repl
-                |pst: print the most recent stack trace
-                |help: print this doc
-				|version: check the version""".trimMargin()
-				.println()
-			"version" -> """
-				|Lice language interpreter $VERSION_CODE
-				|by ice1000""".trimMargin()
-			else -> try {
-//				Parser
-//					.defaultParser(str)
-//					.mapAst(symbolList)
-//					.eval()
-				mapAst(buildNode(str), symbolList).eval()
-			} catch(e: Throwable) {
-				stackTrace = e
-				serr(e.message ?: "")
-			}
+			str: String,
+			symbolList: SymbolList = SymbolList(true)): Boolean {
+		if (str == "pst") {
+			if (stackTrace != null) stackTrace?.printStackTrace()
+			else "No stack trace.".println()
+		} else try {
+			mapAst(buildNode(str), symbolList).eval()
+		} catch(e: Throwable) {
+			stackTrace = e
+			serr(e.message ?: "")
 		}
 		print("\n$HINT")
 		return true
