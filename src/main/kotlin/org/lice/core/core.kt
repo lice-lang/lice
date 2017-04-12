@@ -152,17 +152,6 @@ inline fun SymbolList.addStandard() {
 		ls.forEach { Echoer.echoErr(it.eval().o.toString()) }
 		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
 	})
-	defineFunction("println-err", { ln, ls ->
-		ls.forEach { Echoer.echolnErr(it.eval().o.toString()) }
-		Echoer.echolnErr()
-		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
-	})
-	defineFunction("println", { ln, ls ->
-		ls.forEach { Echoer.echo(it.eval().o) }
-		Echoer.echoln()
-		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
-	})
-
 	defineFunction("new", { ln, ls ->
 		val a = ls[0].eval()
 		when (a.o) {
