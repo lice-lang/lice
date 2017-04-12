@@ -230,5 +230,22 @@ ice1000
 
 lover
 """).o)
+		assertEquals(666, Lice.run("""
+(def fuck a b b)
+
+(-> lover 233)
+
+(fuck (-> lover 666) ())
+
+lover
+""").o)
+		//language=TEXT
+		assertEquals(233 + 1, Lice.run("""
+(defexpr fuck a b (|> b b))
+
+(-> lover 233)
+
+(fuck () (-> lover (+ lover 1)))
+""").o)
 	}
 }
