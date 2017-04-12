@@ -5,6 +5,7 @@ jdk:
 - oraclejdk8
 script:
 - "./gradlew check"
-- "./gradlew build"
+- "./gradlew javadoc"
+- "./gradlew jar"
 before_install:
 - chmod a+x gradlew

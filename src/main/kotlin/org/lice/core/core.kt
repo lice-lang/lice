@@ -57,7 +57,7 @@ inline fun SymbolList.addStandard() {
 				}
 		val override = isFunctionDefined(name)
 		defineFunction(name, { ln, args ->
-			val backup = params.map { functions[it]?.invoke(ln) }
+			val backup = params.map { getFunction(it)?.invoke(ln) }
 			if (args.size != params.size)
 				numberOfArgumentNotMatch(params.size, args.size, ln)
 			args
@@ -248,12 +248,12 @@ inline fun SymbolList.addGetSetFunction() {
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)
 		val str = (ls[0] as SymbolNode).name
-		if (functions[str]?.invoke(ln, emptyList()) == null) {
+		if (getFunction(str)?.invoke(ln, emptyList()) == null) {
 			val node = ValueNode(ls[1].eval(), ln)
 			defineFunction(str, { _, _ -> node })
 			return@defineFunction node
 		}
-		functions[str]?.invoke(ln, emptyList()) ?: getNullNode(ln)
+		getFunction(str)?.invoke(ln, emptyList()) ?: getNullNode(ln)
 	})
 }
 
