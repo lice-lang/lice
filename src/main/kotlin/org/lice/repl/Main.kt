@@ -1,6 +1,7 @@
 package org.lice.repl
 
 import org.lice.compiler.model.Node
+import org.lice.compiler.model.ValueNode
 import org.lice.compiler.parse.createRootNode
 import org.lice.compiler.util.SymbolList
 import org.lice.compiler.util.println
@@ -51,6 +52,7 @@ object Main {
 						.println()
 				Node.getNullNode(meta)
 			})
+			sl.defineFunction("FILE_PATH", { _, _ -> ValueNode(any = File("").absolutePath) })
 			val scanner = Scanner(System.`in`)
 			val repl = Repl()
 			while (repl.handle(scanner.nextLine(), sl)) {
@@ -60,6 +62,5 @@ object Main {
 				if (!exists()) serr("file not found: ${args[0]}")
 			})
 		}
-//		System.exit(0)
 	}
 }

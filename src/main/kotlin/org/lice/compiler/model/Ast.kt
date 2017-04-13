@@ -82,7 +82,7 @@ constructor(
 }
 
 class LazyValueNode
-@JvmOverloads
+//@JvmOverloads
 constructor(
 		lambda: () -> Value,
 		override val meta: MetaData = EmptyMetaData) : Node {
@@ -91,21 +91,7 @@ constructor(
 	override fun toString() = "lazy value, not evaluated"
 }
 
-class FExprValueNode
-@JvmOverloads
-constructor(
-		val fexpr: () -> Any?,
-		override val meta: MetaData = EmptyMetaData) : Node {
-	override fun eval(): Value {
-		val ret = fexpr()
-		return if (ret != null) Value(ret) else Nullptr
-	}
-
-	override fun toString() = "fexpr: <not evaluated, unknown>"
-}
-
-
-data class ExpressionNode(
+class ExpressionNode(
 		val symbolList: SymbolList,
 		val function: String,
 		override val meta: MetaData,
@@ -121,24 +107,7 @@ data class ExpressionNode(
 	override fun toString() = "function: <$function> with ${params.size} params"
 }
 
-data class LambdaNode(
-		val lambda: Node,
-		val symbolList: SymbolList,
-		val params: List<Node>,
-		override val meta: MetaData) : Node {
-
-	@Deprecated("difficult to achieve!")
-	override fun eval(): Value {
-		val str = lambda.eval().o
-		return (symbolList.getFunction(str.toString())
-				?: undefinedFunction(str.toString(), meta))
-				.invoke(meta, params).eval()
-	}
-
-	override fun toString() = "lambda: <$${super.toString()}>"
-}
-
-data class SymbolNode(
+class SymbolNode(
 		val symbolList: SymbolList,
 		val name: String,
 		override val meta: MetaData) : Node {
@@ -151,16 +120,8 @@ data class SymbolNode(
 	override fun toString() = "symbol: <$name>"
 }
 
-data class EmptyNode(override val meta: MetaData) : Node {
+class EmptyNode(override val meta: MetaData) : Node {
 	override fun eval() = Nullptr
 	override fun toString() = "null: <null>"
 }
 
-@Deprecated(
-		message = "",
-		level = DeprecationLevel.WARNING,
-		replaceWith = ReplaceWith("Node")
-)
-class Ast(
-		val root: Node
-)
