@@ -25,13 +25,20 @@ import java.io.File
 fun parseValue(
 		str: String,
 		meta: MetaData): Node? {
-	if (str.isEmpty() or str.isBlank())
+	if (str.isBlank())
 		return EmptyNode(meta)
 	else if (str.isString()) return ValueNode(str
 			.substring(
 					startIndex = 1,
 					endIndex = str.length - 1
-			), meta)
+			)
+			.replace("\\r", "\r")
+			.replace("\\n", "\n")
+			.replace("\\t", "\t")
+			.replace("\\b", "\b")
+			.replace("\\\\", "\\")
+			.replace("\\\"", "\"")
+			.replace("\\\'", "\'"), meta)
 	if (str.isOctInt())
 		return ValueNode(str.toOctInt(), meta)
 	if (str.isInt())
