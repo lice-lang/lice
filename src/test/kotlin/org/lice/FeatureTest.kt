@@ -9,6 +9,7 @@ import java.math.BigInteger
 import kotlin.test.assertTrue
 
 /**
+ * Demos for language feature
  * Created by ice1000 on 2017/4/1.
  *
  * @author ice1000
@@ -72,7 +73,7 @@ class FeatureTest {
 	/**
 	 * comparision
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test6() {
 		assertTrue(true == Lice.run("(>= 9 8 7 7 6 6 6 5 4 3 1 -1)"))
 		assertTrue(true != Lice.run("(>= 9 8 7 7 6 6 6 5 8 3 1 -1)"))
@@ -81,7 +82,7 @@ class FeatureTest {
 	/**
 	 * string connection
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test7() {
 		assertEquals("boyNextDoor", Lice.run("""
 (str-con "boy" "Next" "Door")
@@ -91,7 +92,7 @@ class FeatureTest {
 	/**
 	 * parsing string
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test8() {
 		assertEquals(0xDBE, Lice.run("""
 (str->int "0xDBE")
@@ -101,7 +102,7 @@ class FeatureTest {
 	/**
 	 * string evaluation
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test9() {
 		assertEquals(2, Lice.run("""
 (eval "(+ 1 1)")
@@ -111,7 +112,7 @@ class FeatureTest {
 	/**
 	 * run/begin block
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test10() {
 		assertEquals(4, Lice.run("""
 (|> (+ 1 1) (+ 2 2))
@@ -121,7 +122,7 @@ class FeatureTest {
 	/**
 	 * force running
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test11() {
 		assertNull(Lice.run("""
 (force|> (+ () ()))
@@ -132,7 +133,7 @@ class FeatureTest {
 	/**
 	 * variable
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test12() {
 		assertEquals(233, Lice.run("""
 (-> ice1000 233)
@@ -144,7 +145,7 @@ ice1000
 	/**
 	 * function
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test13() {
 		assertEquals(233, Lice.run("""
 (defexpr ice1000 233)
@@ -162,7 +163,7 @@ ice1000
 	/**
 	 * recursion
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test14() {
 		//language=TEXT
 		assertEquals(5, Lice.run("""
@@ -175,7 +176,7 @@ ice1000
 	/**
 	 * if condition
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test15() {
 		assertEquals(1, Lice.run("(if (>= 9 8 7 7 6 6 6 5 4 3 1 -1) 1 (+ 1 1))"))
 		assertEquals(2, Lice.run("(if (>= 9 8 7 7 6 6 6 5 8 3 1 -1) 1 (+ 1 1))"))
@@ -184,7 +185,7 @@ ice1000
 	/**
 	 * when condition
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test16() {
 		assertEquals(666, Lice.run("""(when
 (!== 1 1), 233
@@ -200,7 +201,7 @@ ice1000
 	/**
 	 * while loop
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test17() {
 		assertEquals(9, Lice.run("""
 (def exp-mod a b m (|>
@@ -221,7 +222,7 @@ ice1000
 	/**
 	 * lazy evaluation
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test18() {
 		assertEquals(233, Lice.run("""
 (defexpr fuck a b b)
@@ -254,7 +255,7 @@ lover
 	/**
 	 * assignment
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test19() {
 		assertEquals(233, Lice.run("""
 (-> ice1k 233)
@@ -277,7 +278,7 @@ ice1k
 	/**
 	 * literals
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test20() {
 		assertNull(Lice.run("null"))
 		assertTrue(true == Lice.run("true"))
@@ -287,7 +288,7 @@ ice1k
 	/**
 	 * escape
 	 */
-	@Test
+	@Test(timeout = 1000)
 	fun test21() {
 		assertEquals("\n", Lice.run(""""\n""""))
 		assertEquals("\r", Lice.run(""""\r""""))

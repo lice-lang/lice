@@ -12,7 +12,6 @@ package org.lice.compiler.parse
 import org.lice.compiler.model.*
 import org.lice.compiler.util.InterpretException
 import org.lice.compiler.util.SymbolList
-import org.lice.compiler.util.forceRun
 import java.io.File
 
 
@@ -24,10 +23,9 @@ import java.io.File
  */
 fun parseValue(
 		str: String,
-		meta: MetaData): Node? {
-	if (str.isBlank())
-		return EmptyNode(meta)
-	else if (str.isString()) return ValueNode(str
+		meta: MetaData): Node? = when {
+	str.isBlank() -> EmptyNode(meta)
+	str.isString() -> ValueNode(str
 			.substring(
 					startIndex = 1,
 					endIndex = str.length - 1
@@ -39,22 +37,18 @@ fun parseValue(
 			.replace("\\\\", "\\")
 			.replace("\\\"", "\"")
 			.replace("\\\'", "\'"), meta)
-	if (str.isOctInt())
-		return ValueNode(str.toOctInt(), meta)
-	if (str.isInt())
-		return ValueNode(str.toInt(), meta)
-	if (str.isHexInt())
-		return ValueNode(str.toHexInt(), meta)
-	if (str.isBinInt())
-		return ValueNode(str.toBinInt(), meta)
-	if (str.isBigInt())
-		return ValueNode(str.toBigInt(), meta)
-	forceRun {
-		return if (str.length < 0xF)
+	str.isOctInt() -> ValueNode(str.toOctInt(), meta)
+	str.isInt() -> ValueNode(str.toInt(), meta)
+	str.isHexInt() -> ValueNode(str.toHexInt(), meta)
+	str.isBinInt() -> ValueNode(str.toBinInt(), meta)
+	str.isBigInt() -> ValueNode(str.toBigInt(), meta)
+	else -> try {
+		if (str.length < 0xF)
 			ValueNode(str.toFloat(), meta)
 		else ValueNode(str.toDouble(), meta)
+	} catch (e: Throwable) {
+		null
 	}
-	return null
 }
 
 /**
@@ -79,12 +73,7 @@ fun mapAst(
 									fromIndex = 1,
 									toIndex = node.list.size
 							)
-							.map { strNode ->
-								mapAst(
-										node = strNode,
-										symbolList = symbolList
-								)
-							}
+							.map { strNode -> mapAst(strNode, symbolList) }
 			)
 	// FIXME add lambda support
 		else -> throw InterpretException("Using expression as lambda is not supported yet.", node.meta)
