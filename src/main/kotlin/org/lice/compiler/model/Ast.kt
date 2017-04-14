@@ -35,12 +35,12 @@ class Value(
 	) : this(o, o.javaClass)
 
 	companion object Objects {
-		val Nullptr =
-				Value(null, Any::class.java)
+		val Nullptr = Value(null, Any::class.java)
 	}
 }
 
 interface Node {
+//	fun eval(params: List<Node> = emptyList<Node>()): Value
 	fun eval(): Value
 	val meta: MetaData
 
@@ -58,25 +58,13 @@ constructor(
 		override val meta: MetaData = EmptyMetaData) : Node {
 
 	@JvmOverloads
-	constructor(
-			any: Any,
-			meta: MetaData = EmptyMetaData
-	) : this(
-			Value(any),
-			meta
-	)
+	constructor(any: Any, meta: MetaData = EmptyMetaData) : this(Value(any), meta)
 
 	@JvmOverloads
-	constructor(
-			any: Any?,
-			type: Class<*>,
-			meta: MetaData = EmptyMetaData
-	) : this(
-			Value(any, type),
-			meta
-	)
+	constructor(any: Any?, type: Class<*>, meta: MetaData = EmptyMetaData) : this(Value(any, type), meta)
 
 	override fun eval() = value
+//	override fun eval(params: List<Node>) = value
 
 	override fun toString() = "value: <${value.o}> => ${value.type}"
 }
@@ -88,6 +76,7 @@ constructor(
 		override val meta: MetaData = EmptyMetaData) : Node {
 	val value: Value by lazy(lambda)
 	override fun eval() = value
+//	override fun eval(params: List<Node>) = value
 	override fun toString() = "lazy value, not evaluated"
 }
 
@@ -104,6 +93,13 @@ class ExpressionNode(
 				.invoke(meta, params).eval()
 	}
 
+//	override fun eval(params: List<Node>): Value {
+//		val func = function
+//		return (symbolList.getFunction(func)
+//				?: undefinedFunction(func, meta))
+//				.invoke(meta, params).eval()
+//	}
+//
 	override fun toString() = "function: <$function> with ${params.size} params"
 }
 
@@ -117,11 +113,17 @@ class SymbolNode(
 					?: undefinedVariable(name, meta))
 					.eval()
 
+//	override fun eval(params: List<Node>) =
+//			(symbolList.getFunction(name)?.invoke(meta, emptyList())
+//					?: undefinedVariable(name, meta))
+//					.eval()
+//
 	override fun toString() = "symbol: <$name>"
 }
 
 class EmptyNode(override val meta: MetaData) : Node {
 	override fun eval() = Nullptr
+//	override fun eval(params: List<Node>) = Nullptr
 	override fun toString() = "null: <null>"
 }
 

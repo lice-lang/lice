@@ -136,10 +136,10 @@ inline fun SymbolList.addStandard() {
 	defineFunction("eval", { ln, ls ->
 		val value = ls[0].eval()
 		when (value.o) {
-			is String -> ValueNode(mapAst(
+			is String -> mapAst(
 					node = buildNode(value.o),
 					symbolList = this
-			).eval(), ln)
+			)
 			else -> typeMisMatch("String", value, ln)
 		}
 	})

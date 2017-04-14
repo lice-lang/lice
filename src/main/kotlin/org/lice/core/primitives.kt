@@ -11,12 +11,19 @@
 
 package org.lice.core
 
+import org.lice.compiler.model.EmptyNode
 import org.lice.compiler.model.Node
 import org.lice.compiler.model.ValueNode
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
 import org.lice.compiler.util.SymbolList
 import org.lice.lang.NumberOperator
 import org.lice.lang.NumberOperator.Leveler.compare
+
+inline fun SymbolList.addLiterals() {
+	defineFunction("true", { meta, _ -> ValueNode(true, meta) })
+	defineFunction("false", { meta, _ -> ValueNode(false, meta) })
+	defineFunction("null", { meta, _ -> EmptyNode(meta) })
+}
 
 inline fun SymbolList.addNumberFunctions() {
 	defineFunction("->double", { ln, ls ->

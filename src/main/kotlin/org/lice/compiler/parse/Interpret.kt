@@ -10,7 +10,6 @@
 package org.lice.compiler.parse
 
 import org.lice.compiler.model.*
-import org.lice.compiler.model.Value.Objects.Nullptr
 import org.lice.compiler.util.InterpretException
 import org.lice.compiler.util.SymbolList
 import org.lice.compiler.util.forceRun
@@ -43,12 +42,6 @@ fun parseValue(
 		return ValueNode(str.toBinInt(), meta)
 	if (str.isBigInt())
 		return ValueNode(str.toBigInt(), meta)
-	if ("null" == str)
-		return ValueNode(Nullptr, meta)
-	if ("true" == str)
-		return ValueNode(true, meta)
-	if ("false" == str)
-		return ValueNode(false, meta)
 	forceRun {
 		return if (str.length < 0xF)
 			ValueNode(str.toFloat(), meta)
