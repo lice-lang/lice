@@ -1,10 +1,12 @@
 package org.lice
 
 import org.jetbrains.annotations.TestOnly
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 import java.math.BigDecimal
 import java.math.BigInteger
+import kotlin.test.assertTrue
 
 /**
  * Created by ice1000 on 2017/4/1.
@@ -270,5 +272,15 @@ ice1k
 (<-> ice1k 666)
 ice1k
 """))
+	}
+
+	/**
+	 * literals
+	 */
+	@Test
+	fun test20() {
+		assertNull(Lice.run("null"))
+		assertTrue(true == Lice.run("true"))
+		assertTrue(false == Lice.run("false"))
 	}
 }
