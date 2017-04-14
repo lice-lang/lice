@@ -283,4 +283,18 @@ ice1k
 		assertTrue(true == Lice.run("true"))
 		assertTrue(false == Lice.run("false"))
 	}
+
+	/**
+	 * escape
+	 */
+	@Test
+	fun test21() {
+		assertEquals("\n", Lice.run(""""\n""""))
+		assertEquals("\r", Lice.run(""""\r""""))
+		assertEquals("\b", Lice.run(""""\b""""))
+		assertEquals("\t", Lice.run(""""\t""""))
+// FIXME assertEquals("\"", Lice.run(""""\"""""))
+		assertEquals("\'", Lice.run(""""\'""""))
+		assertEquals("\\", Lice.run(""""\\""""))
+	}
 }
