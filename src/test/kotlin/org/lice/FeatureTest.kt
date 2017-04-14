@@ -22,8 +22,8 @@ class FeatureTest {
 	fun test1() {
 		assertEquals("fuck", Lice.run("""
 (print "fuck")
-""").o)
-		assertEquals("lover~lover~fucker~fucker~", Lice.run(""""lover~lover~fucker~fucker~"""").o)
+"""))
+		assertEquals("lover~lover~fucker~fucker~", Lice.run(""""lover~lover~fucker~fucker~""""))
 	}
 
 	/**
@@ -33,8 +33,8 @@ class FeatureTest {
 	fun test2() {
 		assertEquals(233666, Lice.run("""
 (print 233666)
-""").o)
-		assertEquals(233666, Lice.run("233666").o)
+"""))
+		assertEquals(233666, Lice.run("233666"))
 	}
 
 	/**
@@ -44,7 +44,7 @@ class FeatureTest {
 	fun test3() {
 		assertEquals(7, Lice.run("""
 (+ 1 (+ 1 2 3))
-""").o)
+"""))
 	}
 
 	/**
@@ -54,7 +54,7 @@ class FeatureTest {
 	fun test4() {
 		assertEquals(BigInteger("10000000000000000000000000000233"), Lice.run("""
 (+ 10000000000000000000000000000000N 233)
-""").o)
+"""))
 	}
 
 	/**
@@ -64,7 +64,7 @@ class FeatureTest {
 	fun test5() {
 		assertEquals(BigDecimal("10000000000000000000000000000000.233"), Lice.run("""
 (+ 10000000000000000000000000000000N 0.233)
-""").o)
+"""))
 	}
 
 	/**
@@ -72,8 +72,8 @@ class FeatureTest {
 	 */
 	@Test
 	fun test6() {
-		assertTrue(true == Lice.run("(>= 9 8 7 7 6 6 6 5 4 3 1 -1)").o)
-		assertTrue(true != Lice.run("(>= 9 8 7 7 6 6 6 5 8 3 1 -1)").o)
+		assertTrue(true == Lice.run("(>= 9 8 7 7 6 6 6 5 4 3 1 -1)"))
+		assertTrue(true != Lice.run("(>= 9 8 7 7 6 6 6 5 8 3 1 -1)"))
 	}
 
 	/**
@@ -83,7 +83,7 @@ class FeatureTest {
 	fun test7() {
 		assertEquals("boyNextDoor", Lice.run("""
 (str-con "boy" "Next" "Door")
-""").o)
+"""))
 	}
 
 	/**
@@ -93,7 +93,7 @@ class FeatureTest {
 	fun test8() {
 		assertEquals(0xDBE, Lice.run("""
 (str->int "0xDBE")
-""").o)
+"""))
 	}
 
 	/**
@@ -103,7 +103,7 @@ class FeatureTest {
 	fun test9() {
 		assertEquals(2, Lice.run("""
 (eval "(+ 1 1)")
-""").o)
+"""))
 	}
 
 	/**
@@ -113,7 +113,7 @@ class FeatureTest {
 	fun test10() {
 		assertEquals(4, Lice.run("""
 (|> (+ 1 1) (+ 2 2))
-""").o)
+"""))
 	}
 
 	/**
@@ -123,8 +123,8 @@ class FeatureTest {
 	fun test11() {
 		assertNull(Lice.run("""
 (force|> (+ () ()))
-""").o)
-		assertNull(Lice.run("()").o)
+"""))
+		assertNull(Lice.run("()"))
 	}
 
 	/**
@@ -136,7 +136,7 @@ class FeatureTest {
 (-> ice1000 233)
 
 ice1000
-""").o)
+"""))
 	}
 
 	/**
@@ -148,13 +148,13 @@ ice1000
 (defexpr ice1000 233)
 
 ice1000
-""").o)
+"""))
 		//language=TEXT
 		assertEquals(233, Lice.run("""
 (defexpr ice1000 a a)
 
 (ice1000 233)
-""").o)
+"""))
 	}
 
 	/**
@@ -167,7 +167,7 @@ ice1000
 (def gcd a b (if (=== b 0) a (gcd b (% a b))))
 
 (gcd 15 20)
-""").o)
+"""))
 	}
 
 	/**
@@ -175,8 +175,8 @@ ice1000
 	 */
 	@Test
 	fun test15() {
-		assertEquals(1, Lice.run("(if (>= 9 8 7 7 6 6 6 5 4 3 1 -1) 1 (+ 1 1))").o)
-		assertEquals(2, Lice.run("(if (>= 9 8 7 7 6 6 6 5 8 3 1 -1) 1 (+ 1 1))").o)
+		assertEquals(1, Lice.run("(if (>= 9 8 7 7 6 6 6 5 4 3 1 -1) 1 (+ 1 1))"))
+		assertEquals(2, Lice.run("(if (>= 9 8 7 7 6 6 6 5 8 3 1 -1) 1 (+ 1 1))"))
 	}
 
 	/**
@@ -187,12 +187,12 @@ ice1000
 		assertEquals(666, Lice.run("""(when
 (!== 1 1), 233
 (=== 1 1), 666
-)""").o)
+)"""))
 		assertEquals(123, Lice.run("""(when
 (!== 1 1), 233
 (=== 2 1), 666
 123
-)""").o)
+)"""))
 	}
 
 	/**
@@ -213,7 +213,7 @@ ice1000
   ret))
 
 (exp-mod 23 2 26)
-""").o)
+"""))
 	}
 
 	/**
@@ -229,7 +229,7 @@ ice1000
 (fuck (-> lover 666) ())
 
 lover
-""").o)
+"""))
 		assertEquals(666, Lice.run("""
 (def fuck a b b)
 
@@ -238,7 +238,7 @@ lover
 (fuck (-> lover 666) ())
 
 lover
-""").o)
+"""))
 		//language=TEXT
 		assertEquals(233 + 1, Lice.run("""
 (defexpr fuck a b (|> b b))
@@ -246,6 +246,29 @@ lover
 (-> lover 233)
 
 (fuck () (-> lover (+ lover 1)))
-""").o)
+"""))
+	}
+
+	/**
+	 * assignment
+	 */
+	@Test
+	fun test19() {
+		assertEquals(233, Lice.run("""
+(-> ice1k 233)
+
+(<-> ice1k 666)
+ice1k
+"""))
+		assertNull(Lice.run("""
+(-> ice1k null)
+
+(<-> ice1k 666)
+ice1k
+"""))
+		assertEquals(666, Lice.run("""
+(<-> ice1k 666)
+ice1k
+"""))
 	}
 }

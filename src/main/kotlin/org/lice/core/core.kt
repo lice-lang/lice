@@ -38,6 +38,7 @@ inline fun SymbolList.addStandard() {
 	addGetSetFunction()
 	addControlFlowFunctions()
 	addNumberFunctions()
+	addLiterals()
 	addStringFunctions()
 	addBoolFunctions()
 	addCollectionsFunctions()
@@ -149,7 +150,7 @@ inline fun SymbolList.addStandard() {
 		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
 	})
 	defineFunction("print-err", { ln, ls ->
-		ls.forEach { Echoer.echoErr(it.eval().o.toString()) }
+		ls.forEach { Echoer.echoErr(it.eval().o) }
 		if (ls.isNotEmpty()) ls.last() else EmptyNode(ln)
 	})
 	defineFunction("new", { ln, ls ->
@@ -197,14 +198,14 @@ inline fun SymbolList.addStandard() {
 	defineFunction("load-file", { ln, ls ->
 		val o = ls[0].eval()
 		when (o.o) {
-			is File -> ValueNode(createRootNode(
+			is File -> createRootNode(
 					file = o.o,
 					symbolList = this
-			).eval(), ln)
-			is String -> ValueNode(createRootNode(
+			)
+			is String -> createRootNode(
 					file = File(o.o),
 					symbolList = this
-			).eval(), ln)
+			)
 			else -> typeMisMatch(
 					expected = "File",
 					actual = o,
@@ -248,7 +249,7 @@ inline fun SymbolList.addGetSetFunction() {
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)
 		val str = (ls[0] as SymbolNode).name
-		if (getFunction(str)?.invoke(ln, emptyList()) == null) {
+		if (!isFunctionDefined(str)) {
 			val node = ValueNode(ls[1].eval(), ln)
 			defineFunction(str, { _, _ -> node })
 			return@defineFunction node
