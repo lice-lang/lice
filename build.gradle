@@ -42,3 +42,7 @@ jar {
 		attributes 'Main-Class': 'org.lice.repl.Main'
 	}
 }
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
