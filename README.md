@@ -2,9 +2,13 @@
 
 # Lice
 
+CI|status
+:---|:---:
+Travis CI|[![Build Status](https://travis-ci.org/lice-lang/lice.svg?branch=master)](https://travis-ci.org/lice-lang/lice)
+AppVeyor|[![Build status](https://ci.appveyor.com/api/projects/status/7d6lyinb0xr6hagn?svg=true)](https://ci.appveyor.com/project/ice1000/lice/branch/master)
+
 [![JitPack](https://jitpack.io/v/lice-lang/lice.svg)](https://jitpack.io/#lice-lang/lice)
 [![Gitter](https://badges.gitter.im/lice-lang/lice.svg)](https://gitter.im/lice-lang/lice)
-[![Build Status](https://travis-ci.org/lice-lang/lice.svg?branch=master)](https://travis-ci.org/lice-lang/lice)
 [![Dependency Status](https://www.versioneye.com/user/projects/58df5b1c24ef3e00425cf73f/badge.svg?style=square)](https://www.versioneye.com/user/projects/58df5b1c24ef3e00425cf73f)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
