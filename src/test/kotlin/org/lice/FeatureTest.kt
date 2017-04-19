@@ -174,6 +174,8 @@ ice1000
 """))
 		//language=TEXT
 		assertEquals(89, Lice.run("""
+(def in? ls a (> (count ls a) 0))
+
 (def fib n (if (in? (list 0 1) n)
                1
                (+ (fib (- n 1)) (fib (- n 2)))))
@@ -332,6 +334,6 @@ ice1k
 	@Test(timeout = 1000)
 	fun test24() {
 		assertEquals(2, Lice.run("(count (list 233 233 455 566) 233)"))
-		assertEquals(0, Lice.run("(count (.. 233 344 455 566))"))
+		assertEquals(0, Lice.run("(count (.. 233 234) 1)"))
 	}
 }
