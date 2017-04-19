@@ -15,7 +15,7 @@ import org.lice.compiler.model.EmptyNode
 import org.lice.compiler.model.Node
 import org.lice.compiler.model.ValueNode
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
-import org.lice.compiler.util.SymbolList
+import org.lice.core.SymbolList
 import org.lice.lang.NumberOperator
 import org.lice.lang.NumberOperator.Leveler.compare
 

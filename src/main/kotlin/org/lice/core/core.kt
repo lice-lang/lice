@@ -18,9 +18,9 @@ import org.lice.compiler.util.InterpretException
 import org.lice.compiler.util.InterpretException.Factory.numberOfArgumentNotMatch
 import org.lice.compiler.util.InterpretException.Factory.tooFewArgument
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
-import org.lice.compiler.util.SymbolList
+import org.lice.core.SymbolList
 import org.lice.compiler.util.forceRun
-import org.lice.compiler.util.invoke
+import org.lice.core.invoke
 import org.lice.lang.DefineResult
 import org.lice.lang.Echoer
 import org.lice.lang.Pair

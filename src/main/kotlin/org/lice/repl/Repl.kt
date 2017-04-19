@@ -2,7 +2,11 @@ package org.lice.repl
 
 import org.lice.compiler.parse.buildNode
 import org.lice.compiler.parse.mapAst
-import org.lice.compiler.util.*
+import org.lice.compiler.util.DEBUGGING
+import org.lice.compiler.util.VERBOSE
+import org.lice.compiler.util.println
+import org.lice.compiler.util.serr
+import org.lice.core.SymbolList
 import org.lice.lang.Echoer
 
 /**
@@ -47,7 +51,7 @@ class Repl {
 		return true
 	}
 
-	companion object {
+	companion object HintHolder {
 		val HINT = "Lice > "
 	}
 }

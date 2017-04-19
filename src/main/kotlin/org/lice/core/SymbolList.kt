@@ -4,20 +4,22 @@
  * @author ice1000
  * @since 1.0.0
  */
-package org.lice.compiler.util
+package org.lice.core
 
 import org.lice.Lice
 import org.lice.compiler.model.MetaData
 import org.lice.compiler.model.Node
 import org.lice.compiler.model.Node.Objects.getNullNode
 import org.lice.compiler.model.ValueNode
-import org.lice.core.*
-import org.lice.lang.Symbol
+import org.lice.compiler.util.serr
 import java.io.File
 import java.util.*
 
 @SinceKotlin("1.1")
 typealias Func = (MetaData, List<Node>) -> Node
+
+@SinceKotlin("1.1")
+typealias ProvidedFunc = (MetaData, List<Any?>) -> Any
 
 operator fun Func.invoke(e: MetaData) = invoke(e, emptyList())
 
@@ -61,27 +63,20 @@ constructor(init: Boolean = true) {
 		})
 	}
 
-	fun defineFunction(name: Symbol, node: Func) =
-			defineFunction(name.name, node)
+	fun provideFunction(name: String, node: ProvidedFunc) =
+			defineFunction(name, { meta, ls ->
+				ValueNode(node(meta, ls.map { it.eval().o }), meta)
+			})
 
-	fun defineFunction(name: String, node: Func) {
-		functions.put(name, node)
-	}
+	internal fun defineFunction(name: String, node: Func) =
+			functions.put(name, node)
 
-	fun isFunctionDefined(name: String) = functions.containsKey(name)
+	fun isFunctionDefined(name: String?) =
+			functions.containsKey(name)
 
-	fun isFunctionDefined(name: Symbol) = isFunctionDefined(name.name)
+	fun removeFunction(name: String?) =
+			functions.remove(name)
 
-	fun removeFunction(name: String) {
-		functions.remove(name)
-	}
-
-	fun removeFunction(name: Symbol) =
-			removeFunction(name.name)
-
-	fun getFunction(name: Symbol) =
-			getFunction(name.name)
-
-	fun getFunction(name: String) =
+	fun getFunction(name: String?) =
 			functions[name]
 }

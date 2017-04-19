@@ -11,7 +11,7 @@ package org.lice.compiler.parse
 
 import org.lice.compiler.model.*
 import org.lice.compiler.util.InterpretException
-import org.lice.compiler.util.SymbolList
+import org.lice.core.SymbolList
 import java.io.File
 
 

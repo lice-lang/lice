@@ -13,7 +13,7 @@ import org.lice.compiler.model.MetaData.Factory.EmptyMetaData
 import org.lice.compiler.model.Value.Objects.Nullptr
 import org.lice.compiler.util.ParseException.Factory.undefinedFunction
 import org.lice.compiler.util.ParseException.Factory.undefinedVariable
-import org.lice.compiler.util.SymbolList
+import org.lice.core.SymbolList
 
 data class MetaData(
 		val lineNumber: Int) {

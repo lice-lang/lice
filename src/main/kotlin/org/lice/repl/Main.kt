@@ -1,11 +1,10 @@
 package org.lice.repl
 
-import org.lice.compiler.model.Node
-import org.lice.compiler.model.ValueNode
+import org.lice.compiler.model.Value
 import org.lice.compiler.parse.createRootNode
-import org.lice.compiler.util.SymbolList
 import org.lice.compiler.util.println
 import org.lice.compiler.util.serr
+import org.lice.core.SymbolList
 import java.io.File
 import java.util.*
 
@@ -32,7 +31,7 @@ object Main {
 	fun main(args: Array<String>) {
 		if (args.isEmpty()) {
 			val sl = SymbolList()
-			sl.defineFunction("help", { meta, _ ->
+			sl.provideFunction("help", { _, _ ->
 				"""This is the repl for org.lice language.
 
 				|You have 4 special commands which you cannot use in the language but the repl:
@@ -43,20 +42,17 @@ object Main {
 				|version: check the version"""
 						.trimMargin()
 						.println()
-				Node.getNullNode(meta)
 			})
-			sl.defineFunction("version", { meta, _ ->
+			sl.provideFunction("version", { _, _ ->
 				"""Lice language interpreter $VERSION_CODE
 				|by ice1000"""
 						.trimMargin()
 						.println()
-				Node.getNullNode(meta)
 			})
-			sl.defineFunction("FILE_PATH", { _, _ -> ValueNode(any = File("").absolutePath) })
+			sl.provideFunction("FILE_PATH", { _, _ -> Value(File("").absolutePath) })
 			val scanner = Scanner(System.`in`)
 			val repl = Repl()
-			while (repl.handle(scanner.nextLine(), sl)) {
-			}
+			while (repl.handle(scanner.nextLine(), sl)) ;
 		} else {
 			interpret(File(args[0]).apply {
 				if (!exists()) serr("file not found: ${args[0]}")

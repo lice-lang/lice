@@ -11,7 +11,7 @@ import org.lice.compiler.model.MetaData as OriginalMetaData
 import org.lice.compiler.model.StringNode as OriginalStringNode
 import org.lice.compiler.util.InterpretException as OriginalInterpretException
 import org.lice.compiler.util.ParseException as OriginalParseException
-import org.lice.compiler.util.SymbolList as OriginalSymbolList
+import org.lice.core.SymbolList as OriginalSymbolList
 
 
 typealias SymbolList = OriginalSymbolList

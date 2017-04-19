@@ -6,7 +6,7 @@ import kotlin.jvm.functions.Function2;
 import org.lice.compiler.model.MetaData;
 import org.lice.compiler.model.Node;
 import org.lice.compiler.model.ValueNode;
-import org.lice.compiler.util.SymbolList;
+import org.lice.core.SymbolList;
 import org.lice.compiler.util.Utilities;
 
 import java.io.File;

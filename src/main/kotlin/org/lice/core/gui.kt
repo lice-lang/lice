@@ -15,7 +15,7 @@ import org.lice.compiler.model.Node
 import org.lice.compiler.model.Node.Objects.getNullNode
 import org.lice.compiler.model.ValueNode
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
-import org.lice.compiler.util.SymbolList
+import org.lice.core.SymbolList
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Graphics
