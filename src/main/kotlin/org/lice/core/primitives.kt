@@ -36,7 +36,7 @@ inline fun SymbolList.addNumberFunctions() {
 		when (ls.size) {
 			0 -> 0
 			1 -> ls.first()
-			else -> ls.subList(1, ls.size)
+			else -> ls.drop(1)
 					.fold(NumberOperator(ls.first() as Number)) { sum, value ->
 						when (value) {
 							is Number -> sum.minus(value, meta)
@@ -49,7 +49,7 @@ inline fun SymbolList.addNumberFunctions() {
 		when (ls.size) {
 			0 -> 0
 			1 -> ls.first()
-			else -> ls.subList(1, ls.size)
+			else -> ls.drop(1)
 					.fold(NumberOperator(ls.first() as Number)) { sum, value ->
 						when (value) {
 							is Number -> sum.div(value, meta)
@@ -62,7 +62,7 @@ inline fun SymbolList.addNumberFunctions() {
 		when (ls.size) {
 			0 -> 0
 			1 -> ls.first()
-			else -> ls.subList(1, ls.size)
+			else -> ls.drop(1)
 					.fold(NumberOperator(ls.first() as Number)) { sum, value ->
 						when (value) {
 							is Number -> sum.rem(value, meta)
@@ -79,8 +79,8 @@ inline fun SymbolList.addNumberFunctions() {
 			}
 		}.result
 	})
-	provideFunction("===", { ls -> (1..ls.size - 1).all { ls[it] == ls[it - 1] } })
-	provideFunction("!==", { ls -> (1..ls.size - 1).none { ls[it] == ls[it - 1] } })
+	provideFunction("===", { (1..it.size - 1).all { i -> it[i] == it[i - 1] } })
+	provideFunction("!==", { (1..it.size - 1).none { i -> it[i] == it[i - 1] } })
 	provideFunctionWithMeta("==", { ln, ls ->
 		(1..ls.size - 1).all { compare(ls[it - 1] as Number, ls[it] as Number, ln) == 0 }
 	})
