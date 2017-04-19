@@ -11,8 +11,8 @@ package org.lice.lang
 
 
 class Pair<out A, out B>(
-	val first: A,
-	val second: B) {
+		val first: A,
+		val second: B) {
 	override fun toString(): String {
 		return "[$first $second]"
 	}
@@ -49,18 +49,19 @@ class Symbol(val name: String) {
 	}
 
 	override fun hashCode() =
-		name.hashCode()
+			name.hashCode()
 }
-
 
 class DefineResult(val res: String) {
 	override fun toString() = res
 }
 
-class NoElseBranch {
+class NoElseBranch private constructor(){
 	override fun toString() = ""
 }
 
-class FExprType
+class FExprType private constructor()
 
-class LazyType
+class LazyType private constructor()
+
+class NullptrType private constructor()

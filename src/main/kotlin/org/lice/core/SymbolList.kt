@@ -7,6 +7,7 @@
 package org.lice.core
 
 import org.lice.Lice
+import org.lice.compiler.model.EmptyNode
 import org.lice.compiler.model.MetaData
 import org.lice.compiler.model.Node
 import org.lice.compiler.model.Node.Objects.getNullNode
@@ -19,7 +20,10 @@ import java.util.*
 typealias Func = (MetaData, List<Node>) -> Node
 
 @SinceKotlin("1.1")
-typealias ProvidedFunc = (MetaData, List<Any?>) -> Any
+typealias ProvidedFuncWithMeta = (MetaData, List<Any?>) -> Any?
+
+@SinceKotlin("1.1")
+typealias ProvidedFunc = (List<Any?>) -> Any?
 
 operator fun Func.invoke(e: MetaData) = invoke(e, emptyList())
 
@@ -63,12 +67,21 @@ constructor(init: Boolean = true) {
 		})
 	}
 
-	fun provideFunction(name: String, node: ProvidedFunc) =
+	fun provideFunctionWithMeta(name: String, node: ProvidedFuncWithMeta) =
 			defineFunction(name, { meta, ls ->
-				ValueNode(node(meta, ls.map { it.eval().o }), meta)
+				val value = node(meta, ls.map { it.eval().o })
+				if (value != null) ValueNode(value, meta)
+				else EmptyNode(meta)
 			})
 
-	internal fun defineFunction(name: String, node: Func) =
+	fun provideFunction(name: String, node: ProvidedFunc) =
+			defineFunction(name, { meta, ls ->
+				val value = node(ls.map { it.eval().o })
+				if (value != null) ValueNode(value, meta)
+				else EmptyNode(meta)
+			})
+
+	fun defineFunction(name: String, node: Func) =
 			functions.put(name, node)
 
 	fun isFunctionDefined(name: String?) =

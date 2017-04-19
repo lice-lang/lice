@@ -31,7 +31,7 @@ object Main {
 	fun main(args: Array<String>) {
 		if (args.isEmpty()) {
 			val sl = SymbolList()
-			sl.provideFunction("help", { _, _ ->
+			sl.provideFunctionWithMeta("help", { _, _ ->
 				"""This is the repl for org.lice language.
 
 				|You have 4 special commands which you cannot use in the language but the repl:
@@ -43,13 +43,13 @@ object Main {
 						.trimMargin()
 						.println()
 			})
-			sl.provideFunction("version", { _, _ ->
+			sl.provideFunctionWithMeta("version", { _, _ ->
 				"""Lice language interpreter $VERSION_CODE
 				|by ice1000"""
 						.trimMargin()
 						.println()
 			})
-			sl.provideFunction("FILE_PATH", { _, _ -> Value(File("").absolutePath) })
+			sl.provideFunctionWithMeta("FILE_PATH", { _, _ -> Value(File("").absolutePath) })
 			val scanner = Scanner(System.`in`)
 			val repl = Repl()
 			while (repl.handle(scanner.nextLine(), sl)) ;
