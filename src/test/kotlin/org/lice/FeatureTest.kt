@@ -6,6 +6,7 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.*
 import kotlin.test.assertTrue
 
 /**
@@ -171,6 +172,14 @@ ice1000
 
 (gcd 15 20)
 """))
+		//language=TEXT
+		assertEquals(89, Lice.run("""
+(def fib n (if (in? (list 0 1) n)
+               1
+               (+ (fib (- n 1)) (fib (- n 2)))))
+
+(fib 10)
+"""))
 	}
 
 	/**
@@ -297,5 +306,23 @@ ice1k
 // FIXME assertEquals("\"", Lice.run(""""\"""""))
 		assertEquals("\'", Lice.run(""""\'""""))
 		assertEquals("\\", Lice.run(""""\\""""))
+	}
+
+	/**
+	 * trigonometric
+	 */
+	@Test(timeout = 1000)
+	fun test22() {
+		val r = Random(System.currentTimeMillis()).nextDouble()
+		assertEquals(Math.sin(r), Lice.run("(sin $r)") as Double, 1e-10)
+	}
+
+	/**
+	 * head
+	 */
+	@Test(timeout = 1000)
+	fun test23() {
+		assertEquals(233, Lice.run("(head (list 233 344 455 566))"))
+		assertEquals(233, Lice.run("(head ([|] 233 344 455 566))"))
 	}
 }

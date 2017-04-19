@@ -10,9 +10,7 @@ import org.lice.Lice
 import org.lice.compiler.model.EmptyNode
 import org.lice.compiler.model.MetaData
 import org.lice.compiler.model.Node
-import org.lice.compiler.model.Node.Objects.getNullNode
 import org.lice.compiler.model.ValueNode
-import org.lice.compiler.util.serr
 import java.io.File
 import java.util.*
 
@@ -46,24 +44,19 @@ constructor(init: Boolean = true) {
 		addStringFunctions()
 		addConcurrentFunctions()
 		addStandard()
-		defineFunction("load", { ln, ls ->
-			ls.forEach { node ->
-				val res = node.eval()
-				if (res.o is String) {
-					if (res.o in loadedModules)
-						return@defineFunction ValueNode(false, ln)
-					loadedModules.add(res.o)
-					val file = File(res.o)
+		provideFunction("load", {
+			it.forEach { node ->
+				if (node is String) {
+					if (node in loadedModules) return@provideFunction false
+					loadedModules.add(node)
+					val file = File(node)
 					when {
 						file.exists() -> Lice.run(file, this)
-						else -> {
-							serr("${res.o} not found!")
-							return@defineFunction getNullNode(ln)
-						}
+						else -> return@provideFunction null
 					}
 				}
 			}
-			ValueNode(true, ln)
+			true
 		})
 	}
 
