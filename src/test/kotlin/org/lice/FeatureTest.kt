@@ -325,4 +325,13 @@ ice1k
 		assertEquals(233, Lice.run("(head (list 233 344 455 566))"))
 		assertEquals(233, Lice.run("(head ([|] 233 344 455 566))"))
 	}
+
+	/**
+	 * count
+	 */
+	@Test(timeout = 1000)
+	fun test24() {
+		assertEquals(2, Lice.run("(count (list 233 233 455 566) 233)"))
+		assertEquals(0, Lice.run("(count (.. 233 344 455 566))"))
+	}
 }

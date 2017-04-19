@@ -280,63 +280,37 @@ inline fun SymbolList.addConcurrentFunctions() {
 }
 
 inline fun SymbolList.addFileFunctions() {
-	defineFunction("file", { ln, ls ->
-		val a = ls.first().eval()
-		when (a.o) {
-			is String -> ValueNode(File(a.o)
-					.apply { if (!exists()) createNewFile() }, ln)
-			else -> typeMisMatch("String", a, ln)
-		}
-	})
-	defineFunction("directory", { ln, ls ->
-		val a = ls.first().eval()
-		when (a.o) {
-			is String -> ValueNode(File(a.o)
-					.apply { if (!exists()) mkdirs() }, ln)
-			else -> typeMisMatch("String", a, ln)
-		}
-	})
-	defineFunction("file-exists?", { ln, ls ->
-		val a = ls.first().eval()
-		when (a.o) {
-			is String -> ValueNode(File(a.o).exists(), ln)
-			else -> typeMisMatch("String", a, ln)
-		}
-	})
-	defineFunction("read-file", { ln, ls ->
-		val a = ls.first().eval()
-		when (a.o) {
-			is File -> ValueNode(a.o.readText(), ln)
+	provideFunction("file", { File(it.first().toString()).apply { if (!exists()) createNewFile() } })
+	provideFunction("url", { URL(it.first().toString()) })
+	provideFunction("directory", { File(it.first().toString()).apply { if (!exists()) mkdirs() } })
+	provideFunction("file-exist?", { File(it.first().toString()).exists() })
+	provideFunctionWithMeta("read-file", { ln, ls ->
+		val a = ls.first()
+		when (a) {
+			is File -> a.readText()
 			else -> typeMisMatch("File", a, ln)
 		}
 	})
-	defineFunction("url", { ln, ls ->
-		val a = ls.first().eval()
-		when (a.o) {
-			is String -> ValueNode(URL(a.o), ln)
-			else -> typeMisMatch("String", a, ln)
-		}
-	})
-	defineFunction("read-url", { ln, ls ->
-		val a = ls.first().eval()
-		when (a.o) {
-			is URL -> ValueNode(a.o.readText(), ln)
+	provideFunctionWithMeta("read-url", { ln, ls ->
+		val a = ls.first()
+		when (a) {
+			is URL -> a.readText()
 			else -> typeMisMatch("URL", a, ln)
 		}
 	})
-	defineFunction("write-file", { ln, ls ->
-		val a = ls.first().eval()
-		val b = ls[1].eval()
-		when (a.o) {
+	provideFunctionWithMeta("write-file", { ln, ls ->
+		val a = ls.first()
+		val b = ls[1]
+		when (a) {
 			is File -> {
-				when (b.o) {
-					is Image -> ImageIO.write(b.o as RenderedImage, "PNG", a.o)
-					else -> a.o.writeText(b.o.toString())
+				when (b) {
+					is Image -> ImageIO.write(b as RenderedImage, "PNG", a)
+					else -> a.writeText(b.toString())
 				}
 			}
 			else -> typeMisMatch("File", a, ln)
 		}
-		ValueNode(a.o, ln)
+		a
 	})
 }
 
@@ -470,36 +444,29 @@ inline fun SymbolList.addCollectionsFunctions() {
 			else -> typeMisMatch("List", a, ln)
 		}
 	})
-	defineFunction("size", { ln, ls ->
-		val i = ls.first().eval()
-		when (i.o) {
-			is Collection<*> -> ValueNode(i.o.size, ln)
-			else -> ValueNode(ls.size, ln)
+	provideFunction("size", {
+		val i = it.first()
+		when (i) {
+			is Collection<*> -> i.size
+			is Iterable<*> -> i.count()
+			else -> -1
 		}
 	})
-	defineFunction("reverse", { ln, ls ->
-		val i = ls.first().eval()
-		when (i.o) {
-			is Collection<*> -> ValueNode(i.o.reversed(), ln)
-			else -> ValueNode(ls.size, ln)
-		}
-	})
-	defineFunction("count", { ln, ls ->
-		val i = ls.first().eval()
-		val e = ls[1].eval()
-		when (i.o) {
-			is Collection<*> -> ValueNode(i.o.count { e.o == it }, ln)
-			else -> ValueNode(0, ln)
-		}
-	})
-	defineFunction("empty?", { ln, ls ->
-		ValueNode((ls.first().eval().o as? Collection<*>)?.isEmpty() ?: true, ln)
-	})
-	provideFunction("in?", { ls ->
+	provideFunction("reverse", { ls ->
 		val i = ls.first()
 		when (i) {
-			is Collection<*> -> ls[1] in i
-			else -> false
+			is Collection<*> -> i.reversed()
+			is Iterable<*> -> i.reversed()
+			else -> emptyList()
+		}
+	})
+	provideFunction("count", { ls ->
+		val i = ls.first()
+		val e = ls[1]
+		when (i) {
+			is Collection<*> -> i.count { it == e }
+			is Iterable<*> -> i.count { it == e }
+			else -> -1
 		}
 	})
 }
