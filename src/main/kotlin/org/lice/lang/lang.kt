@@ -37,21 +37,6 @@ class Pair<out A, out B>(
 
 }
 
-class Symbol(val name: String) {
-	override fun toString() = name
-
-	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (other?.javaClass != javaClass) return false
-		other as Symbol
-		if (name != other.name) return false
-		return true
-	}
-
-	override fun hashCode() =
-			name.hashCode()
-}
-
 class DefineResult(val res: String) {
 	override fun toString() = res
 }
@@ -59,8 +44,6 @@ class DefineResult(val res: String) {
 class NoElseBranch private constructor(){
 	override fun toString() = ""
 }
-
-class FExprType private constructor()
 
 class LazyType private constructor()
 

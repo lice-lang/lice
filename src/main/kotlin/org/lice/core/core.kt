@@ -41,77 +41,45 @@ inline fun SymbolList.addStandard() {
 	addBoolFunctions()
 	addCollectionsFunctions()
 	addListFunctions()
-
-	defineFunction("def", { ln, ls ->
-		if (ls.size < 2) tooFewArgument(2, ls.size, ln)
-		val name = (ls.first() as SymbolNode).name
-		val body = ls.last()
-		val params = ls
-				.subList(1, ls.size - 1)
-				.map {
-					when (it) {
-						is SymbolNode -> it.name
-						else -> typeMisMatch("Symbol", it.eval(), ln)
+	val definer = { funName: String, block: (Node) -> Node ->
+		defineFunction(funName, { ln, ls ->
+			if (ls.size < 2) tooFewArgument(2, ls.size, ln)
+			val name = (ls.first() as SymbolNode).name
+			val body = ls.last()
+			val params = ls
+					.subList(1, ls.size - 1)
+					.map {
+						when (it) {
+							is SymbolNode -> it.name
+							else -> typeMisMatch("Symbol", it.eval(), ln)
+						}
 					}
+			val override = isFunctionDefined(name)
+			defineFunction(name, { ln, args ->
+				val backup = params.map { getFunction(it)?.invoke(ln) }
+				if (args.size != params.size)
+					numberOfArgumentNotMatch(params.size, args.size, ln)
+				args
+						.map(block)
+						.forEachIndexed { index, obj ->
+							defineFunction(params[index], { _, _ -> obj })
+						}
+				val ret = ValueNode(body.eval().o ?: Nullptr, ln)
+				backup.forEachIndexed { index, node ->
+					if (node != null)
+						defineFunction(params[index], { _, _ -> node })
+					else
+						removeFunction(params[index])
 				}
-		val override = isFunctionDefined(name)
-		defineFunction(name, { ln, args ->
-			val backup = params.map { getFunction(it)?.invoke(ln) }
-			if (args.size != params.size)
-				numberOfArgumentNotMatch(params.size, args.size, ln)
-			args
-					.map { node ->
-						node.eval().o ?: Nullptr
-					}
-					.forEachIndexed { index, obj ->
-						defineFunction(params[index], { _, _ -> ValueNode(obj) })
-					}
-			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
-			backup.forEachIndexed { index, node ->
-				if (node != null)
-					defineFunction(params[index], { _, _ -> node })
-				else
-					removeFunction(params[index])
-			}
-			ret
+				ret
+			})
+			return@defineFunction ValueNode(DefineResult(
+					"${if (override) "overriding" else "new function defined"}: $name"))
 		})
-		return@defineFunction ValueNode(DefineResult(
-				"${if (override) "overriding" else "new function defined"}: $name"))
-	})
-	defineFunction("defexpr", { ln, ls ->
-		if (ls.size < 2) tooFewArgument(2, ls.size, ln)
-		val name = (ls.first() as SymbolNode).name
-		val body = ls.last()
-		val params = ls
-				.subList(1, ls.size - 1)
-				.map {
-					when (it) {
-						is SymbolNode -> it.name
-						else -> typeMisMatch("Symbol", it.eval(), ln)
-					}
-				}
-		val override = isFunctionDefined(name)
-		defineFunction(name, { ln, args ->
-			val backup = params.map { getFunction(it)?.invoke(ln) }
-			if (args.size != params.size)
-				numberOfArgumentNotMatch(params.size, args.size, ln)
-			args
-					.map { node -> LazyValueNode({ node.eval() }) }
-					.forEachIndexed { index, fexpr ->
-						defineFunction(params[index], { _, _ -> fexpr })
-					}
-			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
-			backup.forEachIndexed { index, node ->
-				if (node != null)
-					defineFunction(params[index], { _, _ -> node })
-				else
-					removeFunction(params[index])
-			}
-			ret
-		})
-		return@defineFunction ValueNode(DefineResult(
-				"${if (override) "overriding" else "new function defined"}: $name"))
-	})
+	}
+	definer("def", { node -> ValueNode(node.eval().o ?: Nullptr) })
+	definer("defexpr", { node -> LazyValueNode({ node.eval() }) })
+	definer("defmacro", { it })
 	defineFunction("def?", { ln, ls ->
 		val a = (ls.first() as SymbolNode).name
 		ValueNode(isFunctionDefined(a), ln)
