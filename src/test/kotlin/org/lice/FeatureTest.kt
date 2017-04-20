@@ -358,4 +358,21 @@ ice1k
 		//language=TEXT
 		assertEquals(121, Lice.run("((if true * /) 11 11)"))
 	}
+
+	/**
+	 * mention:
+	 * () means evaluation
+	 * so if you nest expressions, it will be evaluated without passing the params.
+	 *
+	 * I'll show you the procedure:
+	 *
+	 * (((if true + -)) 11 11)
+	 * ((+) 11 11)
+	 * (0 11 11)
+	 * 0
+	 */
+	@Test(timeout = 1000)
+	fun test27() {
+		assertEquals(0, Lice.run("(((if true + -)) 11 11)"))
+	}
 }
