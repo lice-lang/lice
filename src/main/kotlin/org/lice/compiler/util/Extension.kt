@@ -54,7 +54,3 @@ inline fun forceRun(block: () -> Unit) {
 	} catch (e: Throwable) {
 	}
 }
-
-fun serr(str: String) = Echoer.echoln(str)
-
-fun sout(str: String) = Echoer.echoln(str)

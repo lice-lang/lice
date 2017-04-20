@@ -13,6 +13,7 @@ package org.lice.compiler.util
 import org.lice.compiler.model.EmptyNode
 import org.lice.compiler.model.MetaData
 import org.lice.compiler.model.Value
+import org.lice.lang.Echoer
 
 class ParseException(string: String) : RuntimeException(string) {
 	companion object Factory {
@@ -52,5 +53,5 @@ fun showError(string: String, exit: Boolean = false) {
 	if (exit)
 		throw RuntimeException(string)
 	else
-		serr(string)
+		Echoer.echolnErr(string)
 }

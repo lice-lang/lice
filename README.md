@@ -19,8 +19,8 @@ This is an interpreter for a dialect of lisp, running on JVM.
 ## It looks like:
 
 ```lisp
-(println "Hello " "World")
-(for-each i (.. 1 10) (println i))
+(print "Hello " "World" "\n")
+(for-each i (.. 1 10) (print i "\n"))
 ```
 
 ## Build
@@ -36,7 +36,7 @@ allprojects {
 }
 
 dependencies {
-  compile 'com.github.lice-lang:lice:v2.6'
+  compile 'com.github.lice-lang:lice:v2.7'
 }
 ```
 
@@ -45,7 +45,7 @@ But if you use Scala, you can add it to your sbt dependency, by adding the stuff
 ```sbtshell
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.lice-lang" % "lice" % "v2.6"
+libraryDependencies += "com.github.lice-lang" % "lice" % "v2.7"
 ```
 
 And if you're a Clojure developer, why not try build it with leiningen?
@@ -53,7 +53,7 @@ And if you're a Clojure developer, why not try build it with leiningen?
 ```leiningen
 :repositories [["jitpack" "https://jitpack.io"]]
 
-:dependencies [[com.github.lice-lang/lice "v2.6"]]
+:dependencies [[com.github.lice-lang/lice "v2.7"]]
 ```
 
 ## Code style

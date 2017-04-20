@@ -1,10 +1,8 @@
 package org.lice.repl
 
-import org.lice.compiler.model.Value
 import org.lice.compiler.parse.createRootNode
-import org.lice.compiler.util.println
-import org.lice.compiler.util.serr
 import org.lice.core.SymbolList
+import org.lice.lang.Echoer
 import java.io.File
 import java.util.*
 
@@ -31,31 +29,22 @@ object Main {
 	fun main(args: Array<String>) {
 		if (args.isEmpty()) {
 			val sl = SymbolList()
-			sl.provideFunctionWithMeta("help", { _, _ ->
+			sl.provideFunction("help", {
 				"""This is the repl for org.lice language.
 
-				|You have 4 special commands which you cannot use in the language but the repl:
-
-				|exit: exit the repl
-				|pst: print the most recent stack trace
-				|help: print this doc
-				|version: check the version"""
-						.trimMargin()
-						.println()
+				|see: https://github.com/lice-lang/lice""".trimMargin()
 			})
-			sl.provideFunctionWithMeta("version", { _, _ ->
+			sl.provideFunction("version", {
 				"""Lice language interpreter $VERSION_CODE
-				|by ice1000"""
-						.trimMargin()
-						.println()
+				|by ice1000""".trimMargin()
 			})
-			sl.provideFunctionWithMeta("FILE_PATH", { _, _ -> Value(File("").absolutePath) })
+			sl.provideFunction("FILE_PATH", { File("").absolutePath })
 			val scanner = Scanner(System.`in`)
-			val repl = Repl()
-			while (repl.handle(scanner.nextLine(), sl)) ;
+			val repl = Repl(sl)
+			while (repl.handle(scanner.nextLine())) ;
 		} else {
 			interpret(File(args[0]).apply {
-				if (!exists()) serr("file not found: ${args[0]}")
+				if (!exists()) Echoer.echolnErr("file not found: ${args[0]}")
 			})
 		}
 	}

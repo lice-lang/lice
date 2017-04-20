@@ -4,8 +4,6 @@ import org.lice.compiler.parse.buildNode
 import org.lice.compiler.parse.mapAst
 import org.lice.compiler.util.DEBUGGING
 import org.lice.compiler.util.VERBOSE
-import org.lice.compiler.util.println
-import org.lice.compiler.util.serr
 import org.lice.core.SymbolList
 import org.lice.lang.Echoer
 
@@ -16,38 +14,29 @@ import org.lice.lang.Echoer
  * @author ice1000
  * @since 1.0.0
  */
-class Repl {
+class Repl(symbolList: SymbolList?) {
 	var stackTrace: Throwable? = null
+	val symbolList = symbolList ?: SymbolList(true)
 
 	init {
 		"""Lice language repl $VERSION_CODE
 			|see: https://github.com/lice-lang/lice
 
-			|回首向来萧瑟处,也无风雨也无晴。
-			|Stay young stay simple, and make yourself naive.
-
-			|for help please input: help"""
-				.trimMargin()
-				.println()
+			|回首向来萧瑟处，也无风雨也无晴。
+			|Stay young stay simple, and make yourself naive.""".trimMargin()
 		Echoer.echo(HINT)
 		DEBUGGING = false
 		VERBOSE = false
 	}
 
-	@JvmOverloads
-	fun handle(
-			str: String,
-			symbolList: SymbolList = SymbolList(true)): Boolean {
-		if (str == "pst") {
-			if (stackTrace != null) stackTrace?.printStackTrace()
-			else "No stack trace.".println()
-		} else try {
+	fun handle(str: String): Boolean {
+		try {
 			mapAst(buildNode(str), symbolList).eval()
 		} catch(e: Throwable) {
 			stackTrace = e
-			serr(e.message ?: "")
+			Echoer.echolnErr(e.message ?: "")
 		}
-		print("\n$HINT")
+		print(HINT)
 		return true
 	}
 
