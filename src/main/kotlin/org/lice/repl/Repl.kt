@@ -1,5 +1,6 @@
 package org.lice.repl
 
+import org.lice.compiler.model.ExpressionNode
 import org.lice.compiler.parse.buildNode
 import org.lice.compiler.parse.mapAst
 import org.lice.compiler.util.DEBUGGING

@@ -15,7 +15,6 @@ import org.lice.compiler.model.Node.Objects.getNullNode
 import org.lice.compiler.model.Value.Objects.Nullptr
 import org.lice.compiler.parse.*
 import org.lice.compiler.util.InterpretException
-import org.lice.compiler.util.InterpretException.Factory.numberOfArgumentNotMatch
 import org.lice.compiler.util.InterpretException.Factory.tooFewArgument
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
 import org.lice.compiler.util.forceRun
@@ -30,9 +29,19 @@ import java.net.URL
 import javax.imageio.ImageIO
 import kotlin.concurrent.thread
 
+@SinceKotlin("1.1")
+typealias ParamList = List<String>
+
+@SinceKotlin("1.1")
+typealias Mapper<T> = (T) -> T
+
+private var lambdaNameCounter = -100
+
+internal fun lambdaNameGen() = "\t${++lambdaNameCounter}"
+
 inline fun Any?.booleanValue() = this as? Boolean ?: (this != null)
 
-inline fun SymbolList.addStandard() {
+fun SymbolList.addStandard() {
 	addGetSetFunction()
 	addControlFlowFunctions()
 	addNumberFunctions()
@@ -41,9 +50,29 @@ inline fun SymbolList.addStandard() {
 	addBoolFunctions()
 	addCollectionsFunctions()
 	addListFunctions()
-	val definer = { funName: String, block: (Node) -> Node ->
-		defineFunction(funName, { ln, ls ->
-			if (ls.size < 2) tooFewArgument(2, ls.size, ln)
+	val lambdaDefiner = { name: String, params: ParamList, block: Mapper<Node>, body: Node ->
+		defineFunction(name, { ln, args ->
+			val backup = params.map { getFunction(it)?.invoke(ln) }
+			if (args.size != params.size)
+				InterpretException.numberOfArgumentNotMatch(params.size, args.size, ln)
+			args
+					.map(block)
+					.forEachIndexed { index, obj ->
+						defineFunction(params[index], { _, _ -> obj })
+					}
+			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
+			backup.forEachIndexed { index, node ->
+				if (node != null)
+					defineFunction(params[index], { _, _ -> node })
+				else
+					removeFunction(params[index])
+			}
+			ret
+		})
+	}
+	val definer = { funName: String, block: Mapper<Node> ->
+		defineFunction(funName, { meta, ls ->
+			if (ls.size < 2) tooFewArgument(2, ls.size, meta)
 			val name = (ls.first() as SymbolNode).name
 			val body = ls.last()
 			val params = ls
@@ -51,28 +80,11 @@ inline fun SymbolList.addStandard() {
 					.map {
 						when (it) {
 							is SymbolNode -> it.name
-							else -> typeMisMatch("Symbol", it.eval(), ln)
+							else -> typeMisMatch("Symbol", it.eval(), meta)
 						}
 					}
 			val override = isFunctionDefined(name)
-			defineFunction(name, { ln, args ->
-				val backup = params.map { getFunction(it)?.invoke(ln) }
-				if (args.size != params.size)
-					numberOfArgumentNotMatch(params.size, args.size, ln)
-				args
-						.map(block)
-						.forEachIndexed { index, obj ->
-							defineFunction(params[index], { _, _ -> obj })
-						}
-				val ret = ValueNode(body.eval().o ?: Nullptr, ln)
-				backup.forEachIndexed { index, node ->
-					if (node != null)
-						defineFunction(params[index], { _, _ -> node })
-					else
-						removeFunction(params[index])
-				}
-				ret
-			})
+			lambdaDefiner(name, params, block, body)
 			return@defineFunction ValueNode(DefineResult(
 					"${if (override) "overriding" else "new function defined"}: $name"))
 		})
@@ -80,6 +92,24 @@ inline fun SymbolList.addStandard() {
 	definer("def", { node -> ValueNode(node.eval().o ?: Nullptr) })
 	definer("defexpr", { node -> LazyValueNode({ node.eval() }) })
 	definer("defmacro", { it })
+	defineFunction("lambda", { meta, ls ->
+		if (ls.isEmpty()) tooFewArgument(1, ls.size, meta)
+		val body = ls.last()
+		val params = ls
+				.subList(1, ls.size - 1)
+				.map {
+					when (it) {
+						is SymbolNode -> it.name
+						else -> typeMisMatch("Symbol", it.eval(), meta)
+					}
+				}
+		val name = lambdaNameGen()
+		val override = isFunctionDefined(name)
+		lambdaDefiner(name, params, { node -> ValueNode(node.eval().o ?: Nullptr) }, body)
+		return@defineFunction ValueNode(DefineResult(
+				"${if (override) "overriding" else "new function defined"}: $name"))
+	})
+
 	defineFunction("def?", { ln, ls ->
 		val a = (ls.first() as SymbolNode).name
 		ValueNode(isFunctionDefined(a), ln)

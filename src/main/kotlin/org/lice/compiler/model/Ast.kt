@@ -11,7 +11,6 @@ package org.lice.compiler.model
 
 import org.lice.compiler.model.MetaData.Factory.EmptyMetaData
 import org.lice.compiler.model.Value.Objects.Nullptr
-import org.lice.compiler.util.ParseException.Factory.undefinedFunction
 import org.lice.compiler.util.ParseException.Factory.undefinedVariable
 import org.lice.core.SymbolList
 import org.lice.lang.NullptrType
@@ -41,8 +40,9 @@ class Value(
 }
 
 interface Node {
-//	fun eval(params: List<Node> = emptyList<Node>()): Value
+	//	fun eval(params: List<Node> = emptyList<Node>()): Value
 	fun eval(): Value
+
 	val meta: MetaData
 
 	override fun toString(): String
@@ -77,31 +77,31 @@ constructor(
 		override val meta: MetaData = EmptyMetaData) : Node {
 	val value: Value by lazy(lambda)
 	override fun eval() = value
-//	override fun eval(params: List<Node>) = value
+	//	override fun eval(params: List<Node>) = value
 	override fun toString() = "lazy value, not evaluated"
 }
 
 class ExpressionNode(
-		val symbolList: SymbolList,
-		val function: String,
+		var node: Node,
 		override val meta: MetaData,
 		val params: List<Node>) : Node {
 
 	override fun eval(): Value {
-		val func = function
-		return (symbolList.getFunction(func)
-				?: undefinedFunction(func, meta))
-				.invoke(meta, params).eval()
+		val node = node
+		return when (node) {
+			is SymbolNode -> node.eval(params)
+			else -> node.eval()
+		}
 	}
 
-//	override fun eval(params: List<Node>): Value {
+	//	override fun eval(params: List<Node>): Value {
 //		val func = function
 //		return (symbolList.getFunction(func)
 //				?: undefinedFunction(func, meta))
 //				.invoke(meta, params).eval()
 //	}
 //
-	override fun toString() = "function: <$function> with ${params.size} params"
+	override fun toString() = "function: <$> with ${params.size} params"
 }
 
 class SymbolNode(
@@ -109,22 +109,20 @@ class SymbolNode(
 		val name: String,
 		override val meta: MetaData) : Node {
 
-	override fun eval() =
-			(symbolList.getFunction(name)?.invoke(meta, emptyList())
+	override fun eval() = eval(emptyList())
+
+	fun eval(params: List<Node>) =
+			(symbolList.getFunction(name)?.invoke(meta, params)
 					?: undefinedVariable(name, meta))
 					.eval()
 
-//	override fun eval(params: List<Node>) =
-//			(symbolList.getFunction(name)?.invoke(meta, emptyList())
-//					?: undefinedVariable(name, meta))
-//					.eval()
-//
+	//
 	override fun toString() = "symbol: <$name>"
 }
 
 class EmptyNode(override val meta: MetaData) : Node {
 	override fun eval() = Nullptr
-//	override fun eval(params: List<Node>) = Nullptr
+	//	override fun eval(params: List<Node>) = Nullptr
 	override fun toString() = "null: <null>"
 }
 

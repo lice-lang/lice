@@ -10,7 +10,6 @@
 package org.lice.compiler.parse
 
 import org.lice.compiler.model.*
-import org.lice.compiler.util.InterpretException
 import org.lice.core.SymbolList
 import java.io.File
 
@@ -24,7 +23,7 @@ import java.io.File
 fun parseValue(
 		str: String,
 		meta: MetaData): Node? = when {
-	str.isBlank() -> EmptyNode(meta)
+	str.isBlank() -> null
 	str.isString() -> ValueNode(str
 			.substring(
 					startIndex = 1,
@@ -61,35 +60,19 @@ fun parseValue(
 fun mapAst(
 		node: StringNode,
 		symbolList: SymbolList = SymbolList()): Node = when (node) {
-	is StringMiddleNode -> when (node.list[0]) {
-		is StringLeafNode ->
-			ExpressionNode(
-					symbolList = symbolList,
-					function = node.list[0].strRepr,
-					meta = node.meta,
-					params = node
-							.list
-							.subList(
-									fromIndex = 1,
-									toIndex = node.list.size
-							)
-							.map { strNode -> mapAst(strNode, symbolList) }
-			)
-	// FIXME add lambda support
-		else -> throw InterpretException("Using expression as lambda is not supported yet.", node.meta)
+	is StringMiddleNode -> {
+		val fst = node.list.first()
+		val s = mapAst(fst, symbolList)
+		s as? ValueNode ?: ExpressionNode(
+				node = s,
+				meta = node.meta,
+				params = node.list.drop(1).map { mapAst(it, symbolList) }
+		)
 	}
 	is StringLeafNode ->
 		wrapValue(node, symbolList)
 	else -> // empty
 		EmptyNode(node.meta)
-}
-
-private fun choose(
-		fst: StringNode,
-		symbolList: SymbolList
-): Node = when (fst) {
-	is StringLeafNode -> wrapValue(fst, symbolList)
-	else -> mapAst(fst, symbolList)
 }
 
 private fun wrapValue(

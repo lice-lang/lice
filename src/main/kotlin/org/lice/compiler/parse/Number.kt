@@ -17,7 +17,7 @@ import java.math.BigInteger
 
 fun String.isInt(isNegative: Boolean = false): Boolean {
 	if (!isNegative && this[0] == '-') return substring(1).isInt(true)
-	return fold(true, { res, char ->
+	return isNotEmpty() && fold(true, { res, char ->
 		res && char.isDigit()
 	})
 }
