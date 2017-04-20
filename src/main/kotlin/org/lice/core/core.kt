@@ -50,7 +50,7 @@ fun SymbolList.addStandard() {
 	addBoolFunctions()
 	addCollectionsFunctions()
 	addListFunctions()
-	val lambdaDefiner = { name: String, params: ParamList, block: Mapper<Node>, body: Node ->
+	val defFunc = { name: String, params: ParamList, block: Mapper<Node>, body: Node ->
 		defineFunction(name, { ln, args ->
 			val backup = params.map { getFunction(it)?.invoke(ln) }
 			if (args.size != params.size)
@@ -84,7 +84,7 @@ fun SymbolList.addStandard() {
 						}
 					}
 			val override = isFunctionDefined(name)
-			lambdaDefiner(name, params, block, body)
+			defFunc(name, params, block, body)
 			return@defineFunction ValueNode(DefineResult(
 					"${if (override) "overriding" else "new function defined"}: $name"))
 		})
@@ -92,22 +92,26 @@ fun SymbolList.addStandard() {
 	definer("def", { node -> ValueNode(node.eval().o ?: Nullptr) })
 	definer("defexpr", { node -> LazyValueNode({ node.eval() }) })
 	definer("defmacro", { it })
-	defineFunction("lambda", { meta, ls ->
-		if (ls.isEmpty()) tooFewArgument(1, ls.size, meta)
-		val body = ls.last()
-		val params = ls
-				.subList(0, ls.size - 1)
-				.map {
-					when (it) {
-						is SymbolNode -> it.name
-						else -> typeMisMatch("Symbol", it.eval(), meta)
+	val lambdaDefiner = { funName: String, mapper: Mapper<Node> ->
+		defineFunction(funName, { meta, ls ->
+			if (ls.isEmpty()) tooFewArgument(1, ls.size, meta)
+			val body = ls.last()
+			val params = ls
+					.subList(0, ls.size - 1)
+					.map {
+						when (it) {
+							is SymbolNode -> it.name
+							else -> typeMisMatch("Symbol", it.eval(), meta)
+						}
 					}
-				}
-		val name = lambdaNameGen()
-		lambdaDefiner(name, params, { node -> ValueNode(node.eval().o ?: Nullptr) }, body)
-		SymbolNode(this, name, meta)
-	})
-
+			val name = lambdaNameGen()
+			defFunc(name, params, mapper, body)
+			SymbolNode(this, name, meta)
+		})
+	}
+	lambdaDefiner("lambda", { node -> ValueNode(node.eval().o ?: Nullptr) })
+	lambdaDefiner("expr", { node -> LazyValueNode({ node.eval() }) })
+	lambdaDefiner("macro", { it })
 	defineFunction("def?", { ln, ls ->
 		val a = (ls.first() as SymbolNode).name
 		ValueNode(isFunctionDefined(a), ln)

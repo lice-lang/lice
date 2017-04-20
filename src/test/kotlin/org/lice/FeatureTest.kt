@@ -7,6 +7,7 @@ import org.junit.Test
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 /**
@@ -389,5 +390,26 @@ ice1k
 		assertEquals(120 + 230, Lice.run("((lambda a b (+ a b)) 120 230)"))
 		assertEquals(120 * 230, Lice.run("((lambda a b (* a b)) 120 230)"))
 		assertEquals(466, Lice.run("((lambda a (+ a a)) 233)"))
+	}
+
+	/**
+	 * yes, it's true!
+	 * macro(call by name) and expr(call by need)!
+	 */
+	@Test(timeout = 1000)
+	fun test29() {
+		//language=TEXT
+		assertFalse(true == Lice.run("""
+((expr unused "any-val") (|> (def side-effect true) 233))
+
+(def? side-effect)
+"""))
+		//language=TEXT
+		assertEquals(12, Lice.run("""
+(-> side-effect 10)
+((macro used-twice (+ used-twice used-twice)) (|> (-> side-effect (+ side-effect 1)) 233))
+
+side-effect
+"""))
 	}
 }
