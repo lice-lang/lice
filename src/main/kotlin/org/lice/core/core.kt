@@ -96,7 +96,7 @@ fun SymbolList.addStandard() {
 		if (ls.isEmpty()) tooFewArgument(1, ls.size, meta)
 		val body = ls.last()
 		val params = ls
-				.subList(1, ls.size - 1)
+				.subList(0, ls.size - 1)
 				.map {
 					when (it) {
 						is SymbolNode -> it.name
@@ -104,10 +104,8 @@ fun SymbolList.addStandard() {
 					}
 				}
 		val name = lambdaNameGen()
-		val override = isFunctionDefined(name)
 		lambdaDefiner(name, params, { node -> ValueNode(node.eval().o ?: Nullptr) }, body)
-		return@defineFunction ValueNode(DefineResult(
-				"${if (override) "overriding" else "new function defined"}: $name"))
+		SymbolNode(this, name, meta)
 	})
 
 	defineFunction("def?", { ln, ls ->

@@ -374,5 +374,20 @@ ice1k
 	@Test(timeout = 1000)
 	fun test27() {
 		assertEquals(0, Lice.run("(((if true + -)) 11 11)"))
+		assertEquals(0, Lice.run("+"))
+		assertEquals(0, Lice.run("-"))
+		assertEquals(1, Lice.run("*"))
+	}
+
+	/**
+	 * yes, it's true!
+	 * lambda expression!
+	 */
+	@Test(timeout = 1000)
+	fun test28() {
+		//language=TEXT
+		assertEquals(120 + 230, Lice.run("((lambda a b (+ a b)) 120 230)"))
+		assertEquals(120 * 230, Lice.run("((lambda a b (* a b)) 120 230)"))
+		assertEquals(466, Lice.run("((lambda a (+ a a)) 233)"))
 	}
 }

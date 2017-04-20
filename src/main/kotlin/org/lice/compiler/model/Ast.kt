@@ -90,8 +90,8 @@ class ExpressionNode(
 		else -> node.eval()
 	}
 
-	fun eval(extern: List<Node>): Value = when (node) {
-		is SymbolNode -> node.eval(params, extern)
+	fun eval(outer: List<Node>): Value = when (node) {
+		is SymbolNode -> node.eval(params, outer)
 		is ExpressionNode -> node.eval(params)
 		else -> node.eval()
 	}
