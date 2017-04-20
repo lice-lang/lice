@@ -336,4 +336,26 @@ ice1k
 		assertEquals(2, Lice.run("(count (list 233 233 455 566) 233)"))
 		assertEquals(0, Lice.run("(count (.. 233 234) 1)"))
 	}
+
+	/**
+	 * nested expression
+	 */
+	@Test(timeout = 1000)
+	fun test25() {
+		//language=TEXT
+		assertEquals(2, Lice.run("((((2))))"))
+		//language=TEXT
+		assertEquals(0, Lice.run("((if true 0 1))"))
+	}
+
+	/**
+	 * returning an expression
+	 */
+	@Test(timeout = 1000)
+	fun test26() {
+		//language=TEXT
+		assertEquals(1, Lice.run("((if false * /) 11 11)"))
+		//language=TEXT
+		assertEquals(121, Lice.run("((if true * /) 11 11)"))
+	}
 }
