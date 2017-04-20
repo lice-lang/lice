@@ -400,14 +400,30 @@ ice1k
 	fun test29() {
 		//language=TEXT
 		assertFalse(true == Lice.run("""
-((expr unused "any-val") (|> (def side-effect true) 233))
+((expr unused
+       "any-val")
+  (|> (def side-effect true)
+      233))
 
 (def? side-effect)
 """))
 		//language=TEXT
 		assertEquals(12, Lice.run("""
 (-> side-effect 10)
-((macro used-twice (+ used-twice used-twice)) (|> (-> side-effect (+ side-effect 1)) 233))
+((macro used-twice
+        (+ used-twice used-twice))
+  (|> (-> side-effect (+ side-effect 1))
+      233))
+
+side-effect
+"""))
+		//language=TEXT
+		assertEquals(11, Lice.run("""
+(-> side-effect 10)
+((lambda used-twice
+         (+ used-twice used-twice))
+  (|> (-> side-effect (+ side-effect 1))
+      233))
 
 side-effect
 """))
