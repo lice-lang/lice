@@ -65,7 +65,6 @@ constructor(
 	constructor(any: Any?, type: Class<*>, meta: MetaData = EmptyMetaData) : this(Value(any, type), meta)
 
 	override fun eval() = value
-//	override fun eval(params: List<Node>) = value
 
 	override fun toString() = "value: <${value.o}> => ${value.type}"
 }
@@ -77,30 +76,26 @@ constructor(
 		override val meta: MetaData = EmptyMetaData) : Node {
 	val value: Value by lazy(lambda)
 	override fun eval() = value
-	//	override fun eval(params: List<Node>) = value
 	override fun toString() = "lazy value, not evaluated"
 }
 
 class ExpressionNode(
-		var node: Node,
+		val node: Node,
 		override val meta: MetaData,
 		val params: List<Node>) : Node {
 
-	override fun eval(): Value {
-		val node = node
-		return when (node) {
-			is SymbolNode -> node.eval(params)
-			else -> node.eval()
-		}
+	override fun eval(): Value = when (node) {
+		is SymbolNode -> node.eval(params)
+		is ExpressionNode -> node.eval(params)
+		else -> node.eval()
 	}
 
-	//	override fun eval(params: List<Node>): Value {
-//		val func = function
-//		return (symbolList.getFunction(func)
-//				?: undefinedFunction(func, meta))
-//				.invoke(meta, params).eval()
-//	}
-//
+	fun eval(extern: List<Node>): Value = when (node) {
+		is SymbolNode -> node.eval(params, extern)
+		is ExpressionNode -> node.eval(params)
+		else -> node.eval()
+	}
+
 	override fun toString() = "function: <$> with ${params.size} params"
 }
 
@@ -111,12 +106,16 @@ class SymbolNode(
 
 	override fun eval() = eval(emptyList())
 
-	fun eval(params: List<Node>) =
-			(symbolList.getFunction(name)?.invoke(meta, params)
-					?: undefinedVariable(name, meta))
-					.eval()
+	fun eval(params: List<Node>, params2: List<Node> = emptyList()): Value {
+		val node = (symbolList.getFunction(name)?.invoke(meta, params)
+				?: undefinedVariable(name, meta))
+		return when (node) {
+			is SymbolNode -> node.eval(params2)
+			is ExpressionNode -> node.eval(params2)
+			else -> node.eval()
+		}
+	}
 
-	//
 	override fun toString() = "symbol: <$name>"
 }
 
