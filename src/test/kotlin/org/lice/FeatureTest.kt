@@ -237,7 +237,7 @@ ice1000
 	@Test(timeout = 1000)
 	fun test18() {
 		assertEquals(233, Lice.run("""
-(defexpr fuck a b b)
+(deflazy fuck a b b)
 
 (-> lover 233)
 
@@ -256,7 +256,7 @@ lover
 """))
 		//language=TEXT
 		assertEquals(233 + 1, Lice.run("""
-(defexpr fuck a b (|> b b))
+(deflazy fuck a b (|> b b))
 
 (-> lover 233)
 
@@ -325,8 +325,8 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test23() {
-		assertEquals(233, Lice.run("(head (list 233 344 455 566))"))
-		assertEquals(233, Lice.run("(head ([|] 233 344 455 566))"))
+		assertEquals(233, Lice.run("([| (list 233 344 455 566))"))
+		assertEquals(233, Lice.run("([| ([|] 233 344 455 566))"))
 	}
 
 	/**
@@ -394,13 +394,13 @@ ice1k
 
 	/**
 	 * yes, it's true!
-	 * macro(call by name) and expr(call by need)!
+	 * expr(call by name) and lazy(call by need)!
 	 */
 	@Test(timeout = 1000)
 	fun test29() {
 		//language=TEXT
 		assertFalse(true == Lice.run("""
-((expr unused
+((lazy unused
        "any-val")
   (|> (def side-effect true)
       233))
@@ -410,7 +410,7 @@ ice1k
 		//language=TEXT
 		assertEquals(12, Lice.run("""
 (-> side-effect 10)
-((macro used-twice
+((expr used-twice
         (+ used-twice used-twice))
   (|> (-> side-effect (+ side-effect 1))
       233))
