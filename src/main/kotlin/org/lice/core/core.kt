@@ -86,12 +86,12 @@ fun SymbolList.addStandard() {
 			val override = isFunctionDefined(name)
 			defFunc(name, params, block, body)
 			return@defineFunction ValueNode(DefineResult(
-					"${if (override) "overriding" else "new function defined"}: $name"))
+					"${if (override) "overridden" else "defined"}: $name"))
 		})
 	}
 	definer("def", { node -> ValueNode(node.eval().o ?: Nullptr) })
-	definer("defexpr", { node -> LazyValueNode({ node.eval() }) })
-	definer("defmacro", { it })
+	definer("deflazy", { node -> LazyValueNode({ node.eval() }) })
+	definer("defexpr", { it })
 	val lambdaDefiner = { funName: String, mapper: Mapper<Node> ->
 		defineFunction(funName, { meta, ls ->
 			if (ls.isEmpty()) tooFewArgument(1, ls.size, meta)
@@ -110,8 +110,8 @@ fun SymbolList.addStandard() {
 		})
 	}
 	lambdaDefiner("lambda", { node -> ValueNode(node.eval().o ?: Nullptr) })
-	lambdaDefiner("expr", { node -> LazyValueNode({ node.eval() }) })
-	lambdaDefiner("macro", { it })
+	lambdaDefiner("lazy", { node -> LazyValueNode({ node.eval() }) })
+	lambdaDefiner("expr", { it })
 	defineFunction("def?", { ln, ls ->
 		val a = (ls.first() as SymbolNode).name
 		ValueNode(isFunctionDefined(a), ln)
@@ -282,7 +282,7 @@ inline fun SymbolList.addConcurrentFunctions() {
 inline fun SymbolList.addFileFunctions() {
 	provideFunction("file", { File(it.first().toString()).apply { if (!exists()) createNewFile() } })
 	provideFunction("url", { URL(it.first().toString()) })
-	provideFunction("directory", { File(it.first().toString()).apply { if (!exists()) mkdirs() } })
+	provideFunction("dir", { File(it.first().toString()).apply { if (!exists()) mkdirs() } })
 	provideFunction("file-exist?", { File(it.first().toString()).exists() })
 	provideFunctionWithMeta("read-file", { ln, ls ->
 		val a = ls.first()
@@ -391,7 +391,7 @@ inline fun SymbolList.addListFunctions() {
 			Pair(value, pairs)
 		}
 	})
-	provideFunction("head", { ls ->
+	provideFunction("[|", { ls ->
 		val a = ls.first()
 		when (a) {
 			is Pair<*, *> -> a.first
@@ -399,7 +399,7 @@ inline fun SymbolList.addListFunctions() {
 			else -> null
 		}
 	})
-	provideFunction("tail", { ls ->
+	provideFunction("|]", { ls ->
 		val a = ls.first()
 		when (a) {
 			is Pair<*, *> -> a.second

@@ -34,17 +34,10 @@ class Pair<out A, out B>(
 		result = 31 * result + (second?.hashCode() ?: 0)
 		return result
 	}
-
 }
 
 class DefineResult(val res: String) {
 	override fun toString() = res
 }
-
-class NoElseBranch private constructor(){
-	override fun toString() = ""
-}
-
-class LazyType private constructor()
 
 class NullptrType private constructor()
