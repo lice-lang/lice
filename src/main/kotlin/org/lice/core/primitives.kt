@@ -24,6 +24,8 @@ inline fun SymbolList.addLiterals() {
 inline fun SymbolList.addNumberFunctions() {
 	provideFunction("->double", { (it.first() as Number).toDouble() })
 	provideFunction("->int", { (it.first() as Number).toInt() })
+	provideFunction("->float", { (it.first() as Number).toFloat() })
+	provideFunction("->long", { (it.first() as Number).toLong() })
 	provideFunctionWithMeta("+", { meta, list ->
 		list.fold(NumberOperator(0)) { sum, value ->
 			when (value) {
@@ -46,11 +48,12 @@ inline fun SymbolList.addNumberFunctions() {
 		}
 	})
 	provideFunctionWithMeta("/", { meta, ls ->
+		val init = ls.first() as Number
 		when (ls.size) {
-			0 -> 0
-			1 -> ls.first()
+			0 -> 1
+			1 -> init
 			else -> ls.drop(1)
-					.fold(NumberOperator(ls.first() as Number)) { sum, value ->
+					.fold(NumberOperator(init)) { sum, value ->
 						when (value) {
 							is Number -> sum.div(value, meta)
 							else -> typeMisMatch("Number", value, meta)

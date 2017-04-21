@@ -428,4 +428,13 @@ side-effect
 side-effect
 """))
 	}
+
+	/**
+	 * linked list
+	 */
+	@Test(timeout = 1000)
+	fun test30() {
+		assertEquals(233, Lice.run("([| ([|] 233 666 555 \"Fuck you\"))"))
+		assertEquals(666, Lice.run("([| (|] ([|] 233 666 555 \"Fuck you\")))"))
+	}
 }
