@@ -28,13 +28,21 @@ operator fun Func.invoke(e: MetaData) = invoke(e, emptyList())
 class SymbolList
 @JvmOverloads
 constructor(init: Boolean = true) {
+	companion object ClassPathHolder {
+		val classPath = System.getProperty("java.class.path")
+		val pathSeperator = System.getProperty("path.separator")
+	}
+
 	val functions = mutableMapOf<String, Func>()
 
 	val rand = Random(System.currentTimeMillis())
 	val loadedModules = mutableListOf<String>()
 
 	init {
-		if (init) initialize()
+		if (init) {
+			initialize()
+			loadLibrary()
+		}
 	}
 
 	fun initialize() {
@@ -44,20 +52,27 @@ constructor(init: Boolean = true) {
 		addStringFunctions()
 		addConcurrentFunctions()
 		addStandard()
-		provideFunction("load", {
-			it.forEach { node ->
-				if (node is String) {
-					if (node in loadedModules) return@provideFunction false
-					loadedModules.add(node)
-					val file = File(node)
-					when {
-						file.exists() -> Lice.run(file, this)
-						else -> return@provideFunction null
-					}
-				}
-			}
+		provideFunction("load", { param ->
+			(param.firstOrNull() as? String)?.let { loadLibrary(it) }
 			true
 		})
+	}
+
+	@JvmOverloads
+	fun loadLibrary(cp: String = File(classPath)
+			.parentFile
+			.absolutePath + "std.lice"): Boolean {
+		if (cp in loadedModules) return false
+		loadedModules.add(cp)
+		if (pathSeperator !in cp) {
+			File(cp).run file@ {
+				when {
+					exists() -> Lice.run(this@file, this@SymbolList)
+					else -> return false
+				}
+			}
+		}
+		return true
 	}
 
 	fun provideFunctionWithMeta(name: String, node: ProvidedFuncWithMeta) =
