@@ -11,7 +11,6 @@ import org.lice.compiler.model.EmptyNode
 import org.lice.compiler.model.MetaData
 import org.lice.compiler.model.Node
 import org.lice.compiler.model.ValueNode
-import java.io.File
 import java.util.*
 
 @SinceKotlin("1.1")
@@ -29,14 +28,14 @@ class SymbolList
 @JvmOverloads
 constructor(init: Boolean = true) {
 	companion object ClassPathHolder {
-		val classPath = System.getProperty("java.class.path")
 		val pathSeperator = System.getProperty("path.separator")
+		val classPath = System.getProperty("java.class.path")
 	}
 
 	val functions = mutableMapOf<String, Func>()
 
 	val rand = Random(System.currentTimeMillis())
-	val loadedModules = mutableListOf<String>()
+//	val loadedModules = mutableListOf<String>()
 
 	init {
 		if (init) {
@@ -59,19 +58,31 @@ constructor(init: Boolean = true) {
 	}
 
 	@JvmOverloads
-	fun loadLibrary(cp: String = File(classPath)
-			.parentFile
-			.absolutePath + "std.lice"): Boolean {
-		if (cp in loadedModules) return false
-		loadedModules.add(cp)
-		if (pathSeperator !in cp) {
-			File(cp).run file@ {
-				when {
-					exists() -> Lice.run(this@file, this@SymbolList)
-					else -> return false
-				}
-			}
-		}
+	fun loadLibrary(cp: String = """
+(def println str (print str "\n"))
+
+(def println-err str (print-err str "\n"))
+
+(def ! a (if a false true))
+(def null? a (=== null a))
+(def !null a (! (null? a)))
+
+(def empty? a (> (size a) 0))
+(def !empty? a (! (empty? a)))
+
+(def in? ls a (> (count ls a) 0))
+(def !in? ls a (! (in? ls a)))
+(alias in? contains?)
+(alias !in? !contains?)
+
+(deflazy unless condition a b (if condition b a))
+
+(deflazy until condition a (while (! condition) a))
+
+"""): Boolean {
+//		if (cp in loadedModules) return false
+//		loadedModules.add(cp)
+		Lice.run(cp, this@SymbolList)
 		return true
 	}
 
