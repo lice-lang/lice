@@ -75,7 +75,7 @@ fun mapAst(
 		EmptyNode(node.meta)
 }
 
-private fun wrapValue(
+fun wrapValue(
 		node: StringLeafNode,
 		symbolList: SymbolList
 ): Node = parseValue(
