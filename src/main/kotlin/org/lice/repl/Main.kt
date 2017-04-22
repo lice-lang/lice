@@ -41,7 +41,7 @@ object Main {
 			sl.provideFunction("FILE_PATH", { File("").absolutePath })
 			val scanner = Scanner(System.`in`)
 			val repl = Repl(sl)
-			while (repl.handle(scanner.nextLine()));
+			while (repl.handle(scanner.nextLine())) Unit
 		} else {
 			interpret(File(args[0]).apply {
 				if (!exists()) Echoer.echolnErr("file not found: ${args[0]}")
