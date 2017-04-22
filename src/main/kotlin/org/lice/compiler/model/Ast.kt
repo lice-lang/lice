@@ -128,7 +128,7 @@ class SymbolNode(
 		}
 	}
 
-	fun function() = symbolList.getFunction(name)?: undefinedVariable(name, meta)
+	fun function() = symbolList.getFunction(name) ?: undefinedVariable(name, meta)
 
 
 	override fun toString() = "symbol: <$name>"
@@ -139,6 +139,7 @@ class EmptyNode(override val meta: MetaData) : Node {
 		super.beforeEval()
 		return Nullptr
 	}
+
 	//	override fun eval(params: List<Node>) = Nullptr
 	override fun toString() = "null: <null>"
 }

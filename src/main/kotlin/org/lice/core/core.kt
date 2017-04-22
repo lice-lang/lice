@@ -19,10 +19,7 @@ import org.lice.compiler.util.InterpretException.Factory.numberOfArgumentNotMatc
 import org.lice.compiler.util.InterpretException.Factory.tooFewArgument
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
 import org.lice.compiler.util.forceRun
-import org.lice.lang.DefineResult
-import org.lice.lang.Echoer
-import org.lice.lang.NullptrType
-import org.lice.lang.Pair
+import org.lice.lang.*
 import java.awt.Image
 import java.awt.image.RenderedImage
 import java.io.File
@@ -140,7 +137,10 @@ fun SymbolList.addStandard() {
 			else -> typeMisMatch("String", value, ln)
 		}
 	})
-
+	provideFunction("debug", {
+		BeforeEval.hook = { Echoer.echoln("eval =>> $this") }
+		null
+	})
 	provideFunction("print", { ls ->
 		ls.forEach { Echoer.echo(it) }
 		if (ls.isNotEmpty()) ls.last() else null
