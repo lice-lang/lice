@@ -1,10 +1,10 @@
 package org.lice.repl
 
-import org.lice.compiler.model.ExpressionNode
 import org.lice.compiler.parse.buildNode
 import org.lice.compiler.parse.mapAst
 import org.lice.compiler.util.DEBUGGING
 import org.lice.compiler.util.VERBOSE
+import org.lice.compiler.util.println
 import org.lice.core.SymbolList
 import org.lice.lang.Echoer
 
@@ -15,16 +15,19 @@ import org.lice.lang.Echoer
  * @author ice1000
  * @since 1.0.0
  */
-class Repl(symbolList: SymbolList?) {
+class Repl
+@JvmOverloads
+constructor(val symbolList: SymbolList = SymbolList(true)) {
 	var stackTrace: Throwable? = null
-	val symbolList = symbolList ?: SymbolList(true)
 
 	init {
 		"""Lice language repl $VERSION_CODE
 			|see: https://github.com/lice-lang/lice
 
-			|回首向来萧瑟处，也无风雨也无晴。
-			|Stay young stay simple, and make yourself naive.""".trimMargin()
+			|剑未佩妥，出门已是江湖。千帆过尽，归来仍是少年。
+			|Stay young stay simple, and make yourself naive."""
+				.trimMargin()
+				.println()
 		Echoer.echo(HINT)
 		DEBUGGING = false
 		VERBOSE = false
