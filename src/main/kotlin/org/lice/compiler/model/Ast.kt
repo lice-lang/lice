@@ -13,6 +13,7 @@ import org.lice.compiler.model.MetaData.Factory.EmptyMetaData
 import org.lice.compiler.model.Value.Objects.Nullptr
 import org.lice.compiler.util.ParseException.Factory.undefinedVariable
 import org.lice.core.SymbolList
+import org.lice.lang.BeforeEval
 import org.lice.lang.NullptrType
 
 data class MetaData(
@@ -40,9 +41,7 @@ class Value(
 }
 
 interface Node {
-	fun beforeEval() {
-		println("Evaluation!")
-	}
+	fun beforeEval() = BeforeEval.apply(this)
 
 	//	fun eval(params: List<Node> = emptyList<Node>()): Node
 	fun eval(): Value

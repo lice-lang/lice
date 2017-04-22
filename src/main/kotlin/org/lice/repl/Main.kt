@@ -2,6 +2,7 @@ package org.lice.repl
 
 import org.lice.compiler.parse.createRootNode
 import org.lice.core.SymbolList
+import org.lice.lang.BeforeEval
 import org.lice.lang.Echoer
 import java.io.File
 import java.util.*
@@ -39,9 +40,13 @@ object Main {
 				|by ice1000""".trimMargin()
 			})
 			sl.provideFunction("FILE_PATH", { File("").absolutePath })
+			sl.provideFunction("debug", {
+				BeforeEval.hook = { Echoer.echoln("eval =>> $this") }
+				null
+			})
 			val scanner = Scanner(System.`in`)
 			val repl = Repl(sl)
-			while (repl.handle(scanner.nextLine())) ;
+			while (repl.handle(scanner.nextLine()));
 		} else {
 			interpret(File(args[0]).apply {
 				if (!exists()) Echoer.echolnErr("file not found: ${args[0]}")

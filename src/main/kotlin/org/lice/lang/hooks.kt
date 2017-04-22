@@ -10,10 +10,12 @@
 
 package org.lice.lang
 
+import org.lice.compiler.model.Node
+
 object Echoer {
-	var printer: (Any?) -> Unit = ::print
+	var printer: Any?.() -> Unit = ::print
 		get
-	var printerErr: (Any?) -> Unit = System.out::print
+	var printerErr: Any?.() -> Unit = System.out::print
 		get
 
 	fun echo(a: Any? = "") = printer(a)
@@ -22,3 +24,9 @@ object Echoer {
 	fun echolnErr(a: Any? = "") = printerErr("$a\n")
 }
 
+object BeforeEval {
+	var hook: Node.() -> Unit = { }
+		get
+
+	fun apply(node: Node) = hook(node)
+}
