@@ -33,6 +33,9 @@ class InterpretException(string: String) : RuntimeException(string) {
 	constructor(string: String, meta: MetaData) : this("$string\nat line: ${meta.lineNumber}")
 
 	companion object Factory {
+		fun notSymbol(meta: MetaData): Nothing=
+				throw InterpretException("type mismatch: symbol expected.", meta)
+
 		fun typeMisMatch(expected: String, actual: Value, meta: MetaData): Nothing =
 				throw InterpretException("type mismatch: expected: $expected, found: ${actual.type.name}", meta)
 

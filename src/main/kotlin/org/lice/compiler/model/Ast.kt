@@ -107,14 +107,16 @@ class SymbolNode(
 	override fun eval() = eval(emptyList())
 
 	fun eval(params: List<Node>, params2: List<Node> = emptyList()): Value {
-		val node = (symbolList.getFunction(name)?.invoke(meta, params)
-				?: undefinedVariable(name, meta))
+		val node = function().invoke(meta, params)
 		return when (node) {
 			is SymbolNode -> node.eval(params2)
 			is ExpressionNode -> node.eval(params2)
 			else -> node.eval()
 		}
 	}
+
+	fun function() = symbolList.getFunction(name)?: undefinedVariable(name, meta)
+
 
 	override fun toString() = "symbol: <$name>"
 }

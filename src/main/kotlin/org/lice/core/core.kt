@@ -15,6 +15,7 @@ import org.lice.compiler.model.Node.Objects.getNullNode
 import org.lice.compiler.model.Value.Objects.Nullptr
 import org.lice.compiler.parse.*
 import org.lice.compiler.util.InterpretException
+import org.lice.compiler.util.InterpretException.Factory.numberOfArgumentNotMatch
 import org.lice.compiler.util.InterpretException.Factory.tooFewArgument
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
 import org.lice.compiler.util.forceRun
@@ -52,20 +53,21 @@ fun SymbolList.addStandard() {
 	addListFunctions()
 	val defFunc = { name: String, params: ParamList, block: Mapper<Node>, body: Node ->
 		defineFunction(name, { ln, args ->
-			val backup = params.map { getFunction(it)?.invoke(ln) }
+			val backup = params.map { getFunction(it) }
 			if (args.size != params.size)
-				InterpretException.numberOfArgumentNotMatch(params.size, args.size, ln)
+				numberOfArgumentNotMatch(params.size, args.size, ln)
 			args
 					.map(block)
 					.forEachIndexed { index, obj ->
-						defineFunction(params[index], { _, _ -> obj })
+						when (obj) {
+							is SymbolNode -> defineFunction(params[index], obj.function())
+							else -> defineFunction(params[index], { _, _ -> obj })
+						}
 					}
 			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
 			backup.forEachIndexed { index, node ->
-				if (node != null)
-					defineFunction(params[index], { _, _ -> node })
-				else
-					removeFunction(params[index])
+				if (node != null) defineFunction(params[index], node)
+				else removeFunction(params[index])
 			}
 			ret
 		})
@@ -80,7 +82,7 @@ fun SymbolList.addStandard() {
 					.map {
 						when (it) {
 							is SymbolNode -> it.name
-							else -> typeMisMatch("Symbol", it.eval(), meta)
+							else -> InterpretException.notSymbol(meta)
 						}
 					}
 			val override = isFunctionDefined(name)
@@ -113,11 +115,11 @@ fun SymbolList.addStandard() {
 	lambdaDefiner("lazy", { node -> LazyValueNode({ node.eval() }) })
 	lambdaDefiner("expr", { it })
 	defineFunction("def?", { ln, ls ->
-		val a = (ls.first() as SymbolNode).name
+		val a = (ls.first() as? SymbolNode)?.name
 		ValueNode(isFunctionDefined(a), ln)
 	})
 	defineFunction("undef", { ln, ls ->
-		val a = (ls.first() as SymbolNode).name
+		val a = (ls.first() as? SymbolNode)?.name
 		removeFunction(a)
 		getNullNode(ln)
 	})
@@ -209,7 +211,11 @@ inline fun SymbolList.addGetSetFunction() {
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)
 		val str = (ls.first() as SymbolNode).name
-		val res = ValueNode(ls[1].eval(), ln)
+		val v = ls[1]
+		val res = when (v) {
+			is SymbolNode -> v
+			else -> ValueNode(v.eval().o ?: Nullptr, ln)
+		}
 		defineFunction(str, { _, _ -> res })
 		res
 	})
