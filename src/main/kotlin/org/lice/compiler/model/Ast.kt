@@ -40,7 +40,11 @@ class Value(
 }
 
 interface Node {
-	//	fun eval(params: List<Node> = emptyList<Node>()): Value
+	fun beforeEval() {
+		println("Evaluation!")
+	}
+
+	//	fun eval(params: List<Node> = emptyList<Node>()): Node
 	fun eval(): Value
 
 	val meta: MetaData
@@ -64,7 +68,10 @@ constructor(
 	@JvmOverloads
 	constructor(any: Any?, type: Class<*>, meta: MetaData = EmptyMetaData) : this(Value(any, type), meta)
 
-	override fun eval() = value
+	override fun eval(): Value {
+		super.beforeEval()
+		return value
+	}
 
 	override fun toString() = "value: <${value.o}> => ${value.type}"
 }
@@ -84,16 +91,22 @@ class ExpressionNode(
 		override val meta: MetaData,
 		val params: List<Node>) : Node {
 
-	override fun eval(): Value = when (node) {
-		is SymbolNode -> node.eval(params)
-		is ExpressionNode -> node.eval(params)
-		else -> node.eval()
+	override fun eval(): Value {
+		super.beforeEval()
+		return when (node) {
+			is SymbolNode -> node.eval(params)
+			is ExpressionNode -> node.eval(params)
+			else -> node.eval()
+		}
 	}
 
-	fun eval(outer: List<Node>): Value = when (node) {
-		is SymbolNode -> node.eval(params, outer)
-		is ExpressionNode -> node.eval(params)
-		else -> node.eval()
+	fun eval(outer: List<Node>): Value {
+		super.beforeEval()
+		return when (node) {
+			is SymbolNode -> node.eval(params, outer)
+			is ExpressionNode -> node.eval(params)
+			else -> node.eval()
+		}
 	}
 
 	override fun toString() = "function: <$> with ${params.size} params"
@@ -107,6 +120,7 @@ class SymbolNode(
 	override fun eval() = eval(emptyList())
 
 	fun eval(params: List<Node>, params2: List<Node> = emptyList()): Value {
+		super.beforeEval()
 		val node = function().invoke(meta, params)
 		return when (node) {
 			is SymbolNode -> node.eval(params2)
@@ -122,7 +136,10 @@ class SymbolNode(
 }
 
 class EmptyNode(override val meta: MetaData) : Node {
-	override fun eval() = Nullptr
+	override fun eval(): Value {
+		super.beforeEval()
+		return Nullptr
+	}
 	//	override fun eval(params: List<Node>) = Nullptr
 	override fun toString() = "null: <null>"
 }

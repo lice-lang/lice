@@ -437,4 +437,23 @@ side-effect
 		assertEquals(233, Lice.run("([| ([|] 233 666 555 \"Fuck you\"))"))
 		assertEquals(666, Lice.run("([| (|] ([|] 233 666 555 \"Fuck you\")))"))
 	}
+
+	/**
+	 * function as parameter
+	 */
+	@Test(timeout = 1000)
+	fun test31() {
+		assertEquals(1, Lice.run("""
+(defexpr fuck op (op true 1 2))
+(fuck if)
+"""))
+		assertEquals(2, Lice.run("""
+(defexpr fuck op (op true 1 2))
+(fuck unless)
+"""))
+		assertEquals(10, Lice.run("""
+(defexpr fuck op (op 1 2 3 4))
+(fuck +)
+"""))
+	}
 }

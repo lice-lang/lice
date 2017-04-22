@@ -120,18 +120,17 @@ fun SymbolList.addStandard() {
 	})
 	defineFunction("undef", { ln, ls ->
 		val a = (ls.first() as? SymbolNode)?.name
-		removeFunction(a)
-		getNullNode(ln)
+		ValueNode(null != removeFunction(a), ln)
 	})
 	defineFunction("alias", { meta, ls ->
-		val a = getFunction((ls.first() as SymbolNode).name)
+		val a = getFunction((ls.first() as? SymbolNode)?.name)
 		a?.let { function ->
 			ls.forEachIndexed { index, _ ->
 				if (index != 0)
 					defineFunction((ls[index] as SymbolNode).name, function)
 			}
 		}
-		getNullNode(meta)
+		ValueNode(null != a, meta)
 	})
 
 	provideFunctionWithMeta("eval", { ln, ls ->
