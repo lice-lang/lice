@@ -1,5 +1,5 @@
 group 'org.lice'
-version '3.1'
+version '3.0.5'
 
 buildscript {
 	ext.kotlin_version = '1.1.1'

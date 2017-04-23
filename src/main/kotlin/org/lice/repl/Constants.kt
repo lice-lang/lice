@@ -6,4 +6,4 @@
  */
 package org.lice.repl
 
-val VERSION_CODE = "v3.0.4-SNAPSHOT"
+val VERSION_CODE = "v3.0.5"

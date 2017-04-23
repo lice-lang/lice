@@ -13,6 +13,6 @@ dependencies:
 
 test:
   override:
-    - ./gradlew test
+    - ./gradlew check --info
 #
 

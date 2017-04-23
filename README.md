@@ -39,7 +39,7 @@ allprojects {
 }
 
 dependencies {
-  compile 'com.github.lice-lang:lice:v3.1'
+  compile 'com.github.lice-lang:lice:v3.0.5'
 }
 ```
 
@@ -48,7 +48,7 @@ But if you use Scala, you can add it to your sbt dependency, by adding the stuff
 ```sbtshell
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.lice-lang" % "lice" % "v3.1"
+libraryDependencies += "com.github.lice-lang" % "lice" % "v3.0.5"
 ```
 
 And if you're a Clojure developer, why not try build it with leiningen?
@@ -56,8 +56,12 @@ And if you're a Clojure developer, why not try build it with leiningen?
 ```leiningen
 :repositories [["jitpack" "https://jitpack.io"]]
 
-:dependencies [[com.github.lice-lang/lice "v3.1"]]
+:dependencies [[com.github.lice-lang/lice "v3.0.5"]]
 ```
+
+## Contribute
+
+Pull requests are welcomed, but please DO follow:
 
 ## Code style
 
@@ -70,5 +74,5 @@ And if you're a Clojure developer, why not try build it with leiningen?
 
 ### Lice language
 
-0. Use symbols like '-\>', '?' to represent 'to', 'orNot'.
+0. Use symbols like '-\>', '?' to represent 'to', 'orNot'. It's clearer.
 0. Use lisp-style function names.
