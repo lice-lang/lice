@@ -98,12 +98,12 @@ fun String.toBinInt(): Int {
 
 fun String.toBigInt() = BigInteger(this.substring(0, length - 1).run {
 	when {
-		isHexInt() -> toHexInt()
-		isBinInt() -> toBinInt()
-		isOctInt() -> toOctInt()
-		else -> toInt()
+		isHexInt() -> toHexInt().toString()
+		isBinInt() -> toBinInt().toString()
+		isOctInt() -> toOctInt().toString()
+		else -> this
 	}
-}.toString())
+})
 
 fun String.toBigDec() = BigDecimal(this.substring(0, length - 1))
 
