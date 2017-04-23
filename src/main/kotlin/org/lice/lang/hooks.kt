@@ -12,16 +12,33 @@ package org.lice.lang
 
 import org.lice.compiler.model.Node
 
+typealias Output = Any?.() -> Unit
+
 object Echoer {
-	var printer: Any?.() -> Unit = ::print
+	val stdout: Output = ::print
+	var printer: Output = stdout
 		get
-	var printerErr: Any?.() -> Unit = System.out::print
+
+	var stderr: Output = System.out::print
+	var printerErr: Output = stderr
 		get
+
+	val nothing: Output = { }
 
 	fun echo(a: Any? = "") = printer(a)
 	fun echoln(a: Any? = "") = echo("$a\n")
 	fun echoErr(a: Any? = "") = printerErr(a)
 	fun echolnErr(a: Any? = "") = printerErr("$a\n")
+
+	fun closeOutput() {
+		printer = nothing
+		printerErr = nothing
+	}
+
+	fun openOutput() {
+		printer = stdout
+		printerErr = stderr
+	}
 }
 
 object BeforeEval {

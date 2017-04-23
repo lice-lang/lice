@@ -28,7 +28,9 @@ object Main {
 	@JvmStatic
 	fun main(args: Array<String>) {
 		if (args.isEmpty()) {
+			Echoer.closeOutput()
 			val sl = SymbolList()
+			Echoer.openOutput()
 			sl.provideFunction("help", {
 				"""This is the repl for org.lice language.
 

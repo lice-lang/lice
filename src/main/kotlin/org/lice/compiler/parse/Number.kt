@@ -96,7 +96,14 @@ fun String.toBinInt(): Int {
 	return ret
 }
 
-fun String.toBigInt() = BigInteger(this.substring(0, length - 1))
+fun String.toBigInt() = BigInteger(this.substring(0, length - 1).run {
+	when {
+		isHexInt() -> toHexInt()
+		isBinInt() -> toBinInt()
+		isOctInt() -> toOctInt()
+		else -> toInt()
+	}
+}.toString())
 
 fun String.toBigDec() = BigDecimal(this.substring(0, length - 1))
 
