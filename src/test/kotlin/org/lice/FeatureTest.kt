@@ -4,6 +4,8 @@ import org.jetbrains.annotations.TestOnly
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
+import org.lice.core.SymbolList
+import java.io.File
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
@@ -32,7 +34,7 @@ class FeatureTest {
 	}
 
 	/**
-	 * test for int literals
+	 * test for primitives literals
 	 */
 	@Test(timeout = 1000)
 	fun test2() {
@@ -40,15 +42,33 @@ class FeatureTest {
 (print 233666)
 """))
 		assertEquals(233666, Lice.run("233666"))
+		assertEquals(233666F, Lice.run("233666.0"))
+		assertEquals(233666.0, Lice.run("233666.0000000000000000000000000000000"))
+		assertTrue(true == Lice.run("true"))
+		assertFalse(true == Lice.run("false"))
+		assertNull(Lice.run("null"))
 	}
 
 	/**
-	 * test for plus
+	 * test for plus minus times devide
 	 */
 	@Test(timeout = 1000)
 	fun test3() {
 		assertEquals(7, Lice.run("""
 (+ 1 (+ 1 2 3))
+"""))
+		assertEquals(-5, Lice.run("""
+(- 1 (+ 1 2 3))
+"""))
+		assertEquals(20, Lice.run("""
+(* 4 (+ 2 3))
+"""))
+		assertEquals(0, Lice.run("+"))
+		assertEquals(0, Lice.run("-"))
+		assertEquals(0, Lice.run("(+)"))
+		assertEquals(0, Lice.run("(-)"))
+		assertEquals(20, Lice.run("""
+(* 4 (+ 2 3))
 """))
 	}
 
@@ -60,6 +80,7 @@ class FeatureTest {
 		assertEquals(BigInteger("10000000000000000000000000000233"), Lice.run("""
 (+ 10000000000000000000000000000000N 233)
 """))
+		assertEquals(BigInteger(0xDBE.toString()), Lice.run("0xDBEN"))
 	}
 
 	/**

@@ -16,7 +16,7 @@ import java.math.BigInteger
 //	get() = this >= '0' && this <= '9'
 
 fun String.isInt(isNegative: Boolean = false): Boolean {
-	if (!isNegative && this[0] == '-') return substring(1).isInt(true)
+	if (!isNegative && '-' == this[0]) return substring(1).isInt(true)
 	return isNotEmpty() && fold(true, { res, char ->
 		res && char.isDigit()
 	})
@@ -32,24 +32,36 @@ fun Char.safeLower() =
 		}
 
 fun String.isHexInt(isNegative: Boolean = false): Boolean {
-	if (!isNegative && this[0] == '-') return substring(1).isHexInt(true)
+	if (!isNegative && '-' == this[0]) return substring(1).isHexInt(true)
 	return when {
 		length <= 2 -> false
-		this[0] != '0' || this[1].safeLower() != 'x' -> false
+		'0' != this[0] || 'x' != this[1].safeLower() -> false
 		else -> (2..length - 1)
 				.map { this[it].toLowerCase() }
-				.none { !it.isDigit() && (it < 'a' || it > 'f') }
+				.all { it.isDigit() || it in 'a'..'f' }
 	}
 }
 
 fun String.isBigInt(isNegative: Boolean = false): Boolean {
-	if (!isNegative && this[0] == '-') return substring(1).isBigInt(true)
+	if (!isNegative && '-' == this[0]) return substring(1).isBigInt(true)
 	return when {
 		length <= 1 -> false
-		this[length - 1].safeLower() != 'n' -> false
+		'n' != this[length - 1].safeLower() -> false
 		else -> {
 			val a = substring(0..length - 2)
 			a.isInt() || a.isHexInt() || a.isBinInt() || a.isOctInt()
+		}
+	}
+}
+
+fun String.isBigDec(isNegative: Boolean = false): Boolean {
+	if (!isNegative && '-' == this[0]) return substring(1).isBigDec(true)
+	return when {
+		length <= 2 -> false
+		'm' != this[length - 1].safeLower() -> false
+		else -> {
+			val a = substring(0..length - 2)
+			1 >= a.count { '.' == it } && a.all { '.' == it || it.isDigit() }
 		}
 	}
 }
@@ -58,17 +70,17 @@ fun String.isBinInt(isNegative: Boolean = false): Boolean {
 	if (!isNegative && this[0] == '-') return substring(1).isBinInt(true)
 	return when {
 		length <= 2 -> false
-		this[0] != '0' || this[1].safeLower() != 'b' -> false
-		else -> (2..length - 1).none { this[it] != '0' && this[it] != '1' }
+		'0' != this[0] || 'b' != this[1].safeLower() -> false
+		else -> (2..length - 1).none { '0' != this[it] && '1' != this[it] }
 	}
 }
 
 fun String.isOctInt(isNegative: Boolean = false): Boolean {
-	if (!isNegative && this[0] == '-') return substring(1).isOctInt(true)
+	if (!isNegative && '-' == this[0]) return substring(1).isOctInt(true)
 	return when {
 		length <= 1 -> false
-		this[0] != '0' -> false
-		else -> (1..length - 1).none { !this[it].isOctalInt() }
+		'0' != this[0] -> false
+		else -> (1..length - 1).all { this[it].isOctalInt() }
 	}
 }
 
@@ -79,19 +91,17 @@ fun String.toHexInt(): Int {
 		ret = ret shl 4
 		val char = this[it].safeLower()
 		if (char.isDigit()) ret += (char - '0')
-		else /* if (char >= 'a' && char <= 'f') */ ret += (char - 'a' + 10)
-//		ret *= 16
+		else ret += (char - 'a' + 10)
 	}
 	return ret
 }
 
 fun String.toBinInt(): Int {
-	if (this[0] == '-') return -substring(1).toBinInt()
+	if ('-' == this[0]) return -substring(1).toBinInt()
 	var ret = 0
 	(2..length - 1).forEach {
 		ret = ret shl 1
-		if (this[it] == '1') ++ret
-//		ret *= 2
+		if ('1' == this[it]) ++ret
 	}
 	return ret
 }
@@ -113,7 +123,6 @@ fun String.toOctInt(): Int {
 	(1..length - 1).forEach {
 		ret = ret shl 3
 		ret += this[it] - '0'
-//		ret *= 8
 	}
 	return ret
 }

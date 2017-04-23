@@ -2,7 +2,7 @@ package org.lice.compiler.parse
 
 import org.junit.Assert.*
 import org.junit.Test
-import org.lice.compiler.parse.*
+import java.math.BigDecimal
 import java.math.BigInteger
 
 /**
@@ -95,4 +95,25 @@ class NumberKtTest {
 		assertEquals(BigInteger("-21893219"), "-21893219n".toBigInt())
 	}
 
+	@Test
+	fun isBigDec() {
+		assertTrue("1273983189279m".isBigDec())
+		assertTrue("12739.83189279m".isBigDec())
+		assertTrue("1273983189279M".isBigDec())
+		assertTrue("127398.3189279M".isBigDec())
+		assertTrue("-1273983189279M".isBigDec())
+		assertTrue("-127398.3189279M".isBigDec())
+		assertFalse("-12739831dsf9M".isBigDec())
+		assertFalse("-127398.31dsf9M".isBigDec())
+	}
+
+	@Test
+	fun toBigDec() {
+		assertEquals(BigDecimal("1273983189279"), "1273983189279m".toBigDec())
+		assertEquals(BigDecimal("12739.83189279"), "12739.83189279m".toBigDec())
+		assertEquals(BigDecimal("1273983189279"), "1273983189279M".toBigDec())
+		assertEquals(BigDecimal("127398.3189279"), "127398.3189279M".toBigDec())
+		assertEquals(BigDecimal("-1273983189279"), "-1273983189279M".toBigDec())
+		assertEquals(BigDecimal("-127398.3189279"), "-127398.3189279M".toBigDec())
+	}
 }
