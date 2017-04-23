@@ -4,8 +4,6 @@ import org.jetbrains.annotations.TestOnly
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
-import org.lice.core.SymbolList
-import java.io.File
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
@@ -90,6 +88,9 @@ class FeatureTest {
 	fun test5() {
 		assertEquals(BigDecimal("10000000000000000000000000000000.233"), Lice.run("""
 (+ 10000000000000000000000000000000N 0.233)
+"""))
+		assertEquals(BigDecimal("100000000000000000000000001"), Lice.run("""
+(+ 100000000000000000000000000M 1)
 """))
 	}
 

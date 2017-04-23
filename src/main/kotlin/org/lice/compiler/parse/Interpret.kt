@@ -41,6 +41,7 @@ fun parseValue(
 	str.isHexInt() -> ValueNode(str.toHexInt(), meta)
 	str.isBinInt() -> ValueNode(str.toBinInt(), meta)
 	str.isBigInt() -> ValueNode(str.toBigInt(), meta)
+	str.isBigDec() -> ValueNode(str.toBigDec(), meta)
 	else -> try {
 		if (str.length < 0xF)
 			ValueNode(str.toFloat(), meta)
