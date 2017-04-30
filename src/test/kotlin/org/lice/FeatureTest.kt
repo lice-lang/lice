@@ -2,13 +2,10 @@ package org.lice
 
 import org.jetbrains.annotations.TestOnly
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Test
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 /**
  * Demos for language feature
@@ -25,10 +22,8 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test1() {
-		assertEquals("fuck", Lice.run("""
-(print "fuck")
-"""))
-		assertEquals("lover~lover~fucker~fucker~", Lice.run(""""lover~lover~fucker~fucker~""""))
+		"(print \"fuck\")" shouldBe "fuck"
+		""""lover~lover~fucker~fucker~"""" shouldBe "lover~lover~fucker~fucker~"
 	}
 
 	/**
@@ -36,15 +31,13 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test2() {
-		assertEquals(233666, Lice.run("""
-(print 233666)
-"""))
-		assertEquals(233666, Lice.run("233666"))
-		assertEquals(233666F, Lice.run("233666.0"))
-		assertEquals(233666.0, Lice.run("233666.0000000000000000000000000000000"))
-		assertTrue(true == Lice.run("true"))
-		assertFalse(true == Lice.run("false"))
-		assertNull(Lice.run("null"))
+		"(print 233666)" shouldBe 233666
+		"233666" shouldBe 233666
+		"233666.0" shouldBe 233666F
+		"233666.0000000000000000000000000000000" shouldBe 233666.0
+		"true".shouldBeTrue()
+		"false".shouldBeFalse()
+		"null".shouldBeNull()
 	}
 
 	/**
@@ -52,22 +45,14 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test3() {
-		assertEquals(7, Lice.run("""
-(+ 1 (+ 1 2 3))
-"""))
-		assertEquals(-5, Lice.run("""
-(- 1 (+ 1 2 3))
-"""))
-		assertEquals(20, Lice.run("""
-(* 4 (+ 2 3))
-"""))
-		assertEquals(0, Lice.run("+"))
-		assertEquals(0, Lice.run("-"))
-		assertEquals(0, Lice.run("(+)"))
-		assertEquals(0, Lice.run("(-)"))
-		assertEquals(20, Lice.run("""
-(* 4 (+ 2 3))
-"""))
+		"(+ 1 (+ 1 2 3))" shouldBe 7
+		"(- 1 (+ 1 2 3))" shouldBe -5
+		"(* 4 (+ 2 3))" shouldBe 20
+		"+" shouldBe 0
+		"-" shouldBe 0
+		"(+)" shouldBe 0
+		"(-)" shouldBe 0
+		"(* 4 (+ 2 3))" shouldBe 20
 	}
 
 	/**
@@ -75,10 +60,8 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test4() {
-		assertEquals(BigInteger("10000000000000000000000000000233"), Lice.run("""
-(+ 10000000000000000000000000000000N 233)
-"""))
-		assertEquals(BigInteger(0xDBE.toString()), Lice.run("0xDBEN"))
+		"(+ 10000000000000000000000000000000N 233)" shouldBe BigInteger("10000000000000000000000000000233")
+		"0xDBEN" shouldBe BigInteger(0xDBE.toString())
 	}
 
 	/**
@@ -86,12 +69,8 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test5() {
-		assertEquals(BigDecimal("10000000000000000000000000000000.233"), Lice.run("""
-(+ 10000000000000000000000000000000N 0.233)
-"""))
-		assertEquals(BigDecimal("100000000000000000000000001"), Lice.run("""
-(+ 100000000000000000000000000M 1)
-"""))
+		"(+ 10000000000000000000000000000000N 0.233)" shouldBe BigDecimal("10000000000000000000000000000000.233")
+		"(+ 100000000000000000000000000M 1)" shouldBe BigDecimal("100000000000000000000000001")
 	}
 
 	/**
@@ -99,8 +78,8 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test6() {
-		assertTrue(true == Lice.run("(>= 9 8 7 7 6 6 6 5 4 3 1 -1)"))
-		assertTrue(true != Lice.run("(>= 9 8 7 7 6 6 6 5 8 3 1 -1)"))
+		"(>= 9 8 7 7 6 6 6 5 4 3 1 -1)".shouldBeTrue()
+		"(>= 9 8 7 7 6 6 6 5 8 3 1 -1)".shouldBeFalse()
 	}
 
 	/**
@@ -108,9 +87,9 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test7() {
-		assertEquals("boyNextDoor", Lice.run("""
+		"""
 (str-con "boy" "Next" "Door")
-"""))
+""" shouldBe "boyNextDoor"
 	}
 
 	/**
@@ -118,9 +97,9 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test8() {
-		assertEquals(0xDBE, Lice.run("""
+		"""
 (str->int "0xDBE")
-"""))
+""" shouldBe 0xDBE
 	}
 
 	/**
@@ -128,9 +107,9 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test9() {
-		assertEquals(2, Lice.run("""
+		"""
 (eval "(+ 1 1)")
-"""))
+""" shouldBe 2
 	}
 
 	/**
@@ -138,9 +117,7 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test10() {
-		assertEquals(4, Lice.run("""
-(|> (+ 1 1) (+ 2 2))
-"""))
+		"(|> (+ 1 1) (+ 2 2))" shouldBe 4
 	}
 
 	/**
@@ -148,10 +125,8 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test11() {
-		assertNull(Lice.run("""
-(force|> (+ () ()))
-"""))
-		assertNull(Lice.run("()"))
+		"(force|> (+ () ()))".shouldBeNull()
+		"()".shouldBeNull()
 	}
 
 	/**
@@ -159,11 +134,11 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test12() {
-		assertEquals(233, Lice.run("""
+		"""
 (-> ice1000 233)
 
 ice1000
-"""))
+""" shouldBe 233
 	}
 
 	/**
@@ -171,17 +146,17 @@ ice1000
 	 */
 	@Test(timeout = 1000)
 	fun test13() {
-		assertEquals(233, Lice.run("""
+		"""
 (defexpr ice1000 233)
 
 ice1000
-"""))
+""" shouldBe 233
 		//language=TEXT
-		assertEquals(233, Lice.run("""
+		"""
 (defexpr ice1000 a a)
 
 (ice1000 233)
-"""))
+""" shouldBe 233
 	}
 
 	/**
@@ -190,13 +165,13 @@ ice1000
 	@Test(timeout = 1000)
 	fun test14() {
 		//language=TEXT
-		assertEquals(5, Lice.run("""
+		"""
 (def gcd a b (if (=== b 0) a (gcd b (% a b))))
 
 (gcd 15 20)
-"""))
+""" shouldBe 5
 		//language=TEXT
-		assertEquals(89, Lice.run("""
+		"""
 (def in? ls a (> (count ls a) 0))
 
 (def fib n (if (in? (list 0 1) n)
@@ -204,7 +179,7 @@ ice1000
                (+ (fib (- n 1)) (fib (- n 2)))))
 
 (fib 10)
-"""))
+""" shouldBe 89
 	}
 
 	/**
@@ -212,8 +187,8 @@ ice1000
 	 */
 	@Test(timeout = 1000)
 	fun test15() {
-		assertEquals(1, Lice.run("(if (>= 9 8 7 7 6 6 6 5 4 3 1 -1) 1 (+ 1 1))"))
-		assertEquals(2, Lice.run("(if (>= 9 8 7 7 6 6 6 5 8 3 1 -1) 1 (+ 1 1))"))
+		"(if (>= 9 8 7 7 6 6 6 5 4 3 1 -1) 1 (+ 1 1))" shouldBe 1
+		"(if (>= 9 8 7 7 6 6 6 5 8 3 1 -1) 1 (+ 1 1))" shouldBe 2
 	}
 
 	/**
@@ -221,15 +196,15 @@ ice1000
 	 */
 	@Test(timeout = 1000)
 	fun test16() {
-		assertEquals(666, Lice.run("""(when
+		"""(when
 (!== 1 1), 233
 (=== 1 1), 666
-)"""))
-		assertEquals(123, Lice.run("""(when
+)""" shouldBe 666
+		"""(when
 (!== 1 1), 233
 (=== 2 1), 666
 123
-)"""))
+)""" shouldBe 123
 	}
 
 	/**
@@ -237,7 +212,7 @@ ice1000
 	 */
 	@Test(timeout = 1000)
 	fun test17() {
-		assertEquals(9, Lice.run("""
+		"""
 (def exp-mod a b m (|>
   (-> ret 1)
 
@@ -250,7 +225,7 @@ ice1000
   ret))
 
 (exp-mod 23 2 26)
-"""))
+""" shouldBe 9
 	}
 
 	/**
@@ -258,7 +233,7 @@ ice1000
 	 */
 	@Test(timeout = 1000)
 	fun test18() {
-		assertEquals(233, Lice.run("""
+		"""
 (deflazy fuck a b b)
 
 (-> lover 233)
@@ -266,8 +241,8 @@ ice1000
 (fuck (-> lover 666) ())
 
 lover
-"""))
-		assertEquals(666, Lice.run("""
+""" shouldBe 233
+		"""
 (def fuck a b b)
 
 (-> lover 233)
@@ -275,15 +250,15 @@ lover
 (fuck (-> lover 666) ())
 
 lover
-"""))
+""" shouldBe 666
 		//language=TEXT
-		assertEquals(233 + 1, Lice.run("""
+		"""
 (deflazy fuck a b (|> b b))
 
 (-> lover 233)
 
 (fuck () (-> lover (+ lover 1)))
-"""))
+""" shouldBe 233 + 1
 	}
 
 	/**
@@ -291,22 +266,22 @@ lover
 	 */
 	@Test(timeout = 1000)
 	fun test19() {
-		assertEquals(233, Lice.run("""
+		"""
 (-> ice1k 233)
 
 (<-> ice1k 666)
 ice1k
-"""))
-		assertNull(Lice.run("""
+""" shouldBe 233
+		"""
 (-> ice1k null)
 
 (<-> ice1k 666)
 ice1k
-"""))
-		assertEquals(666, Lice.run("""
+""".shouldBeNull()
+		"""
 (<-> ice1k 666)
 ice1k
-"""))
+""" shouldBe 666
 	}
 
 	/**
@@ -314,9 +289,9 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test20() {
-		assertNull(Lice.run("null"))
-		assertTrue(true == Lice.run("true"))
-		assertTrue(false == Lice.run("false"))
+		"null".shouldBeNull()
+		"true".shouldBeTrue()
+		"false".shouldBeFalse()
 	}
 
 	/**
@@ -324,13 +299,13 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test21() {
-		assertEquals("\n", Lice.run(""""\n""""))
-		assertEquals("\r", Lice.run(""""\r""""))
-		assertEquals("\b", Lice.run(""""\b""""))
-		assertEquals("\t", Lice.run(""""\t""""))
+		""""\n"""" shouldBe "\n"
+		""""\r"""" shouldBe "\r"
+		""""\b"""" shouldBe "\b"
+		""""\t"""" shouldBe "\t"
+		""""\'"""" shouldBe "\'"
+		""""\\"""" shouldBe "\\"
 // FIXME assertEquals("\"", Lice.run(""""\"""""))
-		assertEquals("\'", Lice.run(""""\'""""))
-		assertEquals("\\", Lice.run(""""\\""""))
 	}
 
 	/**
@@ -347,8 +322,8 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test23() {
-		assertEquals(233, Lice.run("([| (list 233 344 455 566))"))
-		assertEquals(233, Lice.run("([| ([|] 233 344 455 566))"))
+		"([| (list 233 344 455 566))" shouldBe 233
+		"([| ([|] 233 344 455 566))" shouldBe 233
 	}
 
 	/**
@@ -356,8 +331,8 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test24() {
-		assertEquals(2, Lice.run("(count (list 233 233 455 566) 233)"))
-		assertEquals(0, Lice.run("(count (.. 233 234) 1)"))
+		"(count (list 233 233 455 566) 233)" shouldBe 2
+		"(count (.. 233 234) 1)" shouldBe 0
 	}
 
 	/**
@@ -366,9 +341,9 @@ ice1k
 	@Test(timeout = 1000)
 	fun test25() {
 		//language=TEXT
-		assertEquals(2, Lice.run("((((2))))"))
+		"((((2))))" shouldBe 2
 		//language=TEXT
-		assertEquals(0, Lice.run("((if true 0 1))"))
+		"((if true 0 1))" shouldBe 0
 	}
 
 	/**
@@ -377,9 +352,9 @@ ice1k
 	@Test(timeout = 1000)
 	fun test26() {
 		//language=TEXT
-		assertEquals(1, Lice.run("((if false * /) 11 11)"))
+		"((if false * /) 11 11)" shouldBe 1
 		//language=TEXT
-		assertEquals(121, Lice.run("((if true * /) 11 11)"))
+		"((if true * /) 11 11)" shouldBe 121
 	}
 
 	/**
@@ -392,10 +367,10 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test27() {
-		assertEquals(22, Lice.run("(((if true + -)) 11 11)"))
-		assertEquals(0, Lice.run("+"))
-		assertEquals(0, Lice.run("-"))
-		assertEquals(1, Lice.run("*"))
+		"(((if true + -)) 11 11)" shouldBe 22
+		"+" shouldBe 0
+		"-" shouldBe 0
+		"*" shouldBe 1
 	}
 
 	/**
@@ -405,9 +380,9 @@ ice1k
 	@Test(timeout = 1000)
 	fun test28() {
 		//language=TEXT
-		assertEquals(120 + 230, Lice.run("((lambda a b (+ a b)) 120 230)"))
-		assertEquals(120 * 230, Lice.run("((lambda a b (* a b)) 120 230)"))
-		assertEquals(466, Lice.run("((lambda a (+ a a)) 233)"))
+		"((lambda a b (+ a b)) 120 230)" shouldBe 120 + 230
+		"((lambda a b (* a b)) 120 230)" shouldBe 120 * 230
+		"((lambda a (+ a a)) 233)" shouldBe 466
 	}
 
 	/**
@@ -417,16 +392,16 @@ ice1k
 	@Test(timeout = 1000)
 	fun test29() {
 		//language=TEXT
-		assertFalse(true == Lice.run("""
+		"""
 ((lazy unused
        "any-val")
   (|> (def side-effect true)
       233))
 
 (def? side-effect)
-"""))
+""".shouldBeFalse()
 		//language=TEXT
-		assertEquals(12, Lice.run("""
+		"""
 (-> side-effect 10)
 ((expr used-twice
         (+ used-twice used-twice))
@@ -434,9 +409,9 @@ ice1k
       233))
 
 side-effect
-"""))
+""" shouldBe 12
 		//language=TEXT
-		assertEquals(11, Lice.run("""
+		"""
 (-> side-effect 10)
 ((lambda used-twice
          (+ used-twice used-twice))
@@ -444,7 +419,7 @@ side-effect
       233))
 
 side-effect
-"""))
+""" shouldBe 11
 	}
 
 	/**
@@ -452,8 +427,8 @@ side-effect
 	 */
 	@Test(timeout = 1000)
 	fun test30() {
-		assertEquals(233, Lice.run("([| ([|] 233 666 555 \"Fuck you\"))"))
-		assertEquals(666, Lice.run("([| (|] ([|] 233 666 555 \"Fuck you\")))"))
+		"([| ([|] 233 666 555 \"Fuck you\"))" shouldBe 233
+		"([| (|] ([|] 233 666 555 \"Fuck you\")))" shouldBe 666
 	}
 
 	/**
@@ -461,18 +436,18 @@ side-effect
 	 */
 	@Test(timeout = 1000)
 	fun test31() {
-		assertEquals(1, Lice.run("""
+		"""
 (defexpr fuck op (op true 1 2))
 (fuck if)
-"""))
-		assertEquals(2, Lice.run("""
+""" shouldBe 1
+		"""
 (defexpr fuck op (op true 1 2))
 (fuck unless)
-"""))
-		assertEquals(10, Lice.run("""
+""" shouldBe 2
+		"""
 (defexpr fuck op (op 1 2 3 4))
 (fuck +)
-"""))
+""" shouldBe 10
 	}
 
 	/**
@@ -485,8 +460,8 @@ side-effect
 	 */
 	@Test(timeout = 1000)
 	fun test32() {
-		assertEquals(3, Lice.run("((expr op (op 1 2)) +)"))
-		assertEquals(0, Lice.run("((lazy op (op 1 2)) +)"))
-		assertEquals(0, Lice.run("((lambda op (op 1 2)) +)"))
+		"((expr op (op 1 2)) +)" shouldBe 3
+		"((lazy op (op 1 2)) +)" shouldBe 0
+		"((lambda op (op 1 2)) +)" shouldBe 0
 	}
 }
