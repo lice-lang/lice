@@ -2,8 +2,6 @@ package org.lice.repl
 
 import org.lice.compiler.parse.buildNode
 import org.lice.compiler.parse.mapAst
-import org.lice.compiler.util.DEBUGGING
-import org.lice.compiler.util.VERBOSE
 import org.lice.compiler.util.println
 import org.lice.core.SymbolList
 import org.lice.lang.Echoer
@@ -18,26 +16,22 @@ import org.lice.lang.Echoer
 class Repl
 @JvmOverloads
 constructor(val symbolList: SymbolList = SymbolList(true)) {
-	var stackTrace: Throwable? = null
 
 	init {
 		"""Lice language repl $VERSION_CODE
 			|see: https://github.com/lice-lang/lice
 
-			|剑未佩妥，出门已是江湖。千帆过尽，归来仍是少年。
-			|Stay young stay simple, and make yourself naive."""
+			|剑未佩妥，出门已是江湖。千帆过尽，归来仍是少年。"""
 				.trimMargin()
 				.println()
 		Echoer.echo(HINT)
-		DEBUGGING = false
-		VERBOSE = false
 	}
 
 	fun handle(str: String): Boolean {
 		try {
 			mapAst(buildNode(str), symbolList).eval()
 		} catch(e: Throwable) {
-			stackTrace = e
+//			stackTrace = e
 			Echoer.echolnErr(e.message ?: "")
 		}
 		print(HINT)
@@ -45,6 +39,6 @@ constructor(val symbolList: SymbolList = SymbolList(true)) {
 	}
 
 	companion object HintHolder {
-		val HINT = "Lice > "
+		val HINT = "|> "
 	}
 }

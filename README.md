@@ -19,6 +19,9 @@ This is an interpreter for a dialect of lisp, running on JVM.
 
 ## [About the language](https://github.com/lice-lang/lice-reference)
 
+See [FeatureTest](src/test/kotlin/org/lice/FeatureTest.kt) to learn more about the language
+feature.
+
 ## It looks like:
 
 ```lisp
@@ -39,7 +42,7 @@ allprojects {
 }
 
 dependencies {
-  compile 'com.github.lice-lang:lice:v3.0.5'
+  compile 'com.github.lice-lang:lice:v3.1'
 }
 ```
 
@@ -48,7 +51,7 @@ But if you use Scala, you can add it to your sbt dependency, by adding the stuff
 ```sbtshell
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.lice-lang" % "lice" % "v3.0.5"
+libraryDependencies += "com.github.lice-lang" % "lice" % "v3.1"
 ```
 
 And if you're a Clojure developer, why not try build it with leiningen?
@@ -56,7 +59,7 @@ And if you're a Clojure developer, why not try build it with leiningen?
 ```leiningen
 :repositories [["jitpack" "https://jitpack.io"]]
 
-:dependencies [[com.github.lice-lang/lice "v3.0.5"]]
+:dependencies [[com.github.lice-lang/lice "v3.1"]]
 ```
 
 ## Contribute

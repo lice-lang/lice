@@ -46,6 +46,8 @@ interface Node {
 	//	fun eval(params: List<Node> = emptyList<Node>()): Node
 	fun eval(): Value
 
+	fun process() = this
+
 	val meta: MetaData
 
 	override fun toString(): String
@@ -92,6 +94,7 @@ class ExpressionNode(
 
 	override fun eval(): Value {
 		super.beforeEval()
+		val node = process()
 		return when (node) {
 			is SymbolNode -> node.eval(params)
 			is ExpressionNode -> node.eval(params)
@@ -101,11 +104,17 @@ class ExpressionNode(
 
 	fun eval(outer: List<Node>): Value {
 		super.beforeEval()
+		val node = process()
 		return when (node) {
 			is SymbolNode -> node.eval(params, outer)
 			is ExpressionNode -> node.eval(params)
 			else -> node.eval()
 		}
+	}
+
+	override fun process() = when (node) {
+		is SymbolNode -> node.function().invoke(meta, params)
+		else -> node.process()
 	}
 
 	override fun toString() = "function: <$> with ${params.size} params"
@@ -130,7 +139,6 @@ class SymbolNode(
 
 	fun function() = symbolList.getFunction(name) ?: undefinedVariable(name, meta)
 
-
 	override fun toString() = "symbol: <$name>"
 }
 
@@ -140,7 +148,6 @@ class EmptyNode(override val meta: MetaData) : Node {
 		return Nullptr
 	}
 
-	//	override fun eval(params: List<Node>) = Nullptr
 	override fun toString() = "null: <null>"
 }
 

@@ -383,20 +383,16 @@ ice1k
 	}
 
 	/**
-	 * mention:
-	 * () means evaluation
-	 * so if you nest expressions, it will be evaluated without passing the params.
-	 *
 	 * I'll show you the procedure:
 	 *
 	 * (((if true + -)) 11 11)
 	 * ((+) 11 11)
-	 * (0 11 11)
+	 * (+ 11 11)
 	 * 0
 	 */
 	@Test(timeout = 1000)
 	fun test27() {
-		assertEquals(0, Lice.run("(((if true + -)) 11 11)"))
+		assertEquals(22, Lice.run("(((if true + -)) 11 11)"))
 		assertEquals(0, Lice.run("+"))
 		assertEquals(0, Lice.run("-"))
 		assertEquals(1, Lice.run("*"))
@@ -477,5 +473,20 @@ side-effect
 (defexpr fuck op (op 1 2 3 4))
 (fuck +)
 """))
+	}
+
+	/**
+	 * expr will keep the parameter everywhere
+	 * lazy will eval params when first invoked
+	 * lambda will eval params before invoked
+	 *
+	 * conclusion: if you want to pass 'function'
+	 * as parameter, please use 'expr'.
+	 */
+	@Test(timeout = 1000)
+	fun test32() {
+		assertEquals(3, Lice.run("((expr op (op 1 2)) +)"))
+		assertEquals(0, Lice.run("((lazy op (op 1 2)) +)"))
+		assertEquals(0, Lice.run("((lambda op (op 1 2)) +)"))
 	}
 }
