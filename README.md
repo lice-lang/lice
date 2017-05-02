@@ -6,7 +6,6 @@ CI|status
 :---|:---:
 Travis CI|[![Build Status](https://travis-ci.org/lice-lang/lice.svg?branch=master)](https://travis-ci.org/lice-lang/lice)
 AppVeyor|[![Build status](https://ci.appveyor.com/api/projects/status/7d6lyinb0xr6hagn?svg=true)](https://ci.appveyor.com/project/ice1000/lice/branch/master)
-CodeShip|[![CodeShip](https://codeship.com/projects/ce3500b0-0a1d-0135-8b3c-6ed4d7e33e57/status?branch=master)](https://app.codeship.com/projects/214703)
 CircleCI|[![CircleCI](https://circleci.com/gh/lice-lang/lice/tree/master.svg?style=svg)](https://circleci.com/gh/lice-lang/lice/tree/master)
 
 [![JitPack](https://jitpack.io/v/lice-lang/lice.svg)](https://jitpack.io/#lice-lang/lice)<br/>
@@ -42,7 +41,7 @@ allprojects {
 }
 
 dependencies {
-  compile 'com.github.lice-lang:lice:v3.1'
+  compile 'com.github.lice-lang:lice:v3.1.1'
 }
 ```
 
@@ -51,7 +50,7 @@ But if you use Scala, you can add it to your sbt dependency, by adding the stuff
 ```sbtshell
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.lice-lang" % "lice" % "v3.1"
+libraryDependencies += "com.github.lice-lang" % "lice" % "v3.1.1"
 ```
 
 And if you're a Clojure developer, why not try build it with leiningen?
@@ -59,7 +58,7 @@ And if you're a Clojure developer, why not try build it with leiningen?
 ```leiningen
 :repositories [["jitpack" "https://jitpack.io"]]
 
-:dependencies [[com.github.lice-lang/lice "v3.1"]]
+:dependencies [[com.github.lice-lang/lice "v3.1.1"]]
 ```
 
 ## Contribute

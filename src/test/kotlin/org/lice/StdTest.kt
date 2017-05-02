@@ -4,6 +4,7 @@ import org.junit.Test
 import org.lice.compiler.parse.createRootNode
 import org.lice.compiler.util.forceRun
 import org.lice.compiler.util.println
+import org.lice.lang.Echoer
 import java.io.File
 
 /**
@@ -79,6 +80,21 @@ class StdTest {
 		}
 		if (ls.size % 2 == 0) println("Ah♂fuck you")
 		else println(ls.last())
+	}
+
+	@Test
+	fun testKotlinSupportLambdaRec() {
+		fun lambda(it: Int): Int = if (it <= 2) 1 else lambda(it - 1) + lambda(it - 2)
+		Echoer.printer = ::println
+		(1..10)
+				.map(::lambda)
+				.forEach(Echoer::echoln)
+
+		var lambda2: (Int) -> Int = { it }
+		lambda2 = { if (it <= 2) 1 else lambda(it - 1) + lambda(it - 2) }
+		(1..10)
+				.map(lambda2)
+				.forEach(Echoer::echoln)
 	}
 
 	companion object {

@@ -484,9 +484,20 @@ side-effect
 
 	/**
 	 * lambda as parameter
+	 *
+	 * sample: defining a fold
 	 */
+	@Test(timeout = 1000)
 	fun test33() {
 		"((expr op (op 1 2)) (lambda a b (+ a b)))" shouldBe 3
 		"((expr op (op 3 4)) (lambda a b (+ (* a a) (* b b))))" shouldBe 25
+		//language=TEXT
+		"""
+(defexpr fold ls init op
+ (for-each index-var ls
+   (-> init (op init index-var))))
+
+(fold (.. 1 4) 0 +)
+""" shouldBe 10
 	}
 }
