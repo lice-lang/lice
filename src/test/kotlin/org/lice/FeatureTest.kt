@@ -363,10 +363,11 @@ ice1k
 	 * (((if true + -)) 11 11)
 	 * ((+) 11 11)
 	 * (+ 11 11)
-	 * 0
+	 * 22
 	 */
 	@Test(timeout = 1000)
 	fun test27() {
+		"((if true + -) 11 11)" shouldBe 22
 		"(((if true + -)) 11 11)" shouldBe 22
 		"+" shouldBe 0
 		"-" shouldBe 0
@@ -427,8 +428,8 @@ side-effect
 	 */
 	@Test(timeout = 1000)
 	fun test30() {
-		"([| ([|] 233 666 555 \"Fuck you\"))" shouldBe 233
-		"([| (|] ([|] 233 666 555 \"Fuck you\")))" shouldBe 666
+		"""([| ([|] 233 666 555 "Fuck you"))""" shouldBe 233
+		"""([| (|] ([|] 233 666 555 "Fuck you")))""" shouldBe 666
 	}
 
 	/**
@@ -448,6 +449,10 @@ side-effect
 (defexpr fuck op (op 1 2 3 4))
 (fuck +)
 """ shouldBe 10
+		"""
+(defexpr fuck op (op 1 2 3 4))
+(fuck list)
+""" shouldBe listOf(1, 2, 3, 4)
 	}
 
 	/**
@@ -463,5 +468,11 @@ side-effect
 		"((expr op (op 1 2)) +)" shouldBe 3
 		"((lazy op (op 1 2)) +)" shouldBe 0
 		"((lambda op (op 1 2)) +)" shouldBe 0
+		//language=TEXT
+		"""
+(def fun a b
+  (+ (* a a) (* b b)))
+((expr op (op 3 4)) fun)
+""" shouldBe 25
 	}
 }
