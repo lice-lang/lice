@@ -12,11 +12,9 @@ package org.lice.core
 
 import org.lice.compiler.model.MetaData
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
-import java.awt.BorderLayout
-import java.awt.Color
-import java.awt.Graphics
-import java.awt.Graphics2D
+import java.awt.*
 import java.awt.image.BufferedImage
+import java.awt.image.RenderedImage
 import java.io.File
 import java.net.URL
 import javax.imageio.ImageIO
@@ -61,6 +59,18 @@ inline fun SymbolList.addGUIFunctions() {
 			}
 			else -> typeMisMatch("File or URL", o, meta)
 		}
+	})
+	provideFunctionWithMeta("write-file", { ln, ls ->
+		val a = ls.first()
+		val b = ls[1]
+		when (a) {
+			is File -> when (b) {
+				is Image -> ImageIO.write(b as RenderedImage, "PNG", a)
+				else -> a.writeText(b.toString())
+			}
+			else -> typeMisMatch("File", a, ln)
+		}
+		a
 	})
 	provideFunction("show-image", {
 		val o = it.first()

@@ -443,6 +443,7 @@ side-effect
 (fuck if)
 """ shouldBe 1
 		"""
+(deflazy unless condition a b (if condition b a))
 (defexpr fuck op (op true 1 2))
 (fuck unless)
 """ shouldBe 2
@@ -479,5 +480,13 @@ side-effect
   (+ (* a a) (* b b)))
 ((expr op (op 3 4)) fun)
 """ shouldBe 25
+	}
+
+	/**
+	 * lambda as parameter
+	 */
+	fun test33() {
+		"((expr op (op 1 2)) (lambda a b (+ a b)))" shouldBe 3
+		"((expr op (op 3 4)) (lambda a b (+ (* a a) (* b b))))" shouldBe 25
 	}
 }

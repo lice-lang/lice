@@ -94,6 +94,7 @@ class ExpressionNode(
 
 	override fun eval(): Value {
 		super.beforeEval()
+		val was = node is SymbolNode
 		val node = process()
 		return when (node) {
 			is SymbolNode -> node.eval(params)
@@ -107,13 +108,13 @@ class ExpressionNode(
 		val node = process()
 		return when (node) {
 			is SymbolNode -> node.eval(params, outer)
-			is ExpressionNode -> node.eval(params)
+//			is ExpressionNode -> node.eval(params)
 			else -> node.eval()
 		}
 	}
 
 	override fun process() = when (node) {
-		is SymbolNode -> node.function().invoke(meta, params)
+		is SymbolNode -> node.function().invoke(meta, params).process()
 		else -> node.process()
 	}
 

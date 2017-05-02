@@ -20,11 +20,8 @@ import org.lice.compiler.util.InterpretException.Factory.tooFewArgument
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
 import org.lice.compiler.util.forceRun
 import org.lice.lang.*
-import java.awt.Image
-import java.awt.image.RenderedImage
 import java.io.File
 import java.net.URL
-import javax.imageio.ImageIO
 import kotlin.concurrent.thread
 
 @SinceKotlin("1.1")
@@ -56,10 +53,9 @@ fun SymbolList.addStandard() {
 			args
 					.map(block)
 					.forEachIndexed { index, obj ->
-						when (obj) {
-							is SymbolNode -> defineFunction(params[index], obj.function())
-							else -> defineFunction(params[index], { _, _ -> obj })
-						}
+//						val obj = obj.process()
+						if (obj is SymbolNode) defineFunction(params[index], obj.function())
+						else defineFunction(params[index], { _, _ -> obj })
 					}
 			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
 			backup.forEachIndexed { index, node ->
@@ -76,12 +72,7 @@ fun SymbolList.addStandard() {
 			val body = ls.last()
 			val params = ls
 					.subList(1, ls.size - 1)
-					.map {
-						when (it) {
-							is SymbolNode -> it.name
-							else -> InterpretException.notSymbol(meta)
-						}
-					}
+					.map { (it as? SymbolNode)?.name ?: InterpretException.notSymbol(meta) }
 			val override = isFunctionDefined(name)
 			defFunc(name, params, block, body)
 			return@defineFunction ValueNode(DefineResult(
@@ -97,12 +88,7 @@ fun SymbolList.addStandard() {
 			val body = ls.last()
 			val params = ls
 					.subList(0, ls.size - 1)
-					.map {
-						when (it) {
-							is SymbolNode -> it.name
-							else -> typeMisMatch("Symbol", it.eval(), meta)
-						}
-					}
+					.map { (it as? SymbolNode)?.name ?: typeMisMatch("Symbol", it.eval(), meta) }
 			val name = lambdaNameGen()
 			defFunc(name, params, mapper, body)
 			SymbolNode(this, name, meta)
@@ -307,12 +293,7 @@ inline fun SymbolList.addFileFunctions() {
 		val a = ls.first()
 		val b = ls[1]
 		when (a) {
-			is File -> {
-				when (b) {
-					is Image -> ImageIO.write(b as RenderedImage, "PNG", a)
-					else -> a.writeText(b.toString())
-				}
-			}
+			is File -> a.writeText(b.toString())
 			else -> typeMisMatch("File", a, ln)
 		}
 		a

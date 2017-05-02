@@ -29,9 +29,15 @@ sourceSets {
 	test.java.srcDirs += 'src/test/java'
 }
 
+configurations {
+	extraLibs
+}
+
 dependencies {
-	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-	compile group: 'org.jetbrains', name: 'annotations', version: '15.0'
+	extraLibs "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+	extraLibs group: 'org.jetbrains', name: 'annotations', version: '15.0'
+
+	configurations.compile.extendsFrom(configurations.extraLibs)
 
 	testCompile group: 'junit', name: 'junit', version: '4.12'
 	testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
@@ -40,6 +46,11 @@ dependencies {
 jar {
 	manifest {
 		attributes 'Main-Class': 'org.lice.repl.Main'
+	}
+	from {
+		configurations
+				.extraLibs
+				.collect { it.isDirectory() ? it : zipTree(it) }
 	}
 }
 

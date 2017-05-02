@@ -40,7 +40,7 @@ constructor(init: Boolean = true) {
 	init {
 		if (init) {
 			initialize()
-			loadLibrary()
+//			loadLibrary()
 		}
 	}
 

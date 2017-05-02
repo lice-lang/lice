@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Class-Path: kotlin-stdlib-1.1.1.jar kotlin-stdlib-jre8-1.1.1.jar annot
- ations-15.0.jar kotlin-stdlib-jre7-1.1.1.jar
+Class-Path: kotlin-stdlib-jre7-1.1.2.jar kotlin-stdlib-jre8-1.1.2.jar 
+ annotations-15.0.jar kotlin-stdlib-1.1.2.jar
 Main-Class: org.lice.repl.Main
