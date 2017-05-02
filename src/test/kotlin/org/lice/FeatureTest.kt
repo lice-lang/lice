@@ -6,6 +6,7 @@ import org.junit.Test
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
+import org.lice.lang.Pair as LicePair
 
 /**
  * Demos for language feature
@@ -453,6 +454,10 @@ side-effect
 (defexpr fuck op (op 1 2 3 4))
 (fuck list)
 """ shouldBe listOf(1, 2, 3, 4)
+		"""
+(defexpr fuck op (op 1 2 3 4))
+(fuck [|])
+""" shouldBe LicePair(1, LicePair(2, LicePair(3, 4)))
 	}
 
 	/**
