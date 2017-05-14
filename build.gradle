@@ -2,7 +2,7 @@ group 'org.lice'
 version '3.1.1'
 
 buildscript {
-	ext.kotlin_version = '1.1.2-2'
+	ext.kotlin_version = '1.1.2-3'
 	repositories {
 		mavenCentral()
 	}

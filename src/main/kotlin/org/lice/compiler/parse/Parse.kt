@@ -51,13 +51,10 @@ fun buildNode(originalCode: String): StringNode {
 					showError("Braces not match at line $lineNumber: Unexpected \')\'.", true)
 					return EmptyStringNode(MetaData(lineNumber))
 				}
-				val son =
-						if (currentNodeStack.peek().empty) EmptyStringNode(MetaData(lineNumber))
-						else currentNodeStack.peek()
+				val son = if (currentNodeStack.peek().empty) EmptyStringNode(MetaData(lineNumber))
+				else currentNodeStack.peek()
 				currentNodeStack.pop()
-				currentNodeStack
-						.peek()
-						.add(son)
+				currentNodeStack.peek().add(son)
 			}
 			' ', '\n', '\t', '\r', ',', '，', '　' -> {
 				if (!quoteStarted) {
@@ -75,15 +72,13 @@ fun buildNode(originalCode: String): StringNode {
 			} else {
 				quoteStarted = false
 				currentNodeStack.peek().add(StringLeafNode(MetaData(lineNumber), code
-						.substring(startIndex = lastQuoteIndex, endIndex = index + 1)
-				))
+						.substring(startIndex = lastQuoteIndex, endIndex = index + 1)))
 			}
 			else -> if (!quoteStarted) elementStarted = true
 		}
 	}
 	check(code.length - 1)
-	if (currentNodeStack.size > 1) {
+	if (currentNodeStack.size > 1)
 		showError("Braces not match at line $lineNumber: Expected \')\'.", true)
-	}
 	return currentNodeStack.peek()
 }
