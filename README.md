@@ -26,6 +26,14 @@ feature.
 ```lisp
 (print "Hello " "World" "\n")
 (for-each i (.. 1 10) (print i "\n"))
+
+(defexpr fold ls init op
+ (for-each index-var ls
+   (-> init (op init index-var))))
+
+(fold (.. 1 4) 0 +)
+
+((expr op (op 3 4)) (lambda a b (+ (* a a) (* b b))))
 ```
 
 ## Build
