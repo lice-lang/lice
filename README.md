@@ -14,9 +14,10 @@ CircleCI|[![CircleCI](https://circleci.com/gh/lice-lang/lice/tree/master.svg?sty
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)<br/>
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)<br/>
 
-This is an interpreter for a dialect of lisp, running on JVM.
+## About
+This is the interpreter of Lice, a dialect of Lisp, run on JVM platform
 
-## [About the language](https://github.com/lice-lang/lice-reference)
+## [About the Language](https://github.com/lice-lang/lice-reference)
 
 See [FeatureTest](src/test/kotlin/org/lice/FeatureTest.kt) to learn more about the language
 feature.
@@ -36,9 +37,9 @@ feature.
 ((expr op (op 3 4)) (lambda a b (+ (* a a) (* b b))))
 ```
 
-## Build
+## Building
 
-You can simply use gradle by adding JitPack to your repository set and add the dependency:
+You can use lice-lang with Gradle by simply adding Jitpack into your repository; then add the lice-lang dependency
 
 ```groovy
 allprojects {
@@ -53,7 +54,7 @@ dependencies {
 }
 ```
 
-But if you use Scala, you can add it to your sbt dependency, by adding the stuffs below:
+If you use Scala, you can add it to your sbt dependency, by adding the lines below:
 
 ```sbtshell
 resolvers += "jitpack" at "https://jitpack.io"
@@ -61,7 +62,7 @@ resolvers += "jitpack" at "https://jitpack.io"
 libraryDependencies += "com.github.lice-lang" % "lice" % "v3.1.1"
 ```
 
-And if you're a Clojure developer, why not try build it with leiningen?
+And if you're a Clojure developer, why not try to build it with leiningen?
 
 ```leiningen
 :repositories [["jitpack" "https://jitpack.io"]]
@@ -69,20 +70,20 @@ And if you're a Clojure developer, why not try build it with leiningen?
 :dependencies [[com.github.lice-lang/lice "v3.1.1"]]
 ```
 
-## Contribute
+## Contributing
 
-Pull requests are welcomed, but please DO follow:
+Pull requests are welcomed, but please follow our code style guide below:
 
 ## Code style
 
 ### compiler
 
-0. It's recommended to use 2-spaces tab actual(please DO USE tabs).
-0. It's not recommended to use any language but Java/Kotlin.
-0. It's recommended to use functional collection API.
-0. Functions' results should be lazy evaluated.
+0. Use actual tab character instead of spaces
+0. Please use Java or Kotlin as a development language
+0. Functional collection APIs are prefered.
+0. Results of functions should be lazy evaluation.
 
 ### Lice language
 
 0. Use symbols like '-\>', '?' to represent 'to', 'orNot'. It's clearer.
-0. Use lisp-style function names.
+0. Use Lisp-style function names.
