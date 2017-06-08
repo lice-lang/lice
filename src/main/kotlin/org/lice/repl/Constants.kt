@@ -6,4 +6,5 @@
  */
 package org.lice.repl
 
-val VERSION_CODE = "v3.1.1"
+@Deprecated("")
+val VERSION_CODE = org.lice.VERSION

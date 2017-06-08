@@ -28,11 +28,19 @@ class SymbolList
 @JvmOverloads
 constructor(init: Boolean = true) {
 	companion object ClassPathHolder {
-		val pathSeperator = System.getProperty("path.separator")
-		val classPath = System.getProperty("java.class.path")
+		val pathSeperator: String = System.getProperty("path.separator")
+		val classPath: String = System.getProperty("java.class.path")
+
+		private val initMethods: MutableSet<(SymbolList) -> Unit> = mutableSetOf(
+
+		)
+
+		fun addInitMethod(f: SymbolList.() -> Unit): Unit {
+			initMethods.add(f)
+		}
 	}
 
-	val functions = mutableMapOf<String, Func>()
+	val functions: MutableMap<String, Func> = mutableMapOf()
 
 	val rand = Random(System.currentTimeMillis())
 //	val loadedModules = mutableListOf<String>()
@@ -45,6 +53,8 @@ constructor(init: Boolean = true) {
 	}
 
 	fun initialize() {
+		initMethods.forEach { it(this) }
+
 		addFileFunctions()
 		addGUIFunctions()
 		addMathFunctions()
@@ -55,6 +65,7 @@ constructor(init: Boolean = true) {
 			(param.firstOrNull() as? String)?.let { loadLibrary(it) }
 			true
 		})
+
 	}
 
 	@JvmOverloads
