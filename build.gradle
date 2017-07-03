@@ -34,11 +34,11 @@ configurations {
 }
 
 dependencies {
-	artifact "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 	artifact group: 'org.jetbrains', name: 'annotations', version: '15.0'
 
 	configurations.compile.extendsFrom(configurations.artifact)
 
+	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 	testCompile group: 'junit', name: 'junit', version: '4.12'
 	testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 }
