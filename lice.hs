@@ -13,11 +13,13 @@ import Control.Applicative
 data AST = I32 Int
          | Sym String
          | Str String
-         | Null
+         | Nul
          | Err String
+         | Lst [AST]
+         | Par (AST, AST)
          | Boo Bool
          | Tmp String
-         | Node AST [AST]
+         | Nod AST [AST]
          deriving (Eq, Show)
 --
 
@@ -105,7 +107,7 @@ false = do
 
 null' = do
   reserved "null"
-  return Null
+  return Nul
 --
 
 string [      ] = return []
@@ -151,20 +153,20 @@ sym = do
 node = do
   nodes <- parens $ many expr
   return $ case nodes of
-    []      -> Null
-    (h : t) -> Node h t
+    []      -> Nul
+    (h : t) -> Nod h t
 --
 
 expr = true <|> false <|> int <|> null' <|> sym <|> node
 
-optimize :: AST -> AST
-optimize n@(I32 _) = n
-optimize s@(Sym _) = s
-optimize otherwise = otherwise
--- optimize (Add a b) = case (optimize a, optimize b) of
---   (Imm x, Imm y) -> Imm $ x + y
---   (  x  ,   y  ) -> Add x y
---
+-- optimize :: AST -> AST
+-- optimize n@(I32 _) = n
+-- optimize s@(Sym _) = s
+-- optimize otherwise = otherwise
+-- -- optimize (Add a b) = case (optimize a, optimize b) of
+-- --   (Imm x, Imm y) -> Imm $ x + y
+-- --   (  x  ,   y  ) -> Add x y
+-- --
 
 preludeFunctions :: [(String, [AST] -> AST)]
 preludeFunctions =
@@ -172,8 +174,12 @@ preludeFunctions =
   , ("*", I32 . product . (toI <$>))
   , ("-", I32 . foldr1 (-) . (toI <$>))
   , ("/", I32 . foldr1 div . (toI <$>))
+  , ("^", \[I32 a, I32 b] -> I32 $ a ^ b)
   , (">", \[I32 a, I32 b] -> Boo $ a > b)
   , ("<", \[I32 a, I32 b] -> Boo $ a < b)
+  , ("!", \[Boo b] -> Boo $ not b)
+  , ("list", Lst)
+  , ("size", \[Lst ls] -> I32 $ length ls)
   , ("==", \[I32 a, I32 b] -> Boo $ a == b)
   , (">=", \[I32 a, I32 b] -> Boo $ a >= b)
   , ("<=", \[I32 a, I32 b] -> Boo $ a <= b)
@@ -183,14 +189,14 @@ preludeFunctions =
   , ("str-con", Str . join . (toS <$>))
   , ("if", \l -> case l of
         [Boo c, a, b] -> if c then a else b
-        [Boo c, a]    -> if c then a else Null)
+        [Boo c, a]    -> if c then a else Nul)
   ]
 
   where toI (I32 i) = i
         toS (I32 i) = show i
         toS (Sym s) = s
         toS (Boo b) = show b
-        toS  Null   = "null"
+        toS  Nul    = "null"
         toS (Str s) = s
 --
 
@@ -204,10 +210,10 @@ liceEval :: String -> Maybe String
 liceEval s = licePretty' . liceEval' <$> liceParse s
 
 liceEval' :: AST -> AST
-liceEval' (Node f l) = case f of
-  s@(Sym _)    -> funcInvoke s l
-  n@(Node _ _) -> liceEval' n `funcInvoke` l
-  others       -> others
+liceEval' (Nod f l) = case f of
+  s@(Sym _)   -> funcInvoke s l
+  n@(Nod _ _) -> liceEval' n `funcInvoke` l
+  others      -> others
 liceEval' others     = others
 --
 
@@ -219,12 +225,13 @@ funcInvoke (Sym s) l = case lookup s preludeFunctions of
 licePretty' :: AST -> String
 licePretty' (Boo True)  = "true"
 licePretty' (Boo False) = "false"
-licePretty'  Null       = "null"
+licePretty'  Nul        = "null"
 licePretty' (Sym s)     = s
 licePretty' (Str s)     = "\"" ++ s ++ "\""
 licePretty' (I32 n)     = show n
-licePretty' (Err s)     = "{error:" ++ s ++ "}"
-licePretty' (Node f p)  = "(" ++ licePretty' f ++ join ((" " ++) . licePretty' <$> p) ++ ")"
+licePretty' (Err s)     = "{ error:" ++ s ++ " }"
+licePretty' (Lst l)     = show l
+licePretty' (Nod f p)   = "(" ++ licePretty' f ++ join ((" " ++) . licePretty' <$> p) ++ ")"
 
 main :: IO ()
 main = do
