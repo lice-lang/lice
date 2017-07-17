@@ -180,6 +180,8 @@ preludeFunctions =
   , ("!", \[Boo b] -> Boo $ not b)
   , ("list", Lst)
   , ("size", \[Lst ls] -> I32 $ length ls)
+  , ("reverse", \[Lst ls] -> Lst $ reverse ls)
+  , ("..", \[I32 a, I32 b] -> Lst $ I32 <$> [a .. b])
   , ("==", \[I32 a, I32 b] -> Boo $ a == b)
   , (">=", \[I32 a, I32 b] -> Boo $ a >= b)
   , ("<=", \[I32 a, I32 b] -> Boo $ a <= b)
@@ -230,8 +232,8 @@ licePretty' (Sym s)     = s
 licePretty' (Str s)     = "\"" ++ s ++ "\""
 licePretty' (I32 n)     = show n
 licePretty' (Err s)     = "{ error:" ++ s ++ " }"
-licePretty' (Lst l)     = show l
-licePretty' (Nod f p)   = "(" ++ licePretty' f ++ join ((" " ++) . licePretty' <$> p) ++ ")"
+licePretty' (Lst l)     = tail $ join ((' ' :) . licePretty' <$> l)
+licePretty' (Nod f p)   = "(" ++ licePretty' f ++ join ((' ' :) . licePretty' <$> p) ++ ")"
 
 main :: IO ()
 main = do
