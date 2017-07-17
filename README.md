@@ -14,32 +14,45 @@ CircleCI|[![CircleCI](https://circleci.com/gh/lice-lang/lice/tree/master.svg?sty
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)<br/>
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)<br/>
 
-## About
-This is the interpreter of Lice, a dialect of Lisp, run on JVM platform
+# About
 
-## [About the Language](https://github.com/lice-lang/lice-reference)
+This is the interpreter of Lice language, a dialect of Lisp, run on JVM platform.
 
-See [FeatureTest](src/test/kotlin/org/lice/FeatureTest.kt) to learn more about the language
-feature.
+It supports call-by-value, call-by-name, call-by-need(we sometimes call it lazy evaluation) at the same time.
+Functions and values are treated as the same. Dynamic scoping, because I can't find a better scoping solution
+for a interpreted language.
 
-## It looks like:
++ [About the Language](https://github.com/lice-lang/lice-reference)
++ [A simple Haskell implementation](./lice.hs)
+
+See [FeatureTest](src/test/kotlin/org/lice/FeatureTest.kt) to learn more about the language's features.
+
+# It looks like:
 
 ```lisp
+; print a string
 (print "Hello " "World" "\n")
+
+; travel through a range
 (for-each i (.. 1 10) (print i "\n"))
 
+; define a call-by-name function
 (defexpr fold ls init op
  (for-each index-var ls
    (-> init (op init index-var))))
 
+; invoke the function defined above
 (fold (.. 1 4) 0 +)
 
+; passing a call-by-value lambda to a call-by-name lambda
 ((expr op (op 3 4)) (lambda a b (+ (* a a) (* b b))))
+
+; to define a call-by-need lambda, use `lazy`.
 ```
 
-## Building
+# Building
 
-You can use lice-lang with Gradle by simply adding Jitpack into your repository; then add the lice-lang dependency
+You can use `lice-lang` with Gradle by simply adding Jitpack into your repository; then add the lice-lang dependency
 
 ```groovy
 allprojects {
@@ -50,7 +63,7 @@ allprojects {
 }
 
 dependencies {
-  compile 'com.github.lice-lang:lice:v3.1.1'
+  compile 'com.github.lice-lang:lice:v3.1.2'
 }
 ```
 
@@ -59,7 +72,7 @@ If you use Scala, you can add it to your sbt dependency, by adding the lines bel
 ```sbtshell
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.lice-lang" % "lice" % "v3.1.1"
+libraryDependencies += "com.github.lice-lang" % "lice" % "v3.1.2"
 ```
 
 And if you're a Clojure developer, why not try to build it with leiningen?
@@ -67,10 +80,10 @@ And if you're a Clojure developer, why not try to build it with leiningen?
 ```leiningen
 :repositories [["jitpack" "https://jitpack.io"]]
 
-:dependencies [[com.github.lice-lang/lice "v3.1.1"]]
+:dependencies [[com.github.lice-lang/lice "v3.1.2"]]
 ```
 
-## Contributing
+# Contributing
 
 Pull requests are welcomed, but please follow our code style guide below:
 
@@ -85,5 +98,19 @@ Pull requests are welcomed, but please follow our code style guide below:
 
 ### Lice language
 
-0. Use symbols like '-\>', '?' to represent 'to', 'orNot'. It's clearer.
+0. Use symbols like `-\>`, `?` to represent `to`, `orNot`. It's clearer.
 0. Use Lisp-style function names.
+
+Example:
+
+```lisp
+; good
+(int->str 1)
+; bad
+(intToStr 1)
+
+; good
+(null? ())
+; bad
+(nullOrNot ())
+```
