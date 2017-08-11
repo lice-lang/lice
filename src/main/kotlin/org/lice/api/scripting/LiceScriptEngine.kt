@@ -35,11 +35,11 @@ class LiceScriptEngine : ScriptEngine {
 	}
 
 	override fun eval(script: String?): Any {
-		return eval(script, SymbolList())
+		return eval(script, context.bindings)
 	}
 
 	override fun eval(reader: Reader?): Any {
-		return eval(reader!!.readText(), SymbolList())
+		return eval(reader!!.readText(), context.bindings)
 	}
 
 	override fun eval(script: String?, n: Bindings?): Any {
