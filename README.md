@@ -55,13 +55,11 @@ See [FeatureTest](src/test/kotlin/org/lice/FeatureTest.kt) to learn more about t
 import javax.script.*;
 
 public class LiceScriptEngineTest {
-	public static void main() throws Exception {
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("lice");
-
-		engine.eval("(def x 10)");
-
-		engine.eval("(print x)");
-	}
+    public static void main() throws Exception {
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("lice");
+        engine.eval("(def x 10)");
+        engine.eval("(print x)");
+    }
 }
 ```
 

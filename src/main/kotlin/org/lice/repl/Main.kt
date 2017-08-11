@@ -29,6 +29,8 @@ object Main {
 
 	@JvmStatic
 	fun main(args: Array<String>) {
+		Echoer.repl = true
+
 		if (args.isEmpty()) {
 			Echoer.closeOutput()
 			val sl = SymbolList()

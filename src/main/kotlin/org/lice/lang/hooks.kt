@@ -15,6 +15,8 @@ import org.lice.compiler.model.Node
 typealias Output = Any?.() -> Unit
 
 object Echoer {
+	var repl: Boolean = false
+
 	val stdout: Output = ::print
 	var printer: Output = stdout
 		get
@@ -25,10 +27,21 @@ object Echoer {
 
 	val nothing: Output = { }
 
-	fun echo(a: Any? = "") = printer(a)
-	fun echoln(a: Any? = "") = echo("$a\n")
-	fun echoErr(a: Any? = "") = printerErr(a)
-	fun echolnErr(a: Any? = "") = printerErr("$a\n")
+	fun echo(a: Any? = "") {
+		if (repl) printer(a)
+	}
+
+	fun echoln(a: Any? = "") {
+		if (repl) echo("$a\n")
+	}
+
+	fun echoErr(a: Any? = "") {
+		if (repl) printerErr(a)
+	}
+
+	fun echolnErr(a: Any? = "") {
+		if (repl) printerErr("$a\n")
+	}
 
 	fun closeOutput() {
 		printer = nothing
