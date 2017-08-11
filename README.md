@@ -49,6 +49,21 @@ See [FeatureTest](src/test/kotlin/org/lice/FeatureTest.kt) to learn more about t
 
 ; to define a call-by-need lambda, use `lazy`.
 ```
+# Script API 
+
+```java
+import javax.script.*;
+
+public class LiceScriptEngineTest {
+	public static void main() throws Exception {
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("lice");
+
+		engine.eval("(def x 10)");
+
+		engine.eval("(print x)");
+	}
+}
+```
 
 # Building
 
