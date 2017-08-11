@@ -28,7 +28,7 @@ interface AbstractValue {
 	val type: Class<*>
 }
 
-class Value(
+data class Value(
 		override val o: Any?,
 		override val type: Class<*>) : AbstractValue {
 	constructor(

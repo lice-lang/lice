@@ -24,31 +24,31 @@ class LiceScriptEngine : ScriptEngine {
 		if (context is LiceContext) this.context = context
 	}
 
-	override fun eval(script: String?, context: ScriptContext?): Any {
+	override fun eval(script: String?, context: ScriptContext?): Any? {
 		context as LiceContext
 		return eval(script, context.bindings)
 	}
 
-	override fun eval(reader: Reader?, context: ScriptContext?): Any {
+	override fun eval(reader: Reader?, context: ScriptContext?): Any? {
 		context as LiceContext
 		return eval(reader!!.readText(), context.bindings)
 	}
 
-	override fun eval(script: String?): Any {
+	override fun eval(script: String?): Any? {
 		return eval(script, context.bindings)
 	}
 
-	override fun eval(reader: Reader?): Any {
+	override fun eval(reader: Reader?): Any? {
 		return eval(reader!!.readText(), context.bindings)
 	}
 
-	override fun eval(script: String?, n: Bindings?): Any {
+	override fun eval(script: String?, n: Bindings?): Any? {
 		n as SymbolList
 
-		return mapAst(buildNode(script!!), n).eval()
+		return mapAst(buildNode(script!!), n).eval().o
 	}
 
-	override fun eval(reader: Reader?, n: Bindings?): Any {
+	override fun eval(reader: Reader?, n: Bindings?): Any? {
 		return eval(reader!!.readText(), n)
 	}
 
