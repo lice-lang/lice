@@ -36,11 +36,9 @@ object Main {
 			sl.provideFunction("help") {
 				"This is the repl for org.lice language.\n\nsee: https://github.com/lice-lang/lice"
 			}
-			sl.provideFunction("version", {
-				"""Lice language interpreter $VERSION
-				|by ice1000""".trimMargin()
-			})
+			sl.provideFunction("version") { "Lice language interpreter $VERSION\nby ice1000" }
 			sl.provideFunction("FILE_PATH") { File("").absolutePath }
+
 			val scanner = Scanner(System.`in`)
 			val repl = Repl(sl)
 			while (repl.handle(scanner.nextLine())) Unit
