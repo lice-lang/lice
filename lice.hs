@@ -1,12 +1,20 @@
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ApplicativeDo #-}
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE ViewPatterns #-}
+
 module LiceHaskell
   ( liceEval
   , licePretty
   , liceParse
   ) where
 
+import Prelude hiding (null)
+
 import Data.Char
 import Data.List.Split (splitOn)
 import Data.Maybe
+
 import Control.Monad
 import Control.Applicative
 
@@ -18,7 +26,6 @@ data AST = I32 Int
          | Lst [AST]
          | Par (AST, AST)
          | Boo Bool
-         | Tmp String
          | Nod AST [AST]
          deriving (Eq, Show)
 --
@@ -31,14 +38,14 @@ alpha = ['a'..'z'] ++ ['A'..'Z']
 
 newtype Parser val = Parser { parse :: String -> [(val, String)]  }
 
-runParser :: Parser a -> String -> Maybe a
-runParser m s = case parse m s of
-  [(res, [])] -> Just res
-  _           -> Nothing
---
+parseCode :: Parser a -> String -> Either String a
+parseCode m (parse m -> [(res, [])]) = Right res
+parseCode _ _                        = Left "Hugh?"
+
+(<!--) = parse
 
 instance Functor Parser where
-  fmap f (Parser ps) = Parser $ \p -> [(f a, b) | (a, b) <- ps p]
+  fmap f (Parser ps) = Parser $ \p -> [ (f a, b) | (a, b) <- ps p ]
 --
 
 instance Applicative Parser where
@@ -49,7 +56,7 @@ instance Applicative Parser where
 
 instance Monad Parser where
   return a = Parser $ \s -> [(a, s)]
-  p >>= f  = Parser $ concatMap (\(a, s1) -> parse (f a) s1) . parse p
+  p >>= f  = Parser $ concatMap (\(a, s1) -> f a <!-- s1) . parse p
 --
 
 instance MonadPlus Parser where
@@ -64,28 +71,17 @@ instance Alternative Parser where
     rs -> rs
 --
 
+(<~>) :: Alternative a => a b -> a b -> a b
+(<~>) = flip (<|>)
+
 item :: Parser Char
-item = Parser $ \s -> case s of
-  [     ] -> []
+item = Parser $ \case
+  [     ] -> [      ]
   (h : t) -> [(h, t)]
 --
 
 satisfy :: (Char -> Bool) -> Parser Char
 satisfy p = item >>= \c -> if p c then return c else empty
-
-chainl1 :: Parser a -> Parser (a -> a -> a) -> Parser a
-chainl1 p op = do
-  a <- p
-  rest a
-  where rest a = (do
-          f <- op
-          b <- p
-          rest $ f a b)
-          <|> return a
---
-
-chainl :: Parser a -> Parser (a -> a -> a) -> a -> Parser a
-chainl p op = (chainl1 p op <|>) . return
 
 oneOf ls = satisfy (`elem` ls)
 noneOf ls = satisfy $ not . (`elem` ls)
@@ -105,7 +101,7 @@ false = do
   return $ Boo False
 --
 
-null' = do
+null = do
   reserved "null"
   return Nul
 --
@@ -157,7 +153,7 @@ node = do
     (h : t) -> Nod h t
 --
 
-expr = true <|> false <|> int <|> null' <|> sym <|> node
+expr = true <|> false <|> int <|> null <|> sym <|> node
 
 -- optimize :: AST -> AST
 -- optimize n@(I32 _) = n
@@ -202,13 +198,13 @@ preludeFunctions =
         toS (Str s) = s
 --
 
-liceParse :: String -> Maybe AST
-liceParse = runParser expr
+liceParse :: String -> Either String AST
+liceParse = parseCode expr
 
-licePretty :: String -> Maybe String
+licePretty :: String -> Either String String
 licePretty s = licePretty' <$> liceParse s
 
-liceEval :: String -> Maybe String
+liceEval :: String -> Either String String
 liceEval s = licePretty' . liceEval' <$> liceParse s
 
 liceEval' :: AST -> AST
@@ -245,6 +241,6 @@ main = do
     putStr "|> "
     code <- getLine
     putStrLn $ case liceEval code of
-      (Just res) -> res
-      Nothing    -> "Hugh?"
+      (Left res) -> res
+      (Right re) -> re
 --
