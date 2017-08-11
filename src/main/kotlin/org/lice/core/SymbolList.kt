@@ -12,6 +12,7 @@ import org.lice.compiler.model.MetaData
 import org.lice.compiler.model.Node
 import org.lice.compiler.model.ValueNode
 import java.util.*
+import javax.script.Bindings
 
 @SinceKotlin("1.1")
 typealias Func = (MetaData, List<Node>) -> Node
@@ -23,6 +24,35 @@ typealias ProvidedFuncWithMeta = (MetaData, List<Any?>) -> Any?
 typealias ProvidedFunc = (List<Any?>) -> Any?
 
 operator fun Func.invoke(e: MetaData) = invoke(e, emptyList())
+
+class AbstractBindings : Map<String, Any>{
+
+	override val entries: Set<Map.Entry<String, Any>>
+		get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+	override val keys: Set<String>
+		get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+	override val size: Int
+		get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+	override val values: Collection<Any>
+		get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+
+	override fun containsKey(key: String): Boolean {
+		TODO("Function containsKey is not implemented")
+	}
+
+	override fun containsValue(value: Any): Boolean {
+		TODO("Function containsValue is not implemented")
+	}
+
+	override fun get(key: String): Any? {
+		TODO("Function get is not implemented")
+	}
+
+	override fun isEmpty(): Boolean {
+		TODO("Function isEmpty is not implemented")
+	}
+
+}
 
 class SymbolList
 @JvmOverloads

@@ -3,6 +3,8 @@ package org.lice.repl
 import org.lice.compiler.parse.createRootNode
 import org.lice.core.SymbolList
 import org.lice.lang.Echoer
+import org.lice.VERSION
+
 import java.io.File
 import java.util.*
 
@@ -31,16 +33,14 @@ object Main {
 			Echoer.closeOutput()
 			val sl = SymbolList()
 			Echoer.openOutput()
-			sl.provideFunction("help", {
-				"""This is the repl for org.lice language.
-
-				|see: https://github.com/lice-lang/lice""".trimMargin()
-			})
+			sl.provideFunction("help") {
+				"This is the repl for org.lice language.\n\nsee: https://github.com/lice-lang/lice"
+			}
 			sl.provideFunction("version", {
-				"""Lice language interpreter $VERSION_CODE
+				"""Lice language interpreter $VERSION
 				|by ice1000""".trimMargin()
 			})
-			sl.provideFunction("FILE_PATH", { File("").absolutePath })
+			sl.provideFunction("FILE_PATH") { File("").absolutePath }
 			val scanner = Scanner(System.`in`)
 			val repl = Repl(sl)
 			while (repl.handle(scanner.nextLine())) Unit

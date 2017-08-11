@@ -53,7 +53,7 @@ fun SymbolList.addStandard() {
 			args
 					.map(block)
 					.forEachIndexed { index, obj ->
-//						val obj = obj.process()
+						//						val obj = obj.process()
 						if (obj is SymbolNode) defineFunction(params[index], obj.function())
 						else defineFunction(params[index], { _, _ -> obj })
 					}
@@ -271,25 +271,25 @@ inline fun SymbolList.addConcurrentFunctions() {
 }
 
 inline fun SymbolList.addFileFunctions() {
-	provideFunction("file", { File(it.first().toString()).apply { if (!exists()) createNewFile() } })
-	provideFunction("url", { URL(it.first().toString()) })
-	provideFunction("dir", { File(it.first().toString()).apply { if (!exists()) mkdirs() } })
-	provideFunction("file-exist?", { File(it.first().toString()).exists() })
-	provideFunctionWithMeta("read-file", { ln, ls ->
+	provideFunction("file") { File(it.first().toString()).apply { if (!exists()) createNewFile() } }
+	provideFunction("url") { URL(it.first().toString()) }
+	provideFunction("dir") { File(it.first().toString()).apply { if (!exists()) mkdirs() } }
+	provideFunction("file-exist?") { File(it.first().toString()).exists() }
+	provideFunctionWithMeta("read-file") { ln, ls ->
 		val a = ls.first()
 		when (a) {
 			is File -> a.readText()
 			else -> typeMisMatch("File", a, ln)
 		}
-	})
-	provideFunctionWithMeta("read-url", { ln, ls ->
+	}
+	provideFunctionWithMeta("read-url") { ln, ls ->
 		val a = ls.first()
 		when (a) {
 			is URL -> a.readText()
 			else -> typeMisMatch("URL", a, ln)
 		}
-	})
-	provideFunctionWithMeta("write-file", { ln, ls ->
+	}
+	provideFunctionWithMeta("write-file") { ln, ls ->
 		val a = ls.first()
 		val b = ls[1]
 		when (a) {
@@ -297,24 +297,24 @@ inline fun SymbolList.addFileFunctions() {
 			else -> typeMisMatch("File", a, ln)
 		}
 		a
-	})
+	}
 }
 
 inline fun SymbolList.addMathFunctions() {
-	provideFunction("sqrt", { Math.sqrt((it.first() as Number).toDouble()) })
-	provideFunction("cbrt", { Math.cbrt((it.first() as Number).toDouble()) })
-	provideFunction("sin", { Math.sin((it.first() as Number).toDouble()) })
-	provideFunction("sinh", { Math.sinh((it.first() as Number).toDouble()) })
-	provideFunction("cosh", { Math.cosh((it.first() as Number).toDouble()) })
-	provideFunction("rand", {
+	provideFunction("sqrt") { Math.sqrt((it.first() as Number).toDouble()) }
+	provideFunction("cbrt") { Math.cbrt((it.first() as Number).toDouble()) }
+	provideFunction("sin") { Math.sin((it.first() as Number).toDouble()) }
+	provideFunction("sinh") { Math.sinh((it.first() as Number).toDouble()) }
+	provideFunction("cosh") { Math.cosh((it.first() as Number).toDouble()) }
+	provideFunction("rand") {
 		if (it.isNotEmpty()) rand.nextInt(it.first() as Int)
 		else rand.nextInt()
-	})
+	}
 }
 
 inline fun SymbolList.addStringFunctions() {
-	provideFunction("->str", { it.first().toString() })
-	provideFunctionWithMeta("str->int", { ln, ls ->
+	provideFunction("->str") { it.first().toString() }
+	provideFunctionWithMeta("str->int") { ln, ls ->
 		val res = ls.first()
 		when (res) {
 			is String -> when {
@@ -326,77 +326,77 @@ inline fun SymbolList.addStringFunctions() {
 			}
 			else -> typeMisMatch("String", res, ln)
 		}
-	})
-	provideFunctionWithMeta("int->hex", { ln, ls ->
+	}
+	provideFunctionWithMeta("int->hex") { ln, ls ->
 		val a = ls.first()
 		when (a) {
 			is Int -> "0x${Integer.toHexString(a)}"
 			else -> typeMisMatch("Int", a, ln)
 		}
-	})
-	provideFunctionWithMeta("int->bin", { ln, ls ->
+	}
+	provideFunctionWithMeta("int->bin") { ln, ls ->
 		val a = ls.first()
 		when (a) {
 			is Int -> "0b${Integer.toBinaryString(a)}"
 			else -> typeMisMatch("Int", a, ln)
 		}
-	})
-	provideFunctionWithMeta("int->oct", { ln, ls ->
+	}
+	provideFunctionWithMeta("int->oct") { ln, ls ->
 		val a = ls.first()
 		when (a) {
 			is Int -> "0${Integer.toOctalString(a)}"
 			else -> typeMisMatch("Int", a, ln)
 		}
-	})
-	provideFunction("str-con", {
+	}
+	provideFunction("str-con") {
 		it.fold(StringBuilder(it.size)) { sb, value -> sb.append(value.toString()) }.toString()
-	})
-	provideFunctionWithMeta("format", { ln, ls ->
+	}
+	provideFunctionWithMeta("format") { ln, ls ->
 		if (ls.isEmpty()) InterpretException.tooFewArgument(1, ls.size, ln)
 		val format = ls.first()
 		when (format) {
 			is String -> String.format(format, *ls.toTypedArray())
 			else -> typeMisMatch("String", format, ln)
 		}
-	})
-	provideFunction("->chars", {
+	}
+	provideFunction("->chars") {
 		it.fold(StringBuilder(it.size)) { sb, value ->
 			sb.append(value.toString())
 		}.toString().toCharArray().toList()
-	})
-	provideFunction("split", { ls ->
+	}
+	provideFunction("split") { ls ->
 		val str = ls.first()
 		val regex = ls[1]
 		str.toString().split(regex.toString()).toList()
-	})
+	}
 }
 
 inline fun SymbolList.addListFunctions() {
-	provideFunction("[|]", { ls ->
+	provideFunction("[|]") { ls ->
 		ls.reduceRight { value, pairs: Any? ->
 			Pair(value, pairs)
 		}
-	})
-	provideFunction("[|", { ls ->
+	}
+	provideFunction("[|") { ls ->
 		val a = ls.first()
 		when (a) {
 			is Pair<*, *> -> a.first
 			is Collection<*> -> a.first()
 			else -> null
 		}
-	})
-	provideFunction("|]", { ls ->
+	}
+	provideFunction("|]") { ls ->
 		val a = ls.first()
 		when (a) {
 			is Pair<*, *> -> a.second
 			is Iterable<*> -> a.drop(1)
 			else -> null
 		}
-	})
+	}
 }
 
 inline fun SymbolList.addCollectionsFunctions() {
-	provideFunctionWithMeta("..", { ln, ls ->
+	provideFunctionWithMeta("..") { ln, ls ->
 		if (ls.size < 2) tooFewArgument(2, ls.size, ln)
 		val a = ls.first()
 		val b = ls[1]
@@ -411,9 +411,9 @@ inline fun SymbolList.addCollectionsFunctions() {
 			}
 			else -> typeMisMatch("Number", a as? Number ?: b, ln)
 		}
-	})
-	provideFunction("list", { it })
-	defineFunction("for-each", { ln, ls ->
+	}
+	provideFunction("list") { it }
+	defineFunction("for-each") { ln, ls ->
 		if (ls.size < 3)
 			tooFewArgument(3, ls.size, ln)
 		val i = (ls.first() as SymbolNode).name
@@ -429,24 +429,24 @@ inline fun SymbolList.addCollectionsFunctions() {
 			}
 			else -> typeMisMatch("List", a, ln)
 		}
-	})
-	provideFunction("size", {
+	}
+	provideFunction("size") {
 		val i = it.first()
 		when (i) {
 			is Collection<*> -> i.size
 			is Iterable<*> -> i.count()
 			else -> -1
 		}
-	})
-	provideFunction("reverse", { ls ->
+	}
+	provideFunction("reverse") { ls ->
 		val i = ls.first()
 		when (i) {
 			is Collection<*> -> i.reversed()
 			is Iterable<*> -> i.reversed()
 			else -> emptyList()
 		}
-	})
-	provideFunction("count", { ls ->
+	}
+	provideFunction("count") { ls ->
 		val i = ls.first()
 		val e = ls[1]
 		when (i) {
@@ -454,5 +454,5 @@ inline fun SymbolList.addCollectionsFunctions() {
 			is Iterable<*> -> i.count { it == e }
 			else -> -1
 		}
-	})
+	}
 }
