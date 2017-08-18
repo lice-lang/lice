@@ -1,6 +1,9 @@
 package org.lice.api.scripting
 
 import org.lice.core.SymbolList
+import org.lice.compiler.parse.buildNode
+import org.lice.compiler.parse.mapAst
+
 import java.io.Reader
 import javax.script.*
 
@@ -10,64 +13,64 @@ import javax.script.*
  * @author Glavo
  * @since 0.1.0
  */
-class LiceScriptEngine(n: Bindings) : ScriptEngine {
-	val symbolList: SymbolList = TODO()
+class LiceScriptEngine : ScriptEngine {
+	private var context: LiceContext = LiceContext()
 
 
-	override fun createBindings(): Bindings {
-		TODO("Function createBindings is not implemented")
-	}
+	override fun createBindings(): SymbolList =
+			SymbolList()
 
 	override fun setContext(context: ScriptContext?) {
-		TODO("Function setContext is not implemented")
+		if (context is LiceContext) this.context = context
 	}
 
-	override fun eval(script: String?, context: ScriptContext?): Any {
-		TODO("Function eval is not implemented")
+	override fun eval(script: String?, context: ScriptContext?): Any? {
+		context as LiceContext
+		return eval(script, context.bindings)
 	}
 
-	override fun eval(reader: Reader?, context: ScriptContext?): Any {
-		TODO("Function eval is not implemented")
+	override fun eval(reader: Reader?, context: ScriptContext?): Any? {
+		context as LiceContext
+		return eval(reader!!.readText(), context.bindings)
 	}
 
-	override fun eval(script: String?): Any {
-		TODO("Function eval is not implemented")
+	override fun eval(script: String?): Any? {
+		return eval(script, context.bindings)
 	}
 
-	override fun eval(reader: Reader?): Any {
-		TODO("Function eval is not implemented")
+	override fun eval(reader: Reader?): Any? {
+		return eval(reader!!.readText(), context.bindings)
 	}
 
-	override fun eval(script: String?, n: Bindings?): Any {
-		TODO("Function eval is not implemented")
+	override fun eval(script: String?, n: Bindings?): Any? {
+		n as SymbolList
+
+		return mapAst(buildNode(script!!), n).eval().o
 	}
 
-	override fun eval(reader: Reader?, n: Bindings?): Any {
-		TODO("Function eval is not implemented")
+	override fun eval(reader: Reader?, n: Bindings?): Any? {
+		return eval(reader!!.readText(), n)
 	}
 
-	override fun getBindings(scope: Int): Bindings {
-		TODO("Function getBindings is not implemented")
-	}
+	override fun getBindings(scope: Int): SymbolList =
+			context.bindings
 
 	override fun put(key: String?, value: Any?) {
-		TODO("Function put is not implemented")
+		context.bindings[key] = value
 	}
 
-	override fun getFactory(): ScriptEngineFactory {
-		TODO("Function getFactory is not implemented")
-	}
+	override fun getFactory(): LiceScriptEngineFactory =
+			LiceScriptEngineFactory()
 
-	override fun get(key: String?): Any {
-		TODO("Function get is not implemented")
-	}
+	override fun get(key: String?): Any =
+			context.bindings[key] ?: throw NoSuchElementException(key)
 
 	override fun setBindings(bindings: Bindings?, scope: Int) {
-		TODO("Function setBindings is not implemented")
+		if (bindings is SymbolList)
+			context.bindings = bindings
 	}
 
-	override fun getContext(): ScriptContext {
-		TODO("Function getContext is not implemented")
-	}
+	override fun getContext(): LiceContext =
+			context
 
 }

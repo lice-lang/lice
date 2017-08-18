@@ -19,7 +19,7 @@ class LiceScriptEngineFactory : ScriptEngineFactory {
 	override fun getEngineVersion(): String = org.lice.VERSION
 
 	override fun getScriptEngine(): ScriptEngine {
-		TODO("Function getScriptEngine is not implemented")
+		return LiceScriptEngine()
 	}
 
 	override fun getOutputStatement(toDisplay: String?): String =
@@ -36,14 +36,14 @@ class LiceScriptEngineFactory : ScriptEngineFactory {
 
 	override fun getParameter(key: String?): String? = when (key) {
 		"javax.script.engine_version", "javax.script.language_version" -> org.lice.VERSION
-		"javax.script.engine", "javax.script.language" -> "Lice"
+		"javax.script.engine", "javax.script.language", "javax.script.name" -> "lice"
 		else -> null
 	}
 
 	override fun getMethodCallSyntax(obj: String?, m: String?, vararg args: String?): String =
 			throw UnsupportedOperationException("Can't invoke method!")
 
-	override fun getNames(): MutableList<String> = mutableListOf("lice", "Lice")
+	override fun getNames(): MutableList<String> = mutableListOf("lice", "Lice", "LiceScript")
 
 	override fun getProgram(vararg statements: String?): String =
 			statements.map { "($it)" }.joinToString()

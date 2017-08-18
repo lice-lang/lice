@@ -28,7 +28,7 @@ interface AbstractValue {
 	val type: Class<*>
 }
 
-class Value(
+data class Value(
 		override val o: Any?,
 		override val type: Class<*>) : AbstractValue {
 	constructor(
@@ -82,9 +82,12 @@ class LazyValueNode
 constructor(
 		lambda: () -> Value,
 		override val meta: MetaData = EmptyMetaData) : Node {
-	val value: Value by lazy(lambda)
-	override fun eval() = value
-	override fun toString() = "lazy value, not evaluated"
+	val value = lazy(lambda)
+	override fun eval() = value.value
+	override fun toString() =
+			if (value.isInitialized())
+				value.value.toString()
+			else "lazy value, not evaluated"
 }
 
 class ExpressionNode(

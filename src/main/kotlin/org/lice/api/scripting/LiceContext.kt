@@ -1,5 +1,6 @@
 package org.lice.api.scripting
 
+import org.lice.core.SymbolList
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.io.Reader
@@ -17,7 +18,7 @@ import javax.script.ScriptContext
 class LiceContext
 @JvmOverloads
 constructor(
-		inline var bindings: Bindings,
+		var bindings: SymbolList = SymbolList(),
 		private var reader: Reader = InputStreamReader(System.`in`),
 		private var writer: Writer = OutputStreamWriter(System.out),
 		private var errorWriter: Writer = OutputStreamWriter(System.err)
@@ -34,9 +35,10 @@ constructor(
 		this.writer = writer!!
 	}
 
-	fun removeAttribute(name: String?): Any {
-		TODO("Function removeAttribute is not implemented")
-	}
+	fun removeAttribute(name: String?): Any =
+			bindings[name]!!.apply {
+				bindings.remove(name)
+			}
 
 	override fun removeAttribute(name: String?, scope: Int): Any =
 			removeAttribute(name)
@@ -45,7 +47,7 @@ constructor(
 	override fun getBindings(scope: Int): Bindings = bindings
 
 	override fun setBindings(bindings: Bindings?, scope: Int) {
-		this.bindings = bindings!!
+		this.bindings = bindings as SymbolList
 	}
 
 
@@ -57,12 +59,11 @@ constructor(
 	}
 
 
-	override fun getAttribute(name: String?): Any {
-		TODO("Function getAttribute is not implemented")
-	}
+	override fun getAttribute(name: String?): Any =
+			bindings[name]!!
 
 	fun setAttribute(name: String?, value: Any?) {
-		TODO()
+		bindings[name] = value
 	}
 
 	override fun getAttribute(name: String?, scope: Int): Any =
