@@ -34,11 +34,10 @@ configurations {
 }
 
 dependencies {
-	artifact group: 'org.jetbrains', name: 'annotations', version: '15.0'
+	compile group: 'org.jetbrains', name: 'annotations', version: '15.0'
+	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 
 	configurations.compile.extendsFrom(configurations.artifact)
-
-	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 	testCompile group: 'junit', name: 'junit', version: '4.12'
 	testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 }
@@ -47,17 +46,11 @@ jar {
 	manifest {
 		attributes 'Main-Class': 'org.lice.repl.Main'
 	}
-	from {
-		configurations
-				.artifact
-				.collect { it.isDirectory() ? it : zipTree(it) }
-	}
 }
 
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
-
 
 task fatJar(type: Jar) {
 	baseName = project.name + '-all'
