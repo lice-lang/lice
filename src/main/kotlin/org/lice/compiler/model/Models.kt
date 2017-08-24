@@ -17,7 +17,7 @@ interface StringNode {
 
 data class StringMiddleNode(
 	override val meta: MetaData,
-	val list: MutableList<StringNode> = mutableListOf<StringNode>()) : StringNode {
+	val list: MutableList<StringNode> = mutableListOf()) : StringNode {
 
 	val empty: Boolean
 		get() = list.isEmpty()

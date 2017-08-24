@@ -90,8 +90,9 @@ class StdTest {
 				.map(::lambda)
 				.forEach(Echoer::echoln)
 
-		var lambda2: (Int) -> Int = { it }
-		lambda2 = { if (it <= 2) 1 else lambda(it - 1) + lambda(it - 2) }
+		val lambda2: (Int) -> Int = {
+			if (it <= 2) 1 else lambda(it - 1) + lambda(it - 2)
+		}
 		(1..10)
 				.map(lambda2)
 				.forEach(Echoer::echoln)
