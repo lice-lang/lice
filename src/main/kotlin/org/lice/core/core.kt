@@ -46,7 +46,7 @@ fun SymbolList.addStandard() {
 	addCollectionsFunctions()
 	addListFunctions()
 	val defFunc = { name: String, params: ParamList, block: Mapper<Node>, body: Node ->
-		defineFunction(name, { ln, args ->
+		defineFunction(name) { ln, args ->
 			val backup = params.map { getFunction(it) }
 			if (args.size != params.size)
 				numberOfArgumentNotMatch(params.size, args.size, ln)
@@ -63,10 +63,10 @@ fun SymbolList.addStandard() {
 				else removeFunction(params[index])
 			}
 			ret
-		})
+		}
 	}
 	val definer = { funName: String, block: Mapper<Node> ->
-		defineFunction(funName, { meta, ls ->
+		defineFunction(funName) { meta, ls ->
 			if (ls.size < 2) tooFewArgument(2, ls.size, meta)
 			val name = (ls.first() as SymbolNode).name
 			val body = ls.last()
@@ -77,13 +77,13 @@ fun SymbolList.addStandard() {
 			defFunc(name, params, block, body)
 			return@defineFunction ValueNode(DefineResult(
 					"${if (override) "overridden" else "defined"}: $name"))
-		})
+		}
 	}
-	definer("def", { node -> ValueNode(node.eval().o ?: Nullptr) })
-	definer("deflazy", { node -> LazyValueNode({ node.eval() }) })
-	definer("defexpr", { it })
+	definer("def") { node -> ValueNode(node.eval().o ?: Nullptr) }
+	definer("deflazy") { node -> LazyValueNode({ node.eval() }) }
+	definer("defexpr") { it }
 	val lambdaDefiner = { funName: String, mapper: Mapper<Node> ->
-		defineFunction(funName, { meta, ls ->
+		defineFunction(funName) { meta, ls ->
 			if (ls.isEmpty()) tooFewArgument(1, ls.size, meta)
 			val body = ls.last()
 			val params = ls
@@ -92,20 +92,20 @@ fun SymbolList.addStandard() {
 			val name = lambdaNameGen()
 			defFunc(name, params, mapper, body)
 			SymbolNode(this, name, meta)
-		})
+		}
 	}
-	lambdaDefiner("lambda", { node -> ValueNode(node.eval().o ?: Nullptr) })
-	lambdaDefiner("lazy", { node -> LazyValueNode({ node.eval() }) })
-	lambdaDefiner("expr", { it })
-	defineFunction("def?", { ln, ls ->
+	lambdaDefiner("lambda") { node -> ValueNode(node.eval().o ?: Nullptr) }
+	lambdaDefiner("lazy") { node -> LazyValueNode({ node.eval() }) }
+	lambdaDefiner("expr") { it }
+	defineFunction("def?") { ln, ls ->
 		val a = (ls.first() as? SymbolNode)?.name
 		ValueNode(isFunctionDefined(a), ln)
-	})
-	defineFunction("undef", { ln, ls ->
+	}
+	defineFunction("undef") { ln, ls ->
 		val a = (ls.first() as? SymbolNode)?.name
 		ValueNode(null != removeFunction(a), ln)
-	})
-	defineFunction("alias", { meta, ls ->
+	}
+	defineFunction("alias") { meta, ls ->
 		val a = getFunction((ls.first() as? SymbolNode)?.name)
 		a?.let { function ->
 			ls.forEachIndexed { index, _ ->
@@ -114,35 +114,35 @@ fun SymbolList.addStandard() {
 			}
 		}
 		ValueNode(null != a, meta)
-	})
+	}
 
-	provideFunctionWithMeta("eval", { ln, ls ->
+	provideFunctionWithMeta("eval") { ln, ls ->
 		val value = ls.first()
 		when (value) {
 			is String -> mapAst(buildNode(value), symbolList = this).eval().o
 			else -> typeMisMatch("String", value, ln)
 		}
-	})
-	provideFunction("debug", {
+	}
+	provideFunction("debug") {
 		BeforeEval.hook = { Echoer.echoln("eval =>> $this") }
 		null
-	})
-	provideFunction("print", { ls ->
+	}
+	provideFunction("print") { ls ->
 		ls.forEach { Echoer.echo(it) }
 		if (ls.isNotEmpty()) ls.last() else null
-	})
-	provideFunction("print", { ls ->
+	}
+	provideFunction("print") { ls ->
 		ls.forEach { Echoer.echoErr(it) }
 		if (ls.isNotEmpty()) ls.last() else null
-	})
-	provideFunctionWithMeta("new", { meta, ls ->
+	}
+	provideFunctionWithMeta("new") { meta, ls ->
 		val a = ls.first()
 		when (a) {
 			is String -> Class.forName(a).newInstance()
 			else -> typeMisMatch("String", a, meta)
 		}
-	})
-	defineFunction("", { _, ls ->
+	}
+	defineFunction("") { _, ls ->
 		var ret = Nullptr
 		ls.forEach {
 			val res = it.eval()
@@ -150,37 +150,37 @@ fun SymbolList.addStandard() {
 			Echoer.echoln("${res.o.toString()} => ${res.type.name}")
 		}
 		ValueNode(ret)
-	})
-	provideFunction("type", { ls ->
+	}
+	provideFunction("type") { ls ->
 		ls.first()?.javaClass ?: NullptrType::class.java
-	})
-	provideFunction("gc", { System.gc() })
-	provideFunction("|>", { it.last() })
-	defineFunction("force|>", { ln, ls ->
+	}
+	provideFunction("gc") { System.gc() }
+	provideFunction("|>") { it.last() }
+	defineFunction("force|>") { ln, ls ->
 		var ret = Nullptr
 		forceRun { ls.forEach { node -> ret = node.eval() } }
 		ValueNode(ret, ln)
-	})
-	defineFunction("no-run|>", { ln, _ -> getNullNode(ln) })
+	}
+	defineFunction("no-run|>") { ln, _ -> getNullNode(ln) }
 
-	provideFunctionWithMeta("load-file", { ln, ls ->
+	provideFunctionWithMeta("load-file") { ln, ls ->
 		val o = ls.first()
 		when (o) {
 			is File -> createRootNode(o, this)
 			is String -> createRootNode(File(o), this)
 			else -> typeMisMatch("File or String", o, ln)
 		}
-	})
+	}
 
-	provideFunction("exit", { System.exit(0) })
+	provideFunction("exit") { System.exit(0) }
 
-	defineFunction("str->sym", { ln, ls ->
+	defineFunction("str->sym") { ln, ls ->
 		val a = ls.first().eval()
 		when (a.o) {
 			is String -> SymbolNode(this, a.o, ln)
 			else -> typeMisMatch("String", a, ln)
 		}
-	})
+	}
 
 	defineFunction("sym->str", { ln, ls ->
 		val a = ls.first()

@@ -40,14 +40,14 @@ inline fun make2DDrawer(
 		}
 
 inline fun SymbolList.addGUIFunctions() {
-	provideFunction("frame", {
+	provideFunction("frame") {
 		JFrame().apply {
 			if (it.isNotEmpty()) title = it.first().toString()
 			defaultCloseOperation = WindowConstants.DISPOSE_ON_CLOSE
 			isVisible = true
 		}
-	})
-	provideFunctionWithMeta("image", { meta, ls ->
+	}
+	provideFunctionWithMeta("image") { meta, ls ->
 		val o = ls.first()
 		when (o) {
 			is File -> ImageIO.read(o)
@@ -59,8 +59,8 @@ inline fun SymbolList.addGUIFunctions() {
 			}
 			else -> typeMisMatch("File or URL", o, meta)
 		}
-	})
-	provideFunctionWithMeta("write-file", { ln, ls ->
+	}
+	provideFunctionWithMeta("write-file") { ln, ls ->
 		val a = ls.first()
 		val b = ls[1]
 		when (a) {
@@ -71,8 +71,8 @@ inline fun SymbolList.addGUIFunctions() {
 			else -> typeMisMatch("File", a, ln)
 		}
 		a
-	})
-	provideFunction("show-image", {
+	}
+	provideFunction("show-image") {
 		val o = it.first()
 		when (o) {
 			is BufferedImage -> JFrame().apply {
@@ -91,15 +91,15 @@ inline fun SymbolList.addGUIFunctions() {
 			}
 			else -> null
 		}
-	})
+	}
 
-	provideFunctionWithMeta("draw-line", { meta, ls ->
+	provideFunctionWithMeta("draw-line") { meta, ls ->
 		make2DDrawer { x1, y1, x2, y2 ->
 			color = Color.BLUE
 			drawLine(x1, y1, x2, y2)
 		}(meta, ls)
-	})
-	provideFunctionWithMeta("draw-point", { meta, ls ->
+	}
+	provideFunctionWithMeta("draw-point") { meta, ls ->
 		val image = ls.first()
 		if (image !is BufferedImage) typeMisMatch("BufferedImage", image, meta)
 		val x1 = ls[1]
@@ -111,30 +111,30 @@ inline fun SymbolList.addGUIFunctions() {
 			drawRect(x1.toInt(), y1.toInt(), 1, 1)
 		}
 		image
-	})
-	provideFunctionWithMeta("draw-rect", { meta, ls ->
+	}
+	provideFunctionWithMeta("draw-rect") { meta, ls ->
 		make2DDrawer { x1, y1, x2, y2 ->
 			color = Color.BLUE
 			drawRect(x1, y1, x2, y2)
 		}(meta, ls)
-	})
-	provideFunctionWithMeta("draw-oval", { meta, ls ->
+	}
+	provideFunctionWithMeta("draw-oval") { meta, ls ->
 		make2DDrawer { x1, y1, x2, y2 ->
 			color = Color.BLUE
 			drawOval(x1, y1, x2, y2)
 		}(meta, ls)
-	})
-	provideFunctionWithMeta("draw-filled-rect", { meta, ls ->
+	}
+	provideFunctionWithMeta("draw-filled-rect") { meta, ls ->
 		make2DDrawer { x1, y1, x2, y2 ->
 			color = Color.BLUE
 			fillRect(x1, y1, x2, y2)
 		}(meta, ls)
-	})
-	provideFunctionWithMeta("draw-filled-oval", { meta, ls ->
+	}
+	provideFunctionWithMeta("draw-filled-oval") { meta, ls ->
 		make2DDrawer { x1, y1, x2, y2 ->
 			color = Color.BLUE
 			fillOval(x1, y1, x2, y2)
 		}(meta, ls)
-	})
+	}
 }
 
