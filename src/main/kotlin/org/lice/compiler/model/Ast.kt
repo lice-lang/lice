@@ -97,7 +97,7 @@ class ExpressionNode(
 
 	override fun eval(): Value {
 		super.beforeEval()
-		val was = node is SymbolNode
+		//val was = node is SymbolNode
 		val node = process()
 		return when (node) {
 			is SymbolNode -> node.eval(params)
