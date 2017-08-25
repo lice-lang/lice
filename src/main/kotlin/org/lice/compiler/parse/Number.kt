@@ -36,7 +36,7 @@ fun String.isHexInt(isNegative: Boolean = false): Boolean {
 	return when {
 		length <= 2 -> false
 		'0' != this[0] || 'x' != this[1].safeLower() -> false
-		else -> (2..length - 1)
+		else -> (2 until length)
 				.map { this[it].toLowerCase() }
 				.all { it.isDigit() || it in 'a'..'f' }
 	}
@@ -71,7 +71,7 @@ fun String.isBinInt(isNegative: Boolean = false): Boolean {
 	return when {
 		length <= 2 -> false
 		'0' != this[0] || 'b' != this[1].safeLower() -> false
-		else -> (2..length - 1).none { '0' != this[it] && '1' != this[it] }
+		else -> (2 until length).none { '0' != this[it] && '1' != this[it] }
 	}
 }
 
@@ -80,18 +80,18 @@ fun String.isOctInt(isNegative: Boolean = false): Boolean {
 	return when {
 		length <= 1 -> false
 		'0' != this[0] -> false
-		else -> (1..length - 1).all { this[it].isOctalInt() }
+		else -> (1 until length).all { this[it].isOctalInt() }
 	}
 }
 
 fun String.toHexInt(): Int {
 	if (this[0] == '-') return -substring(1).toHexInt()
 	var ret = 0
-	(2..length - 1).forEach {
+	(2 until length).forEach {
 		ret = ret shl 4
 		val char = this[it].safeLower()
-		if (char.isDigit()) ret += (char - '0')
-		else ret += (char - 'a' + 10)
+		ret += if (char.isDigit()) (char - '0')
+		else (char - 'a' + 10)
 	}
 	return ret
 }
@@ -99,7 +99,7 @@ fun String.toHexInt(): Int {
 fun String.toBinInt(): Int {
 	if ('-' == this[0]) return -substring(1).toBinInt()
 	var ret = 0
-	(2..length - 1).forEach {
+	(2 until length).forEach {
 		ret = ret shl 1
 		if ('1' == this[it]) ++ret
 	}
@@ -120,7 +120,7 @@ fun String.toBigDec() = BigDecimal(this.substring(0, length - 1))
 fun String.toOctInt(): Int {
 	if (this[0] == '-') return -substring(1).toBinInt()
 	var ret = 0
-	(1..length - 1).forEach {
+	(1 until length).forEach {
 		ret = ret shl 3
 		ret += this[it] - '0'
 	}
