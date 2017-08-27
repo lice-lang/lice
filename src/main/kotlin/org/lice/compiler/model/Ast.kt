@@ -17,7 +17,14 @@ import org.lice.lang.BeforeEval
 import org.lice.lang.NullptrType
 
 data class MetaData(
-		val lineNumber: Int) {
+		val beginLine: Int = -1,
+		val beginColumn: Int = -1,
+		val endLine: Int = -1,
+		val endColumn: Int = -1) {
+	val lineNumber: Int
+		get() = beginLine
+
+
 	companion object Factory {
 		val EmptyMetaData = MetaData(-1)
 	}
