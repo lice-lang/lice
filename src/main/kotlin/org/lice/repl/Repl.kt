@@ -6,6 +6,8 @@ import org.lice.compiler.util.println
 import org.lice.core.SymbolList
 import org.lice.lang.Echoer
 import org.lice.VERSION
+import org.lice.core.bindings
+import javax.script.Bindings
 
 /**
  * starting the read-eval-print-loop machine
@@ -16,7 +18,7 @@ import org.lice.VERSION
  */
 class Repl
 @JvmOverloads
-constructor(val symbolList: SymbolList = SymbolList(true)) {
+constructor(val symbolList: Bindings = bindings(true)) {
 
 	init {
 		"""Lice language repl $VERSION

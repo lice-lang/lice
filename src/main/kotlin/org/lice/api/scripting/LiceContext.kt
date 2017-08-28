@@ -1,6 +1,5 @@
 package org.lice.api.scripting
 
-import org.lice.core.SymbolList
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.io.Reader
@@ -18,14 +17,14 @@ import javax.script.ScriptContext
 class LiceContext
 @JvmOverloads
 constructor(
-		var bindings: SymbolList = SymbolList(),
+		var bindings: Bindings = org.lice.core.bindings(),
 		private var reader: Reader = InputStreamReader(System.`in`),
 		private var writer: Writer = OutputStreamWriter(System.out),
 		private var errorWriter: Writer = OutputStreamWriter(System.err)
 ) : ScriptContext {
 	override fun getReader(): Reader = reader
 
-	override fun setReader(reader: Reader?): Unit {
+	override fun setReader(reader: Reader?) {
 		this.reader = reader!!
 	}
 
@@ -47,7 +46,7 @@ constructor(
 	override fun getBindings(scope: Int): Bindings = bindings
 
 	override fun setBindings(bindings: Bindings?, scope: Int) {
-		this.bindings = bindings as SymbolList
+		this.bindings = bindings as Bindings
 	}
 
 

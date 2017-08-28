@@ -2,12 +2,13 @@ package org.lice
 
 import org.jetbrains.annotations.TestOnly
 import org.junit.Test
-import org.lice.compiler.model.MetaData
+import org.lice.ast.MetaData
 import org.lice.compiler.model.StringLeafNode
-import org.lice.compiler.model.ValueNode
+import org.lice.ast.ValueNode
 import org.lice.compiler.parse.parseValue
 import org.lice.compiler.parse.wrapValue
 import org.lice.core.SymbolList
+import org.lice.core.bindings
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -36,7 +37,7 @@ class ParserTest {
 
 	@Test(timeout = 1000)
 	fun test3() {
-		val sl = SymbolList()
+		val sl = bindings()
 		val md = MetaData.EmptyMetaData
 		assertTrue(true == wrapValue(StringLeafNode(md, "true"), sl).eval().o)
 		assertNull(wrapValue(StringLeafNode(md, "null"), sl).eval().o)

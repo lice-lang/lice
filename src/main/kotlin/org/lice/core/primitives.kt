@@ -14,14 +14,15 @@ package org.lice.core
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
 import org.lice.lang.NumberOperator
 import org.lice.lang.NumberOperator.Leveler.compare
+import javax.script.Bindings
 
-inline fun SymbolList.addLiterals() {
+inline fun Bindings.addLiterals() {
 	provideFunction("true") { true }
 	provideFunction("false") { false }
 	provideFunction("null") { null }
 }
 
-inline fun SymbolList.addNumberFunctions() {
+inline fun Bindings.addNumberFunctions() {
 	provideFunction("->double") { (it.first() as Number).toDouble() }
 	provideFunction("->int") { (it.first() as Number).toInt() }
 	provideFunction("->float") { (it.first() as Number).toFloat() }
@@ -126,7 +127,7 @@ inline fun SymbolList.addNumberFunctions() {
 	provideFunction("~") { (it.first() as Number).toInt().inv() }
 }
 
-inline fun SymbolList.addBoolFunctions() {
+inline fun Bindings.addBoolFunctions() {
 	provideFunctionWithMeta("&&") { ln, ls ->
 		ls.all { it as? Boolean ?: typeMisMatch("Boolean", it, ln) }
 	}

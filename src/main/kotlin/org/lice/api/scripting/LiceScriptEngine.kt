@@ -1,8 +1,8 @@
 package org.lice.api.scripting
 
-import org.lice.core.SymbolList
 import org.lice.compiler.parse.buildNode
 import org.lice.compiler.parse.mapAst
+import org.lice.core.bindings
 
 import java.io.Reader
 import javax.script.*
@@ -17,8 +17,8 @@ class LiceScriptEngine : ScriptEngine {
 	private var context: LiceContext = LiceContext()
 
 
-	override fun createBindings(): SymbolList =
-			SymbolList()
+	override fun createBindings(): Bindings =
+			bindings()
 
 	override fun setContext(context: ScriptContext?) {
 		if (context is LiceContext) this.context = context
@@ -43,7 +43,7 @@ class LiceScriptEngine : ScriptEngine {
 	}
 
 	override fun eval(script: String?, n: Bindings?): Any? {
-		n as SymbolList
+		n!!
 
 		return mapAst(buildNode(script!!), n).eval().o
 	}
@@ -52,7 +52,7 @@ class LiceScriptEngine : ScriptEngine {
 		return eval(reader!!.readText(), n)
 	}
 
-	override fun getBindings(scope: Int): SymbolList =
+	override fun getBindings(scope: Int): Bindings =
 			context.bindings
 
 	override fun put(key: String?, value: Any?) {
@@ -66,7 +66,7 @@ class LiceScriptEngine : ScriptEngine {
 			context.bindings[key] ?: throw NoSuchElementException(key)
 
 	override fun setBindings(bindings: Bindings?, scope: Int) {
-		if (bindings is SymbolList)
+		if (bindings is Bindings)
 			context.bindings = bindings
 	}
 

@@ -9,9 +9,11 @@
 
 package org.lice.compiler.parse
 
+import org.lice.ast.*
 import org.lice.compiler.model.*
-import org.lice.core.SymbolList
+import org.lice.core.*
 import java.io.File
+import javax.script.Bindings
 
 
 /**
@@ -60,7 +62,7 @@ fun parseValue(
  */
 fun mapAst(
 		node: StringNode,
-		symbolList: SymbolList = SymbolList()): Node = when (node) {
+		symbolList: Bindings = bindings()): Node = when (node) {
 	is StringMiddleNode -> {
 		val fst = node.list.first()
 		val s = mapAst(fst, symbolList)
@@ -78,7 +80,7 @@ fun mapAst(
 
 fun wrapValue(
 		node: StringLeafNode,
-		symbolList: SymbolList
+		symbolList: Bindings
 ): Node = parseValue(
 		str = node.str,
 		meta = node.meta
@@ -97,7 +99,7 @@ fun wrapValue(
  */
 fun createRootNode(
 		file: File,
-		symbolList: SymbolList = SymbolList(init = true)
+		symbolList: Bindings = bindings(init = true)
 ): Node {
 	val code = file.readText()
 	val fp = "FILE_PATH"

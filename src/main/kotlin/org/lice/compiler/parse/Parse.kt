@@ -10,6 +10,7 @@
 
 package org.lice.compiler.parse
 
+import org.lice.ast.MetaData
 import org.lice.compiler.model.*
 import org.lice.compiler.util.showError
 import java.util.*

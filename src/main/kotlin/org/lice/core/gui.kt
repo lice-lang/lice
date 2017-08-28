@@ -10,7 +10,7 @@
 
 package org.lice.core
 
-import org.lice.compiler.model.MetaData
+import org.lice.ast.MetaData
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
 import java.awt.*
 import java.awt.image.BufferedImage
@@ -18,6 +18,7 @@ import java.awt.image.RenderedImage
 import java.io.File
 import java.net.URL
 import javax.imageio.ImageIO
+import javax.script.Bindings
 import javax.swing.JFrame
 import javax.swing.JPanel
 import javax.swing.WindowConstants
@@ -39,7 +40,7 @@ inline fun make2DDrawer(
 			image
 		}
 
-inline fun SymbolList.addGUIFunctions() {
+inline fun Bindings.addGUIFunctions() {
 	provideFunction("frame") {
 		JFrame().apply {
 			if (it.isNotEmpty()) title = it.first().toString()

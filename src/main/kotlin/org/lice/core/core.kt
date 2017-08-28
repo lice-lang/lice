@@ -10,9 +10,10 @@
 
 package org.lice.core
 
+import org.lice.ast.*
 import org.lice.compiler.model.*
-import org.lice.compiler.model.Node.Objects.getNullNode
-import org.lice.compiler.model.Value.Objects.Nullptr
+import org.lice.ast.Node.Objects.getNullNode
+import org.lice.ast.Value.Objects.Nullptr
 import org.lice.compiler.parse.*
 import org.lice.compiler.util.InterpretException
 import org.lice.compiler.util.InterpretException.Factory.numberOfArgumentNotMatch
@@ -22,6 +23,7 @@ import org.lice.compiler.util.forceRun
 import org.lice.lang.*
 import java.io.File
 import java.net.URL
+import javax.script.Bindings
 import kotlin.concurrent.thread
 
 @SinceKotlin("1.1")
@@ -36,7 +38,7 @@ internal fun lambdaNameGen() = "\t${++lambdaNameCounter}"
 
 inline fun Any?.booleanValue() = this as? Boolean ?: (this != null)
 
-fun SymbolList.addStandard() {
+fun Bindings.addStandard() {
 	addGetSetFunction()
 	addControlFlowFunctions()
 	addNumberFunctions()
@@ -191,7 +193,7 @@ fun SymbolList.addStandard() {
 	})
 }
 
-inline fun SymbolList.addGetSetFunction() {
+inline fun Bindings.addGetSetFunction() {
 	defineFunction("->", { ln, ls ->
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)
@@ -217,7 +219,7 @@ inline fun SymbolList.addGetSetFunction() {
 	})
 }
 
-inline fun SymbolList.addControlFlowFunctions() {
+inline fun Bindings.addControlFlowFunctions() {
 	defineFunction("if", { ln, ls ->
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, ln)
@@ -254,7 +256,7 @@ inline fun SymbolList.addControlFlowFunctions() {
 	})
 }
 
-inline fun SymbolList.addConcurrentFunctions() {
+inline fun Bindings.addConcurrentFunctions() {
 	defineFunction("thread|>", { ln, ls ->
 		var ret: Any? = null
 		thread { ls.forEach { node -> ret = node.eval().o } }
@@ -270,7 +272,7 @@ inline fun SymbolList.addConcurrentFunctions() {
 	})
 }
 
-inline fun SymbolList.addFileFunctions() {
+inline fun Bindings.addFileFunctions() {
 	provideFunction("file") { File(it.first().toString()).apply { if (!exists()) createNewFile() } }
 	provideFunction("url") { URL(it.first().toString()) }
 	provideFunction("dir") { File(it.first().toString()).apply { if (!exists()) mkdirs() } }
@@ -300,7 +302,7 @@ inline fun SymbolList.addFileFunctions() {
 	}
 }
 
-inline fun SymbolList.addMathFunctions() {
+inline fun Bindings.addMathFunctions() {
 	provideFunction("sqrt") { Math.sqrt((it.first() as Number).toDouble()) }
 	provideFunction("cbrt") { Math.cbrt((it.first() as Number).toDouble()) }
 	provideFunction("sin") { Math.sin((it.first() as Number).toDouble()) }
@@ -312,7 +314,7 @@ inline fun SymbolList.addMathFunctions() {
 	}
 }
 
-inline fun SymbolList.addStringFunctions() {
+inline fun Bindings.addStringFunctions() {
 	provideFunction("->str") { it.first().toString() }
 	provideFunctionWithMeta("str->int") { ln, ls ->
 		val res = ls.first()
@@ -371,7 +373,7 @@ inline fun SymbolList.addStringFunctions() {
 	}
 }
 
-inline fun SymbolList.addListFunctions() {
+inline fun Bindings.addListFunctions() {
 	provideFunction("[|]") { ls ->
 		ls.reduceRight { value, pairs: Any? ->
 			Pair(value, pairs)
@@ -395,7 +397,7 @@ inline fun SymbolList.addListFunctions() {
 	}
 }
 
-inline fun SymbolList.addCollectionsFunctions() {
+inline fun Bindings.addCollectionsFunctions() {
 	provideFunctionWithMeta("..") { ln, ls ->
 		if (ls.size < 2) tooFewArgument(2, ls.size, ln)
 		val a = ls.first()

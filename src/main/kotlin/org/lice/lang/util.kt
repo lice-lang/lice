@@ -9,8 +9,8 @@
 
 package org.lice.lang
 
-import org.lice.compiler.model.MetaData
-import org.lice.compiler.model.MetaData.Factory.EmptyMetaData
+import org.lice.ast.MetaData
+import org.lice.ast.MetaData.Factory.EmptyMetaData
 import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
 import java.math.BigDecimal
 import java.math.BigInteger

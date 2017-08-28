@@ -7,14 +7,16 @@
 @file:JvmName("Model")
 @file:JvmMultifileClass
 
-package org.lice.compiler.model
+package org.lice.ast
 
 import org.lice.compiler.model.MetaData.Factory.EmptyMetaData
 import org.lice.compiler.model.Value.Objects.Nullptr
 import org.lice.compiler.util.ParseException.Factory.undefinedVariable
-import org.lice.core.SymbolList
+import org.lice.core.*
 import org.lice.lang.BeforeEval
 import org.lice.lang.NullptrType
+import javax.script.Bindings
+
 
 data class MetaData(
 		val beginLine: Int = -1,
@@ -132,7 +134,7 @@ class ExpressionNode(
 }
 
 class SymbolNode(
-		val symbolList: SymbolList,
+		val symbolList: Bindings,
 		val name: String,
 		override val meta: MetaData) : Node {
 

@@ -9,6 +9,8 @@
 
 package org.lice.compiler.model
 
+import org.lice.ast.MetaData
+
 interface StringNode {
 	val strRepr: String
 	val meta: MetaData
@@ -16,8 +18,8 @@ interface StringNode {
 }
 
 data class StringMiddleNode(
-	override val meta: MetaData,
-	val list: MutableList<StringNode> = mutableListOf()) : StringNode {
+		override val meta: MetaData,
+		val list: MutableList<StringNode> = mutableListOf()) : StringNode {
 
 	val empty: Boolean
 		get() = list.isEmpty()
@@ -40,8 +42,8 @@ data class StringMiddleNode(
 }
 
 data class StringLeafNode(
-	override val meta: MetaData,
-	val str: String) : StringNode {
+		override val meta: MetaData,
+		val str: String) : StringNode {
 	override val strRepr = str
 	override fun toString() = strRepr
 }

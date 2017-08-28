@@ -1,12 +1,13 @@
 package org.lice.repl
 
 import org.lice.compiler.parse.createRootNode
-import org.lice.core.SymbolList
+import org.lice.core.*
 import org.lice.lang.Echoer
 import org.lice.VERSION
 
 import java.io.File
 import java.util.*
+import javax.script.Bindings
 
 /**
  * The entrance of the whole application
@@ -24,14 +25,14 @@ object Main {
 	@JvmOverloads
 	fun interpret(
 			file: File,
-			symbolList: SymbolList = SymbolList()
+			symbolList: Bindings = bindings()
 	) = createRootNode(file, symbolList).eval()
 
 	@JvmStatic
 	fun main(args: Array<String>) {
 		if (args.isEmpty()) {
 			Echoer.closeOutput()
-			val sl = SymbolList()
+			val sl = bindings()
 			Echoer.openOutput()
 			sl.provideFunction("help") {
 				"This is the repl for org.lice language.\n\nsee: https://github.com/lice-lang/lice"

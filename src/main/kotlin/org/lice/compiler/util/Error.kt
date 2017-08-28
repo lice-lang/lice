@@ -10,9 +10,9 @@
 
 package org.lice.compiler.util
 
-import org.lice.compiler.model.EmptyNode
-import org.lice.compiler.model.MetaData
-import org.lice.compiler.model.Value
+import org.lice.ast.EmptyNode
+import org.lice.ast.MetaData
+import org.lice.ast.Value
 import org.lice.lang.Echoer
 
 class ParseException(string: String) : RuntimeException(string) {
@@ -40,7 +40,7 @@ class InterpretException(string: String) : RuntimeException(string) {
 				throw InterpretException("type mismatch: expected: $expected, found: ${actual.type.name}", meta)
 
 		fun typeMisMatch(expected: String, actual: Any?, meta: MetaData): Nothing =
-				throw InterpretException("type mismatch: expected: $expected, found: ${(actual?:EmptyNode(meta)).javaClass.name}", meta)
+				throw InterpretException("type mismatch: expected: $expected, found: ${(actual?: EmptyNode(meta)).javaClass.name}", meta)
 
 		fun tooFewArgument(expected: Int, actual: Int, meta: MetaData): Nothing {
 			throw InterpretException("expected $expected or more arguments, found: $actual", meta)

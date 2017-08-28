@@ -7,12 +7,13 @@
 package org.lice.core
 
 import org.lice.Lice
-import org.lice.compiler.model.EmptyNode
-import org.lice.compiler.model.MetaData
-import org.lice.compiler.model.Node
-import org.lice.compiler.model.ValueNode
+import org.lice.ast.EmptyNode
+import org.lice.ast.MetaData
+import org.lice.ast.Node
+import org.lice.ast.ValueNode
 import java.util.*
 import javax.script.Bindings
+import javax.script.SimpleBindings
 
 @SinceKotlin("1.1")
 typealias Func = (MetaData, List<Node>) -> Node
@@ -26,172 +27,40 @@ typealias ProvidedFunc = (List<Any?>) -> Any?
 @JvmOverloads
 operator fun Func.invoke(e: MetaData = MetaData.EmptyMetaData) = invoke(e, emptyList())
 
-abstract class AbstractBindings : Bindings {
-	abstract val functions: MutableMap<String, Func>
 
-	abstract fun provideFunctionWithMeta(name: String, node: ProvidedFuncWithMeta): Func?
-
-	abstract fun provideFunction(name: String, node: ProvidedFunc): Func?
-
-	abstract fun defineFunction(name: String, node: Func): Func?
-
-	abstract fun isFunctionDefined(name: String?): Boolean
-
-	abstract fun removeFunction(name: String?): Func?
-
-	abstract fun getFunction(name: String?): Func?
-
-	override fun containsValue(value: Any?): Boolean {
-		for ((_, u) in functions)
-			try {
-				if (u() == value)
-					return true
-			} catch (_: Throwable) {
-
-			}
-
-		return false
+@Deprecated("use bindings()")
+fun SymbolList(init: Boolean = true): Bindings {
+	val b = SimpleBindings()
+	if (init) {
+		b.initialize()
 	}
-
-	override fun clear() {
-		functions.clear()
-	}
-
-	override fun putAll(from: Map<out String, Any>) {
-		from.forEach { k, v -> provideFunction(k) { v } }
-	}
-
-	override fun containsKey(key: String?): Boolean {
-		return functions.containsKey(key)
-	}
-
-	override fun get(key: String?): Any? =
-			functions[key]?.invoke()
-
-
-	override fun put(key: String?, value: Any?): Any? {
-		if (key != null && value != null) provideFunction(key) { value }
-
-		return value
-	}
-
-	override fun isEmpty(): Boolean =
-			functions.isEmpty()
-
-
-	override fun remove(key: String?): Any? = functions.remove(key)
-
-	override val size: Int
-		get() = functions.size
-
-	override val entries: MutableSet<MutableMap.MutableEntry<String, Any>>
-		get() = object : AbstractMutableSet<MutableMap.MutableEntry<String, Any>>() {
-			override val size: Int
-				get() = functions.size
-
-			override fun add(element: MutableMap.MutableEntry<String, Any>): Boolean {
-				provideFunction(element.key) {
-					element.value
-				}
-
-				return true
-			}
-
-			override operator fun iterator(): MutableIterator<MutableMap.MutableEntry<String, Any>> {
-				return object : MutableIterator<MutableMap.MutableEntry<String, Any>> {
-					val it = functions.iterator()
-
-					override fun hasNext(): Boolean =
-							it.hasNext()
-
-					override fun next(): MutableMap.MutableEntry<String, Any> =
-							it.next().let { e ->
-								object : MutableMap.MutableEntry<String, Any> {
-									override val value: Any
-										get() = e.value()
-
-									override fun setValue(newValue: Any): Any {
-										return e.setValue { meta, _ ->
-											ValueNode(e.value, meta)
-										}
-									}
-
-									override val key: String
-										get() = e.key
-
-								}
-							}
-
-					override fun remove() {
-						it.remove()
-					}
-
-				}
-			}
-
-		}
-
-	override val keys: MutableSet<String>
-		get() = functions.keys
-
-	override val values: MutableCollection<Any>
-		get() = mutableListOf<Any>().apply {
-			functions.values.forEach {
-				try {
-					add(it())
-				} catch (e: Exception) {
-
-				}
-			}
-		}
+	return b
 }
 
-class SymbolList
+fun bindings(init: Boolean = true): Bindings {
+	val b = SimpleBindings()
+	if (init) {
+		b.initialize()
+	}
+	return b
+}
+
+fun Bindings.initialize() {
+	addFileFunctions()
+	addGUIFunctions()
+	addMathFunctions()
+	addStringFunctions()
+	addConcurrentFunctions()
+	addStandard()
+	provideFunction("load") { param ->
+		(param.firstOrNull() as? String)?.let { loadLibrary(it) }
+		true
+	}
+
+}
+
 @JvmOverloads
-constructor(init: Boolean = true) : AbstractBindings() {
-	companion object ClassPathHolder {
-		val pathSeperator: String = System.getProperty("path.separator")
-		val classPath: String = System.getProperty("java.class.path")
-
-		private val initMethods: MutableSet<(SymbolList) -> Unit> = mutableSetOf(
-
-		)
-
-		fun addInitMethod(f: SymbolList.() -> Unit): Unit {
-			initMethods.add(f)
-		}
-	}
-
-	override val functions: MutableMap<String, Func> = mutableMapOf()
-
-	val rand = Random(System.currentTimeMillis())
-//	val loadedModules = mutableListOf<String>()
-
-	init {
-		if (init) {
-			initialize()
-//			loadLibrary()
-		}
-	}
-
-	fun initialize() {
-		initMethods.forEach { it(this) }
-
-		addFileFunctions()
-		addGUIFunctions()
-		addMathFunctions()
-		addStringFunctions()
-		addConcurrentFunctions()
-		addStandard()
-		provideFunction("load", { param ->
-			(param.firstOrNull() as? String)?.let { loadLibrary(it) }
-			true
-		})
-
-	}
-
-	@JvmOverloads
-	fun loadLibrary(cp: String = """
+fun Bindings.loadLibrary(cp: String = """
 (def println str (print str "\n"))
 
 (def println-err str (print-err str "\n"))
@@ -215,33 +84,48 @@ constructor(init: Boolean = true) : AbstractBindings() {
 """): Boolean {
 //		if (cp in loadedModules) return false
 //		loadedModules.add(cp)
-		Lice.run(cp, this@SymbolList)
-		return true
-	}
-
-	override fun provideFunctionWithMeta(name: String, node: ProvidedFuncWithMeta): Func? =
-			defineFunction(name) { meta, ls ->
-				val value = node(meta, ls.map { it.eval().o })
-				if (value != null) ValueNode(value, meta)
-				else EmptyNode(meta)
-			}
-
-	override fun provideFunction(name: String, node: ProvidedFunc): Func? =
-			defineFunction(name) { meta, ls ->
-				val value = node(ls.map { it.eval().o })
-				if (value != null) ValueNode(value, meta)
-				else EmptyNode(meta)
-			}
-
-	override fun defineFunction(name: String, node: Func): Func? =
-			functions.put(name, node)
-
-	override fun isFunctionDefined(name: String?): Boolean =
-			functions.containsKey(name)
-
-	override fun removeFunction(name: String?): Func? =
-			functions.remove(name)
-
-	override fun getFunction(name: String?): Func? =
-			functions[name]
+	Lice.run(cp, this)
+	return true
 }
+
+val Bindings.rand: Random
+	get() =
+		this["__rand__"]  as? Random ?: this.let {
+			val r = Random()
+			this["__rand__"] = r
+			r
+		}
+
+
+fun Bindings.provideFunctionWithMeta(name: String, node: ProvidedFuncWithMeta): Function? =
+		this.defineFunction(name) { meta, ls ->
+			val value = node(meta, ls.map { it.eval().o })
+			if (value != null) ValueNode(value, meta)
+			else EmptyNode(meta)
+		}
+
+fun Bindings.provideFunction(name: String, node: ProvidedFunc): Func? =
+		defineFunction(name) { meta, ls ->
+			val value = node(ls.map { it.eval().o })
+			if (value != null) ValueNode(value, meta)
+			else EmptyNode(meta)
+		}
+
+fun MutableMap<String, Any>.defineFunction(name: String?, node: Func): Function? {
+	return if (name != null)
+		this.put(name, Function(node)) as? Function
+	else null
+}
+
+fun Bindings.isFunctionDefined(name: String?): Boolean {
+	return this[name] is Function
+}
+
+fun Bindings.removeFunction(name: String?): Function? {
+	return if (this.containsKey(name) && this[name] is Function)
+		this.remove(name) as? Function
+	else null
+}
+
+fun Bindings.getFunction(name: String?): Function? =
+		this[name] as? Function

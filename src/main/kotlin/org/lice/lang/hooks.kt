@@ -10,7 +10,7 @@
 
 package org.lice.lang
 
-import org.lice.compiler.model.Node
+import org.lice.ast.Node
 
 typealias Output = Any?.() -> Unit
 
