@@ -7,4 +7,4 @@
  */
 @file:JvmName("Utilities")
 @file:JvmMultifileClass
-package org.lice.compiler.util
+package org.lice.util

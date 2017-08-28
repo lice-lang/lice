@@ -8,12 +8,11 @@
 @file:JvmMultifileClass
 @file:Suppress("NOTHING_TO_INLINE")
 
-package org.lice.compiler.util
+package org.lice.util
 
 import org.lice.ast.EmptyNode
 import org.lice.ast.MetaData
 import org.lice.ast.Value
-import org.lice.lang.Echoer
 
 class ParseException(string: String) : RuntimeException(string) {
 	companion object Factory {
@@ -52,9 +51,4 @@ class InterpretException(string: String) : RuntimeException(string) {
 	}
 }
 
-fun showError(string: String, exit: Boolean = false) {
-	if (exit)
-		throw RuntimeException(string)
-	else
-		Echoer.echolnErr(string)
-}
+

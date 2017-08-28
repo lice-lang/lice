@@ -7,7 +7,7 @@
 @file:JvmName("Parse")
 @file:JvmMultifileClass
 
-package org.lice.compiler.parse
+package org.lice.util
 
 import org.intellij.lang.annotations.Language
 import java.io.StringReader

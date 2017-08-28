@@ -1,7 +1,7 @@
 package org.lice.core
 
-import org.lice.ast.MetaData
 import org.lice.ast.Node
+import javax.script.Bindings
 
 /**
  * Created by Glavo on 17-8-28.
@@ -9,15 +9,10 @@ import org.lice.ast.Node
  * @author Glavo
  * @since 0.1.0
  */
-interface Function : Func {
-	companion object Functions {
-		operator fun invoke(f: Func): Function =
-				f as? Function ?: object : Function {
-					override fun invoke(meta: MetaData, args: List<Node>): Node =
-							f(meta, args)
-				}
+interface Function {
+	companion object {
+
 	}
 
-	override operator fun invoke(meta: MetaData, args: List<Node>): Node
+	operator fun invoke(bindings: Bindings, nodes: List<Node>): Node
 }
-

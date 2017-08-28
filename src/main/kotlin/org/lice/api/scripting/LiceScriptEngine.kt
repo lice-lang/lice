@@ -1,7 +1,5 @@
 package org.lice.api.scripting
 
-import org.lice.compiler.parse.buildNode
-import org.lice.compiler.parse.mapAst
 import org.lice.core.bindings
 
 import java.io.Reader
@@ -45,7 +43,7 @@ class LiceScriptEngine : ScriptEngine {
 	override fun eval(script: String?, n: Bindings?): Any? {
 		n!!
 
-		return mapAst(buildNode(script!!), n).eval().o
+		TODO("")
 	}
 
 	override fun eval(reader: Reader?, n: Bindings?): Any? {
