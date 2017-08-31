@@ -50,13 +50,10 @@ fun SymbolList.addStandard() {
 			val backup = params.map { getFunction(it) }
 			if (args.size != params.size)
 				numberOfArgumentNotMatch(params.size, args.size, ln)
-			args
-					.map(block)
-					.forEachIndexed { index, obj ->
-						//						val obj = obj.process()
-						if (obj is SymbolNode) defineFunction(params[index], obj.function())
-						else defineFunction(params[index], { _, _ -> obj })
-					}
+			args.map(block).forEachIndexed { index, obj ->
+				if (obj is SymbolNode) defineFunction(params[index], obj.function())
+				else defineFunction(params[index], { _, _ -> obj })
+			}
 			val ret = ValueNode(body.eval().o ?: Nullptr, ln)
 			backup.forEachIndexed { index, node ->
 				if (node != null) defineFunction(params[index], node)
@@ -70,8 +67,7 @@ fun SymbolList.addStandard() {
 			if (ls.size < 2) tooFewArgument(2, ls.size, meta)
 			val name = (ls.first() as SymbolNode).name
 			val body = ls.last()
-			val params = ls
-					.subList(1, ls.size - 1)
+			val params = ls.subList(1, ls.size - 1)
 					.map { (it as? SymbolNode)?.name ?: InterpretException.notSymbol(meta) }
 			val override = isFunctionDefined(name)
 			defFunc(name, params, block, body)
@@ -80,7 +76,7 @@ fun SymbolList.addStandard() {
 		}
 	}
 	definer("def") { node -> ValueNode(node.eval().o ?: Nullptr) }
-	definer("deflazy") { node -> LazyValueNode({ node.eval() }) }
+	definer("deflazy") { node -> LazyValueNode { node.eval() } }
 	definer("defexpr") { it }
 	val lambdaDefiner = { funName: String, mapper: Mapper<Node> ->
 		defineFunction(funName) { meta, ls ->
@@ -95,7 +91,7 @@ fun SymbolList.addStandard() {
 		}
 	}
 	lambdaDefiner("lambda") { node -> ValueNode(node.eval().o ?: Nullptr) }
-	lambdaDefiner("lazy") { node -> LazyValueNode({ node.eval() }) }
+	lambdaDefiner("lazy") { node -> LazyValueNode { node.eval() } }
 	lambdaDefiner("expr") { it }
 	defineFunction("def?") { ln, ls ->
 		val a = (ls.first() as? SymbolNode)?.name
