@@ -76,7 +76,7 @@ fun SymbolList.addStandard() {
 		}
 	}
 	definer("def") { node -> ValueNode(node.eval().o ?: Nullptr) }
-	definer("deflazy") { node -> LazyValueNode { node.eval() } }
+	definer("deflazy") { node -> LazyValueNode({ node.eval() }) }
 	definer("defexpr") { it }
 	val lambdaDefiner = { funName: String, mapper: Mapper<Node> ->
 		defineFunction(funName) { meta, ls ->
@@ -91,7 +91,7 @@ fun SymbolList.addStandard() {
 		}
 	}
 	lambdaDefiner("lambda") { node -> ValueNode(node.eval().o ?: Nullptr) }
-	lambdaDefiner("lazy") { node -> LazyValueNode { node.eval() } }
+	lambdaDefiner("lazy") { node -> LazyValueNode({ node.eval() }) }
 	lambdaDefiner("expr") { it }
 	defineFunction("def?") { ln, ls ->
 		val a = (ls.first() as? SymbolNode)?.name
