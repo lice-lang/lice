@@ -43,13 +43,10 @@ abstract class AbstractBindings : Bindings {
 	abstract fun getFunction(name: String?): Func?
 
 	override fun containsValue(value: Any?): Boolean {
-		for ((_, u) in functions)
-			try {
-				if (u() == value)
-					return true
-			} catch (_: Throwable) {
-
-			}
+		for ((_, u) in functions) forceRun {
+			if (u() == value)
+				return true
+		}
 
 		return false
 	}
