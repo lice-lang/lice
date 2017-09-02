@@ -351,7 +351,7 @@ inline fun SymbolList.addStringFunctions() {
 		if (ls.isEmpty()) InterpretException.tooFewArgument(1, ls.size, ln)
 		val format = ls.first()
 		when (format) {
-			is String -> String.format(format, *ls.toTypedArray())
+			is String -> String.format(format, *ls.subList(1, ls.size).toTypedArray())
 			else -> typeMisMatch("String", format, ln)
 		}
 	}

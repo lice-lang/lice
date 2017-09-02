@@ -138,9 +138,15 @@ class StdTest {
 (-> ass 10)
 
 (str->sym "ass")
-(sym->str ass)
+(->chars (sym->str ass))
+
+(format "ass %s can", "we")
 
 (thread|> (sleep 1))
+
+(-> ls (list 1 2 3))
+(size ls)
+(reverse ls)
 """)
 				}
 			}

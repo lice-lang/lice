@@ -512,4 +512,11 @@ side-effect
 (fold (.. 1 4) 0 +)
 """ shouldBe 10
 	}
+
+	@Test
+	fun test34() {
+		"(->chars (sym->str ass))" shouldBe "ass".toCharArray().toList()
+		"(split \"ass we can\" \" \")" shouldBe "ass we can".split(" ")
+		"(format \"Hello, %s!\", 233)" shouldBe "Hello, 233!"
+	}
 }
