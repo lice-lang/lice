@@ -1,5 +1,6 @@
 package org.lice.compiler
 
+import org.junit.BeforeClass
 import org.lice.Lice
 
 /**
@@ -8,9 +9,15 @@ import org.lice.Lice
  * @author ice1000
  */
 
-fun main(args: Array<String>) {
-	//language=TEXT
-	Lice.run("""
+class Sandbox {
+	companion object {
+		@JvmStatic
+		@BeforeClass
+		fun main(args: Array<String>) {
+			//language=TEXT
+			Lice.run("""
 
 """)
+		}
+	}
 }

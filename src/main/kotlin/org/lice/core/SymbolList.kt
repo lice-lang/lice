@@ -168,7 +168,7 @@ constructor(init: Boolean = true) : AbstractBindings() {
 		}
 	}
 
-	fun initialize() {
+	private fun initialize() {
 		initMethods.forEach { it(this) }
 		addGetSetFunction()
 		addFileFunctions()

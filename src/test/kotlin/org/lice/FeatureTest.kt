@@ -518,5 +518,12 @@ side-effect
 		"(->chars (sym->str ass))" shouldBe "ass".toCharArray().toList()
 		"(split \"ass we can\" \" \")" shouldBe "ass we can".split(" ")
 		"(format \"Hello, %s!\", 233)" shouldBe "Hello, 233!"
+		"(int->hex 12)" shouldBe "0x${12.toString(16)}"
+		"(int->oct 12)" shouldBe "0${12.toString(8)}"
+		"(int->bin 12)" shouldBe "0b${12.toString(2)}"
+		"(sqrt 16)" shouldBe 4.0
+		"(cbrt 64)" shouldBe 4.0
+		Lice.run("(sinh 1)")
+		Lice.run("(cosh 1)")
 	}
 }
