@@ -1,5 +1,6 @@
 package org.lice
 
+import org.junit.BeforeClass
 import org.junit.Test
 import org.lice.compiler.parse.createRootNode
 import org.lice.compiler.util.forceRun
@@ -14,6 +15,7 @@ import java.io.File
  */
 
 class StdTest {
+
 	@Test(timeout = 1000)
 	fun test1() {
 		forceRun {
@@ -25,30 +27,40 @@ class StdTest {
 
 	@Test(timeout = 1000)
 	fun test2() {
-		forceRun {
-			val clazz = Class.forName("java.io.File")
-			val file = clazz
-					.getConstructor(String::class.java)
-					.newInstance("sample/test2.lice")
-			createRootNode(file as File).eval()
-		}
+		val clazz = Class.forName("java.io.File")
+		val file = clazz
+				.getConstructor(String::class.java)
+				.newInstance("sample/test2.lice")
+		createRootNode(file as File).eval()
+		Lice.run(file)
+	}
+
+	@Test
+	fun echo() {
+		Echoer.openOutput()
+		Echoer.repl = true
+		Echoer.echo("ass")
+		Echoer.echoln("ass")
+		Echoer.echoErr("ass")
+		Echoer.echolnErr("ass")
+		Echoer.closeOutput()
 	}
 
 	@Test(timeout = 1000)
 	fun test3() {
-		forceRun {
-			val ls = listOf("sample/test3.lice")
-			var obj: Any? = null
-			Class
-					.forName("java.io.File")
-					.constructors
-					.forEach {
-						if (obj == null) forceRun {
-							obj = it.newInstance(*ls.toTypedArray())
-						}
+		val ls = listOf("sample/test3.lice")
+		var obj: Any? = null
+		Class
+				.forName("java.io.File")
+				.constructors
+				.forEach {
+					if (obj == null) forceRun {
+						obj = it.newInstance(*ls.toTypedArray())
 					}
-			createRootNode(obj as File).eval()
-		}
+				}
+		val objekt = obj as File
+		createRootNode(objekt).eval()
+		Lice.run(objekt)
 	}
 
 	@Test(timeout = 1000)
@@ -102,6 +114,24 @@ class StdTest {
 		@JvmStatic
 		fun main(args: Array<String>) {
 			StdTest().test1()
+		}
+
+		@BeforeClass
+		@JvmStatic
+		fun initFiles() {
+			File("sample").mkdirs()
+			File("sample/test2.lice").run {
+				if (!exists()) createNewFile()
+				writeText("""
+123
+""")
+				File("sample/test3.lice").run {
+					if (!exists()) createNewFile()
+					writeText("""
+(print (+ 1 1))
+""")
+				}
+			}
 		}
 	}
 }
