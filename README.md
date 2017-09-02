@@ -12,6 +12,7 @@ CodeShip|[![Codeship Status for lice-lang/lice](https://app.codeship.com/project
 [![JitPack](https://jitpack.io/v/lice-lang/lice.svg)](https://jitpack.io/#lice-lang/lice)<br/>
 [![Gitter](https://badges.gitter.im/lice-lang/lice.svg)](https://gitter.im/lice-lang/lice)<br/>
 [![Dependency Status](https://www.versioneye.com/user/projects/58df5b1c24ef3e00425cf73f/badge.svg)](https://www.versioneye.com/user/projects/58df5b1c24ef3e00425cf73f)<br/>
+[![codecov](https://codecov.io/gh/lice-lang/lice/branch/master/graph/badge.svg)](https://codecov.io/gh/lice-lang/lice)<br/>
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)<br/>
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)<br/>
 
