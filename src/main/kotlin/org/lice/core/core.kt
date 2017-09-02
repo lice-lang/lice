@@ -127,7 +127,7 @@ fun SymbolList.addStandard() {
 		ls.forEach { Echoer.echo(it) }
 		if (ls.isNotEmpty()) ls.last() else null
 	}
-	provideFunction("print") { ls ->
+	provideFunction("print-err") { ls ->
 		ls.forEach { Echoer.echoErr(it) }
 		if (ls.isNotEmpty()) ls.last() else null
 	}

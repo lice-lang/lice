@@ -11,6 +11,7 @@ import org.lice.compiler.model.EmptyNode
 import org.lice.compiler.model.MetaData
 import org.lice.compiler.model.Node
 import org.lice.compiler.model.ValueNode
+import org.lice.compiler.util.forceRun
 import java.util.*
 import javax.script.Bindings
 
@@ -97,37 +98,36 @@ abstract class AbstractBindings : Bindings {
 				return true
 			}
 
-			override operator fun iterator(): MutableIterator<MutableMap.MutableEntry<String, Any>> {
-				return object : MutableIterator<MutableMap.MutableEntry<String, Any>> {
-					val it = functions.iterator()
+			override operator fun iterator(): MutableIterator<MutableMap.MutableEntry<String, Any>> =
+					object : MutableIterator<MutableMap.MutableEntry<String, Any>> {
+						val it = functions.iterator()
 
-					override fun hasNext(): Boolean =
-							it.hasNext()
+						override fun hasNext(): Boolean =
+								it.hasNext()
 
-					override fun next(): MutableMap.MutableEntry<String, Any> =
-							it.next().let { e ->
-								object : MutableMap.MutableEntry<String, Any> {
-									override val value: Any
-										get() = e.value()
+						override fun next(): MutableMap.MutableEntry<String, Any> =
+								it.next().let { e ->
+									object : MutableMap.MutableEntry<String, Any> {
+										override val value: Any
+											get() = e.value()
 
-									override fun setValue(newValue: Any): Any {
-										return e.setValue { meta, _ ->
-											ValueNode(e.value, meta)
+										override fun setValue(newValue: Any): Any {
+											return e.setValue { meta, _ ->
+												ValueNode(e.value, meta)
+											}
 										}
+
+										override val key: String
+											get() = e.key
+
 									}
-
-									override val key: String
-										get() = e.key
-
 								}
-							}
 
-					override fun remove() {
-						it.remove()
+						override fun remove() {
+							it.remove()
+						}
+
 					}
-
-				}
-			}
 
 		}
 
@@ -137,11 +137,7 @@ abstract class AbstractBindings : Bindings {
 	override val values: MutableCollection<Any>
 		get() = mutableListOf<Any>().apply {
 			functions.values.forEach {
-				try {
-					add(it())
-				} catch (e: Exception) {
-
-				}
+				forceRun { add(it()) }
 			}
 		}
 }
@@ -153,9 +149,7 @@ constructor(init: Boolean = true) : AbstractBindings() {
 		val pathSeperator: String = System.getProperty("path.separator")
 		val classPath: String = System.getProperty("java.class.path")
 
-		private val initMethods: MutableSet<(SymbolList) -> Unit> = mutableSetOf(
-
-		)
+		private val initMethods: MutableSet<(SymbolList) -> Unit> = mutableSetOf()
 
 		fun addInitMethod(f: SymbolList.() -> Unit): Unit {
 			initMethods.add(f)
@@ -176,7 +170,7 @@ constructor(init: Boolean = true) : AbstractBindings() {
 
 	fun initialize() {
 		initMethods.forEach { it(this) }
-
+		addGetSetFunction()
 		addFileFunctions()
 		addGUIFunctions()
 		addMathFunctions()

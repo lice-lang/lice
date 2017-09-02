@@ -93,30 +93,12 @@ class StdTest {
 
 	@Test(timeout = 1000)
 	fun test6() {
-//		for (i in 0..5 step 2) println(i)
-//		for (i in 0..5) println(i)
 		val ls = listOf(1, 2, 3, 4, 5, 6, 7)
 		for (i in (0..ls.size - 2) step 2) {
 			println("${ls[i]}, ${ls[i + 1]}")
 		}
 		if (ls.size % 2 == 0) println("Ah♂fuck you")
 		else println(ls.last())
-	}
-
-	@Test
-	fun testKotlinSupportLambdaRec() {
-		fun lambda(it: Int): Int = if (it <= 2) 1 else lambda(it - 1) + lambda(it - 2)
-		Echoer.printer = ::println
-		(1..10)
-				.map(::lambda)
-				.forEach(Echoer::echoln)
-
-		val lambda2: (Int) -> Int = {
-			if (it <= 2) 1 else lambda(it - 1) + lambda(it - 2)
-		}
-		(1..10)
-				.map(lambda2)
-				.forEach(Echoer::echoln)
 	}
 
 	companion object {
@@ -143,6 +125,22 @@ class StdTest {
 (print (/ 10.2M 5))
 (print (/ 10 5.0))
 (print (* 10 5.2M))
+
+(alias + plus)
+(undef +)
+(alias plus +)
+(print (+ 1 2))
+
+(new "java.lang.Object")
+
+(type 23)
+
+(-> ass 10)
+
+(str->sym "ass")
+(sym->str ass)
+
+(thread|> (sleep 1))
 """)
 				}
 			}
