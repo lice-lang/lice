@@ -32,15 +32,19 @@ object Echoer {
 	}
 
 	fun echoln(a: Any? = "") {
+		echo("$a\n")
+	}
+
+	fun replEcholn(a: Any? = "") {
 		if (repl) echo("$a\n")
 	}
 
 	fun echoErr(a: Any? = "") {
-		if (repl) printerErr(a)
+		printerErr(a)
 	}
 
 	fun echolnErr(a: Any? = "") {
-		if (repl) printerErr("$a\n")
+		echoErr("$a\n")
 	}
 
 	fun closeOutput() {

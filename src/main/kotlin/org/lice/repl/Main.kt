@@ -27,25 +27,4 @@ object Main {
 			symbolList: SymbolList = SymbolList()
 	) = createRootNode(file, symbolList).eval()
 
-	@JvmStatic
-	fun main(args: Array<String>) {
-		if (args.isEmpty()) {
-			Echoer.closeOutput()
-			val sl = SymbolList()
-			Echoer.openOutput()
-			sl.provideFunction("help") {
-				"This is the repl for org.lice language.\n\nsee: https://github.com/lice-lang/lice"
-			}
-			sl.provideFunction("version") { "Lice language interpreter $VERSION\nby ice1000" }
-			sl.provideFunction("FILE_PATH") { File("").absolutePath }
-
-			val scanner = Scanner(System.`in`)
-			val repl = Repl(sl)
-			while (repl.handle(scanner.nextLine())) Unit
-		} else {
-			interpret(File(args[0]).apply {
-				if (!exists()) Echoer.echolnErr("file not found: ${args[0]}")
-			})
-		}
-	}
 }

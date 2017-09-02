@@ -6,6 +6,7 @@ import org.lice.compiler.parse.createRootNode
 import org.lice.compiler.util.forceRun
 import org.lice.compiler.util.println
 import org.lice.lang.Echoer
+import org.lice.lang.Pair
 import java.io.File
 
 /**
@@ -37,13 +38,21 @@ class StdTest {
 
 	@Test
 	fun echo() {
+		Echoer.closeOutput()
 		Echoer.openOutput()
 		Echoer.repl = true
 		Echoer.echo("ass")
 		Echoer.echoln("ass")
 		Echoer.echoErr("ass")
 		Echoer.echolnErr("ass")
-		Echoer.closeOutput()
+		Echoer.repl = false
+		Echoer.openOutput()
+	}
+
+	@Test
+	fun pair() {
+		Pair(1, 2) anyShouldBe Pair(1, 2)
+		Pair("a", "b").hashCode() anyShouldBe Pair("a", "b").hashCode()
 	}
 
 	@Test(timeout = 1000)
@@ -119,6 +128,7 @@ class StdTest {
 		@BeforeClass
 		@JvmStatic
 		fun initFiles() {
+			Echoer.openOutput()
 			File("sample").mkdirs()
 			File("sample/test2.lice").run {
 				if (!exists()) createNewFile()
@@ -129,6 +139,10 @@ class StdTest {
 					if (!exists()) createNewFile()
 					writeText("""
 (print (+ 1 1))
+(print (- 10N 1.0))
+(print (/ 10.2M 5))
+(print (/ 10 5.0))
+(print (* 10 5.2M))
 """)
 				}
 			}

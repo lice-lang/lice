@@ -14,7 +14,6 @@ import org.lice.compiler.model.Value.Objects.Nullptr
 import org.lice.compiler.util.ParseException.Factory.undefinedVariable
 import org.lice.core.SymbolList
 import org.lice.lang.BeforeEval
-import org.lice.lang.NullptrType
 
 data class MetaData(
 		val beginLine: Int = -1,
@@ -43,7 +42,7 @@ data class Value(
 	) : this(o, o.javaClass)
 
 	companion object Objects {
-		val Nullptr = Value(null, NullptrType::class.java)
+		val Nullptr = Value(null, Nothing::class.java)
 	}
 }
 

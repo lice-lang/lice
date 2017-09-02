@@ -143,12 +143,12 @@ fun SymbolList.addStandard() {
 		ls.forEach {
 			val res = it.eval()
 			ret = res
-			Echoer.echoln("${res.o.toString()} => ${res.type.name}")
+			Echoer.replEcholn("${res.o.toString()} => ${res.type.name}")
 		}
 		ValueNode(ret)
 	}
 	provideFunction("type") { ls ->
-		ls.first()?.javaClass ?: NullptrType::class.java
+		ls.first()?.javaClass ?: Nothing::class.java
 	}
 	provideFunction("gc") { System.gc() }
 	provideFunction("|>") { it.last() }

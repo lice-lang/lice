@@ -36,8 +36,6 @@ class Pair<out A, out B>(
 	}
 }
 
-class DefineResult(val res: String) {
+class DefineResult(private val res: String) {
 	override fun toString() = res
 }
-
-class NullptrType private constructor()
