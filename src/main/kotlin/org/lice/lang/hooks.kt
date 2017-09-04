@@ -21,14 +21,14 @@ object Echoer {
 	var printer: Output = stdout
 		get
 
-	var stderr: Output = System.out::print
+	var stderr: Output = System.err::print
 	var printerErr: Output = stderr
 		get
 
 	val nothing: Output = { }
 
 	fun echo(a: Any? = "") {
-		if (repl) printer(a)
+		printer(a)
 	}
 
 	fun echoln(a: Any? = "") {

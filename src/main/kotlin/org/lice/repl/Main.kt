@@ -27,4 +27,10 @@ object Main {
 			symbolList: SymbolList = SymbolList()
 	) = createRootNode(file, symbolList).eval()
 
+	@JvmStatic
+	fun main(args: Array<String>) {
+		Echoer.openOutput()
+		if (args.isEmpty()) println("Please specify an input file.")
+		else interpret(File(args.first()))
+	}
 }
