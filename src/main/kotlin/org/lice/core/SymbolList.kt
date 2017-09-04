@@ -167,11 +167,9 @@ constructor(init: Boolean = true) : AbstractBindings() {
 
 	private fun initialize() {
 		initMethods.forEach { it(this) }
-		addGetSetFunction()
 		addFileFunctions()
 		addGUIFunctions()
 		addMathFunctions()
-		addStringFunctions()
 		addConcurrentFunctions()
 		addStandard()
 		provideFunction("load", { param ->

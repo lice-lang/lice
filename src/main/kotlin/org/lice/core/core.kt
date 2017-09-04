@@ -45,6 +45,7 @@ fun SymbolList.addStandard() {
 	addBoolFunctions()
 	addCollectionsFunctions()
 	addListFunctions()
+	addStdioFunctions()
 	val defFunc = { name: String, params: ParamList, block: Mapper<Node>, body: Node ->
 		defineFunction(name) { ln, args ->
 			val backup = params.map { getFunction(it) }
@@ -122,14 +123,6 @@ fun SymbolList.addStandard() {
 	provideFunction("debug") {
 		BeforeEval.hook = { Echoer.echoln("eval =>> $this") }
 		null
-	}
-	provideFunction("print") { ls ->
-		ls.forEach { Echoer.echo(it) }
-		if (ls.isNotEmpty()) ls.last() else null
-	}
-	provideFunction("print-err") { ls ->
-		ls.forEach { Echoer.echoErr(it) }
-		if (ls.isNotEmpty()) ls.last() else null
 	}
 	provideFunctionWithMeta("new") { meta, ls ->
 		val a = ls.first()

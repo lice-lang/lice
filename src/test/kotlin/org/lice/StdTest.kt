@@ -120,16 +120,16 @@ class StdTest {
 				File("sample/test3.lice").run {
 					if (!exists()) createNewFile()
 					writeText("""
-(print (+ 1 1))
-(print (- 10N 1.0))
-(print (/ 10.2M 5))
-(print (/ 10 5.0))
-(print (* 10 5.2M))
+(print (+ 1 1) "\n")
+(print (- 10N 1.0) "\n")
+(print (/ 10.2M 5) "\n")
+(print (/ 10 5.0) "\n")
+(print (* 10 5.2M) "\n")
 
 (alias + plus)
 (undef +)
 (alias plus +)
-(print (+ 1 2))
+(print (+ 1 2) "\n")
 
 (new "java.lang.Object")
 
@@ -140,7 +140,7 @@ class StdTest {
 (str->sym "ass")
 (->chars (sym->str ass))
 
-(format "ass %s can", "we")
+(print (format "ass %s can", "we") "\n")
 
 (thread|> (sleep 1))
 
