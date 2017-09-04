@@ -29,14 +29,26 @@ fun SymbolList.addStdioFunctions() {
 		if (ls.isNotEmpty()) ls.last() else null
 	}
 	provideFunction("getInts") { ls ->
-		(0..ls.first().toString().toInt()).map { i.nextInt() }
+		(1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextInt() }
+	}
+	provideFunction("getFloats") { ls ->
+		(1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextFloat() }
+	}
+	provideFunction("getDoubles") { ls ->
+		(1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextDouble() }
+	}
+	provideFunction("getLines") { ls ->
+		(1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextLine() }
+	}
+	provideFunction("getTokens") { ls ->
+		(1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.next() }
 	}
 	provideFunction("getBigInts") { ls ->
-		(0..ls.first().toString().toInt()).map { i.nextBigInteger() }
+		(1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextBigInteger() }
 	}
 	provideFunction("getBigDecs") { ls ->
-		(0..ls.first().toString().toInt()).map { i.nextBigDecimal() }
+		(1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextBigDecimal() }
 	}
 }
 
-val i = Scanner(System.`in`)
+val liceScanner = Scanner(System.`in`)
