@@ -9,11 +9,11 @@ package org.lice.runtime;
 @SuppressWarnings("WeakerAccess")
 public class MetaData {
 	public final int startLine;
-	public final int endLine;
 	public final int startColumn;
+	public final int endLine;
 	public final int endColumn;
 
-	public MetaData(int startLine, int endLine, int startColumn, int endColumn) {
+	public MetaData(int startLine, int startColumn, int endLine, int endColumn) {
 		this.startLine = startLine;
 		this.endLine = endLine;
 		this.startColumn = startColumn;
