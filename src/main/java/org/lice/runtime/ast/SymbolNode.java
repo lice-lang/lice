@@ -20,9 +20,9 @@ public class SymbolNode extends Node {
 	}
 
 	@Override
-	public Object eval(ScriptContext context) {
+	public Object eval(Bindings bindings) {
 		Object o;
-		o = context.getBindings(0).getOrDefault(symbol, Undefined.undefined);
+		o = bindings.getOrDefault(symbol, Undefined.undefined);
 
 		return o;
 	}

@@ -12,11 +12,13 @@ import javax.script.*;
  */
 public abstract class Node extends CompiledScript {
 	private ScriptEngine engine;
+
+	public int scope = 0;
 	public MetaData metaData = null;
 
 	@Override
 	public Object eval(ScriptContext bindings) throws ScriptException {
-		return this.eval(bindings.getBindings(0));
+		return this.eval(bindings.getBindings(scope));
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public class ValueNode extends Node {
 	}
 
 	@Override
-	public Object eval(ScriptContext context) {
+	public Object eval(Bindings bindings) {
 		return value;
 	}
 }
