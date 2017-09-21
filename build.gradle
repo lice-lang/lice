@@ -1,19 +1,7 @@
 group 'org.lice'
 version '4.0.0'
 
-buildscript {
-	ext.kotlin_version = '1.1.4-2'
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-	}
-
-}
-
 apply plugin: 'java'
-apply plugin: 'kotlin'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
@@ -22,12 +10,6 @@ repositories {
 	mavenCentral()
 }
 
-sourceSets {
-	main.kotlin.srcDirs += 'src/main/kotlin'
-	main.java.srcDirs += 'src/main/java'
-	test.kotlin.srcDirs += 'src/test/kotlin'
-	test.java.srcDirs += 'src/test/java'
-}
 
 configurations {
 	artifact
@@ -35,17 +17,8 @@ configurations {
 
 dependencies {
 	compile group: 'org.jetbrains', name: 'annotations', version: '15.0'
-	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 
-	configurations.compile.extendsFrom(configurations.artifact)
 	testCompile group: 'junit', name: 'junit', version: '4.12'
-	testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
-}
-
-jar {
-	manifest {
-		attributes 'Main-Class': 'org.lice.repl.Main'
-	}
 }
 
 tasks.withType(JavaCompile) {
