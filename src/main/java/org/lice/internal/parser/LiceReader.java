@@ -26,14 +26,16 @@ public class LiceReader extends Reader {
 	 *
 	 * @throws NullPointerException if <code>in</code> is <code>null</code>
 	 */
-	protected LiceReader(@NotNull Reader in) {
+	public LiceReader(@NotNull Reader in) {
 		this.in = in;
 	}
 
 	@Override
 	public int read() throws IOException {
 		int c = in.read();
-		if (c == -1) return -1;
+		if (c == -1) {
+			return -1;
+		}
 		ch = (char) c;
 		if (ch == '\n') {
 			line++;
