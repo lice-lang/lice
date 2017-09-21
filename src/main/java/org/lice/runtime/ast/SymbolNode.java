@@ -1,6 +1,9 @@
 package org.lice.runtime.ast;
 
+import org.lice.runtime.Undefined;
+
 import javax.script.Bindings;
+import javax.script.ScriptContext;
 
 /**
  * Created by Glavo on 17-9-21.
@@ -17,8 +20,10 @@ public class SymbolNode extends Node {
 	}
 
 	@Override
-	public Node eval(Bindings bindings) {
+	public Object eval(ScriptContext context) {
+		Object o;
+		o = context.getBindings(0).getOrDefault(symbol, Undefined.undefined);
 
-		return null;
+		return o;
 	}
 }

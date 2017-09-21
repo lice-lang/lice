@@ -3,6 +3,7 @@ package org.lice.runtime;
 import org.lice.runtime.ast.Node;
 
 import javax.script.Bindings;
+import javax.script.ScriptContext;
 import java.util.List;
 
 /**
@@ -13,5 +14,5 @@ import java.util.List;
  */
 @FunctionalInterface
 public interface LiceFunction {
-	Node apply(Bindings env, List<? extends Node> args);
+	Object apply(ScriptContext env, List<? extends Node> args);
 }

@@ -1,8 +1,5 @@
 package org.lice.internal.parser;
 
-import com.sun.org.apache.regexp.internal.RE;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.io.Reader;
 
@@ -12,6 +9,7 @@ import java.io.Reader;
  * @author Glavo
  * @since 4.0.0
  */
+@SuppressWarnings("ALL")
 public class LiceReader extends Reader {
 	Reader in;
 
@@ -26,7 +24,7 @@ public class LiceReader extends Reader {
 	 *
 	 * @throws NullPointerException if <code>in</code> is <code>null</code>
 	 */
-	public LiceReader(@NotNull Reader in) {
+	public LiceReader(Reader in) {
 		this.in = in;
 	}
 
@@ -48,7 +46,7 @@ public class LiceReader extends Reader {
 	}
 
 	@Override
-	public int read(@NotNull char[] cbuf, int off, int len) throws IOException {
+	public int read(char[] cbuf, int off, int len) throws IOException {
 		throw new UnsupportedOperationException();
 	}
 

@@ -21,7 +21,7 @@ public final class LiceScriptEngineFactory implements ScriptEngineFactory {
 	static {
 		parameters.put("javax.script.engine_version", Lice.VERSION);
 		parameters.put("javax.script.engine", "lice");
-		parameters.put("javax.script.language_version\"", Lice.VERSION);
+		parameters.put("javax.script.language_version", Lice.VERSION);
 		parameters.put("javax.script.name", "lice");
 	}
 
