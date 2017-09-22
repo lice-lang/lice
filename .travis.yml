@@ -3,6 +3,9 @@ language: java
 language: kotlin
 jdk:
 - oraclejdk8
+- openjdk8
+- oraclejdk9
+- openjdk9
 script:
 - "./gradlew check"
 - "./gradlew javadoc"
