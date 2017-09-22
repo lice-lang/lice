@@ -16,6 +16,10 @@ public abstract class Node extends CompiledScript {
 	public int scope = 0;
 	public MetaData metaData = null;
 
+	public Object eval() throws ScriptException {
+		return this.eval(engine.getContext());
+	}
+
 	@Override
 	public Object eval(ScriptContext bindings) throws ScriptException {
 		return this.eval(bindings.getBindings(scope));

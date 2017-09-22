@@ -17,6 +17,10 @@ public class LiceReader extends Reader {
 	int column = 0;
 	char ch = '\u0000';
 
+	public void reInit(Reader reader) {
+		this.in = reader;
+	}
+
 	/**
 	 * Creates a new filtered reader.
 	 *
@@ -32,6 +36,9 @@ public class LiceReader extends Reader {
 	public int read() throws IOException {
 		int c = in.read();
 		if (c == -1) {
+			line++;
+			column = 0;
+			ch = '\u0000';
 			return -1;
 		}
 		ch = (char) c;

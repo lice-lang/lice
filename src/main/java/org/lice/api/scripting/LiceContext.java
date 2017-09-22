@@ -4,7 +4,10 @@ import javax.script.Bindings;
 import javax.script.ScriptContext;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Glavo on 17-9-22.
@@ -13,24 +16,35 @@ import java.util.List;
  * @since 4.0.0
  */
 public final class LiceContext implements ScriptContext {
+	private Map<Integer, Bindings> allBindings;
+
+	public LiceContext() {
+		this.allBindings = new HashMap<>();
+	}
+
+
 	@Override
 	public void setBindings(Bindings bindings, int scope) {
-		
+		this.allBindings.put(scope, bindings);
 	}
 
 	@Override
 	public Bindings getBindings(int scope) {
-		return null;
+		return allBindings.get(scope);
 	}
 
 	@Override
 	public void setAttribute(String name, Object value, int scope) {
-
+		Bindings bindings = allBindings.get(scope);
+		Objects.requireNonNull(bindings);
+		bindings.put(name, value);
 	}
 
 	@Override
 	public Object getAttribute(String name, int scope) {
-		return null;
+		Bindings bindings = allBindings.get(scope);
+		Objects.requireNonNull(bindings);
+		return bindings.get(name);
 	}
 
 	@Override
