@@ -2,6 +2,7 @@ package org.lice.internal.parser;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.Objects;
 
 /**
@@ -26,5 +27,9 @@ public class Lexer {
 	public void reInit(Reader reader) {
 		Objects.requireNonNull(reader);
 		this.reader.reInit(reader);
+	}
+
+	public void reInit(String str) {
+		reInit(new StringReader(str));
 	}
 }

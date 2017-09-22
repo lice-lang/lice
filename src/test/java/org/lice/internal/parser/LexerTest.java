@@ -1,5 +1,7 @@
 package org.lice.internal.parser;
 
+import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -9,5 +11,8 @@ import static org.junit.Assert.*;
  * @since 4.0.0
  */
 public class LexerTest {
-
+	@Test(expected = NullPointerException.class)
+	public void testConstructByNull() {
+		new Lexer(null);
+	}
 }
