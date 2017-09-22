@@ -6,8 +6,13 @@ package org.lice.internal.parser;
  * @author Glavo
  * @since 4.0.0
  */
+@SuppressWarnings("WeakerAccess")
 public class Lexer {
-	public Lexer() {
+	public LiceReader reader;
 
+	public Lexer(LiceReader reader) {
+		this.reader = reader;
 	}
+
+
 }

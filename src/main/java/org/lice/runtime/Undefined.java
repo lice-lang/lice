@@ -6,9 +6,14 @@ package org.lice.runtime;
  * @author Glavo
  * @since 4.0.0
  */
-public class Undefined {
+public final class Undefined {
 	public static final Undefined undefined = new Undefined();
 
 	private Undefined() {
+	}
+
+	@Override
+	public String toString() {
+		return "undefined";
 	}
 }

@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.awt.image.ImagingOpException;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 
 import static org.junit.Assert.*;
@@ -50,10 +51,18 @@ public class LiceReaderTest {
 
 		while (reader.read() != -1) {
 		}
-		assertEquals(reader.line, 2);
-		assertEquals(reader.column, 10);
+		assertEquals(reader.line, 3);
+		assertEquals(reader.column, 0);
 		assertEquals(reader.ch, '\u0000');
 
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testReadChars() throws IOException {
+		LiceReader reader = new LiceReader(new StringReader(res));
+		char[] chs = new char[20];
+
+		reader.read(chs, 0, 10);
 	}
 
 	@Test
@@ -72,6 +81,28 @@ public class LiceReaderTest {
 		assertEquals(reader.line, 3);
 		assertEquals(reader.column, 1);
 		assertEquals(reader.ch, '1');
+	}
+
+	@Test
+	public void testClose() throws Exception {
+		class TestReader extends Reader {
+			private boolean closed = false;
+			@Override
+			public int read(char[] cbuf, int off, int len) throws IOException {
+				return 0;
+			}
+
+			@Override
+			public void close() throws IOException {
+				closed = true;
+			}
+		}
+
+		TestReader testReader = new TestReader();
+		LiceReader liceReader = new LiceReader(testReader);
+		liceReader.close();
+		assertTrue(testReader.closed);
+
 	}
 
 }
