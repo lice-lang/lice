@@ -22,9 +22,7 @@ public final class StringUtils {
 				int ch;
 				if ((ch = sr.read()) == -1)
 					break;
-
 				if (ch == '\\') {
-
 					ch = sr.read();
 					switch (ch) {
 						case '\\':
@@ -62,7 +60,7 @@ public final class StringUtils {
 							sb.append((char) ii);
 							continue;
 						default:
-							return null; //TODO
+							StringEscapeException.invalid();
 					}
 
 				} else {
@@ -77,7 +75,4 @@ public final class StringUtils {
 		return sb.toString();
 	}
 
-	private StringUtils() {
-		throw new UnsupportedOperationException();
-	}
 }
