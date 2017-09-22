@@ -20,6 +20,7 @@ public final class LiceContext implements ScriptContext {
 
 	public LiceContext() {
 		this.allBindings = new HashMap<>();
+		allBindings.put(0, new SimpleLiceBindings());
 	}
 
 

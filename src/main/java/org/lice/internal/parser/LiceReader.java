@@ -32,6 +32,12 @@ public class LiceReader extends Reader {
 		this.in = in;
 	}
 
+	public void skip() throws IOException {
+		int ch;
+		while(Character.isSpaceChar(ch = read())) {
+		}
+	}
+
 	@Override
 	public int read() throws IOException {
 		int c = in.read();
