@@ -1,5 +1,7 @@
 package org.lice.runtime.ast;
 
+import org.lice.runtime.Unit;
+
 import javax.script.Bindings;
 import javax.script.ScriptException;
 import java.util.ArrayList;
@@ -25,6 +27,11 @@ public class ApplyNode extends Node {
 
 	@Override
 	public Object eval(Bindings bindings) throws ScriptException {
-		return null;
+		if (nodes == null || nodes.isEmpty()) return Unit.unit;
+		Node fun = nodes.get(0);
+		List<Node> args = nodes.subList(1, nodes.size());
+
+
+		return null; //TODO
 	}
 }
