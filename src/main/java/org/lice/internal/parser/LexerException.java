@@ -9,5 +9,5 @@ import javax.script.ScriptException;
  * @since 4.0.0
  */
 public class LexerException extends RuntimeException {
-	
+
 }

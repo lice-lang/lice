@@ -13,28 +13,68 @@ import java.util.Objects;
 public final class StringUtils {
 	public static String escape(String str) {
 		Objects.requireNonNull(str);
-		StringBuilder builder = new StringBuilder(str.length());
-		StringReader reader = new StringReader(str);
-		int ch;
+
+		StringReader sr = new StringReader(str);
+		StringBuilder sb = new StringBuilder();
 
 		try {
-			while ((ch = reader.read()) != -1) {
-				switch (ch) {
-					case '\\':
-						ch = reader.read();
+			while (true) {
+				int ch;
+				if ((ch = sr.read()) == -1)
+					break;
 
-						break;
+				if (ch == '\\') {
 
-					default:
-						builder.append((char) ch);
-						break;
+					ch = sr.read();
+					switch (ch) {
+						case '\\':
+							sb.append('\\');
+							continue;
+						case '\"':
+							sb.append('\"');
+							continue;
+						case '/':
+							sb.append('/');
+							continue;
+						case 'b':
+							sb.append('\b');
+							continue;
+						case 'f':
+							sb.append('\f');
+							continue;
+						case 'n':
+							sb.append('\n');
+							continue;
+						case 'r':
+							sb.append('\r');
+							continue;
+						case 't':
+							sb.append('\t');
+							continue;
+						case 'u':
+							String sbb = String.valueOf((char) sr.read()) +
+									(char) sr.read() +
+									(char) sr.read() +
+									(char) sr.read();
+							int ii =
+									Integer.parseInt(sbb, 16);
+
+							sb.append((char) ii);
+							continue;
+						default:
+							return null; //TODO
+					}
+
+				} else {
+					sb.append((char) ch);
 				}
 			}
+
 		} catch (IOException ignored) {
-			assert false;
+
 		}
 
-		return builder.toString();
+		return sb.toString();
 	}
 
 	private StringUtils() {
