@@ -1,18 +1,18 @@
 sudo: required
 language: java
 jdk:
-- oraclejdk8
-- openjdk8
-- oraclejdk9
+  - oraclejdk8
+  - openjdk8
+  - oraclejdk9
 script:
-- "./gradlew check"
-- "./gradlew javadoc"
-- "./gradlew jar"
+  - "./gradlew check"
+  - "./gradlew javadoc"
+  - "./gradlew jar"
 before_install:
-- chmod a+x gradlew
+  - chmod a+x gradlew
 before_cache:
-- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   apt: true
   directories:
