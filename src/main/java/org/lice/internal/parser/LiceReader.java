@@ -33,8 +33,8 @@ public class LiceReader extends Reader {
 	}
 
 	public void skip() throws IOException {
-		int ch;
-		while(Character.isSpaceChar(ch = read())) {
+		while (ch == '\u0000' || Character.isWhitespace(ch)) {
+			if (read() == -1) return;
 		}
 	}
 

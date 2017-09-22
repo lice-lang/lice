@@ -17,6 +17,20 @@ import static org.junit.Assert.*;
  */
 public class LiceReaderTest {
 	private static final String res = "1234567890\nabcdefghij";
+	private static final String spaceRes = "  0  \t\r 21\tasdsa\nds";
+
+	@Test
+	public void testSkip() throws IOException {
+		LiceReader reader = new LiceReader(new StringReader(spaceRes));
+
+		reader.skip();
+		assertEquals(reader.ch, '0');
+
+		//noinspection ResultOfMethodCallIgnored
+		reader.read();
+		reader.skip();
+		assertEquals(reader.ch, '2');
+	}
 
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	@Test
