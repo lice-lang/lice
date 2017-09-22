@@ -78,5 +78,6 @@ public final class StringUtils {
 	}
 
 	private StringUtils() {
+		throw new UnsupportedOperationException();
 	}
 }
