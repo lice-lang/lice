@@ -15,4 +15,8 @@ import java.util.List;
 @FunctionalInterface
 public interface LiceFunction {
 	Object apply(ScriptContext env, List<? extends Node> args);
+
+	default boolean newScope() {
+		return true;
+	}
 }
