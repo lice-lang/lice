@@ -1,8 +1,7 @@
 package org.lice.internal.parser;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.lice.internal.parser.deprecated.Lexer;
 
 /**
  * Created by Glavo on 17-9-22.

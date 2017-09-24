@@ -1,4 +1,4 @@
-package org.lice.internal.parser;
+package org.lice.internal.parser.deprecated;
 
 import java.io.IOException;
 import java.io.Reader;

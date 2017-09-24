@@ -1,7 +1,6 @@
-package org.lice.internal.parser;
+package org.lice.internal.parser.deprecated;
 
 import org.lice.runtime.ast.Node;
-import sun.misc.Unsafe;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -34,7 +33,6 @@ public class Lexer {
 		Objects.requireNonNull(reader);
 		this.reader.reInit(reader);
 	}
-
 	public void reInit(String str) {
 		reInit(new StringReader(str));
 	}
@@ -52,6 +50,6 @@ public class Lexer {
 
 		if(reader.ch == '\u0000') return null;
 
-
+		return null; //TODO
 	}
 }

@@ -1,8 +1,8 @@
 package org.lice.internal.parser;
 
 import org.junit.Test;
+import org.lice.internal.parser.deprecated.LiceReader;
 
-import java.awt.image.ImagingOpException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
