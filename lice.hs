@@ -108,15 +108,14 @@ preludeFunctions =
     range _              = Err
     if' (p : a : b) = case p' of
         Boo x -> if x then eval a else case b of
-          []  -> Nul
+          [ ] -> Nul
           [x] -> eval x
           _   -> Err
         _     -> Err
-      where
-        p' = eval p
+      where p' = eval p
     if' _             = Err
     size [Lst ls] = I32 $ length ls
-    size _ = Err
+    size _        = Err
 --
 pretty :: AST -> String
 pretty (I32 xs)    = show xs
@@ -127,7 +126,7 @@ pretty (Boo True)  = "true"
 pretty (Boo False) = "false"
 
 lispPretty :: String -> Maybe String
-lispPretty s = case filter ((=="").snd) $ readP_to_S expr $ trimH s of
+lispPretty s = case filter ((== "") . snd) $ readP_to_S expr $ trimH s of
   [] -> Nothing
   xs -> Just $ pretty $ fst $ last xs
 
@@ -137,4 +136,4 @@ lispEval s = case filter ((== "") . snd) $ readP_to_S expr $ trimH s of
   xs -> Just $ eval $ fst $ last xs
 
 trimH (x : xs) | x `elem` ",\r\n\t " = trimH xs
-               | otherwise = x : xs
+               | otherwise           = x : xs
