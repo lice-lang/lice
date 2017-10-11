@@ -1,246 +1,140 @@
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE ApplicativeDo #-}
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE ViewPatterns #-}
 
-module LiceHaskell
-  ( liceEval
-  , licePretty
-  , liceParse
-  ) where
+module LispLovesMe where
 
-import Prelude hiding (null)
-
-import Data.Char
-import Data.List.Split (splitOn)
+import Data.List
 import Data.Maybe
-
-import Control.Monad
-import Control.Applicative
+import Text.ParserCombinators.ReadP
 
 data AST = I32 Int
          | Sym String
-         | Str String
          | Nul
-         | Err String
+         | Err
          | Lst [AST]
-         | Par (AST, AST)
          | Boo Bool
          | Nod AST [AST]
          deriving (Eq, Show)
 --
 
-alpha = ['a'..'z'] ++ ['A'..'Z']
+expr = symbols
+   +++ numbers
+   +++ booleans
+   +++ nulls
+   +++ nodes
 
------------------------------------------------------
---------------- my parser combinator ----------------
------------------------------------------------------
+nodes = do
+   char '('
+   whiteSpace
+   fist <- expr
+   exprs <- many expr
+   char ')'
+   whiteSpace
+   return $ Nod fist exprs
 
-newtype Parser val = Parser { parse :: String -> [(val, String)]  }
+nulls = (const Nul <$> string "null" <* whiteSpace) +++ nul
+  where
+    nul = do
+        char '('
+        whiteSpace
+        char ')'
+        whiteSpace
+        return Nul
 
-parseCode :: Parser a -> String -> Either String a
-parseCode m (parse m -> [(res, [])]) = Right res
-parseCode _ _                        = Left "Hugh?"
+booleans = Boo <$> choice [ const True <$> string "true", const False <$> string "false" ] <* whiteSpace
+numbers = I32 . read <$> munch1 (`elem` ['0'..'9']) <* whiteSpace
 
-(<!--) = parse
+symbols = do
+  fist <- satisfy (`notElem` (" ,\n\t\r()" ++ [ '0' .. '9' ]))
+  tal <- munch (`notElem` " ,\n\t\r()") <* whiteSpace
+  let sym = fist : tal
+  if sym `notElem` [ "true", "false", "null" ]
+    then return $ Sym sym
+    else pfail
 
-instance Functor Parser where
-  fmap f (Parser ps) = Parser $ \p -> [ (f a, b) | (a, b) <- ps p ]
---
+whiteSpace = many $ satisfy (`elem`",\r\n\t ")
 
-instance Applicative Parser where
-  pure = return
-  (Parser p1) <*> (Parser p2) = Parser $ \p ->
-    [ (f a, s2) | (f, s1) <- p1 p, (a, s2) <- p2 s1 ]
---
-
-instance Monad Parser where
-  return a = Parser $ \s -> [(a, s)]
-  p >>= f  = Parser $ concatMap (\(a, s1) -> f a <!-- s1) . parse p
---
-
-instance MonadPlus Parser where
-  mzero     = Parser $ const []
-  mplus p q = Parser $ \s -> parse p s ++ parse q s
---
-
-instance Alternative Parser where
-  empty   = mzero
-  p <|> q = Parser $ \s -> case parse p s of
-    [] -> parse q s
-    rs -> rs
---
-
-(<~>) :: Alternative a => a b -> a b -> a b
-(<~>) = flip (<|>)
-
-item :: Parser Char
-item = Parser $ \case
-  [     ] -> [      ]
-  (h : t) -> [(h, t)]
---
-
-satisfy :: (Char -> Bool) -> Parser Char
-satisfy p = item >>= \c -> if p c then return c else empty
-
-oneOf ls = satisfy (`elem` ls)
-noneOf ls = satisfy $ not . (`elem` ls)
-char = satisfy . (==)
-nat = read <$> some digit :: Parser Int
-digit = satisfy isDigit
-reserved = token . string
-spaces = many $ oneOf " \n\r\t,"
-
-true = do
-  reserved "true"
-  return $ Boo True
---
-
-false = do
-  reserved "false"
-  return $ Boo False
---
-
-null = do
-  reserved "null"
-  return Nul
---
-
-string [      ] = return []
-string (c : cs) = do
-  char c
-  string cs
-  return $ c : cs
---
-
-token p = do
-  a <- p
-  spaces
-  return a
---
-
-number = do
-  s <- string "-" <|> return []
-  cs <- some digit
-  return $ read $ s ++ cs
---
-
-parens m = do
-  reserved "("
-  n <- m
-  reserved ")"
-  return n
---
-
-int :: Parser AST
-int = do
-  n <- number
-  spaces
-  return $ I32 n
---
-
-sym :: Parser AST
-sym = do
-  n <- some $ noneOf "() ,"
-  spaces
-  return $ Sym n
---
-
-node = do
-  nodes <- parens $ many expr
-  return $ case nodes of
-    []      -> Nul
-    (h : t) -> Nod h t
---
-
-expr = true <|> false <|> int <|> null <|> sym <|> node
-
--- optimize :: AST -> AST
--- optimize n@(I32 _) = n
--- optimize s@(Sym _) = s
--- optimize otherwise = otherwise
--- -- optimize (Add a b) = case (optimize a, optimize b) of
--- --   (Imm x, Imm y) -> Imm $ x + y
--- --   (  x  ,   y  ) -> Add x y
--- --
+eval :: AST -> AST
+eval (Nod (Sym fist) param) =
+    if err
+       then Err
+       else fromMaybe Err $ ($ ps') <$> lookup fist preludeFunctions
+  where
+    ps' = fmap eval param
+    err = any (\case Err -> True; _ -> False) ps'
+eval (Nod _ _) = Err
+eval x = x
 
 preludeFunctions :: [(String, [AST] -> AST)]
 preludeFunctions =
-  [ ("+", I32 . sum . (toI <$>))
-  , ("*", I32 . product . (toI <$>))
-  , ("-", I32 . foldr1 (-) . (toI <$>))
-  , ("/", I32 . foldr1 div . (toI <$>))
-  , ("^", \[I32 a, I32 b] -> I32 $ a ^ b)
-  , (">", \[I32 a, I32 b] -> Boo $ a > b)
-  , ("<", \[I32 a, I32 b] -> Boo $ a < b)
-  , ("!", \[Boo b] -> Boo $ not b)
-  , ("list", Lst)
-  , ("size", \[Lst ls] -> I32 $ length ls)
-  , ("reverse", \[Lst ls] -> Lst $ reverse ls)
-  , ("..", \[I32 a, I32 b] -> Lst $ I32 <$> [a .. b])
-  , ("==", \[I32 a, I32 b] -> Boo $ a == b)
-  , (">=", \[I32 a, I32 b] -> Boo $ a >= b)
-  , ("<=", \[I32 a, I32 b] -> Boo $ a <= b)
-  , ("!=", \[I32 a, I32 b] -> Boo $ a /= b)
-  , ("/=", \[I32 a, I32 b] -> Boo $ a /= b)
-  , ("exit", const $ error "Exited Lice REPL.")
-  , ("str-con", Str . join . (toS <$>))
-  , ("if", \l -> case l of
-        [Boo c, a, b] -> if c then a else b
-        [Boo c, a]    -> if c then a else Nul)
+  [ ("+", checkErr (op (+)))
+  , ("*", checkErr (op (*)))
+  , ("-", checkErr (op (-)))
+  , ("/", checkErr (op div))
+  , ("^", \ps -> if length ps == 2 then checkErr (op (^)) ps else Err)
+  , (">", \ps -> if length ps == 2 then checkErr (op2bb (>)) ps else Err)
+  , ("<", \ps -> if length ps == 2 then checkErr (op2bb (<)) ps else Err)
+  , ("!", \ps -> if length ps == 1
+                   then case eval $ head ps of
+                     Boo b -> Boo $ not b
+                     _     -> Err
+                   else Err)
+  , ("list", checkErr Lst)
+  , ("size", checkErr size)
+  , ("reverse", checkErr reverse')
+  , ("..", checkErr range)
+  , ("==", \ps -> if length ps == 2 then checkErr (op2bb (==)) ps else Err)
+  , (">=", \ps -> if length ps == 2 then checkErr (op2bb (>=)) ps else Err)
+  , ("<=", \ps -> if length ps == 2 then checkErr (op2bb (<=)) ps else Err)
+  , ("!=", \ps -> if length ps == 2 then checkErr (op2bb (/=)) ps else Err)
+  , ("if", if')
   ]
-
-  where toI (I32 i) = i
-        toS (I32 i) = show i
-        toS (Sym s) = s
-        toS (Boo b) = show b
-        toS  Nul    = "null"
-        toS (Str s) = s
+  where
+    checkErr f ps = if err then Err else f ps'
+      where
+        ps' = fmap eval ps
+        err = any (\case Err -> True; _ -> False) ps'
+    op f [] = Err
+    op f ps = if any (\case I32 x -> False; _ -> True ) prs
+                then Err
+                else I32 $ foldl1 f ps'
+      where
+        prs = eval <$> ps
+        ps' = (\case I32 v -> v) <$> prs
+    op2bb f [I32 a, I32 b] = Boo $ f a b
+    op2bb _ _              = Err
+    reverse' [Lst x] = Lst $ reverse x
+    reverse' _       = Err
+    range [I32 a, I32 b] = Lst $ I32 <$> [a..b]
+    range _              = Err
+    if' (p : a : b) = case p' of
+        Boo x -> if x then eval a else case b of
+          []  -> Nul
+          [x] -> eval x
+          _   -> Err
+        _     -> Err
+      where
+        p' = eval p
+    if' _             = Err
+    size [Lst ls] = I32 $ length ls
+    size _ = Err
 --
+pretty :: AST -> String
+pretty (I32 xs)    = show xs
+pretty (Nod a b)   = "(" ++ unwords (pretty <$> (a:b)) ++ ")"
+pretty (Sym s)     = s
+pretty Nul         = "null"
+pretty (Boo True)  = "true"
+pretty (Boo False) = "false"
 
-liceParse :: String -> Either String AST
-liceParse = parseCode expr
+lispPretty :: String -> Maybe String
+lispPretty s = case filter ((=="").snd) $ readP_to_S expr $ trimH s of
+  [] -> Nothing
+  xs -> Just $ pretty $ fst $ last xs
 
-licePretty :: String -> Either String String
-licePretty s = licePretty' <$> liceParse s
+lispEval :: String -> Maybe AST
+lispEval s = case filter ((== "") . snd) $ readP_to_S expr $ trimH s of
+  [] -> Nothing
+  xs -> Just $ eval $ fst $ last xs
 
-liceEval :: String -> Either String String
-liceEval s = licePretty' . liceEval' <$> liceParse s
-
-liceEval' :: AST -> AST
-liceEval' (Nod f l) = case f of
-  s@(Sym _)   -> funcInvoke s l
-  n@(Nod _ _) -> liceEval' n `funcInvoke` l
-  others      -> others
-liceEval' others     = others
---
-
-funcInvoke (Sym s) l = case lookup s preludeFunctions of
-  (Just f) -> f $ liceEval' <$> l
-  Nothing  -> Err "Function not found"
---
-
-licePretty' :: AST -> String
-licePretty' (Boo True)  = "true"
-licePretty' (Boo False) = "false"
-licePretty'  Nul        = "null"
-licePretty' (Sym s)     = s
-licePretty' (Str s)     = "\"" ++ s ++ "\""
-licePretty' (I32 n)     = show n
-licePretty' (Err s)     = "{ error:" ++ s ++ " }"
-licePretty' (Lst l)     = tail $ join ((' ' :) . licePretty' <$> l)
-licePretty' (Nod f p)   = "(" ++ licePretty' f ++ join ((' ' :) . licePretty' <$> p) ++ ")"
-
-main :: IO ()
-main = do
-  putStrLn "Welcome to lice.hs."
-  putStrLn "This is a Haskell implementation of a subset of Lice language."
-  putStrLn "see: https://github.com/lice-lang/lice"
-  putStrLn "剑未佩妥，出门已是江湖。千帆过尽，归来仍是少年。\n"
-  forever $ do
-    putStr "|> "
-    code <- getLine
-    putStrLn $ case liceEval code of
-      (Left res) -> res
-      (Right re) -> re
---
+trimH (x : xs) | x `elem` ",\r\n\t " = trimH xs
+               | otherwise = x : xs
