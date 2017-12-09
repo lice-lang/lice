@@ -1,8 +1,7 @@
 package org.lice.util;
 
-import org.lice.runtime.ast.Node;
-
-import java.util.List;
+import org.lice.runtime.LiceFunction;
+import org.lice.runtime.NameError;
 
 /**
  * Created by Glavo on 17-9-22.
@@ -14,4 +13,11 @@ public final class Apply {
 	private Apply() {
 	}
 
+	Object apply(Object fun, Object... args) {
+		if (!(fun instanceof LiceFunction))
+			throw new NameError(fun + " is not callable");
+
+
+		return null;
+	}
 }

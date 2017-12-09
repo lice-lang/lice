@@ -1,13 +1,5 @@
 package org.lice.internal.parser;
 
-import org.junit.Test;
-import org.lice.internal.parser.deprecated.LiceReader;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Glavo on 17-9-21.
@@ -16,6 +8,7 @@ import static org.junit.Assert.*;
  * @since 4.0.0
  */
 public class LiceReaderTest {
+/*
 	private static final String res = "1234567890\nabcdefghij";
 	private static final String spaceRes = "  0  \t\r 21\tasdsa\nds";
 
@@ -118,5 +111,5 @@ public class LiceReaderTest {
 		assertTrue(testReader.closed);
 
 	}
-
+*/
 }

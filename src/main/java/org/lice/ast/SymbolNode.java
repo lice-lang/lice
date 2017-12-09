@@ -1,9 +1,10 @@
-package org.lice.runtime.ast;
+package org.lice.ast;
 
+import org.lice.api.scripting.LiceBindings;
+import org.lice.runtime.NameError;
 import org.lice.runtime.Undefined;
 
 import javax.script.Bindings;
-import javax.script.ScriptContext;
 
 /**
  * Created by Glavo on 17-9-21.
@@ -21,9 +22,11 @@ public class SymbolNode extends Node {
 
 	@Override
 	public Object eval(Bindings bindings) {
-		Object o;
-		o = bindings.getOrDefault(symbol, Undefined.undefined);
+		Object o = LiceBindings.getOrUndefined(bindings, symbol);
 
-		return o;
+		if (o == Undefined.undefined)
+			throw new NameError("name '" + symbol + "' is not defined");
+		else
+			return o;
 	}
 }

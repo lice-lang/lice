@@ -1,4 +1,4 @@
-package org.lice.runtime.ast;
+package org.lice.ast;
 
 import org.lice.runtime.MetaData;
 

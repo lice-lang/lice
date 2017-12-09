@@ -1,6 +1,5 @@
 package org.lice.util;
 
-import org.lice.Lice;
 import org.lice.runtime.LiceFunction;
 
 import javax.script.Bindings;

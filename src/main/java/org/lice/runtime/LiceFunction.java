@@ -1,9 +1,11 @@
 package org.lice.runtime;
 
-import org.lice.runtime.ast.Node;
+import org.lice.ast.Node;
+import org.lice.ast.ValueNode;
+import org.lice.module.LiceModule;
 
-import javax.script.Bindings;
 import javax.script.ScriptContext;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,11 +14,17 @@ import java.util.List;
  * @author Glavo
  * @since 4.0.0
  */
-@FunctionalInterface
-public interface LiceFunction {
-	Object apply(ScriptContext env, List<? extends Node> args);
+public abstract class LiceFunction {
+	private LiceModule module;
 
-	default boolean newScope() {
-		return true;
+	public abstract Object apply(ScriptContext env, List<? extends Node> args);
+
+	public Object apply(ScriptContext env, Object... args) {
+		ArrayList<Node> nodes = new ArrayList<>();
+		for (Object obj : args) {
+			nodes.add(new ValueNode(obj));
+		}
+
+		return apply(env, nodes);
 	}
 }

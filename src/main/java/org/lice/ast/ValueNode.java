@@ -1,7 +1,6 @@
-package org.lice.runtime.ast;
+package org.lice.ast;
 
 import javax.script.Bindings;
-import javax.script.ScriptContext;
 
 /**
  * Created by Glavo on 17-9-21.

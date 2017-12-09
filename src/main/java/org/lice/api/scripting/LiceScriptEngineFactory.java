@@ -5,6 +5,8 @@ import org.lice.Lice;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Created by Glavo on 17-9-21.
@@ -78,12 +80,14 @@ public final class LiceScriptEngineFactory implements ScriptEngineFactory {
 
 	@Override
 	public String getProgram(String... statements) {
-		return null; //TODO
+		return Arrays.stream(statements)
+				.map(it -> "(" + it + ")")
+				.collect(Collectors.joining());
 	}
 
 	@Override
-	public ScriptEngine getScriptEngine() {
-		return null; //TODO
+	public LiceScriptEngine getScriptEngine() {
+		return new LiceScriptEngine();
 	}
 
 	@SafeVarargs
