@@ -53,13 +53,13 @@ class NumberKtTest {
 
 	@Test(timeout = 1000)
 	fun isOctInt() {
-		assertTrue("01011001".isOctInt())
-		assertTrue("-01011001".isOctInt())
-		assertTrue("02738687001".isOctInt())
-		assertTrue("-02738687001".isOctInt())
-		assertFalse("09a010".isOctInt())
-		assertFalse("091010".isOctInt())
-		assertFalse("-091010".isOctInt())
+		assertTrue("0o1011001".isOctInt())
+		assertTrue("-0o1011001".isOctInt())
+		assertTrue("0o2738687001".isOctInt())
+		assertTrue("-0o2738687001".isOctInt())
+		assertFalse("0o9a010".isOctInt())
+		assertFalse("0o91010".isOctInt())
+		assertFalse("-0o91010".isOctInt())
 		assertFalse("2738687001".isOctInt())
 	}
 
