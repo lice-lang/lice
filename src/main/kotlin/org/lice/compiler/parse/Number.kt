@@ -78,9 +78,9 @@ fun String.isBinInt(isNegative: Boolean = false): Boolean {
 fun String.isOctInt(isNegative: Boolean = false): Boolean {
 	if (!isNegative && '-' == this[0]) return substring(1).isOctInt(true)
 	return when {
-		length <= 1 -> false
-		'0' != this[0] -> false
-		else -> (1 until length).all { this[it].isOctalInt() }
+		length <= 2 -> false
+		'0' != this[0] || 'o' != this[1].safeLower() -> false
+		else -> (2 until length).all { this[it].isOctalInt() }
 	}
 }
 
@@ -120,7 +120,7 @@ fun String.toBigDec() = BigDecimal(this.substring(0, length - 1))
 fun String.toOctInt(): Int {
 	if (this[0] == '-') return -substring(1).toBinInt()
 	var ret = 0
-	(1 until length).forEach {
+	(2 until length).forEach {
 		ret = ret shl 3
 		ret += this[it] - '0'
 	}

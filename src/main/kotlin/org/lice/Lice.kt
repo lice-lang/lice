@@ -12,23 +12,16 @@ import org.lice.core.SymbolList
 import org.lice.repl.Main
 import java.io.File
 
-val VERSION: String = "v3.1.1"
+const val VERSION: String = "v3.1.1"
 
 object Lice {
 	@JvmOverloads
 	@JvmStatic
-	fun run(
-			file: File,
-			symbolList: SymbolList = SymbolList()
-	) = Main.interpret(file, symbolList).o
+	fun run(file: File, symbolList: SymbolList = SymbolList()) =
+			Main.interpret(file, symbolList).o
 
 	@JvmOverloads
 	@JvmStatic
-	fun run(
-			code: String,
-			symbolList: SymbolList = SymbolList()
-	) = mapAst(
-			node = buildNode(code),
-			symbolList = symbolList
-	).eval().o
+	fun run(code: String, symbolList: SymbolList = SymbolList()) =
+			mapAst(node = buildNode(code), symbolList = symbolList).eval().o
 }

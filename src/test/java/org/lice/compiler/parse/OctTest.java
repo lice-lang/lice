@@ -19,8 +19,8 @@ public class OctTest {
 	@TestOnly
 	@Test(timeout = 1000)
 	public void toOctTest() {
-		assertEquals(01010, toOctInt("01010"));
-		assertEquals(01267120, toOctInt("01267120"));
-		assertEquals(01100010, toOctInt("01100010"));
+		assertEquals(01010, toOctInt("0o1010"));
+		assertEquals(01267120, toOctInt("0o1267120"));
+		assertEquals(01100010, toOctInt("0o1100010"));
 	}
 }
