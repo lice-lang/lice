@@ -1,7 +1,8 @@
-package org.lice.compiler.parse
+package org.lice.parse
 
 import org.junit.Assert.*
 import org.junit.Test
+import org.lice.parse.*
 import java.math.BigDecimal
 import java.math.BigInteger
 

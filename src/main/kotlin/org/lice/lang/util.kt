@@ -9,21 +9,18 @@
 
 package org.lice.lang
 
-import org.lice.compiler.model.MetaData
-import org.lice.compiler.model.MetaData.Factory.EmptyMetaData
-import org.lice.compiler.util.InterpretException.Factory.typeMisMatch
+import org.lice.model.MetaData
+import org.lice.model.MetaData.Factory.EmptyMetaData
+import org.lice.util.InterpretException.Factory.typeMisMatch
 import java.math.BigDecimal
 import java.math.BigInteger
 
-@SinceKotlin("1.1")
 typealias PlusLikeFunc = (Number, Number, MetaData) -> Number
-@SinceKotlin("1.1")
 typealias MinusLikeFunc = (Number, Number, MetaData, Boolean) -> Number
 
-class NumberOperator(var initial: Number) {
-	var level = getLevel(initial)
-	val result: Number
-		get() = initial
+class NumberOperator(private var initial: Number) {
+	private var level = getLevel(initial)
+	val result: Number get() = initial
 
 	private inline fun plusLikeFunctionsImpl(
 			o: Number,
@@ -53,23 +50,18 @@ class NumberOperator(var initial: Number) {
 		return this
 	}
 
-	@JvmOverloads
 	fun plus(o: Number, meta: MetaData = EmptyMetaData) =
 			plusLikeFunctionsImpl(o, meta, { a, b, c -> plusValue(a, b, c) })
 
-	@JvmOverloads
 	fun minus(o: Number, meta: MetaData = EmptyMetaData) =
 			minusLikeFunctionsImpl(o, meta, { a, b, c, d -> minusValue(a, b, c, d) })
 
-	@JvmOverloads
 	fun times(o: Number, meta: MetaData = EmptyMetaData) =
 			plusLikeFunctionsImpl(o, meta, { a, b, c -> timesValue(a, b, c) })
 
-	@JvmOverloads
 	fun div(o: Number, meta: MetaData = EmptyMetaData) =
 			minusLikeFunctionsImpl(o, meta, { a, b, c, d -> divValue(a, b, c, d) })
 
-	@JvmOverloads
 	fun rem(o: Number, meta: MetaData = EmptyMetaData) =
 			minusLikeFunctionsImpl(o, meta, { a, b, c, d -> remValue(a, b, c, d) })
 
@@ -82,7 +74,7 @@ class NumberOperator(var initial: Number) {
 			else -> compareValue(o1, o2, meta).negative()
 		}
 
-		internal fun Int.negative() = when {
+		private fun Int.negative() = when {
 			this > 0 -> -1
 			this < 0 -> 1
 			else -> 0
@@ -253,7 +245,7 @@ class NumberOperator(var initial: Number) {
 			else -> typeMisMatch("Numberic", lowLevel, meta)
 		}
 
-		internal fun compareValue(
+		private fun compareValue(
 				lowLevel: Number,
 				highLevel: Number,
 				meta: MetaData = EmptyMetaData): Int = when (highLevel) {
@@ -283,7 +275,6 @@ class NumberOperator(var initial: Number) {
 			else -> typeMisMatch("Numberic", lowLevel, meta)
 		}
 
-		@JvmOverloads
 		fun divValue(
 				lowLevel: Number,
 				highLevel: Number,

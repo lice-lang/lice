@@ -1,8 +1,7 @@
 package org.lice.lang
 
-import org.lice.lang.NumberOperator.Leveler.plusValue
 import org.junit.Test
-import org.lice.lang.NumberOperator
+import org.lice.lang.NumberOperator.Leveler.plusValue
 import java.math.BigDecimal
 import java.math.BigInteger
 

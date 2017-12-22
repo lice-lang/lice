@@ -15,7 +15,6 @@ import javax.script.ScriptEngineFactory
 class LiceScriptEngineFactory : ScriptEngineFactory {
 
 	override fun getLanguageVersion(): String = org.lice.VERSION
-
 	override fun getEngineVersion(): String = org.lice.VERSION
 
 	override fun getScriptEngine(): ScriptEngine {

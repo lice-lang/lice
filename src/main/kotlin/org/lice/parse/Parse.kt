@@ -8,10 +8,10 @@
 @file:JvmName("Parse")
 @file:JvmMultifileClass
 
-package org.lice.compiler.parse
+package org.lice.parse
 
-import org.lice.compiler.model.*
-import org.lice.compiler.util.showError
+import org.lice.model.*
+import org.lice.util.ParseException
 import java.util.*
 
 fun buildNode(originalCode: String): StringNode {
@@ -29,27 +29,24 @@ fun buildNode(originalCode: String): StringNode {
 	fun check(index: Int) {
 		if (elementStarted) {
 			elementStarted = false
-			currentNodeStack
-					.peek()
-					.add(StringLeafNode(MetaData(lineNumber), code
-							.substring(startIndex = beginIndex, endIndex = index)
-					))
+			currentNodeStack.peek()
+					.add(StringLeafNode(MetaData(lineNumber), code.substring(startIndex = beginIndex, endIndex = index)))
 		}
 	}
 	code.forEachIndexed { index, c ->
 		if (c == '\n') commentStarted = false
 		if (!commentStarted) when (c) {
-			';', '；' -> if (!quoteStarted) commentStarted = true
-			'(', '（' -> if (!quoteStarted) {
+			';' -> if (!quoteStarted) commentStarted = true
+			'(' -> if (!quoteStarted) {
 				check(index)
 				currentNodeStack.push(StringMiddleNode(MetaData(lineNumber)))
 				++beginIndex
 			}
-			')', '）' -> if (!quoteStarted) {
+			')' -> if (!quoteStarted) {
 				check(index)
 				if (currentNodeStack.size <= 1) {
-					showError("Braces not match at line $lineNumber: Unexpected \')\'.", true)
-					return EmptyStringNode(MetaData(lineNumber))
+					val string = "Braces not match at line $lineNumber: Unexpected \')\'."
+					throw ParseException(string)
 				}
 				val son = if (currentNodeStack.peek().empty) EmptyStringNode(MetaData(lineNumber))
 				else currentNodeStack.peek()
@@ -66,7 +63,7 @@ fun buildNode(originalCode: String): StringNode {
 					commentStarted = false
 				}
 			}
-			'“', '”', '\"' -> if (!quoteStarted) {
+			'\"' -> if (!quoteStarted) {
 				quoteStarted = true
 				lastQuoteIndex = index
 			} else {
@@ -78,7 +75,9 @@ fun buildNode(originalCode: String): StringNode {
 		}
 	}
 	check(code.length - 1)
-	if (currentNodeStack.size > 1)
-		showError("Braces not match at line $lineNumber: Expected \')\'.", true)
+	if (currentNodeStack.size > 1) {
+		val string = "Braces not match at line $lineNumber: Expected \')\'."
+		throw ParseException(string)
+	}
 	return currentNodeStack.peek()
 }

@@ -2,11 +2,10 @@ package org.lice
 
 import org.junit.BeforeClass
 import org.junit.Test
-import org.lice.compiler.parse.createRootNode
-import org.lice.compiler.util.forceRun
-import org.lice.compiler.util.println
 import org.lice.lang.Echoer
-import org.lice.lang.Pair
+import org.lice.lang.Echoer.echo
+import org.lice.parse.createRootNode
+import org.lice.util.forceRun
 import java.io.File
 
 /**
@@ -42,17 +41,9 @@ class StdTest {
 		Echoer.openOutput()
 		Echoer.repl = true
 		Echoer.echo("ass")
-		Echoer.echoln("ass")
-		Echoer.echoErr("ass")
-		Echoer.echolnErr("ass")
+		echo("${"ass"}\n")
 		Echoer.repl = false
 		Echoer.openOutput()
-	}
-
-	@Test
-	fun pair() {
-		Pair(1, 2) anyShouldBe Pair(1, 2)
-		Pair("a", "b").hashCode() anyShouldBe Pair("a", "b").hashCode()
 	}
 
 	@Test(timeout = 1000)
@@ -101,6 +92,18 @@ class StdTest {
 		else println(ls.last())
 	}
 
+	@Test(timeout = 1000)
+	fun test7() {
+		"""
+(extern "java.util.Objects" "equals")
+(equals 1 1)
+""" evalTo true
+		"""
+(extern "java.util.Objects" "equals")
+(equals 1 2)
+""" evalTo false
+	}
+
 	companion object {
 		@JvmStatic
 		fun main(args: Array<String>) {
@@ -131,22 +134,14 @@ class StdTest {
 (alias plus +)
 (print (+ 1 2) "\n")
 
-(new "java.lang.Object")
-
 (type 23)
 
 (-> ass 10)
 
 (str->sym "ass")
-(->chars (sym->str ass))
 
-(print (format "ass %s can", "we") "\n")
-
-(thread|> (sleep 1))
-
-(-> ls (list 1 2 3))
-(size ls)
-(reverse ls)
+(print (format "ass %s can", "we") "
+")
 """)
 				}
 			}

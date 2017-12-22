@@ -7,29 +7,20 @@
 @file:JvmName("Parse")
 @file:JvmMultifileClass
 
-package org.lice.compiler.parse
+package org.lice.parse
 
 import java.math.BigDecimal
 import java.math.BigInteger
 
-//val Char.isDigit: Boolean
-//	get() = this >= '0' && this <= '9'
-
 fun String.isInt(isNegative: Boolean = false): Boolean {
-	if (!isNegative && '-' == this[0]) return substring(1).isInt(true)
-	return isNotEmpty() && fold(true, { res, char ->
+	return if (!isNegative && '-' == this[0]) substring(1).isInt(true) else isNotEmpty() && fold(true) { res, char ->
 		res && char.isDigit()
-	})
+	}
 }
 
-fun Char.isOctalInt() =
-		this in '0'..'8'
+fun Char.isOctalInt() = this in '0'..'8'
 
-fun Char.safeLower() =
-		when (this) {
-			in 'A'..'Z' -> this - ('A' - 'a')
-			else -> this
-		}
+fun Char.safeLower() = if (this in 'A'..'Z') this - ('A' - 'a') else this
 
 fun String.isHexInt(isNegative: Boolean = false): Boolean {
 	if (!isNegative && '-' == this[0]) return substring(1).isHexInt(true)
@@ -90,8 +81,7 @@ fun String.toHexInt(): Int {
 	(2 until length).forEach {
 		ret = ret shl 4
 		val char = this[it].safeLower()
-		ret += if (char.isDigit()) (char - '0')
-		else (char - 'a' + 10)
+		ret += if (char.isDigit()) (char - '0') else (char - 'a' + 10)
 	}
 	return ret
 }

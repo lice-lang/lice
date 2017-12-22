@@ -1,10 +1,10 @@
 package org.lice.api.scripting
 
 import org.lice.core.SymbolList
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
-import java.io.Reader
-import java.io.Writer
+import org.lice.model.Node
+import org.lice.model.ValueNode
+import org.lice.util.cast
+import java.io.*
 import javax.script.Bindings
 import javax.script.ScriptContext
 
@@ -25,8 +25,8 @@ constructor(
 ) : ScriptContext {
 	override fun getReader(): Reader = reader
 
-	override fun setReader(reader: Reader?): Unit {
-		this.reader = reader!!
+	override fun setReader(reader: Reader) {
+		this.reader = reader
 	}
 
 	override fun getWriter(): Writer = writer
@@ -35,47 +35,30 @@ constructor(
 		this.writer = writer!!
 	}
 
-	fun removeAttribute(name: String?): Any =
-			bindings[name]!!.apply {
-				bindings.remove(name)
-			}
-
-	override fun removeAttribute(name: String?, scope: Int): Any =
-			removeAttribute(name)
-
+	fun removeAttribute(name: String) = bindings.removeVariable(name)
+	override fun removeAttribute(name: String, scope: Int) = removeAttribute(name)
 
 	override fun getBindings(scope: Int): Bindings = bindings
 
 	override fun setBindings(bindings: Bindings?, scope: Int) {
-		this.bindings = bindings as SymbolList
+		this.bindings = cast(bindings)
 	}
-
 
 	override fun getErrorWriter(): Writer = errorWriter
 
-
-	override fun setErrorWriter(writer: Writer?) {
-		this.errorWriter = writer!!
+	override fun setErrorWriter(writer: Writer) {
+		this.errorWriter = writer
 	}
 
+	override fun getAttribute(name: String) = (bindings.getVariable(name) as Node).eval()
 
-	override fun getAttribute(name: String?): Any =
-			bindings[name]!!
-
-	fun setAttribute(name: String?, value: Any?) {
-		bindings[name] = value
+	fun setAttribute(name: String, value: Any?) {
+		bindings.defineVariable(name, ValueNode(value))
 	}
 
-	override fun getAttribute(name: String?, scope: Int): Any =
-			getAttribute(name)
+	override fun getAttribute(name: String, scope: Int) = getAttribute(name)
+	override fun setAttribute(name: String, value: Any?, scope: Int) = setAttribute(name, value)
 
-	override fun setAttribute(name: String?, value: Any?, scope: Int) {
-		setAttribute(name, value)
-	}
-
-	override fun getScopes(): MutableList<Int> =
-			throw UnsupportedOperationException()
-
-	override fun getAttributesScope(name: String?): Int =
-			throw UnsupportedOperationException()
+	override fun getScopes(): MutableList<Int> = throw UnsupportedOperationException()
+	override fun getAttributesScope(name: String?): Int = throw UnsupportedOperationException()
 }

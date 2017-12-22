@@ -6,7 +6,6 @@ import org.junit.Test
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
-import org.lice.lang.Pair as LicePair
 
 /**
  * Demos for language feature
@@ -23,8 +22,8 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test1() {
-		"(print \"fuck\")" shouldBe "fuck"
-		""""lover~lover~fucker~fucker~"""" shouldBe "lover~lover~fucker~fucker~"
+		"(print \"fuck\")" evalTo null
+		""""lover~lover~fucker~fucker~"""" evalTo "lover~lover~fucker~fucker~"
 	}
 
 	/**
@@ -32,10 +31,10 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test2() {
-		"(print 233666)" shouldBe 233666
-		"233666" shouldBe 233666
-		"233666.0" shouldBe 233666F
-		"233666.0000000000000000000000000000000" shouldBe 233666.0
+		"(print 233666)" evalTo null
+		"233666" evalTo 233666
+		"233666.0" evalTo 233666F
+		"233666.0000000000000000000000000000000" evalTo 233666.0
 		"true".shouldBeTrue()
 		"false".shouldBeFalse()
 		"null".shouldBeNull()
@@ -46,14 +45,12 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test3() {
-		"(+ 1 (+ 1 2 3))" shouldBe 7
-		"(- 1 (+ 1 2 3))" shouldBe -5
-		"(* 4 (+ 2 3))" shouldBe 20
-		"+" shouldBe 0
-		"-" shouldBe 0
-		"(+)" shouldBe 0
-		"(-)" shouldBe 0
-		"(* 4 (+ 2 3))" shouldBe 20
+		"(+ 1 (+ 1 2 3))" evalTo 7
+		"(- 1 (+ 1 2 3))" evalTo -5
+		"(* 4 (+ 2 3))" evalTo 20
+		"(+)" evalTo 0
+		"(-)" evalTo 0
+		"(* 4 (+ 2 3))" evalTo 20
 	}
 
 	/**
@@ -61,12 +58,12 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test4() {
-		"(+ 10000000000000000000000000000000N 233)" shouldBe BigInteger("10000000000000000000000000000233")
-		"(- 10000000000000000000000000000000N 233)" shouldBe BigInteger("9999999999999999999999999999767")
-		"(* 10000000000000000000000000000000N 233)" shouldBe BigInteger("2330000000000000000000000000000000")
-		"(/ 10000000000000000000000000000000N 233)" shouldBe BigInteger("42918454935622317596566523605")
-		"(% 10000000000000000000000000000000N 233)" shouldBe BigInteger("35")
-		"0xDBEN" shouldBe BigInteger(0xDBE.toString())
+		"(+ 10000000000000000000000000000000N 233)" evalTo BigInteger("10000000000000000000000000000233")
+		"(- 10000000000000000000000000000000N 233)" evalTo BigInteger("9999999999999999999999999999767")
+		"(* 10000000000000000000000000000000N 233)" evalTo BigInteger("2330000000000000000000000000000000")
+		"(/ 10000000000000000000000000000000N 233)" evalTo BigInteger("42918454935622317596566523605")
+		"(% 10000000000000000000000000000000N 233)" evalTo BigInteger("35")
+		"0xDBEN" evalTo BigInteger(0xDBE.toString())
 	}
 
 	/**
@@ -74,16 +71,16 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test5() {
-		"(+ 10000000000000000000000000000000N 0.233)" shouldBe BigDecimal("10000000000000000000000000000000.233")
-		"(+ 100000000000000000000000000M 1)" shouldBe BigDecimal("100000000000000000000000001")
-		"(- 10000000000000000000000000000000N 0.233)" shouldBe BigDecimal("9999999999999999999999999999999.767")
-		"(- 100000000000000000000000000M 1)" shouldBe BigDecimal("99999999999999999999999999")
-		"(* 10000000000000000000000000000000N 0.233)" shouldBe BigDecimal("2330000000000000000000000000000.000")
-		"(* 100000000000000000000000000M 1)" shouldBe BigDecimal("100000000000000000000000000")
-		"(/ 10000000000000000000000000000000N 0.233)" shouldBe BigDecimal("42918454935622317596566523605150")
-		"(/ 100000000000000000000000000M 1)" shouldBe BigDecimal("100000000000000000000000000")
-		"(% 10000000000000000000000000000000N 0.233)" shouldBe BigDecimal("0.05")
-		"(% 100000000000000000000000000M 1)" shouldBe BigDecimal("0")
+		"(+ 10000000000000000000000000000000N 0.233)" evalTo BigDecimal("10000000000000000000000000000000.233")
+		"(+ 100000000000000000000000000M 1)" evalTo BigDecimal("100000000000000000000000001")
+		"(- 10000000000000000000000000000000N 0.233)" evalTo BigDecimal("9999999999999999999999999999999.767")
+		"(- 100000000000000000000000000M 1)" evalTo BigDecimal("99999999999999999999999999")
+		"(* 10000000000000000000000000000000N 0.233)" evalTo BigDecimal("2330000000000000000000000000000.000")
+		"(* 100000000000000000000000000M 1)" evalTo BigDecimal("100000000000000000000000000")
+		"(/ 10000000000000000000000000000000N 0.233)" evalTo BigDecimal("42918454935622317596566523605150")
+		"(/ 100000000000000000000000000M 1)" evalTo BigDecimal("100000000000000000000000000")
+		"(% 10000000000000000000000000000000N 0.233)" evalTo BigDecimal("0.05")
+		"(% 100000000000000000000000000M 1)" evalTo BigDecimal("0")
 	}
 
 	/**
@@ -102,7 +99,10 @@ class FeatureTest {
 	fun test7() {
 		"""
 (str-con "boy" "Next" "Door")
-""" shouldBe "boyNextDoor"
+""" evalTo "boyNextDoor"
+		"""
+(format "%s%s%s" "boy" "Next" "Door")
+""" evalTo "boyNextDoor"
 	}
 
 	/**
@@ -112,7 +112,7 @@ class FeatureTest {
 	fun test8() {
 		"""
 (str->int "0xDBE")
-""" shouldBe 0xDBE
+""" evalTo 0xDBE
 	}
 
 	/**
@@ -122,7 +122,7 @@ class FeatureTest {
 	fun test9() {
 		"""
 (eval "(+ 1 1)")
-""" shouldBe 2
+""" evalTo 2
 	}
 
 	/**
@@ -130,7 +130,7 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test10() {
-		"(|> (+ 1 1) (+ 2 2))" shouldBe 4
+		"(|> (+ 1 1) (+ 2 2))" evalTo 4
 	}
 
 	/**
@@ -151,7 +151,7 @@ class FeatureTest {
 (-> ice1000 233)
 
 ice1000
-""" shouldBe 233
+""" evalTo 233
 	}
 
 	/**
@@ -162,14 +162,14 @@ ice1000
 		"""
 (defexpr ice1000 233)
 
-ice1000
-""" shouldBe 233
+(ice1000)
+""" evalTo 233
 		//language=TEXT
 		"""
 (defexpr ice1000 a a)
 
 (ice1000 233)
-""" shouldBe 233
+""" evalTo 233
 	}
 
 	/**
@@ -182,17 +182,17 @@ ice1000
 (def gcd a b (if (=== b 0) a (gcd b (% a b))))
 
 (gcd 15 20)
-""" shouldBe 5
+""" evalTo 5
 		//language=TEXT
 		"""
 (def in? ls a (> (count ls a) 0))
 
-(def fib n (if (in? (list 0 1) n)
+(def fib n (if (> 2 n)
                1
                (+ (fib (- n 1)) (fib (- n 2)))))
 
 (fib 10)
-""" shouldBe 89
+""" evalTo 89
 	}
 
 	/**
@@ -200,8 +200,8 @@ ice1000
 	 */
 	@Test(timeout = 1000)
 	fun test15() {
-		"(if (>= 9 8 7 7 6 6 6 5 4 3 1 -1) 1 (+ 1 1))" shouldBe 1
-		"(if (>= 9 8 7 7 6 6 6 5 8 3 1 -1) 1 (+ 1 1))" shouldBe 2
+		"(if (>= 9 8 7 7 6 6 6 5 4 3 1 -1) 1 (+ 1 1))" evalTo 1
+		"(if (>= 9 8 7 7 6 6 6 5 8 3 1 -1) 1 (+ 1 1))" evalTo 2
 	}
 
 	/**
@@ -212,12 +212,12 @@ ice1000
 		"""(when
 (!== 1 1), 233
 (=== 1 1), 666
-)""" shouldBe 666
+)""" evalTo 666
 		"""(when
 (!== 1 1), 233
 (=== 2 1), 666
 123
-)""" shouldBe 123
+)""" evalTo 123
 	}
 
 	/**
@@ -238,7 +238,7 @@ ice1000
   ret))
 
 (exp-mod 23 2 26)
-""" shouldBe 9
+""" evalTo 9
 	}
 
 	/**
@@ -254,7 +254,7 @@ ice1000
 (fuck (-> lover 666) ())
 
 lover
-""" shouldBe 233
+""" evalTo 233
 		"""
 (def fuck a b b)
 
@@ -263,7 +263,7 @@ lover
 (fuck (-> lover 666) ())
 
 lover
-""" shouldBe 666
+""" evalTo 666
 		//language=TEXT
 		"""
 (deflazy fuck a b (|> b b))
@@ -271,7 +271,7 @@ lover
 (-> lover 233)
 
 (fuck () (-> lover (+ lover 1)))
-""" shouldBe 233 + 1
+""" evalTo 233 + 1
 	}
 
 	/**
@@ -281,20 +281,8 @@ lover
 	fun test19() {
 		"""
 (-> ice1k 233)
-
-(<-> ice1k 666)
 ice1k
-""" shouldBe 233
-		"""
-(-> ice1k null)
-
-(<-> ice1k 666)
-ice1k
-""".shouldBeNull()
-		"""
-(<-> ice1k 666)
-ice1k
-""" shouldBe 666
+""" evalTo 233
 	}
 
 	/**
@@ -308,20 +296,6 @@ ice1k
 	}
 
 	/**
-	 * escape
-	 */
-	@Test(timeout = 1000)
-	fun test21() {
-		""""\n"""" shouldBe "\n"
-		""""\r"""" shouldBe "\r"
-		""""\b"""" shouldBe "\b"
-		""""\t"""" shouldBe "\t"
-		""""\'"""" shouldBe "\'"
-		""""\\"""" shouldBe "\\"
-// FIXME assertEquals("\"", Lice.run(""""\"""""))
-	}
-
-	/**
 	 * trigonometric
 	 */
 	@Test(timeout = 1000)
@@ -331,32 +305,14 @@ ice1k
 	}
 
 	/**
-	 * head
-	 */
-	@Test(timeout = 1000)
-	fun test23() {
-		"([| (list 233 344 455 566))" shouldBe 233
-		"([| ([|] 233 344 455 566))" shouldBe 233
-	}
-
-	/**
-	 * count
-	 */
-	@Test(timeout = 1000)
-	fun test24() {
-		"(count (list 233 233 455 566) 233)" shouldBe 2
-		"(count (.. 233 234) 1)" shouldBe 0
-	}
-
-	/**
 	 * nested expression
 	 */
 	@Test(timeout = 1000)
 	fun test25() {
 		//language=TEXT
-		"((((2))))" shouldBe 2
+		"((((2))))" evalTo 2
 		//language=TEXT
-		"((if true 0 1))" shouldBe 0
+		"(if true 0 1)" evalTo 0
 	}
 
 	/**
@@ -365,9 +321,9 @@ ice1k
 	@Test(timeout = 1000)
 	fun test26() {
 		//language=TEXT
-		"((if false * /) 11 11)" shouldBe 1
+		"((if false * /) 11 11)" evalTo 1
 		//language=TEXT
-		"((if true * /) 11 11)" shouldBe 121
+		"((if true * /) 11 11)" evalTo 121
 	}
 
 	/**
@@ -380,11 +336,8 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test27() {
-		"((if true + -) 11 11)" shouldBe 22
-		"(((if true + -)) 11 11)" shouldBe 22
-		"+" shouldBe 0
-		"-" shouldBe 0
-		"*" shouldBe 1
+		"((if true + -) 11 11)" evalTo 22
+		"((if true + -) 11 11)" evalTo 22
 	}
 
 	/**
@@ -394,9 +347,9 @@ ice1k
 	@Test(timeout = 1000)
 	fun test28() {
 		//language=TEXT
-		"((lambda a b (+ a b)) 120 230)" shouldBe 120 + 230
-		"((lambda a b (* a b)) 120 230)" shouldBe 120 * 230
-		"((lambda a (+ a a)) 233)" shouldBe 466
+		"((lambda a b (+ a b)) 120 230)" evalTo 120 + 230
+		"((lambda a b (* a b)) 120 230)" evalTo 120 * 230
+		"((lambda a (+ a a)) 233)" evalTo 466
 	}
 
 	/**
@@ -423,7 +376,7 @@ ice1k
       233))
 
 side-effect
-""" shouldBe 12
+""" evalTo 12
 		//language=TEXT
 		"""
 (-> side-effect 10)
@@ -433,16 +386,7 @@ side-effect
       233))
 
 side-effect
-""" shouldBe 11
-	}
-
-	/**
-	 * linked list
-	 */
-	@Test(timeout = 1000)
-	fun test30() {
-		"""([| ([|] 233 666 555 "Fuck you"))""" shouldBe 233
-		"""([| (|] ([|] 233 666 555 "Fuck you")))""" shouldBe 666
+""" evalTo 11
 	}
 
 	/**
@@ -453,24 +397,16 @@ side-effect
 		"""
 (defexpr fuck op (op true 1 2))
 (fuck if)
-""" shouldBe 1
+""" evalTo 1
 		"""
 (deflazy unless condition a b (if condition b a))
 (defexpr fuck op (op true 1 2))
 (fuck unless)
-""" shouldBe 2
+""" evalTo 2
 		"""
 (defexpr fuck op (op 1 2 3 4))
 (fuck +)
-""" shouldBe 10
-		"""
-(defexpr fuck op (op 1 2 3 4))
-(fuck list)
-""" shouldBe listOf(1, 2, 3, 4)
-		"""
-(defexpr fuck op (op 1 2 3 4))
-(fuck [|])
-""" shouldBe LicePair(1, LicePair(2, LicePair(3, 4)))
+""" evalTo 10
 	}
 
 	/**
@@ -483,15 +419,15 @@ side-effect
 	 */
 	@Test(timeout = 1000)
 	fun test32() {
-		"((expr op (op 1 2)) +)" shouldBe 3
-		"((lazy op (op 1 2)) +)" shouldBe 0
-		"((lambda op (op 1 2)) +)" shouldBe 0
+		"((expr op (op 1 2)) +)" evalTo 3
+		"((lazy op (op 1 2)) +)" evalTo 3
+		"((lambda op (op 1 2)) +)" evalTo 3
 		//language=TEXT
 		"""
 (def fun a b
   (+ (* a a) (* b b)))
-((expr op (op 3 4)) fun)
-""" shouldBe 25
+((lambda op (op 3 4)) fun)
+""" evalTo 25
 	}
 
 	/**
@@ -501,29 +437,16 @@ side-effect
 	 */
 	@Test(timeout = 1000)
 	fun test33() {
-		"((expr op (op 1 2)) (lambda a b (+ a b)))" shouldBe 3
-		"((expr op (op 3 4)) (lambda a b (+ (* a a) (* b b))))" shouldBe 25
-		//language=TEXT
-		"""
-(defexpr fold ls init op
- (for-each index-var ls
-   (-> init (op init index-var))))
-
-(fold (.. 1 4) 0 +)
-""" shouldBe 10
+		"((lambda op (op 1 2)) (lambda a b (+ a b)))" evalTo 3
+		"((lambda op (op 3 4)) (lambda a b (+ (* a a) (* b b))))" evalTo 25
 	}
 
 	@Test
 	fun test34() {
-		"(->chars (sym->str ass))" shouldBe "ass".toCharArray().toList()
-		"(split \"ass we can\" \" \")" shouldBe "ass we can".split(" ")
-		"(format \"Hello, %s!\", 233)" shouldBe "Hello, 233!"
-		"(int->hex 12)" shouldBe "0x${12.toString(16)}"
-		"(int->oct 12)" shouldBe "0${12.toString(8)}"
-		"(int->bin 12)" shouldBe "0b${12.toString(2)}"
-		"(sqrt 16)" shouldBe 4.0
-		"(cbrt 64)" shouldBe 4.0
-		Lice.run("(sinh 1)")
-		Lice.run("(cosh 1)")
+		"(format \"Hello, %s!\", 233)" evalTo "Hello, 233!"
+		"(int->hex 12)" evalTo "0x${12.toString(16)}"
+		"(int->oct 12)" evalTo "0${12.toString(8)}"
+		"(int->bin 12)" evalTo "0b${12.toString(2)}"
+		"(sqrt 16)" evalTo 4.0
 	}
 }

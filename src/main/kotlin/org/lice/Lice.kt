@@ -6,22 +6,20 @@
  */
 package org.lice
 
-import org.lice.compiler.parse.buildNode
-import org.lice.compiler.parse.mapAst
+import org.lice.parse.buildNode
+import org.lice.parse.mapAst
 import org.lice.core.SymbolList
 import org.lice.repl.Main
 import java.io.File
-
-const val VERSION: String = "v3.1.1"
 
 object Lice {
 	@JvmOverloads
 	@JvmStatic
 	fun run(file: File, symbolList: SymbolList = SymbolList()) =
-			Main.interpret(file, symbolList).o
+			Main.interpret(file, symbolList)
 
 	@JvmOverloads
 	@JvmStatic
 	fun run(code: String, symbolList: SymbolList = SymbolList()) =
-			mapAst(node = buildNode(code), symbolList = symbolList).eval().o
+			mapAst(node = buildNode(code), symbolList = symbolList).eval()
 }
