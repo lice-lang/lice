@@ -2,6 +2,7 @@ package org.lice.core
 
 import org.lice.model.*
 import org.lice.util.*
+import org.lice.util.InterpretException.Factory.tooFewArgument
 
 @Suppress("unused")
 /**
@@ -17,6 +18,20 @@ class FunctionDefinedMangledHolder(val symbolList: SymbolList) {
 	fun undef(metaData: MetaData, ls: List<Node>): Node {
 		val a = (ls.first() as? SymbolNode ?: InterpretException.notSymbol(metaData)).name
 		return ValueNode(null != symbolList.removeVariable(a), metaData)
+	}
+
+	fun `for-each`(metaData: MetaData, ls: List<Node>): Node {
+		if (ls.size < 3) tooFewArgument(3, ls.size, metaData)
+		val i = (ls.first() as SymbolNode).name
+		val a = ls[1].eval()
+		return if (a is Iterable<*>) {
+			var ret: Any? = null
+			a.forEach {
+				symbolList.defineVariable(i, ValueNode(it, metaData))
+				ret = ls[2].eval()
+			}
+			ValueNode(ret, metaData)
+		} else InterpretException.typeMisMatch("List", a, metaData)
 	}
 
 	fun alias(meta: MetaData, ls: List<Node>): Node {
@@ -47,14 +62,14 @@ class FunctionDefinedMangledHolder(val symbolList: SymbolList) {
 	}
 
 	fun `-$`(metaData: MetaData, ls: List<Node>): Node {
-		if (ls.size < 2) InterpretException.tooFewArgument(2, ls.size, metaData)
+		if (ls.size < 2) tooFewArgument(2, ls.size, metaData)
 		symbolList.defineVariable(cast<SymbolNode>(ls.first()).name, ValueNode(ls[1].eval()))
 		return ls.first()
 	}
 
 	fun `if`(metaData: MetaData, ls: List<Node>): Node {
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size, metaData)
+			tooFewArgument(2, ls.size, metaData)
 		val a = ls.first().eval()
 		val condition = a.booleanValue()
 		return when {
@@ -75,7 +90,7 @@ class FunctionDefinedMangledHolder(val symbolList: SymbolList) {
 
 	fun `while`(metaData: MetaData, ls: List<Node>): Node {
 		if (ls.size < 2)
-			InterpretException.tooFewArgument(2, ls.size, metaData)
+			tooFewArgument(2, ls.size, metaData)
 		var a = ls.first().eval()
 		var ret: Node = EmptyNode(metaData)
 		while (a.booleanValue()) {

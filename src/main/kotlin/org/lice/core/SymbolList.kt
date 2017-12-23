@@ -119,6 +119,8 @@ constructor(init: Boolean = true) : AbstractBindings() {
 			provideFunctionWithMeta(method.name
 					.replace('$', '>')
 					.replace('&', '<')
+					.replace('{', '[')
+					.replace('}', ']')
 					.replace('_', '/')) { meta, list -> method.invoke(mangledHolder, meta, list) }
 		}
 	}

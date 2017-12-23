@@ -27,8 +27,8 @@ class FunctionHolders(val symbolList: SymbolList) {
 	fun `^`(list: List<Any?>) = list.map { cast<Number>(it).toInt() }.reduce { last, self -> last xor self }
 	fun `~`(it: List<Any?>) = (it.first() as Number).toInt().inv()
 	fun `str-con`(it: List<Any?>) = it.joinToString(transform = Any?::toString, separator = "")
-	private val liceScanner = Scanner(System.`in`)
 
+	private val liceScanner = Scanner(System.`in`)
 	fun println(ls: List<Any?>): Any? {
 		ls.forEach { Echoer.echo(it) }
 		Echoer.echo("\n")
@@ -42,4 +42,19 @@ class FunctionHolders(val symbolList: SymbolList) {
 	fun getTokens(ls: List<Any?>) = (1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.next() }
 	fun getBigInts(ls: List<Any?>) = (1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextBigInteger() }
 	fun getBigDecs(ls: List<Any?>) = (1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextBigDecimal() }
+
+	fun list(ls: List<Any?>) = ls
+	fun size(it: List<Any?>) = (it.first() as? Iterable<*>)?.count() ?: -1
+	fun reverse(ls: List<Any?>) = (ls.first() as? Iterable<*>)?.reversed()
+	fun split(ls: List<Any?>): List<String> {
+		val str = ls.first()
+		val regex = ls[1]
+		return str.toString().split(regex.toString()).toList()
+	}
+
+	fun count(ls: List<Any?>): Int {
+		val e = ls[1]
+		return (ls.first() as? Iterable<*>)?.count { it == e } ?: -1
+	}
+
 }

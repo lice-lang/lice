@@ -11,6 +11,9 @@ import org.lice.util.cast
  * `$` in the function names will be replaced with `>`,
  * `&` in the function names will be replaced with `<`,
  * `_` in the function names will be replaced with `/`.
+ * `#` in the function names will be replaced with `.`.
+ * `{` in the function names will be replaced with `[`.
+ * `}` in the function names will be replaced with `]`.
  * @author ice1000
  */
 class FunctionMangledHolder(val symbolList: SymbolList) {
@@ -64,4 +67,48 @@ class FunctionMangledHolder(val symbolList: SymbolList) {
 		return if (a is Number) "0${Integer.toOctalString(a.toInt())}"
 		else InterpretException.typeMisMatch("Int", a, ln)
 	}
+
+	fun `{|}`(ls: List<Any?>): Any? {
+		return ls.reduceRight { value, pairs: Any? ->
+			Pair(value, pairs)
+		}
+	}
+
+	fun `{|`(ls: List<Any?>): Any? {
+		val a = ls.first()
+		return when (a) {
+			is Pair<*, *> -> a.first
+			is Collection<*> -> a.first()
+			else -> null
+		}
+	}
+
+	fun `|}`(ls: List<Any?>): Any? {
+		val a = ls.first()
+		return when (a) {
+			is Pair<*, *> -> a.second
+			is Iterable<*> -> a.drop(1)
+			else -> null
+		}
+	}
+
+	fun `##`(metaData: MetaData, ls: List<Any?>): List<Int> {
+		if (ls.size < 2) InterpretException.tooFewArgument(2, ls.size, metaData)
+		val a = ls.first()
+		val b = ls[1]
+		return when {
+			a is Number && b is Number -> {
+				val begin = a.toInt()
+				val end = b.toInt()
+				if (begin <= end) (begin..end).toList()
+				else (end..begin).reversed().toList()
+			}
+			else -> InterpretException.typeMisMatch("Number", a as? Number ?: b, metaData)
+		}
+	}
+
+	fun `-$chars`(it: List<Any?>) = it.fold(StringBuilder(it.size)) { sb, value ->
+		sb.append(value.toString())
+	}.toString().toCharArray().toList()
+
 }
