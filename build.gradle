@@ -31,14 +31,14 @@ sourceSets {
 }
 
 configurations {
-	artifact
+	library
 }
 
 dependencies {
 	compile group: 'org.jetbrains', name: 'annotations', version: '15.0'
 	compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 
-	configurations.compile.extendsFrom(configurations.artifact)
+	configurations.compile.extendsFrom(configurations.library)
 	testCompile group: 'junit', name: 'junit', version: '4.12'
 	testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 }
@@ -52,10 +52,26 @@ jar {
 }
 
 task fatJar(type: Jar) {
+	classifier = 'all'
+	description 'Assembles a jar archive containing the main classes and all the dependencies.'
+	group 'build'
 	baseName = project.name + '-all'
 	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 	manifest { attributes 'Main-Class': 'org.lice.repl.Main' }
 	with jar
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	description 'Assembles a jar archive containing the source code of this project.'
+	group 'build'
+	from sourceSets.main.allSource
+}
+
+artifacts {
+	archives jar
+	archives fatJar
+	archives sourcesJar
 }
 
 jacocoTestReport {
