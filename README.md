@@ -46,8 +46,8 @@ See [FeatureTest](src/test/kotlin/org/lice/FeatureTest.kt) to learn more about t
 ; invoke the function defined above
 (fold (.. 1 4) 0 +)
 
-; passing a call-by-value lambda to a call-by-name lambda
-((expr op (op 3 4)) (lambda a b (+ (* a a) (* b b))))
+; passing a call-by-value lambda to a call-by-value lambda
+((lambda op (op 3 4)) (lambda a b (+ (* a a) (* b b))))
 
 ; to define a call-by-need lambda, use `lazy`.
 ```
@@ -59,7 +59,7 @@ import javax.script.*;
 public class LiceScriptEngineTest {
     public static void main() throws Exception {
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("lice");
-        engine.eval("(def x 10)");
+        engine.eval("(-> x 10)");
         engine.eval("(print x)");
     }
 }
@@ -78,7 +78,7 @@ allprojects {
 }
 
 dependencies {
-  compile 'com.github.lice-lang:lice:v3.1.2'
+  compile 'com.github.lice-lang:lice:v3.2.0'
 }
 ```
 
@@ -87,7 +87,7 @@ If you use Scala, you can add it to your sbt dependency, by adding the lines bel
 ```sbtshell
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.lice-lang" % "lice" % "v3.1.2"
+libraryDependencies += "com.github.lice-lang" % "lice" % "v3.2.0"
 ```
 
 And if you're a Clojure developer, why not try to build it with leiningen?
@@ -95,7 +95,7 @@ And if you're a Clojure developer, why not try to build it with leiningen?
 ```leiningen
 :repositories [["jitpack" "https://jitpack.io"]]
 
-:dependencies [[com.github.lice-lang/lice "v3.1.2"]]
+:dependencies [[com.github.lice-lang/lice "v3.2.0"]]
 ```
 
 # Contributing
