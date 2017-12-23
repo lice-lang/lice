@@ -24,41 +24,34 @@ constructor(
 		private var errorWriter: Writer = OutputStreamWriter(System.err)
 ) : ScriptContext {
 	override fun getReader(): Reader = reader
-
 	override fun setReader(reader: Reader) {
 		this.reader = reader
 	}
 
 	override fun getWriter(): Writer = writer
-
-	override fun setWriter(writer: Writer?) {
-		this.writer = writer!!
+	override fun setWriter(writer: Writer) {
+		this.writer = writer
 	}
 
 	fun removeAttribute(name: String) = bindings.removeVariable(name)
 	override fun removeAttribute(name: String, scope: Int) = removeAttribute(name)
-
 	override fun getBindings(scope: Int): Bindings = bindings
-
-	override fun setBindings(bindings: Bindings?, scope: Int) {
+	override fun setBindings(bindings: Bindings, scope: Int) {
 		this.bindings = cast(bindings)
 	}
 
 	override fun getErrorWriter(): Writer = errorWriter
-
 	override fun setErrorWriter(writer: Writer) {
 		this.errorWriter = writer
 	}
 
 	override fun getAttribute(name: String) = (bindings.getVariable(name) as Node).eval()
-
 	fun setAttribute(name: String, value: Any?) {
 		bindings.defineVariable(name, ValueNode(value))
 	}
 
 	override fun getAttribute(name: String, scope: Int) = getAttribute(name)
 	override fun setAttribute(name: String, value: Any?, scope: Int) = setAttribute(name, value)
-
 	override fun getScopes(): MutableList<Int> = throw UnsupportedOperationException()
 	override fun getAttributesScope(name: String?): Int = throw UnsupportedOperationException()
 }

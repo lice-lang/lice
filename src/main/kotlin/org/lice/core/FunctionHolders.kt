@@ -6,6 +6,7 @@ import org.lice.lang.Echoer
 import org.lice.parse.*
 import org.lice.util.cast
 import java.io.File
+import java.util.*
 
 class FunctionHolders(val symbolList: SymbolList) {
 	fun `===`(it: List<Any?>) = (1 until it.size).all { i -> it[i] == it[i - 1] }
@@ -26,4 +27,19 @@ class FunctionHolders(val symbolList: SymbolList) {
 	fun `^`(list: List<Any?>) = list.map { cast<Number>(it).toInt() }.reduce { last, self -> last xor self }
 	fun `~`(it: List<Any?>) = (it.first() as Number).toInt().inv()
 	fun `str-con`(it: List<Any?>) = it.joinToString(transform = Any?::toString, separator = "")
+	private val liceScanner = Scanner(System.`in`)
+
+	fun println(ls: List<Any?>): Any? {
+		ls.forEach { Echoer.echo(it) }
+		Echoer.echo("\n")
+		return if (ls.isNotEmpty()) ls.last() else null
+	}
+
+	fun getInts(ls: List<Any?>) = (1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextInt() }
+	fun getFloats(ls: List<Any?>) = (1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextFloat() }
+	fun getDoubles(ls: List<Any?>) = (1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextDouble() }
+	fun getLines(ls: List<Any?>) = (1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextLine() }
+	fun getTokens(ls: List<Any?>) = (1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.next() }
+	fun getBigInts(ls: List<Any?>) = (1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextBigInteger() }
+	fun getBigDecs(ls: List<Any?>) = (1..(ls.first() ?: 1).toString().toInt()).map { liceScanner.nextBigDecimal() }
 }
