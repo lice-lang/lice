@@ -55,7 +55,6 @@ task fatJar(type: Jar) {
 	classifier = 'all'
 	description 'Assembles a jar archive containing the main classes and all the dependencies.'
 	group 'build'
-	baseName = project.name + '-all'
 	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 	manifest { attributes 'Main-Class': 'org.lice.repl.Main' }
 	with jar
