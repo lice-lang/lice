@@ -120,10 +120,26 @@ constructor(init: Boolean = true) : AbstractBindings() {
 		}
 	}
 
+	/**
+	 * You should pass an object that has some methods.
+	 * The methods must be of this signature:
+	 * <code>
+	 * (MetaData, List<Object>) -> Object
+	 * </code>
+	 * @param any the object mentioned above
+	 */
 	fun bindMethodsWithMetaOf(any: Any) = any.javaClass.declaredMethods.forEach { method ->
 		provideFunctionWithMeta(method.name) { meta, list -> runReflection { method.invoke(any, meta, list) } }
 	}
 
+	/**
+	 * You should pass an object that has some methods.
+	 * The methods must be of this signature:
+	 * <code>
+	 * (List<Object>) -> Object
+	 * </code>
+	 * @param any the object mentioned above
+	 */
 	fun bindMethodsOf(any: Any) = any.javaClass.declaredMethods.forEach { method ->
 		provideFunction(method.name) { list -> runReflection { method.invoke(any, list) } }
 	}
