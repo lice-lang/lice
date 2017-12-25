@@ -2,8 +2,7 @@ package org.lice.core
 
 import org.lice.lang.NumberOperator
 import org.lice.model.MetaData
-import org.lice.util.InterpretException
-import org.lice.util.cast
+import org.lice.util.*
 import java.lang.reflect.Modifier
 
 @Suppress("unused")
@@ -29,9 +28,7 @@ class FunctionWithMetaHolders(val symbolList: SymbolList) {
 		val method = Class.forName(clazz).declaredMethods
 				.firstOrNull { Modifier.isStatic(it.modifiers) && it.name == name }
 				?: throw UnsatisfiedLinkError("Method $name not found for class $clazz\nat line: ${meta.lineNumber}")
-		symbolList.provideFunction(name) {
-			method.invoke(null, *it.toTypedArray())
-		}
+		symbolList.provideFunction(name) { runReflection { method.invoke(null, *it.toTypedArray()) } }
 		return name
 	}
 
