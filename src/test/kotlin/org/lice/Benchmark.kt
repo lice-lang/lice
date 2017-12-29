@@ -81,7 +81,7 @@ $core))
 
 	val lice3 = mapAst(node = buildNode(code3))
 	val lice = mapAst(node = buildNode(code))
-	val lice2 = mapAst(node = buildNode(code2), symbolList = SymbolList.with {
+	val lice2 = mapAst(node = buildNode(code2), symbolList = SymbolList().apply {
 		provideFunction("code") { java() }
 	})
 

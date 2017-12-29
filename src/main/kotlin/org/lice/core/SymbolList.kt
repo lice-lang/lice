@@ -176,12 +176,6 @@ constructor(init: Boolean = true) : AbstractBindings() {
 	fun extractLiceVariable(name: String): Any? = (getVariable(name) as Node).eval()
 
 	companion object {
-		@JvmStatic
-		fun with(init: Consumer<SymbolList>) = SymbolList().also { init.accept(it) }
-
-		@JvmStatic
-		fun with(init: SymbolList.() -> Unit) = SymbolList().also { init(it) }
-
 		val pathSeperator: String = System.getProperty("path.separator")
 		val classPath: String = System.getProperty("java.class.path")
 
