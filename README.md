@@ -29,6 +29,10 @@ for a interpreted language.
 
 See [FeatureTest](src/test/kotlin/org/lice/FeatureTest.kt) to learn more about the language's features.
 
+Also, as the main repo for the Lice language, this repo will not be updated very frequently.  
+Instead, I do language feature experiments in [The tiny version of Lice](https://github.com/lice-lang/lice-tiny), which is more actively updated and not guarenteed be backward capable.  
+Once a feature is finished and tested, and not considered harmful, I'll copy the codes here and publish releases.
+
 ## It looks like
 
 ```lisp
@@ -120,7 +124,13 @@ Lice has handy APIs for interacting with Java.
 This project provides handy APIs for running Lice codes from Java.
 
 ```java
+// Running Lice
 System.out.println(Lice.run("(+ 1 1)")); // prints 2
-
 System.out.println(Lice.run(new File("example.lice"))); // run codes in a file
+
+// Lice API
+SymbolList env = new SymbolList();
+Lice.run("(def blablabla a (+ a a)) (-> myVar 233)", env);
+env.extractLiceFunction("blablabla").invoke(233); // result: 466
+int var = ((Number) env.extractLiceVariable("myVar")).intValue(); // result: 233
 ```
