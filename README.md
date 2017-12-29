@@ -29,7 +29,7 @@ for a interpreted language.
 
 See [FeatureTest](src/test/kotlin/org/lice/FeatureTest.kt) to learn more about the language's features.
 
-# It looks like:
+## It looks like
 
 ```lisp
 ; print a string
@@ -51,6 +51,13 @@ See [FeatureTest](src/test/kotlin/org/lice/FeatureTest.kt) to learn more about t
 
 ; to define a call-by-need lambda, use `lazy`.
 ```
+
+# Building
+
+To use Lice with build tools, see [JitPack instruction](https://jitpack.io/#lice-lang/lice).
+
+Alternatively, you can download the nightly jar for the newest commit on [AppVeyor](https://ci.appveyor.com/project/ice1000/lice/branch/master/artifacts).
+
 # Script API 
 
 ```java
@@ -65,67 +72,55 @@ public class LiceScriptEngineTest {
 }
 ```
 
-# Building
+## Lice performance
 
-You can use `lice-lang` with Gradle by simply adding Jitpack into your repository; then add the lice-lang dependency
-
-```groovy
-allprojects {
-  repositories {
-    // ...
-    maven { url 'https://jitpack.io' }
-  }
-}
-
-dependencies {
-  compile 'com.github.lice-lang:lice:v3.2.0'
-}
-```
-
-If you use Scala, you can add it to your sbt dependency, by adding the lines below:
-
-```sbtshell
-resolvers += "jitpack" at "https://jitpack.io"
-
-libraryDependencies += "com.github.lice-lang" % "lice" % "v3.2.0"
-```
-
-And if you're a Clojure developer, why not try to build it with leiningen?
-
-```leiningen
-:repositories [["jitpack" "https://jitpack.io"]]
-
-:dependencies [[com.github.lice-lang/lice "v3.2.0"]]
-```
-
-# Contributing
-
-Pull requests are welcomed, but please follow our code style guide below:
-
-## Code style
-
-### compiler
-
-0. Use actual tab character instead of spaces
-0. Please use Java or Kotlin as a development language
-0. Functional collection APIs are prefered.
-0. Results of functions should be lazy evaluation.
-
-### Lice language
-
-0. Use symbols like `-\>`, `?` to represent `to`, `orNot`. It's clearer.
-0. Use Lisp-style function names.
-
-Example:
+Code to run:
 
 ```lisp
-; good
-(int->str 1)
-; bad
-(intToStr 1)
+; loops
+(def loop count block (|>
+    (-> i 0)
+    (while (< i count) (|> (block i)
+    (-> i (+ i 1))))))
 
-; good
-(null? ())
-; bad
-(nullOrNot ())
+; invoking the function
+(loop 200000 (lambda i (|>
+    (defexpr let x y block (|>
+        (-> x y) ; this is actually an issue of lice.
+        (block)
+        (undef x)))
+    (let reimu 100 (lambda (|> x))))))
+
+(print "loop count: " i)
+```
+
+Condition|Time
+:---:|:---:
+Lice call Java using `extern`|350ms
+Lice call Java using Lice API|295ms
+Pure Java|13ms
+Pure Lice|897ms
+Java call Lice using Lice API|629ms
+
+## Lice invoking Java
+
+Lice has handy APIs for interacting with Java.
+
+```lisp
+; declare an extern function
+; must be a static Java function
+(extern "java.util.Objects" "equals")
+
+; calling the extern function
+(equals 1 1)
+```
+
+## Java invoking Lice
+
+This project provides handy APIs for running Lice codes from Java.
+
+```java
+System.out.println(Lice.run("(+ 1 1)")); // prints 2
+
+System.out.println(Lice.run(new File("example.lice"))); // run codes in a file
 ```
