@@ -27,6 +27,7 @@ public class LiceBenchmarkJava {
 
 	@Test
 	public void main() {
+		long l = System.currentTimeMillis();
 		ObjIntConsumer<IntConsumer> loop = (f, count) -> {
 			int i = 0;
 			while (i < count) {
@@ -35,5 +36,6 @@ public class LiceBenchmarkJava {
 			}
 		};
 		loop.accept(i -> java(), Benchmark.cnt);
+		System.out.println(System.currentTimeMillis() - l);
 	}
 }
