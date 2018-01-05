@@ -1,5 +1,5 @@
 group 'org.lice'
-version '3.2.0'
+version '3.2.1'
 
 buildscript {
 	ext.kotlin_version = '1.2.10'
@@ -9,7 +9,6 @@ buildscript {
 	dependencies {
 		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 	}
-
 }
 
 apply plugin: 'java'
@@ -24,10 +23,10 @@ repositories {
 }
 
 sourceSets {
-	main.kotlin.srcDirs += 'src/main/kotlin'
-	main.java.srcDirs += 'src/main/java'
-	test.kotlin.srcDirs += 'src/test/kotlin'
-	test.java.srcDirs += 'src/test/java'
+	main.kotlin.srcDirs = ['src/main/kotlin']
+	main.java.srcDirs = ['src/main/java']
+	test.kotlin.srcDirs = ['src/test/kotlin']
+	test.java.srcDirs = ['src/test/java']
 }
 
 configurations {
@@ -48,29 +47,22 @@ tasks.withType(JavaCompile) {
 }
 
 jar {
-	manifest { attributes 'Main-Class': 'org.lice.repl.Main' }
+	manifest {
+		attributes 'Main-Class': 'org.lice.repl.Main'
+		attributes 'Implementation-Version': version
+		attributes 'Implementation-Title': "Lice v$version"
+	}
 }
 
 task fatJar(type: Jar) {
-	classifier = 'all'
-	description 'Assembles a jar archive containing the main classes and all the dependencies.'
-	group 'build'
+	baseName = project.name + '-all'
 	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-	manifest { attributes 'Main-Class': 'org.lice.repl.Main' }
+	manifest {
+		attributes 'Main-Class': 'org.lice.repl.Main'
+		attributes 'Implementation-Version': version
+		attributes 'Implementation-Title': "Lice v$version"
+	}
 	with jar
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = 'sources'
-	description 'Assembles a jar archive containing the source code of this project.'
-	group 'build'
-	from sourceSets.main.allSource
-}
-
-artifacts {
-	archives jar
-	archives fatJar
-	archives sourcesJar
 }
 
 jacocoTestReport {
