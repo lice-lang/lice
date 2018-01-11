@@ -19,15 +19,11 @@ class Lexer(sourceCode: String) {
 		doSplitTokens()
 	}
 
-	fun currentToken(): Token {
-		assert(currentTokenIndex < this.tokenBuffer.size)
-		return this.tokenBuffer[this.currentTokenIndex]
-	}
+	fun currentToken() = // assert(currentTokenIndex < this.tokenBuffer.size)
+			this.tokenBuffer[this.currentTokenIndex]
 
-	fun peekOneToken(): Token {
-		assert(currentTokenIndex + 1 < this.tokenBuffer.size)
-		return this.tokenBuffer[this.currentTokenIndex + 1]
-	}
+	fun peekOneToken() = // assert(currentTokenIndex + 1 < this.tokenBuffer.size)
+			this.tokenBuffer[this.currentTokenIndex + 1]
 
 	fun nextToken() = this.currentTokenIndex++
 

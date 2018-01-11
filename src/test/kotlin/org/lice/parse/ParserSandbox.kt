@@ -1,10 +1,12 @@
 package org.lice.parse
 
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class ParserSandbox {
 	@Test(timeout = 1000)
 	fun run() {
+		@Language("Lice")
 		val srcCode = """
 (def fibonacci n
 	(if (== n 1)
@@ -20,7 +22,6 @@ class ParserSandbox {
 "))
 		(-> i (+ i 1))))
 			"""
-		val l = Lexer(srcCode)
-		val rootNode = Parser.parseTokenStream(l)
+		val rootNode = Parser.parseTokenStream(Lexer(srcCode))
 	}
 }
