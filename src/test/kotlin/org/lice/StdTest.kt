@@ -125,7 +125,10 @@ class StdTest {
 
 (| 1 2)
 (& 1 2)
-(^ 1 2)
+(~ 1 2)
+(^ 1 (->int (rand)))
+
+(println 233)
 
 (.. (str->int "1") 5)
 (.. (str->int "0x1") 5)
