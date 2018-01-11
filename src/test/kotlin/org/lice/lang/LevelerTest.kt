@@ -68,6 +68,7 @@ class LevelerTest {
 		Lice.run("(<= 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(>= 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(- 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(+ 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(/ 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(* 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(% 1 2L 3N 4.0F 5.0D 6M)")

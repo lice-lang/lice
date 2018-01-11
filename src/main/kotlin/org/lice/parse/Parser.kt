@@ -10,26 +10,26 @@ object Parser {
 		return ASTRootNode(nodes)
 	}
 
-	private fun parseNode(l: Lexer): ASTNode {
-		return if (l.currentToken().type == Token.TokenType.LispKwd && l.currentToken().strValue == "(") {
-			parseList(l)
-		} else {
-			val ret = ASTAtomicNode(l.currentToken().metaData, l.currentToken())
-			l.nextToken()
-			ret
-		}
-	}
+	private fun parseNode(l: Lexer) =
+			if (l.currentToken().type == Token.TokenType.LispKwd && l.currentToken().strValue == "(") parseList(l)
+			else {
+				val ret = ASTAtomicNode(l.currentToken().metaData, l.currentToken())
+				l.nextToken()
+				ret
+			}
 
 	private fun parseList(l: Lexer): ASTListNode {
 		// assert(l.currentToken().type == Token.TokenType.LispKwd && l.currentToken().strValue == "(")
 		l.nextToken()
 		val leftParthToken = l.currentToken()
 		val subNodes = ArrayList<ASTNode>()
-		while (!(l.currentToken().type == Token.TokenType.LispKwd && l.currentToken().strValue == ")")) {
+		while (!(l.currentToken().type == Token.TokenType.LispKwd
+				&& l.currentToken().strValue == ")")
+				&& l.currentToken().type != Token.TokenType.EOI) {
 			subNodes.add(parseNode(l))
-			if (l.currentToken().type == Token.TokenType.EOI)
-				throw ParseException("Unexpected EOI, expected ')'", l.currentToken().metaData)
 		}
+		if (l.currentToken().type == Token.TokenType.EOI)
+			throw ParseException("Unexpected EOI, expected ')'", l.currentToken().metaData)
 
 		l.nextToken()
 		return ASTListNode(leftParthToken.metaData, subNodes)
