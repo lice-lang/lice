@@ -64,6 +64,9 @@ class LevelerTest {
 	@Test
 	fun generalTest() {
 		Lice.run("(< 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(> 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(<= 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(>= 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(- 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(/ 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(* 1 1L 1N 1.0F 1.0D 1M)")

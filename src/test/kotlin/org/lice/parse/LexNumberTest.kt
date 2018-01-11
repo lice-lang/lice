@@ -13,7 +13,7 @@ class LexNumberTest {
 	@JvmField
 	var thrown: ExpectedException = ExpectedException.none()
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexHexNumber() {
 		val srcCode = "0x74CD161"
 		val l = Lexer(srcCode)
@@ -22,7 +22,7 @@ class LexNumberTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexBinNumber() {
 		val srcCode = "0b101101"
 		val l = Lexer(srcCode)
@@ -31,7 +31,7 @@ class LexNumberTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexDecNumber() {
 		val srcCode = "074183"
 		val l = Lexer(srcCode)
@@ -40,7 +40,7 @@ class LexNumberTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexOctNumber() {
 		val srcCode = "0o1234567"
 		val l = Lexer(srcCode)
@@ -49,7 +49,7 @@ class LexNumberTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexFloatNumber() {
 		val srcCode = "3.1415927"
 		val l = Lexer(srcCode)
@@ -58,7 +58,7 @@ class LexNumberTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexDoubleNumber() {
 		val srcCode = "3.141592654"
 		val l = Lexer(srcCode)
@@ -67,7 +67,7 @@ class LexNumberTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexDoubleNumber2() {
 		val srcCode = "74183D"
 		val l = Lexer(srcCode)
@@ -76,7 +76,7 @@ class LexNumberTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexLongInteger() {
 		val srcCode = "123L"
 		val l = Lexer(srcCode)
@@ -85,7 +85,7 @@ class LexNumberTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexBigInt() {
 		val srcCode = "123N"
 		val l = Lexer(srcCode)
@@ -94,7 +94,7 @@ class LexNumberTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexBigDec1() {
 		val srcCode = "123M"
 		val l = Lexer(srcCode)
@@ -103,7 +103,7 @@ class LexNumberTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexBigDec2() {
 		val srcCode = "123.456012M"
 		val l = Lexer(srcCode)
