@@ -344,14 +344,21 @@ ice1k
 		"false".shouldBeFalse()
 	}
 
+	@Test(timeout = 1000)
+	fun test21() {
+		Lice.run("12a")
+		Lice.run("fun")
+	}
+
 	/**
 	 * trigonometric
 	 */
 	@Test(timeout = 1000)
 	fun test22() {
-		val r = Random(System.currentTimeMillis()).nextDouble()
+		val r = Random(System.currentTimeMillis())
+				.nextDouble()
 		//language=Lice
-		assertEquals(Math.sin(r), Lice.run("(sin $r)") as Double, 1e-10)
+		assertEquals(Math.sin(r), Lice.run("(sin ${BigDecimal(r).toPlainString()})") as Double, 1e-10)
 	}
 
 	/**

@@ -17,11 +17,7 @@ abstract class AbstractBindings : Bindings {
 	abstract fun getVariable(name: String): Any?
 
 	override fun containsValue(value: Any?): Boolean {
-		for ((_, u) in variables) forceRun {
-			if (u == value)
-				return true
-		}
-
+		for ((_, u) in variables) if (u == value) return true
 		return false
 	}
 

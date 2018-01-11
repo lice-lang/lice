@@ -4,7 +4,10 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.lice.lang.Echoer
 import org.lice.lang.Echoer.echo
+import org.lice.repl.Main
+import org.lice.util.forceRun
 import java.io.File
+import java.nio.file.Paths
 
 /**
  * Created by ice1000 on 2017/2/20.
@@ -15,7 +18,7 @@ import java.io.File
 class StdTest {
 	@Test(timeout = 1000)
 	fun test2() {
-		val file = File("sample/test2.lice")
+		val file = Paths.get("sample/test2.lice")
 		Lice.run(file)
 	}
 
@@ -32,8 +35,6 @@ class StdTest {
 
 	@Test(timeout = 1000)
 	fun test3() {
-		/// @todo I don't know what ICE1000 wants.
-		/*
 		val ls = listOf("sample/test3.lice")
 		var obj: Any? = null
 		Class
@@ -46,25 +47,15 @@ class StdTest {
 				}
 		val objekt = obj as File
 		Lice.run(objekt)
-		*/
-	}
-
-	@Test(timeout = 1000)
-	fun test4() {
-		val file = File("out")
-		file
-				.javaClass
-				.getMethod("toString")
-				.invoke(file)
+		Main.main(objekt.absolutePath)
 	}
 
 	@Test(timeout = 1000)
 	fun test5() {
 		val one: Int? = 1
-		Integer::class
+		(Integer::class
 				.java
-				.getMethod("equals", Object::class.java)
-				.invoke(one, 1)
+				.getMethod("equals", Object::class.java))(one, 1)
 				.println()
 	}
 

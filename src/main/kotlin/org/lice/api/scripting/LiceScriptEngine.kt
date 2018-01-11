@@ -31,8 +31,8 @@ class LiceScriptEngine : ScriptEngine {
 		context.bindings[key] = value
 	}
 
-	override fun createBindings(): SymbolList = SymbolList()
-	override fun getBindings(scope: Int): SymbolList = context.bindings
+	override fun createBindings() = SymbolList()
+	override fun getBindings(scope: Int) = context.bindings
 	override fun setBindings(bindings: Bindings?, scope: Int) {
 		if (bindings is SymbolList) context.bindings = bindings
 	}

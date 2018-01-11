@@ -7,15 +7,12 @@ class Lexer(sourceCode: String) {
 
 	private val sourceCode = sourceCode.toCharArray()
 	private var line = 1
-	private var col: Int
-	private var charIndex: Int
+	private var col = 1
+	private var charIndex = 0
 	private var tokenBuffer: MutableList<Token> = arrayListOf()
-	private var currentTokenIndex: Int = 0
+	private var currentTokenIndex = 0
 
 	init {
-		this.col = 1
-		this.charIndex = 0
-
 		doSplitTokens()
 	}
 

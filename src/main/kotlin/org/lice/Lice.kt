@@ -12,11 +12,19 @@ import org.lice.repl.Main
 import org.lice.util.InterpretException
 import org.lice.util.ParseException
 import java.io.File
+import java.nio.file.Path
+import java.nio.file.Paths
 
 object Lice {
 	@JvmOverloads
 	@JvmStatic
+	@Deprecated("Use nio instead", ReplaceWith("run(Paths.get(file.toURI()), symbolList)", "org.lice.Lice.run", "java.nio.file.Paths"))
 	fun run(file: File, symbolList: SymbolList = SymbolList()) =
+			run(Paths.get(file.toURI()), symbolList)
+
+	@JvmOverloads
+	@JvmStatic
+	fun run(file: Path, symbolList: SymbolList = SymbolList()) =
 			Main.interpret(file, symbolList)
 
 	@JvmOverloads

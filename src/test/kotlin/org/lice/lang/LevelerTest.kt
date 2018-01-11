@@ -1,6 +1,7 @@
 package org.lice.lang
 
 import org.junit.Test
+import org.lice.Lice
 import org.lice.lang.NumberOperator.Leveler.plusValue
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -58,5 +59,14 @@ class LevelerTest {
 		println(NumberOperator.compare(BigInteger("1"), BigDecimal("1.0")))
 		println(NumberOperator.compare(BigInteger("2"), BigDecimal("1.0")))
 		println(NumberOperator.compare(BigInteger("2"), BigDecimal("4.0")))
+	}
+
+	@Test
+	fun generalTest() {
+		Lice.run("(< 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(- 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(/ 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(* 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(% 1 2L 3N 4.0F 5.0D 6M)")
 	}
 }
