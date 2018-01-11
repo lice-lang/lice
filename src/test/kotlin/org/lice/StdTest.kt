@@ -4,8 +4,6 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.lice.lang.Echoer
 import org.lice.lang.Echoer.echo
-import org.lice.parse.createRootNode
-import org.lice.util.forceRun
 import java.io.File
 
 /**
@@ -15,23 +13,9 @@ import java.io.File
  */
 
 class StdTest {
-
-	@Test(timeout = 1000)
-	fun test1() {
-		forceRun {
-			"0xffff"
-					.toInt()
-					.println()
-		}
-	}
-
 	@Test(timeout = 1000)
 	fun test2() {
-		val clazz = Class.forName("java.io.File")
-		val file = clazz
-				.getConstructor(String::class.java)
-				.newInstance("sample/test2.lice")
-		createRootNode(file as File).eval()
+		val file = File("sample/test2.lice")
 		Lice.run(file)
 	}
 
@@ -48,6 +32,8 @@ class StdTest {
 
 	@Test(timeout = 1000)
 	fun test3() {
+		/// @todo I don't know what ICE1000 wants.
+		/*
 		val ls = listOf("sample/test3.lice")
 		var obj: Any? = null
 		Class
@@ -59,8 +45,8 @@ class StdTest {
 					}
 				}
 		val objekt = obj as File
-		createRootNode(objekt).eval()
 		Lice.run(objekt)
+		*/
 	}
 
 	@Test(timeout = 1000)
@@ -107,7 +93,7 @@ class StdTest {
 	companion object {
 		@JvmStatic
 		fun main(args: Array<String>) {
-			StdTest().test1()
+			StdTest().test2()
 		}
 
 		@BeforeClass

@@ -16,11 +16,13 @@ import org.lice.util.InterpretException.Factory.notFunction
 import org.lice.util.InterpretException.Factory.undefinedVariable
 import org.lice.util.className
 
-class MetaData(private val beginLine: Int = -1) {
-	val lineNumber: Int get() = beginLine
-
+class MetaData(
+		val beginLine: Int = -1,
+		val endLine: Int = -1,
+		val beginIndex: Int = -1,
+		val endIndex: Int = -1) {
 	companion object Factory {
-		val EmptyMetaData = MetaData(-1)
+		val EmptyMetaData = MetaData()
 	}
 }
 
@@ -41,7 +43,7 @@ class LazyValueNode(lambda: () -> Any?, override val meta: MetaData = EmptyMetaD
 	override fun toString() = "lazy: <$value>"
 }
 
-class ExpressionNode(private val node: Node, override val meta: MetaData, private val params: List<Node>) : Node {
+class ExpressionNode(val node: Node, override val meta: MetaData, val params: List<Node>) : Node {
 	override fun eval() = (node.eval() as? Func ?: notFunction(meta)).invoke(meta, params).eval()
 	override fun toString() = "function with ${params.size} params"
 }
@@ -54,9 +56,3 @@ class SymbolNode(private val symbolList: SymbolList, val name: String, override 
 
 	override fun toString() = "symbol: <$name>"
 }
-
-class EmptyNode(override val meta: MetaData) : Node {
-	override fun eval() = null
-	override fun toString() = "null"
-}
-

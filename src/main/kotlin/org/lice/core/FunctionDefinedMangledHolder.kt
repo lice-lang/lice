@@ -75,7 +75,7 @@ class FunctionDefinedMangledHolder(val symbolList: SymbolList) {
 		return when {
 			condition -> ls[1]
 			ls.size >= 3 -> ls[2]
-			else -> EmptyNode(metaData)
+			else -> ValueNode(null, metaData)
 		}
 	}
 
@@ -85,14 +85,14 @@ class FunctionDefinedMangledHolder(val symbolList: SymbolList) {
 			val condition = a.booleanValue()
 			if (condition) return ls[i + 1]
 		}
-		return if (ls.size % 2 == 0) EmptyNode(metaData) else ls.last()
+		return if (ls.size % 2 == 0) ValueNode(null, metaData) else ls.last()
 	}
 
 	fun `while`(metaData: MetaData, ls: List<Node>): Node {
 		if (ls.size < 2)
 			tooFewArgument(2, ls.size, metaData)
 		var a = ls.first().eval()
-		var ret: Node = EmptyNode(metaData)
+		var ret: Node = ValueNode(null, metaData)
 		while (a.booleanValue()) {
 			// execute loop
 			ret.eval()

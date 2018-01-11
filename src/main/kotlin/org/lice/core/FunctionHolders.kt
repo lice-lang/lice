@@ -2,8 +2,8 @@
 
 package org.lice.core
 
+import org.lice.Lice
 import org.lice.lang.Echoer
-import org.lice.parse.*
 import org.lice.util.cast
 import java.io.File
 import java.util.*
@@ -11,9 +11,9 @@ import java.util.*
 class FunctionHolders(val symbolList: SymbolList) {
 	fun `===`(it: List<Any?>) = (1 until it.size).all { i -> it[i] == it[i - 1] }
 	fun `!==`(it: List<Any?>) = (1 until it.size).none { i -> it[i] == it[i - 1] }
-	fun eval(ls: List<Any?>) = mapAst(buildNode(ls.first().toString()), symbolList = symbolList).eval()
+	fun eval(ls: List<Any?>) = Lice.run(ls.first().toString(), symbolList = symbolList)
 	fun type(ls: List<Any?>) = ls.first()?.javaClass ?: Nothing::class.java
-	fun `load-file`(ls: List<Any?>) = createRootNode(File(ls.first().toString()), symbolList).eval()
+	fun `load-file`(ls: List<Any?>) = Lice.run(File(ls.first().toString()), symbolList)
 	fun print(ls: List<Any?>) = ls.forEach { Echoer.echo(it) }
 	fun exit(ls: List<Any?>) = System.exit(0)
 	fun sqrt(it: List<Any?>) = Math.sqrt((it.first() as Number).toDouble())

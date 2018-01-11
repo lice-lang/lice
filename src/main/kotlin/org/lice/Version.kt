@@ -1,3 +1,3 @@
 package org.lice
 
-const val VERSION = "v3.2.0"
+const val VERSION = "v3.3.0"

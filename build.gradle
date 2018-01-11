@@ -1,5 +1,5 @@
 group 'org.lice'
-version '3.2.1'
+version '3.3.0'
 
 buildscript {
 	ext.kotlin_version = '1.2.10'
@@ -55,7 +55,7 @@ jar {
 }
 
 task fatJar(type: Jar) {
-	baseName = project.name + '-all'
+	classifier = 'all'
 	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 	manifest {
 		attributes 'Main-Class': 'org.lice.repl.Main'
@@ -63,6 +63,13 @@ task fatJar(type: Jar) {
 		attributes 'Implementation-Title': "Lice v$version"
 	}
 	with jar
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	description 'Assembles a jar archive containing the source code of this project.'
+	group 'build'
+	from sourceSets.main.allSource
 }
 
 jacocoTestReport {
@@ -73,3 +80,9 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+
+artifacts {
+	archives jar
+	archives fatJar
+	archives sourcesJar
+}

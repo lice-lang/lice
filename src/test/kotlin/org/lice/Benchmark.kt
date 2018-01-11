@@ -1,11 +1,9 @@
 package org.lice
 
+import org.intellij.lang.annotations.Language
 import org.junit.Test
-import org.lice.core.Func
 import org.lice.core.SymbolList
-import org.lice.model.MetaData
-import org.lice.parse.buildNode
-import org.lice.parse.mapAst
+import org.lice.parse.*
 
 class Benchmark {
 	companion object {
@@ -21,7 +19,7 @@ class Benchmark {
 		}
 
 		const val cnt = 200000
-		//language=TEXT
+		@Language("Lice")
 		private const val core = """
 (defexpr let x y block (|>
 			(-> x y)
@@ -31,13 +29,13 @@ class Benchmark {
 		x)))
 """
 
-		//language=TEXT
+		@Language("Lice")
 		const val func = """
 (def codes-to-run (|>
 $core))
 """
 
-		//language=TEXT
+		@Language("Lice")
 		const val code = """
 ; loops
 (def loop count block (|>
@@ -50,7 +48,7 @@ $core))
 (print "loop count: " i)
 """
 
-		//language=TEXT
+		@Language("Lice")
 		const val code2 = """
 ; loops
 (def loop count block (|>
@@ -63,7 +61,7 @@ $core))
 (print "loop count: " i)
 """
 
-		//language=TEXT
+		@Language("Lice")
 		const val code3 = """
 (extern "org.lice.Benchmark" "java")
 
@@ -79,11 +77,10 @@ $core))
 """
 	}
 
-	val lice3 = mapAst(node = buildNode(code3))
-	val lice = mapAst(node = buildNode(code))
-	val lice2 = mapAst(node = buildNode(code2), symbolList = SymbolList().apply {
-		provideFunction("code") { java() }
-	})
+	private val lice3 = Parser.parseTokenStream(Lexer(code3)).accept(Sema())
+	private val lice = Parser.parseTokenStream(Lexer(code)).accept(Sema())
+	private val lice2 = Parser.parseTokenStream(Lexer(code2)).accept(Sema(
+			SymbolList().apply { provideFunction("code") { java() } }))
 
 	@Test
 	fun benchmarkLice() {
@@ -99,10 +96,8 @@ $core))
 	fun benchmarkJavaCallLice() {
 		val symbols = SymbolList()
 		Lice.run(func, symbols)
-		val codes = symbols.getVariable("codes-to-run") as Func
-		repeat(cnt) {
-			codes.invoke(MetaData.EmptyMetaData, emptyList())
-		}
+		val codes = symbols.extractLiceFunction("codes-to-run")
+		repeat(cnt) { codes.invoke(emptyList()) }
 	}
 
 	@Test

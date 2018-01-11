@@ -10,79 +10,11 @@ import org.lice.lang.Echoer
 import org.lice.model.*
 import org.lice.model.MetaData.Factory.EmptyMetaData
 import org.lice.util.*
-import java.util.function.Consumer
-import javax.script.Bindings
 
 typealias Entry = MutableMap.MutableEntry<String, Any?>
 
-abstract class AbstractBindings : Bindings {
-	abstract val variables: MutableMap<String, Any?>
-
-	abstract fun provideFunctionWithMeta(name: String, node: ProvidedFuncWithMeta): Any?
-	abstract fun provideFunction(name: String, node: ProvidedFunc): Any?
-	abstract fun defineFunction(name: String, node: Func): Any?
-	abstract fun defineVariable(name: String, value: Node): Any?
-	abstract fun isVariableDefined(name: String): Boolean
-	abstract fun removeVariable(name: String): Any?
-	abstract fun getVariable(name: String): Any?
-
-	override fun containsValue(value: Any?): Boolean {
-		for ((_, u) in variables) forceRun {
-			if (u == value)
-				return true
-		}
-
-		return false
-	}
-
-	override fun clear() = variables.clear()
-	override fun putAll(from: Map<out String, Any>) = from.forEach { k, v -> provideFunction(k) { v } }
-	override fun containsKey(key: String) = variables.containsKey(key)
-	override fun get(key: String): Any? = cast<Node>(variables[key]).eval()
-	override fun put(key: String, value: Any?): Any? {
-		if (value != null) provideFunction(key) { value }
-		return value
-	}
-
-	override fun isEmpty() = variables.isEmpty()
-	override fun remove(key: String?) = variables.remove(key)
-	override val size: Int get() = variables.size
-
-	override val entries: MutableSet<Entry>
-		get() = object : AbstractMutableSet<Entry>() {
-			override val size: Int get() = variables.size
-			override fun add(element: Entry): Boolean {
-				defineVariable(element.key, ValueNode(element.value, MetaData.EmptyMetaData))
-				return true
-			}
-
-			override operator fun iterator(): MutableIterator<Entry> =
-					object : MutableIterator<Entry> {
-						val it = variables.iterator()
-						override fun hasNext(): Boolean = it.hasNext()
-						override fun remove() = it.remove()
-						override fun next(): Entry =
-								it.next().let { e ->
-									object : Entry {
-										override val value: Any? get() = e.value
-										override val key: String get() = e.key
-										override fun setValue(newValue: Any?) =
-												e.setValue(ValueNode(e.value, MetaData.EmptyMetaData))
-									}
-								}
-					}
-
-		}
-
-	override val keys: MutableSet<String> get() = variables.keys
-	override val values: MutableCollection<Any?>
-		get() = mutableListOf<Any?>().apply { variables.values.forEach { forceRun { add(it) } } }
-}
-
-
 class SymbolList
-@JvmOverloads
-constructor(init: Boolean = true) : AbstractBindings() {
+@JvmOverloads constructor(init: Boolean = true) : AbstractBindings() {
 	override val variables: MutableMap<String, Any?> = hashMapOf()
 
 	init {
@@ -105,16 +37,13 @@ constructor(init: Boolean = true) : AbstractBindings() {
 		bindMethodsOf(FunctionHolders(this))
 		val definedMangledHolder = FunctionDefinedMangledHolder(this)
 		definedMangledHolder.javaClass.declaredMethods.forEach { method ->
-			defineFunction(method.name.replace('$', '>')) { meta, list ->
+			defineFunction(method.name.mangleA()) { meta, list ->
 				cast(runReflection { method.invoke(definedMangledHolder, meta, list) })
 			}
 		}
 		val mangledHolder = FunctionMangledHolder(this)
 		mangledHolder.javaClass.declaredMethods.forEach { method ->
-			provideFunctionWithMeta(method.name
-					.replace('$', '>')
-					.replace('&', '<')
-					.replace('_', '/')) { meta, list ->
+			provideFunctionWithMeta(method.name.mangleB()) { meta, list ->
 				runReflection { method.invoke(mangledHolder, meta, list) }
 			}
 		}
@@ -148,14 +77,14 @@ constructor(init: Boolean = true) : AbstractBindings() {
 			defineFunction(name) { meta, ls ->
 				val value = node(meta, ls.map { it.eval() })
 				if (value != null) ValueNode(value, meta)
-				else EmptyNode(meta)
+				else ValueNode(null, meta)
 			}
 
 	override fun provideFunction(name: String, node: ProvidedFunc) =
 			defineFunction(name) { meta, ls ->
 				val value = node(ls.map { it.eval() })
 				if (value != null) ValueNode(value, meta)
-				else EmptyNode(meta)
+				else ValueNode(null, meta)
 			}
 
 	override fun defineVariable(name: String, value: Node) = variables.put(name, value)
@@ -176,13 +105,25 @@ constructor(init: Boolean = true) : AbstractBindings() {
 	fun extractLiceVariable(name: String): Any? = (getVariable(name) as Node).eval()
 
 	companion object {
+		private val initMethods: MutableSet<(SymbolList) -> Unit> = mutableSetOf()
 		val pathSeperator: String = System.getProperty("path.separator")
 		val classPath: String = System.getProperty("java.class.path")
-
-		private val initMethods: MutableSet<(SymbolList) -> Unit> = mutableSetOf()
-
-		fun addInitMethod(f: SymbolList.() -> Unit): Unit {
+		fun addInitMethod(f: SymbolList.() -> Unit) {
 			initMethods.add(f)
 		}
+
+		val preludeVariables = listOf("null", "true", "false")
+		val preludeSymbols by lazy {
+			listOf(
+					FunctionHolders::class.java.declaredMethods.map { it.name },
+					FunctionDefinedMangledHolder::class.java.declaredMethods.map { it.name.mangleA() },
+					FunctionMangledHolder::class.java.declaredMethods.map { it.name.mangleB() },
+					FunctionWithMetaHolders::class.java.declaredMethods.map { it.name },
+					listOf("def", "defexpr", "deflazy", "lambda", "expr", "lazy")
+			).flatMap { it }
+		}
+
+		private fun String.mangleA() = replace('$', '>')
+		private fun String.mangleB() = replace('$', '>').replace('&', '<').replace('_', '/')
 	}
 }

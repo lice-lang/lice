@@ -22,7 +22,9 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test1() {
-		"(print \"fuck\")" evalTo null
+		//language=Lice
+		"""(print "fuck")""" evalTo null
+		//language=Lice
 		""""lover~lover~fucker~fucker~"""" evalTo "lover~lover~fucker~fucker~"
 	}
 
@@ -31,12 +33,19 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test2() {
+		//language=Lice
 		"(print 233666)" evalTo null
+		//language=Lice
 		"233666" evalTo 233666
+		//language=Lice
 		"233666.0" evalTo 233666F
+		//language=Lice
 		"233666.0000000000000000000000000000000" evalTo 233666.0
+		//language=Lice
 		"true".shouldBeTrue()
+		//language=Lice
 		"false".shouldBeFalse()
+		//language=Lice
 		"null".shouldBeNull()
 	}
 
@@ -45,11 +54,17 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test3() {
+		//language=Lice
 		"(+ 1 (+ 1 2 3))" evalTo 7
+		//language=Lice
 		"(- 1 (+ 1 2 3))" evalTo -5
+		//language=Lice
 		"(* 4 (+ 2 3))" evalTo 20
+		//language=Lice
 		"(+)" evalTo 0
+		//language=Lice
 		"(-)" evalTo 0
+		//language=Lice
 		"(* 4 (+ 2 3))" evalTo 20
 	}
 
@@ -58,10 +73,15 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test4() {
+		//language=Lice
 		"(+ 10000000000000000000000000000000N 233)" evalTo BigInteger("10000000000000000000000000000233")
+		//language=Lice
 		"(- 10000000000000000000000000000000N 233)" evalTo BigInteger("9999999999999999999999999999767")
+		//language=Lice
 		"(* 10000000000000000000000000000000N 233)" evalTo BigInteger("2330000000000000000000000000000000")
+		//language=Lice
 		"(/ 10000000000000000000000000000000N 233)" evalTo BigInteger("42918454935622317596566523605")
+		//language=Lice
 		"(% 10000000000000000000000000000000N 233)" evalTo BigInteger("35")
 		"0xDBEN" evalTo BigInteger(0xDBE.toString())
 	}
@@ -71,15 +91,25 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test5() {
+		//language=Lice
 		"(+ 10000000000000000000000000000000N 0.233)" evalTo BigDecimal("10000000000000000000000000000000.233")
+		//language=Lice
 		"(+ 100000000000000000000000000M 1)" evalTo BigDecimal("100000000000000000000000001")
+		//language=Lice
 		"(- 10000000000000000000000000000000N 0.233)" evalTo BigDecimal("9999999999999999999999999999999.767")
+		//language=Lice
 		"(- 100000000000000000000000000M 1)" evalTo BigDecimal("99999999999999999999999999")
+		//language=Lice
 		"(* 10000000000000000000000000000000N 0.233)" evalTo BigDecimal("2330000000000000000000000000000.000")
+		//language=Lice
 		"(* 100000000000000000000000000M 1)" evalTo BigDecimal("100000000000000000000000000")
+		//language=Lice
 		"(/ 10000000000000000000000000000000N 0.233)" evalTo BigDecimal("42918454935622317596566523605150")
+		//language=Lice
 		"(/ 100000000000000000000000000M 1)" evalTo BigDecimal("100000000000000000000000000")
+		//language=Lice
 		"(% 10000000000000000000000000000000N 0.233)" evalTo BigDecimal("0.05")
+		//language=Lice
 		"(% 100000000000000000000000000M 1)" evalTo BigDecimal("0")
 	}
 
@@ -88,7 +118,9 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test6() {
+		//language=Lice
 		"(>= 9 8 7 7 6 6 6 5 4 3 1 -1)".shouldBeTrue()
+		//language=Lice
 		"(>= 9 8 7 7 6 6 6 5 8 3 1 -1)".shouldBeFalse()
 	}
 
@@ -97,9 +129,11 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test7() {
+		//language=Lice
 		"""
 (str-con "boy" "Next" "Door")
 """ evalTo "boyNextDoor"
+		//language=Lice
 		"""
 (format "%s%s%s" "boy" "Next" "Door")
 """ evalTo "boyNextDoor"
@@ -110,6 +144,7 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test8() {
+		//language=Lice
 		"""
 (str->int "0xDBE")
 """ evalTo 0xDBE
@@ -120,6 +155,7 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test9() {
+		//language=Lice
 		"""
 (eval "(+ 1 1)")
 """ evalTo 2
@@ -130,6 +166,7 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test10() {
+		//language=Lice
 		"(|> (+ 1 1) (+ 2 2))" evalTo 4
 	}
 
@@ -138,7 +175,9 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test11() {
+		//language=Lice
 		"(force|> (+ () ()))".shouldBeNull()
+		//language=Lice
 		"()".shouldBeNull()
 	}
 
@@ -147,6 +186,7 @@ class FeatureTest {
 	 */
 	@Test(timeout = 1000)
 	fun test12() {
+		//language=Lice
 		"""
 (-> ice1000 233)
 
@@ -159,12 +199,13 @@ ice1000
 	 */
 	@Test(timeout = 1000)
 	fun test13() {
+		//language=Lice
 		"""
 (defexpr ice1000 233)
 
 (ice1000)
 """ evalTo 233
-		//language=TEXT
+		//language=Lice
 		"""
 (defexpr ice1000 a a)
 
@@ -200,7 +241,9 @@ ice1000
 	 */
 	@Test(timeout = 1000)
 	fun test15() {
+		//language=Lice
 		"(if (>= 9 8 7 7 6 6 6 5 4 3 1 -1) 1 (+ 1 1))" evalTo 1
+		//language=Lice
 		"(if (>= 9 8 7 7 6 6 6 5 8 3 1 -1) 1 (+ 1 1))" evalTo 2
 	}
 
@@ -246,6 +289,7 @@ ice1000
 	 */
 	@Test(timeout = 1000)
 	fun test18() {
+		//language=Lice
 		"""
 (deflazy fuck a b b)
 
@@ -255,6 +299,7 @@ ice1000
 
 lover
 """ evalTo 233
+		//language=Lice
 		"""
 (def fuck a b b)
 
@@ -264,7 +309,7 @@ lover
 
 lover
 """ evalTo 666
-		//language=TEXT
+		//language=Lice
 		"""
 (deflazy fuck a b (|> b b))
 
@@ -279,6 +324,7 @@ lover
 	 */
 	@Test(timeout = 1000)
 	fun test19() {
+		//language=Lice
 		"""
 (-> ice1k 233)
 ice1k
@@ -290,8 +336,11 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test20() {
+		//language=Lice
 		"null".shouldBeNull()
+		//language=Lice
 		"true".shouldBeTrue()
+		//language=Lice
 		"false".shouldBeFalse()
 	}
 
@@ -301,6 +350,7 @@ ice1k
 	@Test(timeout = 1000)
 	fun test22() {
 		val r = Random(System.currentTimeMillis()).nextDouble()
+		//language=Lice
 		assertEquals(Math.sin(r), Lice.run("(sin $r)") as Double, 1e-10)
 	}
 
@@ -309,9 +359,9 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test25() {
-		//language=TEXT
+		//language=Lice
 		"((((2))))" evalTo 2
-		//language=TEXT
+		//language=Lice
 		"(if true 0 1)" evalTo 0
 	}
 
@@ -320,15 +370,13 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test26() {
-		//language=TEXT
+		//language=Lice
 		"((if false * /) 11 11)" evalTo 1
-		//language=TEXT
+		//language=Lice
 		"((if true * /) 11 11)" evalTo 121
 	}
 
-	/**
-	 * I'll show you the procedure:
-	 *
+	/*
 	 * (((if true + -)) 11 11)
 	 * ((+) 11 11)
 	 * (+ 11 11)
@@ -336,7 +384,9 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test27() {
+		//language=Lice
 		"((if true + -) 11 11)" evalTo 22
+		//language=Lice
 		"((if true + -) 11 11)" evalTo 22
 	}
 
@@ -346,9 +396,11 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test28() {
-		//language=TEXT
+		//language=Lice
 		"((lambda a b (+ a b)) 120 230)" evalTo 120 + 230
+		//language=Lice
 		"((lambda a b (* a b)) 120 230)" evalTo 120 * 230
+		//language=Lice
 		"((lambda a (+ a a)) 233)" evalTo 466
 	}
 
@@ -358,7 +410,7 @@ ice1k
 	 */
 	@Test(timeout = 1000)
 	fun test29() {
-		//language=TEXT
+		//language=Lice
 		"""
 ((lazy unused
        "any-val")
@@ -367,7 +419,7 @@ ice1k
 
 (def? side-effect)
 """.shouldBeFalse()
-		//language=TEXT
+		//language=Lice
 		"""
 (-> side-effect 10)
 ((expr used-twice
@@ -377,7 +429,7 @@ ice1k
 
 side-effect
 """ evalTo 12
-		//language=TEXT
+		//language=Lice
 		"""
 (-> side-effect 10)
 ((lambda used-twice
@@ -394,15 +446,18 @@ side-effect
 	 */
 	@Test(timeout = 1000)
 	fun test31() {
+		//language=Lice
 		"""
 (defexpr fuck op (op true 1 2))
 (fuck if)
 """ evalTo 1
+		//language=Lice
 		"""
 (deflazy unless condition a b (if condition b a))
 (defexpr fuck op (op true 1 2))
 (fuck unless)
 """ evalTo 2
+		//language=Lice
 		"""
 (defexpr fuck op (op 1 2 3 4))
 (fuck +)
@@ -419,10 +474,13 @@ side-effect
 	 */
 	@Test(timeout = 1000)
 	fun test32() {
+		//language=Lice
 		"((expr op (op 1 2)) +)" evalTo 3
+		//language=Lice
 		"((lazy op (op 1 2)) +)" evalTo 3
+		//language=Lice
 		"((lambda op (op 1 2)) +)" evalTo 3
-		//language=TEXT
+		//language=Lice
 		"""
 (def fun a b
   (+ (* a a) (* b b)))
@@ -437,16 +495,23 @@ side-effect
 	 */
 	@Test(timeout = 1000)
 	fun test33() {
+		//language=Lice
 		"((lambda op (op 1 2)) (lambda a b (+ a b)))" evalTo 3
+		//language=Lice
 		"((lambda op (op 3 4)) (lambda a b (+ (* a a) (* b b))))" evalTo 25
 	}
 
 	@Test
 	fun test34() {
-		"(format \"Hello, %s!\", 233)" evalTo "Hello, 233!"
+		//language=Lice
+		"""(format "Hello, %s", 233)""" evalTo "Hello, 233"
+		//language=Lice
 		"(int->hex 12)" evalTo "0x${12.toString(16)}"
+		//language=Lice
 		"(int->oct 12)" evalTo "0${12.toString(8)}"
+		//language=Lice
 		"(int->bin 12)" evalTo "0b${12.toString(2)}"
+		//language=Lice
 		"(sqrt 16)" evalTo 4.0
 	}
 }

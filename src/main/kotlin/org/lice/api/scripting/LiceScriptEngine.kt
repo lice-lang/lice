@@ -1,8 +1,7 @@
 package org.lice.api.scripting
 
+import org.lice.Lice
 import org.lice.core.SymbolList
-import org.lice.parse.buildNode
-import org.lice.parse.mapAst
 import org.lice.util.cast
 import java.io.Reader
 import javax.script.*
@@ -26,7 +25,7 @@ class LiceScriptEngine : ScriptEngine {
 	override fun eval(reader: Reader) = eval(reader.readText(), context.bindings)
 	override fun eval(reader: Reader, n: Bindings) = eval(reader.readText(), n)
 	override fun eval(reader: Reader, context: ScriptContext) = eval(reader.readText(), (context as LiceContext).bindings)
-	override fun eval(script: String, n: Bindings) = mapAst(buildNode(script), cast(n)).eval()
+	override fun eval(script: String, n: Bindings) = Lice.run(script, cast(n))
 	override fun get(key: String?): Any? = context.bindings[key]
 	override fun put(key: String, value: Any?) {
 		context.bindings[key] = value

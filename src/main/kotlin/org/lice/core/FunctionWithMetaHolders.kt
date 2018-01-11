@@ -27,7 +27,7 @@ class FunctionWithMetaHolders(val symbolList: SymbolList) {
 		val clazz = ls.first().toString()
 		val method = Class.forName(clazz).declaredMethods
 				.firstOrNull { Modifier.isStatic(it.modifiers) && it.name == name }
-				?: throw UnsatisfiedLinkError("Method $name not found for class $clazz\nat line: ${meta.lineNumber}")
+				?: throw UnsatisfiedLinkError("Method $name not found for class $clazz\nat line: ${meta.beginLine}")
 		symbolList.provideFunction(name) { runReflection { method.invoke(null, *it.toTypedArray()) } }
 		return name
 	}

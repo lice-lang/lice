@@ -96,16 +96,16 @@ fun String.toBinInt(): Int {
 	return ret
 }
 
-fun String.toBigInt() = BigInteger(this.substring(0, length - 1).run {
+fun String.toBigInt() = BigInteger(this.run {
 	when {
 		isHexInt() -> toHexInt().toString()
 		isBinInt() -> toBinInt().toString()
 		isOctInt() -> toOctInt().toString()
-		else -> this
+		else -> if (endsWith("n", true)) dropLast(1) else this
 	}
 })
 
-fun String.toBigDec() = BigDecimal(this.substring(0, length - 1))
+fun String.toBigDec() = BigDecimal(if (endsWith("m", true)) dropLast(1) else this)
 
 fun String.toOctInt(): Int {
 	if (this[0] == '-') return -substring(1).toBinInt()
