@@ -1,11 +1,13 @@
 package org.lice.parse
 
 import junit.framework.TestCase.assertEquals
+import org.intellij.lang.annotations.Language
 import org.junit.Test
 
 class IntegratedTest {
-	@Test(timeout = 500)
+	@Test
 	fun Test1() {
+		@Language("Lice")
 		val srcCode = """
 (def fibonacci n
 	(if (== n 1)
@@ -24,8 +26,9 @@ class IntegratedTest {
 		Parser.parseTokenStream(Lexer(srcCode)).accept(Sema()).eval()
 	}
 
-	@Test(timeout = 500)
+	@Test
 	fun Test2() {
+		@Language("Lice")
 		val srcCode = """
 (print (+ 1 1) "\n")
 (print (- 10N 1.0) "\n")
@@ -50,7 +53,7 @@ class IntegratedTest {
 		Parser.parseTokenStream(Lexer(srcCode)).accept(Sema()).eval()
 	}
 
-	@Test(timeout = 500)
+	@Test
 	fun Test3() {
 		/// Intentionally empty translation unit
 		val srcCode = """
@@ -58,7 +61,7 @@ class IntegratedTest {
 		Parser.parseTokenStream(Lexer(srcCode)).accept(Sema()).eval()
 	}
 
-	@Test(timeout = 500)
+	@Test
 	fun Test4() {
 		val srcCode = """
 ; defining functions
