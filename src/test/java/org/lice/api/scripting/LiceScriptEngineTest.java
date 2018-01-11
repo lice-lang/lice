@@ -2,6 +2,7 @@ package org.lice.api.scripting;
 
 import org.junit.Test;
 
+import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
@@ -16,11 +17,13 @@ import static org.junit.Assert.assertEquals;
  */
 @SuppressWarnings("AssertEqualsBetweenInconvertibleTypes")
 public class LiceScriptEngineTest {
-	@Test
-	public void testAPI() throws Exception {
+	@Test public void testAPI() throws Exception {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("lice");
-		assertEquals(engine.eval("0"), 0);
+		assertEquals(0, engine.eval("0"));
+		Bindings bindings = engine.createBindings();
+		engine.eval("(-> x 10)", bindings);
+		assertEquals(10, engine.eval("x", bindings));
 		engine.eval("(-> x 10)");
-		assertEquals(engine.eval("x"), 10);
+		bindings.entrySet().forEach(System.out::println);
 	}
 }
