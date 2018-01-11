@@ -7,6 +7,7 @@ import org.lice.lang.Echoer.echo
 import org.lice.repl.Main
 import org.lice.util.forceRun
 import java.io.File
+import java.nio.file.Files
 import java.nio.file.Paths
 
 /**
@@ -91,15 +92,16 @@ class StdTest {
 		@JvmStatic
 		fun initFiles() {
 			Echoer.openOutput()
-			File("sample").mkdirs()
-			File("sample/test2.lice").run {
-				if (!exists()) createNewFile()
-				writeText("""
+			Files.createDirectories(Paths.get("sample"))
+			Paths.get("sample/test2.lice").let {
+				if (!Files.exists(it)) Files.createFile(it)
+				Files.write(it, """
 123
-""")
-				File("sample/test3.lice").run {
-					if (!exists()) createNewFile()
-					writeText("""
+""".toByteArray())
+				Paths.get("sample/test3.lice").let {
+					if (!Files.exists(it)) Files.createFile(it)
+					//language=Lice
+					Files.write(it, """
 (print (+ 1 1) "\n")
 (print (- 10N 1.0) "\n")
 (print (/ 10.2M 5) "\n")
@@ -116,10 +118,37 @@ class StdTest {
 (-> ass 10)
 
 (str->sym "ass")
+(sym->str ass)
 
 (print (format "ass %s can", "we") "
 ")
-""")
+
+(| 1 2)
+(& 1 2)
+(^ 1 2)
+
+(.. (str->int "1") 5)
+(.. (str->int "0x1") 5)
+(.. (str->int "0b1") 5)
+([| ([|] 1 2))
+(|] ([|] 1 2))
+(->chars "2333")
+(print "Hello " "World" "\n")
+
+; travel through a range
+(for-each i (.. 1 10) (print i "\n"))
+
+; define a call-by-name function
+(defexpr fold ls init op
+ (for-each index-var ls
+   (-> init (op init index-var))))
+
+; invoke the function defined above
+(fold (.. 1 4) 0 +)
+
+; passing a call-by-value lambda to a call-by-value lambda
+((lambda op (op 3 4)) (lambda a b (+ (* a a) (* b b))))
+""".toByteArray())
 				}
 			}
 		}

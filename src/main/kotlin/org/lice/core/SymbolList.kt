@@ -7,8 +7,9 @@
 package org.lice.core
 
 import org.lice.lang.Echoer
-import org.lice.model.*
 import org.lice.model.MetaData.Factory.EmptyMetaData
+import org.lice.model.Node
+import org.lice.model.ValueNode
 import org.lice.util.*
 
 typealias Entry = MutableMap.MutableEntry<String, Any?>
@@ -124,6 +125,11 @@ class SymbolList
 		}
 
 		private fun String.mangleA() = replace('$', '>')
-		private fun String.mangleB() = replace('$', '>').replace('&', '<').replace('_', '/')
+		private fun String.mangleB() = replace('$', '>')
+				.replace('&', '<')
+				.replace('_', '/')
+				.replace('#', '.')
+				.replace('{', '[')
+				.replace('}', ']')
 	}
 }
