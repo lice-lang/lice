@@ -4,7 +4,7 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.lice.lang.Echoer
 import org.lice.lang.Echoer.echo
-import org.lice.repl.Main
+import org.lice.repl.main
 import org.lice.util.forceRun
 import java.io.File
 import java.nio.file.Files
@@ -48,7 +48,6 @@ class StdTest {
 				}
 		val objekt = obj as File
 		Lice.run(objekt)
-		Main.main(objekt.absolutePath)
 	}
 
 	@Test(timeout = 1000)
