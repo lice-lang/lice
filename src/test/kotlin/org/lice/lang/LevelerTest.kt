@@ -2,9 +2,11 @@ package org.lice.lang
 
 import org.junit.Test
 import org.lice.Lice
+import org.lice.evalTo
 import org.lice.lang.NumberOperator.Leveler.plusValue
 import java.math.BigDecimal
 import java.math.BigInteger
+import kotlin.test.assertFails
 
 /**
  * Created by ice1000 on 2017/3/1.
@@ -67,10 +69,50 @@ class LevelerTest {
 		Lice.run("(> 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(<= 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(>= 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(== 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(!= 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(- 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(+ 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(/ 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(* 1 1L 1N 1.0F 1.0D 1M)")
 		Lice.run("(% 1 2L 3N 4.0F 5.0D 6M)")
+		Lice.run("(< 1M 1.0D 1.0F 1N 1L 1)")
+		Lice.run("(> 1M 1.0D 1.0F 1N 1L 1)")
+		Lice.run("(<= 1M 1.0D 1.0F 1N 1L 1)")
+		Lice.run("(>= 1M 1.0D 1.0F 1N 1L 1)")
+		Lice.run("(== 1M 1.0D 1.0F 1N 1L 1)")
+		Lice.run("(!= 1M 1.0D 1.0F 1N 1L 1)")
+		Lice.run("(- 1M 1.0D 1.0F 1N 1L 1)")
+		Lice.run("(+ 1M 1.0D 1.0F 1N 1L 1)")
+		Lice.run("(/ 1M 1.0D 1.0F 1N 1L 1)")
+		Lice.run("(* 1M 1.0D 1.0F 1N 1L 1)")
+		Lice.run("(% 6M 5.0D 4.0F 3N 2L 1)")
+	}
+
+	@Test
+	fun failureTests() {
+		val anything = null
+		assertFails { "(< 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(> 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(<= 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(>= 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(== 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(!= 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(- 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(+ 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(/ 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(* 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(% 1 2L 3N 4.0F 5.0D 6M true)" evalTo anything }
+		assertFails { "(< 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
+		assertFails { "(> 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
+		assertFails { "(<= 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
+		assertFails { "(>= 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
+		assertFails { "(== 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
+		assertFails { "(!= 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
+		assertFails { "(- 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
+		assertFails { "(+ 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
+		assertFails { "(/ 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
+		assertFails { "(* 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
+		assertFails { "(% 6M 5.0D 4.0F 3N 2L 1 true)" evalTo anything }
 	}
 }

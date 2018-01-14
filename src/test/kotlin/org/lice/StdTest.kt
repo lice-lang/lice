@@ -4,11 +4,11 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.lice.lang.Echoer
 import org.lice.lang.Echoer.echo
-import org.lice.repl.main
 import org.lice.util.forceRun
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
+import kotlin.test.assertFails
 
 /**
  * Created by ice1000 on 2017/2/20.
@@ -71,10 +71,12 @@ class StdTest {
 
 	@Test(timeout = 1000)
 	fun test7() {
+		//language=Lice
 		"""
 (extern "java.util.Objects" "equals")
 (equals 1 1)
 """ evalTo true
+		//language=Lice
 		"""
 (extern "java.util.Objects" "equals")
 (equals 1 2)

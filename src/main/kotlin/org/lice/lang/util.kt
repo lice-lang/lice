@@ -279,7 +279,7 @@ class NumberOperator(private var initial: Number) {
 				lowLevel: Number,
 				highLevel: Number,
 				meta: MetaData = EmptyMetaData,
-				reverse: Boolean = false): Number = when (highLevel) {
+				reverse: Boolean): Number = when (highLevel) {
 			is Byte ->
 				if (!reverse) (highLevel / lowLevel.toByte())
 				else (lowLevel.toByte() / highLevel)
