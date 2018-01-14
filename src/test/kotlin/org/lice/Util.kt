@@ -9,11 +9,11 @@ import kotlin.test.*
  * @author ice1000
  */
 
-infix fun String.evalTo(any: Any?) = assertEquals(any, Lice.run(this))
+infix fun String.evalTo(any: Any?) = assertEquals(any, Lice.runBarely(this))
 
-fun String.shouldBeTrue() = assertTrue(true == Lice.run(this))
-fun String.shouldBeFalse() = assertTrue(true != Lice.run(this))
-fun String.shouldBeNull() = assertNull(Lice.run(this))
+fun String.shouldBeTrue() = assertTrue(true == Lice.runBarely(this))
+fun String.shouldBeFalse() = assertTrue(true != Lice.runBarely(this))
+fun String.shouldBeNull() = assertNull(Lice.runBarely(this))
 
 fun <T> T.println(): T {
 	echo("${this}\n")
