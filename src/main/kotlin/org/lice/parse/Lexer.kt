@@ -7,12 +7,15 @@ class Lexer(sourceCode: String) {
 
 	private val sourceCode = sourceCode.toCharArray()
 	private var line = 1
-	private var col = 1
-	private var charIndex = 0
+	private var col: Int
+	private var charIndex: Int
 	private var tokenBuffer: MutableList<Token> = arrayListOf()
-	private var currentTokenIndex = 0
+	private var currentTokenIndex: Int = 0
 
 	init {
+		this.col = 1
+		this.charIndex = 0
+
 		doSplitTokens()
 	}
 
@@ -171,9 +174,12 @@ class Lexer(sourceCode: String) {
 				nextChar()
 			} else {
 				when (peekOneChar()) {
+					'0' -> builder.append('\u0000')
 					'n' -> builder.append('\n')
 					'f' -> builder.append('\u000C')
 					't' -> builder.append('\t')
+					'v' -> builder.append('\u000B')
+					'r' -> builder.append('\u000D')
 					'\\' -> builder.append('\\')
 					'"' -> builder.append('\"')
 					else -> throw ParseException("Illegal conversion sequence \\${peekOneChar()}",
@@ -215,7 +221,7 @@ class Lexer(sourceCode: String) {
 		private const val binDigits = "01"
 		private const val octDigits = "01234567"
 		private const val decDigits = "0123456789"
-		private const val hexDigits = "0123456789ABCDEF"
+		private const val hexDigits = "0123456789ABCDEFabcdef"
 		private const val blanks = " \u000C\n\t\r,"
 		private const val lispSymbols = "()"
 		private const val tokenDelimiters = blanks + lispSymbols + ";\u0000"

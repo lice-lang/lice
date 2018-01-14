@@ -5,7 +5,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class LexProgramTest {
-	@Test(timeout = 100)
+	@Test
 	fun test1() {
 		@Language("Lice")
 		val src = """
@@ -65,7 +65,7 @@ class LexProgramTest {
 		l.nextToken()
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun test2() {
 		@Language("Lice")
 		val src = """

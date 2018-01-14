@@ -22,7 +22,8 @@ class ASTAtomicNode internal constructor(metaData: MetaData, val token: Token) :
 		Token.TokenType.DoubleNumber -> ValueNode(token.strValue.toDouble(), metaData)
 		Token.TokenType.StringLiteral -> ValueNode(token.strValue, metaData)
 		Token.TokenType.Identifier -> SymbolNode(sema.symbolList, token.strValue, metaData)
-		Token.TokenType.LispKwd, Token.TokenType.EOI -> throw ParseException("")
+		Token.TokenType.LispKwd, Token.TokenType.EOI ->
+			throw ParseException("Unexpected token '${token.strValue}'", metaData)
 	}
 }
 

@@ -3,7 +3,7 @@ package org.lice.parse
 import org.junit.Test
 
 class LexerSandbox {
-	@Test(timeout = 2000)
+	@Test
 	fun run() {
 		val srcCode = """
 """

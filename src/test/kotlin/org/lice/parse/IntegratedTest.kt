@@ -1,12 +1,15 @@
 package org.lice.parse
 
-import junit.framework.TestCase.assertEquals
 import org.intellij.lang.annotations.Language
 import org.junit.Test
+import org.lice.Lice
+import org.lice.core.SymbolList
+import org.lice.evalTo
+import kotlin.test.assertFails
 
 class IntegratedTest {
 	@Test
-	fun Test1() {
+	fun test1() {
 		@Language("Lice")
 		val srcCode = """
 (def fibonacci n
@@ -19,15 +22,15 @@ class IntegratedTest {
 (while (< i 20)
 	(|>
 		(print (fibonacci i))
-		(print ("
-"))
+		(print ("\n"))
 		(-> i (+ i 1))))
+(fibonacci 10)
 """
-		Parser.parseTokenStream(Lexer(srcCode)).accept(Sema()).eval()
+		srcCode evalTo 55
 	}
 
 	@Test
-	fun Test2() {
+	fun test2() {
 		@Language("Lice")
 		val srcCode = """
 (print (+ 1 1) "\n")
@@ -47,22 +50,21 @@ class IntegratedTest {
 
 (str->sym "ass")
 
-(print (format "ass %s can", "we") "
-")
+(print (format "ass %s can", "we") "\n")
 """
 		Parser.parseTokenStream(Lexer(srcCode)).accept(Sema()).eval()
 	}
 
 	@Test
-	fun Test3() {
+	fun test3() {
 		/// Intentionally empty translation unit
 		val srcCode = """
 """
-		Parser.parseTokenStream(Lexer(srcCode)).accept(Sema()).eval()
+		srcCode evalTo null
 	}
 
 	@Test
-	fun Test4() {
+	fun test4() {
 		val srcCode = """
 ; defining functions
 (def check
@@ -117,13 +119,33 @@ class IntegratedTest {
 ; calling the extern function
 (equals 1 1)
 """
-		Parser.parseTokenStream(Lexer(srcCode)).accept(Sema()).eval()
+		Lice.runBarely(srcCode)
 	}
 
-	@Test(timeout = 500)
-	fun Test5() {
-		assertEquals(233, Parser.parseTokenStream(Lexer("233")).accept(Sema()).eval())
-		assertEquals(0x233, Parser.parseTokenStream(Lexer("0x233")).accept(Sema()).eval())
-		assertEquals(0b10101, Parser.parseTokenStream(Lexer("0b10101")).accept(Sema()).eval())
+	@Test
+	fun test5() {
+		"233" evalTo 233
+		"0x233" evalTo 0x233
+		"0b10101" evalTo 0b10101
+	}
+
+	@Test
+	fun failTests() {
+		assertFails { Lice.runBarely("1a") }
+		assertFails { Lice.runBarely("0xz") }
+		assertFails { Lice.runBarely("0b2") }
+		assertFails { Lice.runBarely("0o9") }
+		assertFails { Lice.runBarely("undefined-variable") }
+		assertFails { Lice.runBarely("(+ (->str 1))") }
+		assertFails { Lice.runBarely("(def)") }
+		assertFails { Lice.runBarely("(def name)") }
+		assertFails { Lice.runBarely("(-> name)") }
+		assertFails { Lice.runBarely("(; 1)") }
+		assertFails { Lice.runBarely(""""\g"""") }
+		assertFails { Lice.runBarely("(") }
+		assertFails { Lice.runBarely(")") }
+		assertFails { Lice.runBarely("\"") }
+		assertFails { SymbolList().extractLiceFunction("undefined-function")(emptyList()) }
+		assertFails { SymbolList().extractLiceVariable("undefined-variable") }
 	}
 }

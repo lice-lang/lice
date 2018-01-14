@@ -13,7 +13,7 @@ class LexStringTest {
 	@JvmField
 	var thrown: ExpectedException = ExpectedException.none()
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexString() {
 		@Language("Lice")
 		val srcCode = """"String""""
@@ -23,7 +23,7 @@ class LexStringTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexConversionSequence() {
 		@Language("Lice")
 		val srcCode = "\"Str\\ning\""
@@ -33,7 +33,7 @@ class LexStringTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 200)
+	@Test
 	fun testLexConversionSequenceFailed() {
 		thrown.expect(ParseException::class.java)
 		@Language("Lice")
@@ -41,7 +41,7 @@ class LexStringTest {
 		val l = Lexer(srcCode)
 	}
 
-	@Test(timeout = 200)
+	@Test
 	fun testMissingQuote() {
 		thrown.expect(ParseException::class.java)
 		val srcCode = "\"String without closing quote"

@@ -8,12 +8,10 @@ package org.lice
 
 import org.lice.core.SymbolList
 import org.lice.parse.*
-import org.lice.repl.Main
 import org.lice.util.InterpretException
 import org.lice.util.ParseException
 import java.io.File
-import java.nio.file.Path
-import java.nio.file.Paths
+import java.nio.file.*
 
 object Lice {
 	@JvmOverloads
@@ -25,7 +23,7 @@ object Lice {
 	@JvmOverloads
 	@JvmStatic
 	fun run(file: Path, symbolList: SymbolList = SymbolList()) =
-			Main.interpret(file, symbolList)
+			run(String(Files.readAllBytes(file)), symbolList)
 
 	@JvmOverloads
 	@JvmStatic
@@ -39,4 +37,9 @@ object Lice {
 		}
 		return null
 	}
+
+	@JvmOverloads
+	@JvmStatic
+	fun runBarely(code: String, symbolList: SymbolList = SymbolList()) =
+			Parser.parseTokenStream(Lexer(code)).accept(Sema(symbolList)).eval()
 }

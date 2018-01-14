@@ -12,42 +12,50 @@ package org.lice.util
 
 import org.lice.model.MetaData
 
-private fun exceptionPrettyPrint(string: String, meta: MetaData, cachedCodeLines: List<String>) {
-	System.err.println("Error " + string)
-	if (meta.beginLine != -1)
-		System.err.print("At " + meta.beginLine)
-	if (meta.beginIndex != -1) {
-		System.err.print(":" + meta.beginIndex)
-	}
-	System.err.println(": " + string)
-	System.err.println(cachedCodeLines[meta.beginLine-1])
-	if (meta.beginIndex != -1) {
-		for (i: Int in meta.beginIndex.downTo(2))
-			System.err.print(' ')
-		System.err.print('^')
-		if (meta.endIndex != -1) {
-			for (i: Int in meta.endIndex.downTo(meta.beginIndex+2))
-				System.err.print('~')
+open class LiceException(string: String, @JvmField protected val meta: MetaData) : RuntimeException(string) {
+	protected fun prettify(cachedCodeLines: List<String>): String {
+		val builder = StringBuilder()
+		builder.appendln("Error " + message)
+		if (meta.beginLine != -1)
+			builder.append("At " + meta.beginLine)
+		if (meta.beginIndex != -1) {
+			builder.append(":" + meta.beginIndex)
 		}
-		System.err.println()
+		builder.appendln(": " + message)
+		if (meta.beginLine != -1) {
+			builder.appendln(cachedCodeLines[meta.beginLine - 1])
+		}
+		if (meta.beginIndex != -1) {
+			for (i in meta.beginIndex.downTo(2))
+				builder.append(' ')
+			builder.append('^')
+			if (meta.endIndex != -1) {
+				for (i in meta.endIndex.downTo(meta.beginIndex + 2))
+					builder.append('~')
+			}
+			builder.appendln()
+		}
+		builder.appendln()
+		return builder.toString()
 	}
-	System.err.println()
 }
 
-class ParseException(private val string: String, private val meta: MetaData = MetaData()) : RuntimeException(string) {
+class ParseException(string: String, meta: MetaData = MetaData()) : LiceException(string, meta) {
 	fun prettyPrint(cachedCodeLines: List<String>) {
-		exceptionPrettyPrint(string, meta, cachedCodeLines)
+		prettify(cachedCodeLines).let(System.err::println)
 	}
 }
 
-class InterpretException(private val string: String, private val meta: MetaData = MetaData()) : RuntimeException(string) {
+class InterpretException(string: String, meta: MetaData = MetaData()) :
+		LiceException(string, meta) {
 	fun prettyPrint(cachedCodeLines: List<String>) {
-		exceptionPrettyPrint(string, meta, cachedCodeLines)
+		prettify(cachedCodeLines).let(System.err::println)
 	}
 
 	companion object Factory {
-		fun undefinedVariable(name: String, meta: MetaData): Nothing
-				= throw InterpretException("undefined variable: $name", meta)
+		fun undefinedVariable(
+				name: String,
+				meta: MetaData): Nothing = throw InterpretException("undefined variable: $name", meta)
 
 		fun notSymbol(meta: MetaData): Nothing =
 				throw InterpretException("type mismatch: symbol expected.", meta)

@@ -6,7 +6,7 @@ import org.junit.Assert.assertEquals
 
 class LexIdentifierTest {
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexIdentifier() {
 		val srcCode = "Fuck@dentifier"
 		val l = Lexer(srcCode)
@@ -15,7 +15,7 @@ class LexIdentifierTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexIdentifiers() {
 		val srcCode = "Fuck@dentifier _Yet1A2not->her@dentifier"
 		val l = Lexer(srcCode)
@@ -27,7 +27,7 @@ class LexIdentifierTest {
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}
 
-	@Test(timeout = 100)
+	@Test
 	fun testLexIdentifiers2() {
 		val srcCode = "Fuck@dentifier,_Yet1A2not->her@dentifier"
 		val l = Lexer(srcCode)
