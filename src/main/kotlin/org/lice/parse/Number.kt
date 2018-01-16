@@ -12,14 +12,11 @@ package org.lice.parse
 import java.math.BigDecimal
 import java.math.BigInteger
 
-fun String.isInt(isNegative: Boolean = false): Boolean {
-	return if (!isNegative && '-' == this[0]) substring(1).isInt(true) else isNotEmpty() && fold(true) { res, char ->
-		res && char.isDigit()
-	}
-}
+fun String.isInt(isNegative: Boolean = false): Boolean =
+		if (!isNegative && '-' == this[0]) substring(1).isInt(true)
+		else isNotEmpty() && all(Char::isDigit)
 
 fun Char.isOctalInt() = this in '0'..'8'
-
 fun Char.safeLower() = if (this in 'A'..'Z') this - ('A' - 'a') else this
 
 fun String.isHexInt(isNegative: Boolean = false): Boolean {

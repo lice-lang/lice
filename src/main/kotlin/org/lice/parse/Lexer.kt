@@ -182,16 +182,15 @@ class Lexer(sourceCode: String) {
 					'r' -> builder.append('\u000D')
 					'\\' -> builder.append('\\')
 					'"' -> builder.append('\"')
-					else -> throw ParseException("Illegal conversion sequence \\${peekOneChar()}",
-							MetaData(this.line, this.line, this.col, this.col + 2))
+					else -> throw ParseException("Illegal conversion sequence \\${peekOneChar()}", MetaData(this.line, this.line, this.col, this.col + 2))
 				}
 				nextChar()
 				nextChar()
 			}
 		}
 
-		if (currentChar() == '\u0000') throw ParseException("Unexpected EndOfInput.",
-				MetaData(this.line, this.line, this.col, this.col + 1))
+		if (currentChar() == '\u0000')
+			throw ParseException("Unexpected EndOfInput.", MetaData(this.line, this.line, this.col, this.col + 1))
 		nextChar()
 
 		this.tokenBuffer.add(Token(Token.TokenType.StringLiteral, "$builder",
@@ -199,7 +198,7 @@ class Lexer(sourceCode: String) {
 	}
 
 	private fun skipComment() {
-		assert(currentChar() == ';')
+		// assert(currentChar() == ';')
 		while (currentChar() != '\n' && currentChar() != '\u0000') nextChar()
 	}
 
