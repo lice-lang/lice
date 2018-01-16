@@ -51,7 +51,9 @@ class LiceScriptEngineTest {
 		println(bindings.containsKey("+"))
 		println(bindings.containsValue("+"))
 		println(bindings.size)
+		for (binding in bindings) println(binding.key)
 		println(bindings.isEmpty())
+		bindings.entries.forEach { println(it.key) }
 		bindings.clear()
 	}
 }

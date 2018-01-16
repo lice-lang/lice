@@ -268,6 +268,7 @@ ice1000
 	 */
 	@Test(timeout = 1000)
 	fun test17() {
+		//language=Lice
 		"""
 (def exp-mod a b m (|>
   (-> ret 1)
@@ -287,7 +288,7 @@ ice1000
 	/**
 	 * lazy evaluation
 	 */
-	@Test(timeout = 1000)
+	@Test
 	fun test18() {
 		//language=Lice
 		"""
@@ -295,7 +296,7 @@ ice1000
 
 (-> lover 233)
 
-(fuck (-> lover 666) ())
+(fuck (-> lover 666) null)
 
 lover
 """ evalTo 233
@@ -305,7 +306,7 @@ lover
 
 (-> lover 233)
 
-(fuck (-> lover 666) ())
+(fuck (-> lover 666) null)
 
 lover
 """ evalTo 666
@@ -315,7 +316,7 @@ lover
 
 (-> lover 233)
 
-(fuck () (-> lover (+ lover 1)))
+(fuck null (-> lover (+ lover 1)))
 """ evalTo 233 + 1
 	}
 
@@ -519,6 +520,24 @@ side-effect
 		//language=Lice
 		"(int->bin 12)" evalTo "0b${12.toString(2)}"
 		//language=Lice
-		"(sqrt 16)" evalTo 4.0
+		val randNum = Lice.run("(rand)") as Double
+		//language=Lice
+		"(sqrt $randNum)" evalTo Math.sqrt(randNum)
+		//language=Lice
+		"(log $randNum)" evalTo Math.log(randNum)
+		//language=Lice
+		"(log10 $randNum)" evalTo Math.log10(randNum)
+		//language=Lice
+		"(sin $randNum)" evalTo Math.sin(randNum)
+		//language=Lice
+		"(sinh $randNum)" evalTo Math.sinh(randNum)
+		//language=Lice
+		"(asin $randNum)" evalTo Math.asin(randNum)
+		//language=Lice
+		"(tan $randNum)" evalTo Math.tan(randNum)
+		//language=Lice
+		"(tanh $randNum)" evalTo Math.tanh(randNum)
+		//language=Lice
+		"(atan $randNum)" evalTo Math.atan(randNum)
 	}
 }

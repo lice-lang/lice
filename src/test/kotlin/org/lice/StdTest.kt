@@ -121,8 +121,8 @@ class StdTest {
 (str->sym "ass")
 (sym->str ass)
 
-(print (format "ass %s can", "we") "
-")
+(println (format "ass %s can", "we"))
+(join->str "ass %s can", "we")
 
 (| 1 2)
 (& 1 2)
@@ -140,7 +140,9 @@ class StdTest {
 (print "Hello " "World" "\n")
 
 ; travel through a range
-(for-each i (.. 1 10) (print i "\n"))
+(for-each i (array->list (array 1 2 3 4 5)) (print i "\n"))
+(for-each i (list->array (list 1 2 3 4 5)) (print i "\n"))
+(for-each i (.. 1 5) (print i "\n"))
 
 ; define a call-by-name function
 (defexpr fold ls init op
