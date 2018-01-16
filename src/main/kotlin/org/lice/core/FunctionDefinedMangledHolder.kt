@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package org.lice.core
 
 import org.lice.model.*
@@ -9,43 +11,41 @@ import org.lice.util.InterpretException.Factory.tooFewArgument
  * `$` in the function names will be replaced with `>`.
  * @author ice1000
  */
-class FunctionDefinedMangledHolder(val symbolList: SymbolList) {
-	fun `def?`(metaData: MetaData, ls: List<Node>): Node {
-		val a = (ls.first() as? SymbolNode ?: InterpretException.notSymbol(metaData)).name
-		return ValueNode(symbolList.isVariableDefined(a), metaData)
+class FunctionDefinedMangledHolder(private val symbolList: SymbolList) {
+	fun `def?`(meta: MetaData, it: List<Node>): Node {
+		val a = (it.first(meta) as? SymbolNode ?: InterpretException.notSymbol(meta)).name
+		return ValueNode(symbolList.isVariableDefined(a), meta)
 	}
 
-	fun undef(metaData: MetaData, ls: List<Node>): Node {
-		val a = (ls.first() as? SymbolNode ?: InterpretException.notSymbol(metaData)).name
-		return ValueNode(null != symbolList.removeVariable(a), metaData)
+	fun undef(meta: MetaData, it: List<Node>): Node {
+		val a = (it.first(meta) as? SymbolNode ?: InterpretException.notSymbol(meta)).name
+		return ValueNode(null != symbolList.removeVariable(a), meta)
 	}
 
-	fun `for-each`(metaData: MetaData, ls: List<Node>): Node {
-		if (ls.size < 3) tooFewArgument(3, ls.size, metaData)
+	fun `for-each`(meta: MetaData, ls: List<Node>): Node {
+		if (ls.size < 3) tooFewArgument(3, ls.size, meta)
 		val i = (ls.first() as SymbolNode).name
 		val a = ls[1].eval()
 		return if (a is Iterable<*>) {
 			var ret: Any? = null
 			a.forEach {
-				symbolList.defineVariable(i, ValueNode(it, metaData))
+				symbolList.defineVariable(i, ValueNode(it, meta))
 				ret = ls[2].eval()
 			}
-			ValueNode(ret, metaData)
-		} else InterpretException.typeMisMatch("List", a, metaData)
+			ValueNode(ret, meta)
+		} else InterpretException.typeMisMatch("List", a, meta)
 	}
 
 	fun alias(meta: MetaData, ls: List<Node>): Node {
-		val a = symbolList.getVariable(cast<SymbolNode>(ls.first()).name)
-		a?.let { function ->
-			ls.forEachIndexed { index, _ ->
+		val function = symbolList.getVariable(cast<SymbolNode>(ls.first(meta)).name) ?: return ValueNode(false, meta)
+		ls.indices.forEach { index ->
+			if (index != 0) {
 				val name = cast<SymbolNode>(ls[index]).name
-				if (index != 0) {
-					if (function is Node) symbolList.defineVariable(name, function)
-					else symbolList.defineFunction(name, cast(function))
-				}
+				if (function is Node) symbolList.defineVariable(name, function)
+				else symbolList.defineFunction(name, cast(function, meta))
 			}
 		}
-		return ValueNode(null != a, meta)
+		return ValueNode(true, meta)
 	}
 
 	fun `force|$`(meta: MetaData, ls: List<Node>): Node {
@@ -54,45 +54,43 @@ class FunctionDefinedMangledHolder(val symbolList: SymbolList) {
 		return ValueNode(ret, meta)
 	}
 
-	fun `str-$sym`(ln: MetaData, ls: List<Node>) = SymbolNode(symbolList, ls.first().eval().toString(), ln)
-	fun `sym-$str`(ln: MetaData, ls: List<Node>): Node {
+	fun `str-$sym`(meta: MetaData, ls: List<Node>) = SymbolNode(symbolList, ls.first(meta).eval().toString(), meta)
+	fun `sym-$str`(meta: MetaData, ls: List<Node>): Node {
 		val a = ls.first()
-		return if (a is SymbolNode) ValueNode(a.name, ln)
-		else InterpretException.typeMisMatch("Symbol", a, ln)
+		return if (a is SymbolNode) ValueNode(a.name, meta)
+		else InterpretException.typeMisMatch("Symbol", a, meta)
 	}
 
-	fun `-$`(metaData: MetaData, ls: List<Node>): Node {
-		if (ls.size < 2) tooFewArgument(2, ls.size, metaData)
+	fun `-$`(meta: MetaData, ls: List<Node>): Node {
+		if (ls.size < 2) tooFewArgument(2, ls.size, meta)
 		symbolList.defineVariable(cast<SymbolNode>(ls.first()).name, ValueNode(ls[1].eval()))
 		return ls.first()
 	}
 
-	fun `if`(metaData: MetaData, ls: List<Node>): Node {
-		if (ls.size < 2)
-			tooFewArgument(2, ls.size, metaData)
+	fun `if`(meta: MetaData, ls: List<Node>): Node {
+		if (ls.size < 2) tooFewArgument(2, ls.size, meta)
 		val a = ls.first().eval()
 		val condition = a.booleanValue()
 		return when {
 			condition -> ls[1]
 			ls.size >= 3 -> ls[2]
-			else -> ValueNode(null, metaData)
+			else -> ValueNode(null, meta)
 		}
 	}
 
-	fun `when`(metaData: MetaData, ls: List<Node>): Node {
+	fun `when`(meta: MetaData, ls: List<Node>): Node {
 		for (i in (0..ls.size - 2) step 2) {
 			val a = ls[i].eval()
 			val condition = a.booleanValue()
 			if (condition) return ls[i + 1]
 		}
-		return if (ls.size % 2 == 0) ValueNode(null, metaData) else ls.last()
+		return if (ls.size % 2 == 0) ValueNode(null, meta) else ls.last()
 	}
 
-	fun `while`(metaData: MetaData, ls: List<Node>): Node {
-		if (ls.size < 2)
-			tooFewArgument(2, ls.size, metaData)
+	fun `while`(meta: MetaData, ls: List<Node>): Node {
+		if (ls.size < 2) tooFewArgument(2, ls.size, meta)
 		var a = ls.first().eval()
-		var ret: Node = ValueNode(null, metaData)
+		var ret: Node = ValueNode(null, meta)
 		while (a.booleanValue()) {
 			// execute loop
 			ret.eval()

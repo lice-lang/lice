@@ -21,6 +21,7 @@ private fun lambdaNameGen() = "\t${++lambdaNameCounter}"
 private var lambdaNameCounter = -100
 fun Any?.booleanValue() = this as? Boolean ?: (this != null)
 internal fun <T> List<T>.first(meta: MetaData) = firstOrNull() ?: InterpretException.tooFewArgument(1, 0, meta)
+internal operator fun <T> List<T>.get(index: Int, meta: MetaData) = getOrNull(index) ?: InterpretException.tooFewArgument(1, 0, meta)
 
 private inline fun SymbolList.defFunc(
 		name: String,
