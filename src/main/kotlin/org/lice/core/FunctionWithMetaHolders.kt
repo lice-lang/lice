@@ -63,8 +63,8 @@ class FunctionWithMetaHolders(private val symbolList: SymbolList) {
 		return String.format(format, *ls.subList(1, ls.size).toTypedArray())
 	}
 
-	fun sqrt(meta: MetaData, it: List<Any?>) = Math.sqrt(cast(it.first(meta)))
-	fun sin(meta: MetaData, it: List<Any?>) = Math.sin(cast(it.first(meta)))
+	fun sqrt(meta: MetaData, it: List<Any?>) = Math.sqrt(cast<Number>(it.first(meta)).toDouble())
+	fun sin(meta: MetaData, it: List<Any?>) = Math.sin(cast<Number>(it.first(meta)).toDouble())
 	fun eval(meta: MetaData, it: List<Any?>) = Lice.run(it.first(meta).toString(), symbolList = symbolList)
 	fun type(meta: MetaData, it: List<Any?>) = it.first(meta)?.javaClass ?: Nothing::class.java
 	fun `load-file`(meta: MetaData, it: List<Any?>) = Lice.run(Paths.get(it.first(meta).toString()), symbolList)
