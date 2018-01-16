@@ -21,21 +21,17 @@ class FunctionMangledHolder(val symbolList: SymbolList) {
 	fun `-$str`(meta: MetaData, it: List<Any?>) = it.first().toString()
 	fun `-$double`(meta: MetaData, it: List<Any?>) = cast<Number>(it.first()).toDouble()
 	fun `-$int`(meta: MetaData, it: List<Any?>) = cast<Number>(it.first()).toInt()
-	fun `&`(
-			meta: MetaData,
-			ls: List<Any?>) = (1 until ls.size).all { NumberOperator.compare(ls[it - 1] as Number, ls[it] as Number, meta) < 0 }
+	fun `&`(meta: MetaData, ls: List<Any?>) =
+			(1 until ls.size).all { NumberOperator.compare(ls[it - 1] as Number, ls[it] as Number, meta) < 0 }
 
-	fun `$`(
-			meta: MetaData,
-			ls: List<Any?>) = (1 until ls.size).all { NumberOperator.compare(ls[it - 1] as Number, ls[it] as Number, meta) > 0 }
+	fun `$`(meta: MetaData, ls: List<Any?>) =
+			(1 until ls.size).all { NumberOperator.compare(ls[it - 1] as Number, ls[it] as Number, meta) > 0 }
 
-	fun `&=`(
-			meta: MetaData,
-			ls: List<Any?>) = (1 until ls.size).all { NumberOperator.compare(ls[it - 1] as Number, ls[it] as Number, meta) <= 0 }
+	fun `&=`(meta: MetaData, ls: List<Any?>) =
+			(1 until ls.size).all { NumberOperator.compare(ls[it - 1] as Number, ls[it] as Number, meta) <= 0 }
 
-	fun `$=`(
-			meta: MetaData,
-			ls: List<Any?>) = (1 until ls.size).all { NumberOperator.compare(ls[it - 1] as Number, ls[it] as Number, meta) >= 0 }
+	fun `$=`(meta: MetaData, ls: List<Any?>) =
+			(1 until ls.size).all { NumberOperator.compare(ls[it - 1] as Number, ls[it] as Number, meta) >= 0 }
 
 	fun `_`(meta: MetaData, ls: List<Any?>): Number {
 		val init = cast<Number>(ls.first())
@@ -79,12 +75,8 @@ class FunctionMangledHolder(val symbolList: SymbolList) {
 		else InterpretException.typeMisMatch("Int", a, ln)
 	}
 
-	fun `{|}`(ln: MetaData, ls: List<Any?>): Any? {
-		return ls.reduceRight { value, pairs: Any? ->
-			Pair(value, pairs)
-		}
-	}
-
+	fun `join-$str`(ln: MetaData, ls: List<Any?>) = cast<Iterable<*>>(ls.first()).joinToString(ls[1].toString())
+	fun `{|}`(ln: MetaData, ls: List<Any?>) = ls.reduceRight(::Pair)
 	fun `{|`(ln: MetaData, ls: List<Any?>): Any? {
 		val a = ls.first()
 		return when (a) {

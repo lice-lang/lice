@@ -10,6 +10,7 @@
 package org.lice.core
 
 import org.lice.model.*
+import org.lice.util.InterpretException
 import org.lice.util.InterpretException.Factory.notSymbol
 import org.lice.util.InterpretException.Factory.numberOfArgumentNotMatch
 import org.lice.util.InterpretException.Factory.tooFewArgument
@@ -19,6 +20,7 @@ import org.lice.util.cast
 private fun lambdaNameGen() = "\t${++lambdaNameCounter}"
 private var lambdaNameCounter = -100
 fun Any?.booleanValue() = this as? Boolean ?: (this != null)
+internal fun <T> List<T>.first(meta: MetaData) = firstOrNull() ?: InterpretException.tooFewArgument(1, 0, meta)
 
 private inline fun SymbolList.defFunc(
 		name: String,
