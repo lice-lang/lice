@@ -516,7 +516,7 @@ side-effect
 		//language=Lice
 		"(int->hex 12)" evalTo "0x${12.toString(16)}"
 		//language=Lice
-		"(int->oct 12)" evalTo "0${12.toString(8)}"
+		"(int->oct 12)" evalTo "0o${12.toString(8)}"
 		//language=Lice
 		"(int->bin 12)" evalTo "0b${12.toString(2)}"
 		//language=Lice

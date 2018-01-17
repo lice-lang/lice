@@ -75,7 +75,7 @@ class FunctionMangledHolder(private val symbolList: SymbolList) {
 
 	fun `int-$oct`(meta: MetaData, ls: List<Any?>): String {
 		val a = ls.first()
-		return if (a is Number) "0${Integer.toOctalString(a.toInt())}"
+		return if (a is Number) "0o${Integer.toOctalString(a.toInt())}"
 		else typeMisMatch("Int", a, meta)
 	}
 
