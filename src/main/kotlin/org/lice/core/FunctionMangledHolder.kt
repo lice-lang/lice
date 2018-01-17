@@ -79,7 +79,9 @@ class FunctionMangledHolder(private val symbolList: SymbolList) {
 		else typeMisMatch("Int", a, meta)
 	}
 
-	fun `join-$str`(meta: MetaData, ls: List<Any?>) = cast<Iterable<*>>(ls.first()).joinToString(ls[1].toString())
+	fun `join-$str`(meta: MetaData, ls: List<Any?>) =
+			cast<Iterable<*>>(ls.first()).joinToString(ls.getOrNull(1)?.toString().orEmpty())
+
 	fun `{|}`(meta: MetaData, ls: List<Any?>) = ls.reduceRight(::Pair)
 	fun `{|`(meta: MetaData, ls: List<Any?>): Any? {
 		val a = ls.first(meta)

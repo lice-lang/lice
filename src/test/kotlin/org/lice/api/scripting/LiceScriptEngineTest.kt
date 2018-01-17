@@ -8,8 +8,7 @@ import kotlin.test.assertFailsWith
 /**
  * Created by Glavo on 17-8-11.
  *
- * @author Glavo
- * *
+ * @author Glavo, ice1000
  * @since 0.1.0
  */
 class LiceScriptEngineTest {

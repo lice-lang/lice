@@ -6,7 +6,8 @@ import org.lice.lang.Echoer
 
 class FunctionHolders(private val symbolList: SymbolList) {
 	fun print(it: List<Any?>) = it.forEach(Echoer::echo)
-	fun exit(it: List<Any?>) = System.exit(0)
+	fun type(it: List<Any?>) = it.firstOrNull()?.javaClass ?: Nothing::class.java
+	fun exit(it: List<Any?>) = System.exit(it.firstOrNull() as? Int ?: 0)
 	fun rand(it: List<Any?>) = Math.random()
 	fun `&&`(it: List<Any?>) = it.all(Any?::booleanValue)
 	fun `||`(it: List<Any?>) = it.any(Any?::booleanValue)

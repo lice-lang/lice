@@ -25,7 +25,7 @@ class FunctionDefinedMangledHolder(private val symbolList: SymbolList) {
 	fun `for-each`(meta: MetaData, ls: List<Node>): Node {
 		if (ls.size < 3) tooFewArgument(3, ls.size, meta)
 		val i = (ls.first() as SymbolNode).name
-		val a = ls[1].eval()
+		val a = ls[1].eval().let { (it as? Array<*>)?.toList() ?: it }
 		return if (a is Iterable<*>) {
 			var ret: Any? = null
 			a.forEach {

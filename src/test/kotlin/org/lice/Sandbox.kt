@@ -11,7 +11,10 @@ import org.junit.Test
 class Sandbox {
 	@Test
 	fun sandbox() {
+		//language=Lice
 		Lice.run("""
+(extern "org.junit.Assert" "fail")
+(force|> (fail)) ; assertion fail
 """)
 	}
 }

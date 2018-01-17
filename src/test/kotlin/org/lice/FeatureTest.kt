@@ -536,8 +536,44 @@ side-effect
 		//language=Lice
 		"(tan $randNum)" evalTo Math.tan(randNum)
 		//language=Lice
-		"(tanh $randNum)" evalTo Math.tanh(randNum)
-		//language=Lice
 		"(atan $randNum)" evalTo Math.atan(randNum)
+		//language=Lice
+		"(exp $randNum)" evalTo Math.exp(randNum)
+		//language=Lice
+		"(| $randNum $randNum)" evalTo (randNum.toInt() or randNum.toInt())
+		//language=Lice
+		"(& $randNum $randNum)" evalTo (randNum.toInt() and randNum.toInt())
+		//language=Lice
+		"(^ $randNum $randNum)" evalTo (randNum.toInt() xor randNum.toInt())
+	}
+
+	@Test
+	fun test35() {
+		val randListOrigin = (0..((Math.random() * 200 + 100).toInt())).map { (Math.random() * 10000).toInt() }
+		val randList = randListOrigin.joinToString(" ").let { "(list $it)" }
+		//language=Lice
+		"(type $randList)" evalTo randListOrigin::class.java
+		//language=Lice
+		"(size $randList)" evalTo randListOrigin.size
+		//language=Lice
+		"(reverse $randList)" evalTo randListOrigin.reversed()
+		//language=Lice
+		"(!! $randList 0)" evalTo randListOrigin.first()
+		//language=Lice
+		"([| $randList)" evalTo randListOrigin.first()
+		//language=Lice
+		"(|] $randList)" evalTo randListOrigin.drop(1)
+		//language=Lice
+		"(last $randList)" evalTo randListOrigin.last()
+		//language=Lice
+		"(++ $randList $randList)" evalTo randListOrigin + randListOrigin
+		//language=Lice
+		"(sort $randList $randList)" evalTo randListOrigin.sorted()
+		//language=Lice
+		"(count $randList 2)" evalTo randListOrigin.count { it == 2 }
+		//language=Lice
+		"(split (->str 123) 2)" evalTo "123".split("2")
+		//language=Lice
+		"(!! (array 1 2 3) 0)" evalTo 1
 	}
 }
