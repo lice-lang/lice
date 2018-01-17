@@ -4,6 +4,7 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.lice.lang.Echoer
 import org.lice.lang.Echoer.echo
+import org.lice.repl.main
 import org.lice.util.forceRun
 import java.io.File
 import java.nio.file.Files
@@ -47,7 +48,7 @@ class StdTest {
 					}
 				}
 		val objekt = obj as File
-		Lice.run(objekt)
+		arrayOf(objekt.absolutePath).main()
 	}
 
 	@Test(timeout = 1000)
@@ -122,7 +123,7 @@ class StdTest {
 (sym->str ass)
 
 (println (format "ass %s can", "we"))
-(join->str "ass %s can", "we")
+(join->str (list "ass %s can", "we"))
 
 (| 1 2)
 (& 1 2)

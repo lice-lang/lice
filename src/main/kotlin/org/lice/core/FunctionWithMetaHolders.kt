@@ -5,8 +5,9 @@ package org.lice.core
 import org.lice.Lice
 import org.lice.lang.NumberOperator
 import org.lice.model.MetaData
-import org.lice.util.*
 import org.lice.util.InterpretException.Factory.typeMisMatch
+import org.lice.util.cast
+import org.lice.util.runReflection
 import java.lang.reflect.Modifier
 import java.nio.file.Paths
 import java.util.*
@@ -73,7 +74,6 @@ class FunctionWithMetaHolders(private val symbolList: SymbolList) {
 	fun log(meta: MetaData, it: List<Any?>) = Math.log(cast<Number>(it.first(meta)).toDouble())
 	fun log10(meta: MetaData, it: List<Any?>) = Math.log10(cast<Number>(it.first(meta)).toDouble())
 	fun eval(meta: MetaData, it: List<Any?>) = Lice.run(it.first(meta).toString(), symbolList = symbolList)
-	fun type(meta: MetaData, it: List<Any?>) = it.first(meta)?.javaClass ?: Nothing::class.java
 	fun `load-file`(meta: MetaData, it: List<Any?>) = Lice.run(Paths.get(it.first(meta).toString()), symbolList)
 	fun `!`(meta: MetaData, it: List<Any?>) = it.first(meta).booleanValue().not()
 	fun `~`(meta: MetaData, it: List<Any?>) = cast<Int>(it.first(meta)).inv()
@@ -98,7 +98,6 @@ class FunctionWithMetaHolders(private val symbolList: SymbolList) {
 	fun size(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)).count()
 	fun last(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)).last()
 	fun reverse(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)).reversed()
-	fun chunk(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)).chunked(cast(it[1, meta]))
 	fun `++`(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)) + cast<Iterable<*>>(it[1, meta])
 	fun sort(meta: MetaData, it: List<Any?>) = cast<Iterable<Comparable<Comparable<*>>>>(it.first(meta)).sorted()
 	fun split(meta: MetaData, it: List<Any?>) = it.first(meta).toString().split(it[1].toString()).toList()

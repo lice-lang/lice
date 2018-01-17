@@ -75,11 +75,13 @@ class FunctionMangledHolder(private val symbolList: SymbolList) {
 
 	fun `int-$oct`(meta: MetaData, ls: List<Any?>): String {
 		val a = ls.first()
-		return if (a is Number) "0${Integer.toOctalString(a.toInt())}"
+		return if (a is Number) "0o${Integer.toOctalString(a.toInt())}"
 		else typeMisMatch("Int", a, meta)
 	}
 
-	fun `join-$str`(meta: MetaData, ls: List<Any?>) = cast<Iterable<*>>(ls.first()).joinToString(ls[1].toString())
+	fun `join-$str`(meta: MetaData, ls: List<Any?>) =
+			cast<Iterable<*>>(ls.first()).joinToString(ls.getOrNull(1)?.toString().orEmpty())
+
 	fun `{|}`(meta: MetaData, ls: List<Any?>) = ls.reduceRight(::Pair)
 	fun `{|`(meta: MetaData, ls: List<Any?>): Any? {
 		val a = ls.first(meta)
@@ -101,7 +103,7 @@ class FunctionMangledHolder(private val symbolList: SymbolList) {
 		}
 	}
 
-	fun `##`(metaData: MetaData, ls: List<Any?>): List<Int> {
+	fun `##`(metaData: MetaData, ls: List<Any?>): Iterable<Int> {
 		if (ls.size < 2) tooFewArgument(2, ls.size, metaData)
 		val a = ls.first()
 		val b = ls[1]
@@ -109,8 +111,8 @@ class FunctionMangledHolder(private val symbolList: SymbolList) {
 			a is Number && b is Number -> {
 				val begin = a.toInt()
 				val end = b.toInt()
-				if (begin <= end) (begin..end).toList()
-				else (end..begin).reversed().toList()
+				if (begin <= end) (begin..end)
+				else (end..begin).reversed()
 			}
 			else -> typeMisMatch("Number", a as? Number ?: b, metaData)
 		}
@@ -118,8 +120,5 @@ class FunctionMangledHolder(private val symbolList: SymbolList) {
 
 	fun `list-$array`(meta: MetaData, it: List<Any?>) = cast<List<*>>(it.first(meta)).toTypedArray()
 	fun `array-$list`(meta: MetaData, it: List<Any?>) = cast<Array<*>>(it.first(meta)).toList()
-	fun `-$chars`(meta: MetaData, it: List<Any?>) = it.fold(StringBuilder(it.size)) { sb, value ->
-		sb.append(value.toString())
-	}.toString().toCharArray().toList()
-
+	fun `-$chars`(meta: MetaData, it: List<Any?>) = it.joinToString("").toCharArray()
 }

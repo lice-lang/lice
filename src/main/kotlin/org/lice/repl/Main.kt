@@ -11,8 +11,8 @@ import java.nio.file.Paths
  * @author ice1000
  */
 
-fun main(args: Array<String>) {
+fun Array<String>.main() {
 	Echoer.openOutput()
-	if (args.isEmpty()) println("Please specify an input file.")
-	else Lice.run(Paths.get(args.first()), SymbolList())
+	if (isEmpty()) println("Please specify an input file.")
+	else Lice.run(Paths.get(first()), SymbolList())
 }
