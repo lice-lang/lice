@@ -2,8 +2,8 @@ package org.lice.api.scripting
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.lice.core.LiceEntry
 import javax.script.ScriptEngineManager
+import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 
 /**
@@ -56,7 +56,7 @@ class LiceScriptEngineTest {
 		for (binding in bindings) println(binding.key)
 		println(bindings.isEmpty())
 		bindings.entries.forEach { println(it.key) }
-		bindings.entries.iterator().remove()
+		assertFails { bindings.entries.iterator().remove() }
 		bindings.clear()
 	}
 }
