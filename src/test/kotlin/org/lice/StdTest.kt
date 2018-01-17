@@ -183,6 +183,9 @@ class StdTest {
 ; invoke the function defined above
 (fold (.. 1 4) 0 +)
 
+(variable? ass)
+(function? fold)
+
 ; passing a call-by-value lambda to a call-by-value lambda
 ((lambda op (op 3 4)) (lambda a b (+ (* a a) (* b b))))
 """.toByteArray())

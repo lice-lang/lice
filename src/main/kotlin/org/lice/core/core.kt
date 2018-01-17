@@ -66,7 +66,7 @@ fun SymbolList.addDefines() {
 			val body = ls.lastOrNull() ?: tooFewArgument(1, ls.size, meta)
 			val params = ls
 					.subList(0, ls.size - 1)
-					.map { (it as? SymbolNode)?.name ?: typeMisMatch("Symbol", it.eval(), meta) }
+					.map { (it as? SymbolNode)?.name ?: notSymbol(meta) }
 			val name = "λ${body.hashCode()}"
 			defFunc(name, params, mapper, body)
 			SymbolNode(this, name, meta)

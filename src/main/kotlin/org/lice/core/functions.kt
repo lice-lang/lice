@@ -8,6 +8,7 @@ import org.lice.lang.NumberOperator
 import org.lice.model.*
 import org.lice.parse.*
 import org.lice.util.*
+import org.lice.util.InterpretException.Factory.notSymbol
 import org.lice.util.InterpretException.Factory.tooFewArgument
 import java.lang.reflect.Modifier
 import java.nio.file.Paths
@@ -346,4 +347,10 @@ class FunctionDefinedHolder(private val symbolList: SymbolList) {
 		}
 		return ValueNode(true, meta)
 	}
+
+	fun `variable?`(meta: MetaData, ls: List<Node>) =
+			ValueNode(symbolList.variables[(ls.first(meta) as? SymbolNode)?.name ?: notSymbol(meta)] is Node, meta)
+
+	fun `function?`(meta: MetaData, ls: List<Node>) =
+			ValueNode(symbolList.variables[(ls.first(meta) as? SymbolNode)?.name ?: notSymbol(meta)] as? Func != null, meta)
 }

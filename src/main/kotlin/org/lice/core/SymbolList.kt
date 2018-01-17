@@ -28,6 +28,7 @@ class SymbolList
 			}
 			ValueNode(ret)
 		}
+		defineVariable("all-symbols", ValueNode(preludeSymbols))
 		if (init) initialize()
 	}
 
@@ -118,12 +119,8 @@ class SymbolList
 	fun extractLiceVariable(name: String): Any? = (getVariable(name) as Node).eval()
 
 	companion object {
-		private val initMethods: MutableSet<(SymbolList) -> Unit> = mutableSetOf()
 		val pathSeperator: String = System.getProperty("path.separator")
 		val classPath: String = System.getProperty("java.class.path")
-		fun addInitMethod(f: SymbolList.() -> Unit) {
-			initMethods.add(f)
-		}
 
 		val preludeVariables = listOf("null", "true", "false")
 		val preludeSymbols by lazy {

@@ -22,7 +22,7 @@ class MetaData(
 		val beginIndex: Int = -1,
 		val endIndex: Int = -1) {
 	companion object Factory {
-		val EmptyMetaData = MetaData()
+		@JvmField val EmptyMetaData = MetaData()
 	}
 }
 
