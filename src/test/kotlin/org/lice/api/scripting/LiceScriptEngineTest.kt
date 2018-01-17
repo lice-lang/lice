@@ -30,6 +30,7 @@ class LiceScriptEngineTest {
 		println(engine.factory.engineName)
 		println(engine.factory.engineVersion)
 		println(engine.factory.extensions)
+		println(engine.factory.getProgram(""))
 		println(engine.factory.languageName)
 		println(engine.factory.languageVersion)
 		println(engine.factory.getOutputStatement("233"))
@@ -38,6 +39,7 @@ class LiceScriptEngineTest {
 		println(engine.factory.getParameter("javax.script.engine"))
 		println(engine.factory.getParameter(""))
 		assertFailsWith<UnsupportedOperationException> { context.scopes }
+		assertFailsWith<UnsupportedOperationException> { engine.factory.getMethodCallSyntax("", "") }
 		assertFailsWith<UnsupportedOperationException> { context.getAttributesScope("+") }
 		assertEquals(0, engine.eval("0"))
 		val bindings = engine.createBindings()

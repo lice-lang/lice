@@ -84,6 +84,18 @@ class StdTest {
 """ evalTo false
 	}
 
+	@Test
+	fun failureTest() {
+		//language=Lice
+		assertFails { Lice.runBarely("""(str->int "xsanjkxa")""") }
+		//language=Lice
+		assertFails { Lice.runBarely("""(int->bin "")""") }
+		//language=Lice
+		assertFails { Lice.runBarely("""(int->hex "")""") }
+		//language=Lice
+		assertFails { Lice.runBarely("""(int->oct "")""") }
+	}
+
 	companion object {
 		@JvmStatic
 		fun main(args: Array<String>) {
@@ -107,6 +119,8 @@ class StdTest {
 (print (+ 1 1) "\n")
 (print (- 10N 1.0) "\n")
 (print (/ 10.2M 5) "\n")
+(print (/) "\n")
+(print (/ 1) "\n")
 (print (/ 10 5.0) "\n")
 (print (* 10 5.2M) "\n")
 
@@ -117,6 +131,8 @@ class StdTest {
 
 (type 23)
 
+(->double 10)
+
 (-> ass 10)
 
 (str->sym "ass")
@@ -124,6 +140,13 @@ class StdTest {
 
 (println (format "ass %s can", "we"))
 (join->str (list "ass %s can", "we"))
+
+([| (array 1 2))
+(|] (array 1 2))
+([| 1)
+(|] 1)
+(.. 1 2)
+(.. 2 1)
 
 (| 1 2)
 (& 1 2)
