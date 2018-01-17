@@ -553,6 +553,8 @@ side-effect
 	fun test35() {
 		val randListOrigin = (0..((Math.random() * 200 + 100).toInt())).map { (Math.random() * 10000).toInt() }
 		val randList = randListOrigin.joinToString(" ").let { "(list $it)" }
+		val randList2Origin = (0..((Math.random() * 200 + 100).toInt())).map { (Math.random() * 10000).toInt() }
+		val randList2 = randList2Origin.joinToString(" ").let { "(list $it)" }
 		//language=Lice
 		"(type $randList)" evalTo randListOrigin::class.java
 		//language=Lice
@@ -565,6 +567,12 @@ side-effect
 		"([| $randList)" evalTo randListOrigin.first()
 		//language=Lice
 		"(|] $randList)" evalTo randListOrigin.drop(1)
+		//language=Lice
+		"(last $randList)" evalTo randListOrigin.last()
+		//language=Lice
+		"(subtract $randList $randList2)" evalTo randListOrigin.subtract(randList2Origin)
+		//language=Lice
+		"(intersect $randList $randList2)" evalTo randListOrigin.intersect(randList2Origin)
 		//language=Lice
 		"(last $randList)" evalTo randListOrigin.last()
 		//language=Lice

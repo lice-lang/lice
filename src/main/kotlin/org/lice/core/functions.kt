@@ -225,10 +225,16 @@ class FunctionWithMetaHolders(private val symbolList: SymbolList) {
 	fun getTokens(meta: MetaData, it: List<Any?>) = (1..cast(it.first(meta))).map { liceScanner.next() }
 	fun getBigInts(meta: MetaData, it: List<Any?>) = (1..cast(it.first(meta))).map { liceScanner.nextBigInteger() }
 	fun getBigDecs(meta: MetaData, it: List<Any?>) = (1..cast(it.first(meta))).map { liceScanner.nextBigDecimal() }
-	fun `in?`(meta: MetaData, it: List<Any?>) = it[1, meta] in cast<Iterable<*>>(it.first(meta))
+	fun `in?`(meta: MetaData, it: List<Any?>) =
+			it[1, meta] in cast<Iterable<*>>(it.first(meta).let { (it as? Array<*>)?.toList() ?: it })
+
 	fun size(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)).count()
 	fun last(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)).last()
 	fun reverse(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)).reversed()
+	fun distinct(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)).distinct()
+	fun subtract(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)).subtract(cast(it[1, meta]))
+	fun intersect(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)).intersect(cast(it[1, meta]))
+	fun union(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)).union(cast(it[1, meta]))
 	fun `++`(meta: MetaData, it: List<Any?>) = cast<Iterable<*>>(it.first(meta)) + cast<Iterable<*>>(it[1, meta])
 	fun sort(meta: MetaData, it: List<Any?>) = cast<Iterable<Comparable<Comparable<*>>>>(it.first(meta)).sorted()
 	fun split(meta: MetaData, it: List<Any?>) = it.first(meta).toString().split(it[1].toString()).toList()

@@ -26,6 +26,7 @@ for a interpreted language.
 
 + [About the Language](https://github.com/lice-lang/lice-reference)
 + [A simple Haskell implementation](./lice.hs)
++ [**(Feature!) IntelliJ IDEA Plugin**](https://github.com/lice-lang/lice-intellij)
 
 See [FeatureTest](src/test/kotlin/org/lice/FeatureTest.kt) to learn more about the language's features.
 
@@ -35,7 +36,7 @@ Once a feature is finished and tested, and not considered harmful, I'll copy the
 
 ## It looks like
 
-```lisp
+```lice
 ; print a string
 (print "Hello " "World" "\n")
 
@@ -80,7 +81,7 @@ public class LiceScriptEngineTest {
 
 Code to run:
 
-```lisp
+```lice
 ; loops
 (def loop count block (|>
     (-> i 0)
@@ -98,6 +99,8 @@ Code to run:
 (print "loop count: " i)
 ```
 
+Environment: Ubuntu Linux 16.04, HotSpot 1.8u151, Intel core i7 4720HQ 2.6 GHz
+
 Condition|Time
 :---:|:---:
 Lice call Java using `extern`|350ms
@@ -110,7 +113,7 @@ Java call Lice using Lice API|629ms
 
 Lice has handy APIs for interacting with Java.
 
-```lisp
+```lice
 ; declare an extern function
 ; must be a static Java function
 (extern "java.util.Objects" "equals")
