@@ -17,9 +17,7 @@ import org.lice.util.InterpretException.Factory.tooFewArgument
 import org.lice.util.InterpretException.Factory.typeMisMatch
 import org.lice.util.cast
 
-private fun lambdaNameGen() = "\t${++lambdaNameCounter}"
-private var lambdaNameCounter = Int.MIN_VALUE
-fun Any?.booleanValue() = this as? Boolean ?: (this != null)
+internal fun Any?.booleanValue() = this as? Boolean ?: (this != null)
 internal fun <T> List<T>.first(meta: MetaData) = firstOrNull() ?: InterpretException.tooFewArgument(1, 0, meta)
 internal operator fun <T> List<T>.get(index: Int, meta: MetaData) = getOrNull(index)
 		?: InterpretException.tooFewArgument(index, size, meta)
@@ -69,7 +67,7 @@ fun SymbolList.addDefines() {
 			val params = ls
 					.subList(0, ls.size - 1)
 					.map { (it as? SymbolNode)?.name ?: typeMisMatch("Symbol", it.eval(), meta) }
-			val name = lambdaNameGen()
+			val name = "λ${body.hashCode()}"
 			defFunc(name, params, mapper, body)
 			SymbolNode(this, name, meta)
 		}

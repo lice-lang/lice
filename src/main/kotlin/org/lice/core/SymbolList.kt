@@ -36,16 +36,17 @@ class SymbolList
 		addLiterals()
 		bindMethodsWithMetaOf(FunctionWithMetaHolders(this))
 		bindMethodsOf(FunctionHolders(this))
+		bindMethodsWithoutEvaluationOf(FunctionDefinedHolder(this))
 		val definedMangledHolder = FunctionDefinedMangledHolder(this)
 		definedMangledHolder.javaClass.declaredMethods.forEach { method ->
 			defineFunction(method.name.mangleA()) { meta, list ->
-				cast(runReflection { method.invoke(definedMangledHolder, meta, list) })
+				cast(runReflection { method(definedMangledHolder, meta, list) })
 			}
 		}
 		val mangledHolder = FunctionMangledHolder(this)
 		mangledHolder.javaClass.declaredMethods.forEach { method ->
 			provideFunctionWithMeta(method.name.mangleB()) { meta, list ->
-				runReflection { method.invoke(mangledHolder, meta, list) }
+				runReflection { method(mangledHolder, meta, list) }
 			}
 		}
 	}
@@ -59,7 +60,7 @@ class SymbolList
 	 * @param any the object mentioned above
 	 */
 	fun bindMethodsWithMetaOf(any: Any) = any.javaClass.declaredMethods.forEach { method ->
-		provideFunctionWithMeta(method.name) { meta, list -> runReflection { method.invoke(any, meta, list) } }
+		provideFunctionWithMeta(method.name) { meta, list -> runReflection { method(any, meta, list) } }
 	}
 
 	/**
@@ -71,19 +72,31 @@ class SymbolList
 	 * @param any the object mentioned above
 	 */
 	fun bindMethodsOf(any: Any) = any.javaClass.declaredMethods.forEach { method ->
-		provideFunction(method.name) { list -> runReflection { method.invoke(any, list) } }
+		provideFunction(method.name) { list -> runReflection { method(any, list) } }
+	}
+
+	/**
+	 * You should pass an object that has some methods.
+	 * The methods must be of this signature:
+	 * <code>
+	 * (List<Object>) -> Object
+	 * </code>
+	 * @param any the object mentioned above
+	 */
+	fun bindMethodsWithoutEvaluationOf(any: Any) = any.javaClass.declaredMethods.forEach { method ->
+		defineFunction(method.name) { meta, list -> runReflection { cast(method(any, meta, list)) } }
 	}
 
 	override fun provideFunctionWithMeta(name: String, node: ProvidedFuncWithMeta) =
 			defineFunction(name) { meta, ls ->
-				val value = node(meta, ls.map { it.eval() })
+				val value = node(meta, ls.map(Node::eval))
 				if (value != null) ValueNode(value, meta)
 				else ValueNode(null, meta)
 			}
 
 	override fun provideFunction(name: String, node: ProvidedFunc) =
 			defineFunction(name) { meta, ls ->
-				val value = node(ls.map { it.eval() })
+				val value = node(ls.map(Node::eval))
 				if (value != null) ValueNode(value, meta)
 				else ValueNode(null, meta)
 			}
@@ -100,8 +113,7 @@ class SymbolList
 		defineVariable("null", ValueNode(null))
 	}
 
-	fun extractLiceFunction(name: String): ProvidedFunc
-			= { ls -> (getVariable(name) as Func)(EmptyMetaData, ls.map { ValueNode(it) }) }
+	fun extractLiceFunction(name: String): ProvidedFunc = { ls -> (getVariable(name) as Func)(EmptyMetaData, ls.map { ValueNode(it) }) }
 
 	fun extractLiceVariable(name: String): Any? = (getVariable(name) as Node).eval()
 

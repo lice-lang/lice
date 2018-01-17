@@ -7,7 +7,8 @@
 package org.lice
 
 import org.lice.core.SymbolList
-import org.lice.parse.*
+import org.lice.parse.Lexer
+import org.lice.parse.Parser
 import org.lice.util.InterpretException
 import org.lice.util.ParseException
 import java.io.File
@@ -17,13 +18,11 @@ object Lice {
 	@JvmOverloads
 	@JvmStatic
 	@Deprecated("Use nio instead", ReplaceWith("run(Paths.get(file.toURI()), symbolList)", "org.lice.Lice.run", "java.nio.file.Paths"))
-	fun run(file: File, symbolList: SymbolList = SymbolList()) =
-			run(Paths.get(file.toURI()), symbolList)
+	fun run(file: File, symbolList: SymbolList = SymbolList()) = run(Paths.get(file.toURI()), symbolList)
 
 	@JvmOverloads
 	@JvmStatic
-	fun run(file: Path, symbolList: SymbolList = SymbolList()) =
-			run(String(Files.readAllBytes(file)), symbolList)
+	fun run(file: Path, symbolList: SymbolList = SymbolList()) = run(String(Files.readAllBytes(file)), symbolList)
 
 	@JvmOverloads
 	@JvmStatic

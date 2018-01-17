@@ -15,24 +15,16 @@ import org.lice.model.MetaData
 open class LiceException(string: String, @JvmField protected val meta: MetaData) : RuntimeException(string) {
 	protected fun prettify(cachedCodeLines: List<String>): String {
 		val builder = StringBuilder()
-		builder.appendln("Error " + message)
-		if (meta.beginLine != -1)
-			builder.append("At " + meta.beginLine)
-		if (meta.beginIndex != -1) {
-			builder.append(":" + meta.beginIndex)
-		}
+		builder.appendln("Error $message")
+		if (meta.beginLine != -1) builder.append("At ${meta.beginLine}")
+		if (meta.beginIndex != -1) builder.append(":${meta.beginIndex}")
 		builder.appendln(": " + message)
-		if (meta.beginLine != -1) {
-			builder.appendln(cachedCodeLines[meta.beginLine - 1])
-		}
+		if (meta.beginLine != -1) builder.appendln(cachedCodeLines[meta.beginLine - 1])
 		if (meta.beginIndex != -1) {
-			for (i in meta.beginIndex.downTo(2))
-				builder.append(' ')
+			for (i in meta.beginIndex.downTo(2)) builder.append(' ')
 			builder.append('^')
-			if (meta.endIndex != -1) {
-				for (i in meta.endIndex.downTo(meta.beginIndex + 2))
-					builder.append('~')
-			}
+			if (meta.endIndex != -1) for (i in meta.endIndex.downTo(meta.beginIndex + 2))
+				builder.append('~')
 			builder.appendln()
 		}
 		builder.appendln()
@@ -53,12 +45,11 @@ class InterpretException(string: String, meta: MetaData = MetaData()) :
 	}
 
 	companion object Factory {
-		fun undefinedVariable(
-				name: String,
-				meta: MetaData): Nothing = throw InterpretException("undefined variable: $name", meta)
+		fun undefinedVariable(name: String, meta: MetaData): Nothing =
+				throw InterpretException("undefined variable: $name", meta)
 
 		fun notSymbol(meta: MetaData): Nothing =
-				throw InterpretException("type mismatch: symbol expected.", meta)
+				throw InterpretException("syntax error: symbol expected.", meta)
 
 		fun notFunction(meta: MetaData): Nothing =
 				throw InterpretException("type mismatch: function expected.", meta)

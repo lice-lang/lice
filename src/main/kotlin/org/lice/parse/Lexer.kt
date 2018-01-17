@@ -9,7 +9,7 @@ class Lexer(sourceCode: String) {
 	private var line = 1
 	private var col: Int
 	private var charIndex: Int
-	private var tokenBuffer: MutableList<Token> = arrayListOf()
+	private var tokenBuffer: MutableList<Token> = ArrayList(50)
 	private var currentTokenIndex: Int = 0
 
 	init {
