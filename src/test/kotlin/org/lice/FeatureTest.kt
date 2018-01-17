@@ -538,6 +538,8 @@ side-effect
 		//language=Lice
 		"(atan $randNum)" evalTo Math.atan(randNum)
 		//language=Lice
+		"(tanh $randNum)" evalTo Math.tanh(randNum)
+		//language=Lice
 		"(exp $randNum)" evalTo Math.exp(randNum)
 		//language=Lice
 		"(| $randNum $randNum)" evalTo (randNum.toInt() or randNum.toInt())

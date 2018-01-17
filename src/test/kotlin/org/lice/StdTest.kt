@@ -94,6 +94,8 @@ class StdTest {
 		assertFails { Lice.runBarely("""(int->hex "")""") }
 		//language=Lice
 		assertFails { Lice.runBarely("""(int->oct "")""") }
+		//language=Lice
+		assertFails { Lice.runBarely("""(extern "org.lice.REPL" "main")""") }
 	}
 
 	companion object {
@@ -119,8 +121,10 @@ class StdTest {
 (print (+ 1 1) "\n")
 (print (- 10N 1.0) "\n")
 (print (/ 10.2M 5) "\n")
-(print (/) "\n")
 (print (/ 1) "\n")
+(print (- 1) "\n")
+(print (% 1) "\n")
+(print (%) "\n")
 (print (/ 10 5.0) "\n")
 (print (* 10 5.2M) "\n")
 
@@ -130,6 +134,9 @@ class StdTest {
 (print (+ 1 2) "\n")
 
 (type 23)
+(type)
+
+(if null 1)
 
 (->double 10)
 

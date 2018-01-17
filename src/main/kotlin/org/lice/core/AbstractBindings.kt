@@ -34,22 +34,22 @@ abstract class AbstractBindings : Bindings {
 	override fun remove(key: String?) = variables.remove(key)
 	override val size: Int get() = variables.size
 
-	override val entries: MutableSet<Entry>
-		get() = object : AbstractMutableSet<Entry>() {
+	override val entries: MutableSet<LiceEntry>
+		get() = object : AbstractMutableSet<LiceEntry>() {
 			override val size: Int get() = variables.size
-			override fun add(element: Entry): Boolean {
+			override fun add(element: LiceEntry): Boolean {
 				defineVariable(element.key, ValueNode(element.value, MetaData.EmptyMetaData))
 				return true
 			}
 
-			override operator fun iterator(): MutableIterator<Entry> =
-					object : MutableIterator<Entry> {
+			override operator fun iterator(): MutableIterator<LiceEntry> =
+					object : MutableIterator<LiceEntry> {
 						val it = variables.iterator()
 						override fun hasNext(): Boolean = it.hasNext()
 						override fun remove() = it.remove()
-						override fun next(): Entry =
+						override fun next(): LiceEntry =
 								it.next().let { e ->
-									object : Entry {
+									object : LiceEntry {
 										override val value: Any? get() = e.value
 										override val key: String get() = e.key
 										override fun setValue(newValue: Any?) =

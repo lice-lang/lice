@@ -12,7 +12,7 @@ import org.lice.model.Node
 import org.lice.model.ValueNode
 import org.lice.util.*
 
-typealias Entry = MutableMap.MutableEntry<String, Any?>
+typealias LiceEntry = MutableMap.MutableEntry<String, Any?>
 
 class SymbolList
 @JvmOverloads constructor(init: Boolean = true) : AbstractBindings() {
