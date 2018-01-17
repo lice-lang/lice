@@ -52,7 +52,7 @@ class IntegratedTest {
 
 (print (format "ass %s can", "we") "\n")
 """
-		Parser.parseTokenStream(Lexer(srcCode)).accept(Sema()).eval()
+		Parser.parseTokenStream(Lexer(srcCode)).accept(SymbolList()).eval()
 	}
 
 	@Test

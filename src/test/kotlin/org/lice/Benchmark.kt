@@ -3,7 +3,8 @@ package org.lice
 import org.intellij.lang.annotations.Language
 import org.junit.Test
 import org.lice.core.SymbolList
-import org.lice.parse.*
+import org.lice.parse.Lexer
+import org.lice.parse.Parser
 
 class Benchmark {
 	companion object {
@@ -77,10 +78,10 @@ $core))
 """
 	}
 
-	private val lice3 = Parser.parseTokenStream(Lexer(code3)).accept(Sema())
-	private val lice = Parser.parseTokenStream(Lexer(code)).accept(Sema())
-	private val lice2 = Parser.parseTokenStream(Lexer(code2)).accept(Sema(
-			SymbolList().apply { provideFunction("code") { java() } }))
+	private val lice3 = Parser.parseTokenStream(Lexer(code3)).accept(SymbolList())
+	private val lice = Parser.parseTokenStream(Lexer(code)).accept(SymbolList())
+	private val lice2 = Parser.parseTokenStream(Lexer(code2)).accept(SymbolList()
+			.apply { provideFunction("code") { java() } })
 
 	@Test
 	fun benchmarkLice() {

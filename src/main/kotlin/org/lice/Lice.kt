@@ -29,7 +29,7 @@ object Lice {
 	@JvmStatic
 	fun run(code: String, symbolList: SymbolList = SymbolList()): Any? {
 		try {
-			return Parser.parseTokenStream(Lexer(code)).accept(Sema(symbolList)).eval()
+			return Parser.parseTokenStream(Lexer(code)).accept(symbolList).eval()
 		} catch (e: ParseException) {
 			e.prettyPrint(code.split("\n"))
 		} catch (e: InterpretException) {
@@ -41,5 +41,5 @@ object Lice {
 	@JvmOverloads
 	@JvmStatic
 	fun runBarely(code: String, symbolList: SymbolList = SymbolList()) =
-			Parser.parseTokenStream(Lexer(code)).accept(Sema(symbolList)).eval()
+			Parser.parseTokenStream(Lexer(code)).accept(symbolList).eval()
 }
