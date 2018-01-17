@@ -65,24 +65,24 @@ class LevelerTest {
 
 	@Test
 	fun generalTest() {
-		Lice.run("(< 1 1L 1N 1.0F 1.0D 1M)")
-		Lice.run("(> 1 1L 1N 1.0F 1.0D 1M)")
-		Lice.run("(<= 1 1L 1N 1.0F 1.0D 1M)")
-		Lice.run("(>= 1 1L 1N 1.0F 1.0D 1M)")
-		Lice.run("(== 1 1L 1N 1.0F 1.0D 1M)")
-		Lice.run("(== 1 1L 1.0F 1.0D 1M)")
-		Lice.run("(!= 1 1L 1N 1.0F 1.0D 1M)")
-		Lice.run("(!= 1 1L 1.0F 1.0D 1M)")
-		Lice.run("(- 1 1L 1N 1.0F 1.0D 1M)")
-		Lice.run("(- 1 1L 1.0F 1.0D 1M)")
-		Lice.run("(+ 1 1L 1N 1.0F 1.0D 1M)")
-		Lice.run("(+ 1 1L 1.0F 1.0D 1M)")
-		Lice.run("(/ 1 1L 1N 1.0F 1.0D 1M)")
-		Lice.run("(/ 1 1L 1.0F 1.0D 1M)")
-		Lice.run("(* 1 1L 1N 1.0F 1.0D 1M)")
-		Lice.run("(* 1 1L 1.0F 1.0D 1M)")
-		Lice.run("(% 1 2L 3N 4.0F 5.0D 6M)")
-		Lice.run("(% 1 2L 4.0F 5.0D 6M)")
+		Lice.run("(< 1B 1S 1 1B 1S 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(> 1B 1S 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(<= 1B 1S 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(>= 1B 1S 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(== 1B 1S 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(== 1B 1S 1 1L 1.0F 1.0D 1M)")
+		Lice.run("(!= 1B 1S 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(!= 1B 1S 1 1L 1.0F 1.0D 1M)")
+		Lice.run("(- 1B 1S 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(- 1B 1S 1 1L 1.0F 1.0D 1M)")
+		Lice.run("(+ 1B 1S 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(+ 1B 1S 1 1L 1.0F 1.0D 1M)")
+		Lice.run("(/ 1B 1S 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(/ 1B 1S 1 1L 1.0F 1.0D 1M)")
+		Lice.run("(* 1B 1S 1 1L 1N 1.0F 1.0D 1M)")
+		Lice.run("(* 1B 1S 1 1L 1.0F 1.0D 1M)")
+		Lice.run("(% 9B 6S 8 2L 3N 4.0F 5.0D 6M)")
+		Lice.run("(% 9B 6S 8 2L 4.0F 5.0D 6M)")
 		Lice.run("(< 1M 1.0D 1.0F 1N 1L 1)")
 		Lice.run("(> 1M 1.0D 1.0F 1N 1L 1)")
 		Lice.run("(<= 1M 1.0D 1.0F 1N 1L 1)")
@@ -99,27 +99,27 @@ class LevelerTest {
 	@Test
 	fun failureTests() {
 		val anything = null
-		assertFails { "(< 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
-		assertFails { "(> 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
-		assertFails { "(<= 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
-		assertFails { "(>= 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
-		assertFails { "(== 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
-		assertFails { "(!= 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
-		assertFails { "(- 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
-		assertFails { "(+ 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
-		assertFails { "(/ 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
-		assertFails { "(* 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
-		assertFails { "(% 1 2L 3N 4.0F 5.0D 6M true)" evalTo anything }
-		assertFails { "(< 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
-		assertFails { "(> 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
-		assertFails { "(<= 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
-		assertFails { "(>= 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
-		assertFails { "(== 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
-		assertFails { "(!= 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
-		assertFails { "(- 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
-		assertFails { "(+ 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
-		assertFails { "(/ 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
-		assertFails { "(* 1M 1.0D 1.0F 1N 1L 1 true)" evalTo anything }
-		assertFails { "(% 6M 5.0D 4.0F 3N 2L 1 true)" evalTo anything }
+		assertFails { "(< 1B 1S 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(> 1B 1S 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(<= 1B 1S 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(>= 1B 1S 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(== 1B 1S 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(!= 1B 1S 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(- 1B 1S 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(+ 1B 1S 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(/ 1B 1S 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(* 1B 1S 1 1L 1N 1.0F 1.0D 1M true)" evalTo anything }
+		assertFails { "(% 1B 1S 1 2L 3N 4.0F 5.0D 6M true)" evalTo anything }
+		assertFails { "(< 1M 1.0D 1.0F 1N 1L 1B 1S 1 true)" evalTo anything }
+		assertFails { "(> 1M 1.0D 1.0F 1N 1L 1B 1S 1 true)" evalTo anything }
+		assertFails { "(<= 1M 1.0D 1.0F 1N 1L 1B 1S 1 true)" evalTo anything }
+		assertFails { "(>= 1M 1.0D 1.0F 1N 1L 1B 1S 1 true)" evalTo anything }
+		assertFails { "(== 1M 1.0D 1.0F 1N 1L 1B 1S 1 true)" evalTo anything }
+		assertFails { "(!= 1M 1.0D 1.0F 1N 1L 1B 1S 1 true)" evalTo anything }
+		assertFails { "(- 1M 1.0D 1.0F 1N 1L 1B 1S 1 true)" evalTo anything }
+		assertFails { "(+ 1M 1.0D 1.0F 1N 1L 1B 1S 1 true)" evalTo anything }
+		assertFails { "(/ 1M 1.0D 1.0F 1N 1L 1B 1S 1 true)" evalTo anything }
+		assertFails { "(* 1M 1.0D 1.0F 1N 1L 1B 1S 1 true)" evalTo anything }
+		assertFails { "(% 6M 5.0D 4.0F 3N 2L 1B 1S 1 true)" evalTo anything }
 	}
 }
