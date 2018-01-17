@@ -1,11 +1,10 @@
 package org.lice.parse
 
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
 import org.lice.util.ParseException
-
-import org.junit.Assert.assertEquals
 
 class LexNumberTest {
 
@@ -81,6 +80,24 @@ class LexNumberTest {
 		val srcCode = "123L"
 		val l = Lexer(srcCode)
 		assertEquals(Token.TokenType.LongInteger, l.currentToken().type)
+		assertEquals("123", l.currentToken().strValue)
+		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
+	}
+
+	@Test
+	fun testLexShortInteger() {
+		val srcCode = "123S"
+		val l = Lexer(srcCode)
+		assertEquals(Token.TokenType.ShortInteger, l.currentToken().type)
+		assertEquals("123", l.currentToken().strValue)
+		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
+	}
+
+	@Test
+	fun testLexByte() {
+		val srcCode = "123B"
+		val l = Lexer(srcCode)
+		assertEquals(Token.TokenType.Byte, l.currentToken().type)
 		assertEquals("123", l.currentToken().strValue)
 		assertEquals(Token.TokenType.EOI, l.peekOneToken().type)
 	}

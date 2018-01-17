@@ -16,6 +16,8 @@ class ASTAtomicNode internal constructor(metaData: MetaData, val token: Token) :
 		Token.TokenType.HexNumber -> ValueNode(token.strValue.toHexInt(), metaData)
 		Token.TokenType.DecNumber -> ValueNode(token.strValue.toInt(), metaData)
 		Token.TokenType.LongInteger -> ValueNode(token.strValue.toLong(), metaData)
+		Token.TokenType.ShortInteger -> ValueNode(token.strValue.toInt(), metaData)
+		Token.TokenType.Byte -> ValueNode(token.strValue.toInt(), metaData)
 		Token.TokenType.BigInt -> ValueNode(token.strValue.toBigInt(), metaData)
 		Token.TokenType.BigDec -> ValueNode(token.strValue.toBigDec(), metaData)
 		Token.TokenType.FloatNumber -> ValueNode(token.strValue.toFloat(), metaData)

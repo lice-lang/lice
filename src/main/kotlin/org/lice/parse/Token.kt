@@ -22,6 +22,8 @@ class Token constructor(
 		DecNumber,
 		HexNumber,
 		LongInteger,
+		ShortInteger,
+		Byte,
 		BigInt,
 		BigDec,
 		FloatNumber,

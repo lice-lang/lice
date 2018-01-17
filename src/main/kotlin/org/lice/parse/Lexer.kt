@@ -137,6 +137,18 @@ class Lexer(sourceCode: String) {
 				nextChar()
 				numberType = Token.TokenType.LongInteger
 			}
+			's', 'S' -> {
+				if (!numberType.isIntegral) throw ParseException("'s' or 'S' is only used for short integers",
+						MetaData(line, this.line, startAtCol, this.col))
+				nextChar()
+				numberType = Token.TokenType.ShortInteger
+			}
+			'b', 'B' -> {
+				if (!numberType.isIntegral) throw ParseException("'b' or 'B' is only used for integers",
+						MetaData(line, this.line, startAtCol, this.col))
+				nextChar()
+				numberType = Token.TokenType.Byte
+			}
 		}
 
 		if (currentChar() !in tokenDelimiters) throw ParseException("Unexpected character ${currentChar()}",
