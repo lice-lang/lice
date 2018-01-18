@@ -9,7 +9,7 @@ class IdeTest {
 	@Test
 	fun testAllSymbols() {
 		println(SymbolList.classPath)
-		println(SymbolList.pathSeperator)
+		println(SymbolList.pathSeparator)
 		println(SymbolList.preludeSymbols)
 		println(SymbolList.preludeVariables)
 		ValueNode(1, MetaData.EmptyMetaData)

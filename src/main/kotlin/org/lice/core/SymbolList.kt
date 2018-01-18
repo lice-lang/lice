@@ -119,13 +119,14 @@ class SymbolList
 	fun extractLiceVariable(name: String): Any? = (getVariable(name) as Node).eval()
 
 	companion object {
-		val pathSeperator: String = System.getProperty("path.separator")
+		val pathSeparator: String = System.getProperty("path.separator")
 		val classPath: String = System.getProperty("java.class.path")
 
 		val preludeVariables = listOf("null", "true", "false")
 		val preludeSymbols by lazy {
 			listOf(
 					FunctionHolders::class.java.declaredMethods.map { it.name },
+					FunctionDefinedHolder::class.java.declaredMethods.map { it.name },
 					FunctionDefinedMangledHolder::class.java.declaredMethods.map { it.name.mangleA() },
 					FunctionMangledHolder::class.java.declaredMethods.map { it.name.mangleB() },
 					FunctionWithMetaHolders::class.java.declaredMethods.map { it.name },
