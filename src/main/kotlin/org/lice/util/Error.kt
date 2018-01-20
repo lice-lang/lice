@@ -13,7 +13,7 @@ package org.lice.util
 import org.lice.model.MetaData
 
 open class LiceException(string: String, @JvmField protected val meta: MetaData) : RuntimeException(string) {
-	protected fun prettify(cachedCodeLines: List<String>): String {
+	fun prettify(cachedCodeLines: List<String>): String {
 		val builder = StringBuilder()
 		builder.appendln("Error $message")
 		if (meta.beginLine != -1) builder.append("At ${meta.beginLine}")
