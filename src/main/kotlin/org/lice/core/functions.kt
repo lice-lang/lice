@@ -197,10 +197,13 @@ class FunctionWithMetaHolders(private val symbolList: SymbolList) {
 
 	fun sqrt(meta: MetaData, it: List<Any?>) = Math.sqrt(cast<Number>(it.first(meta)).toDouble())
 	fun sin(meta: MetaData, it: List<Any?>) = Math.sin(cast<Number>(it.first(meta)).toDouble())
+	fun cos(meta: MetaData, it: List<Any?>) = Math.cos(cast<Number>(it.first(meta)).toDouble())
 	fun tan(meta: MetaData, it: List<Any?>) = Math.tan(cast<Number>(it.first(meta)).toDouble())
 	fun asin(meta: MetaData, it: List<Any?>) = Math.asin(cast<Number>(it.first(meta)).toDouble())
+	fun acos(meta: MetaData, it: List<Any?>) = Math.acos(cast<Number>(it.first(meta)).toDouble())
 	fun atan(meta: MetaData, it: List<Any?>) = Math.atan(cast<Number>(it.first(meta)).toDouble())
 	fun sinh(meta: MetaData, it: List<Any?>) = Math.sinh(cast<Number>(it.first(meta)).toDouble())
+	fun cosh(meta: MetaData, it: List<Any?>) = Math.cosh(cast<Number>(it.first(meta)).toDouble())
 	fun tanh(meta: MetaData, it: List<Any?>) = Math.tanh(cast<Number>(it.first(meta)).toDouble())
 	fun exp(meta: MetaData, it: List<Any?>) = Math.exp(cast<Number>(it.first(meta)).toDouble())
 	fun log(meta: MetaData, it: List<Any?>) = Math.log(cast<Number>(it.first(meta)).toDouble())

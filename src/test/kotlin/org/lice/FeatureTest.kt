@@ -534,6 +534,12 @@ side-effect
 		//language=Lice
 		"(asin $randNum)" evalTo Math.asin(randNum)
 		//language=Lice
+		"(cos $randNum)" evalTo Math.cos(randNum)
+		//language=Lice
+		"(cosh $randNum)" evalTo Math.cosh(randNum)
+		//language=Lice
+		"(acos $randNum)" evalTo Math.acos(randNum)
+		//language=Lice
 		"(tan $randNum)" evalTo Math.tan(randNum)
 		//language=Lice
 		"(atan $randNum)" evalTo Math.atan(randNum)

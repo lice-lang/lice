@@ -115,7 +115,6 @@ class SymbolList
 	}
 
 	fun extractLiceFunction(name: String): ProvidedFunc = { ls -> (getVariable(name) as Func)(EmptyMetaData, ls.map { ValueNode(it) }) }
-
 	fun extractLiceVariable(name: String): Any? = (getVariable(name) as Node).eval()
 
 	companion object {
