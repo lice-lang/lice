@@ -10,6 +10,7 @@ CircleCI|[![CircleCI](https://circleci.com/gh/lice-lang/lice/tree/master.svg?sty
 CodeShip|[![Codeship Status for lice-lang/lice](https://app.codeship.com/projects/2e71d680-61fd-0135-bc9e-7aecbc4a3d79/status?branch=master)](https://app.codeship.com/projects/239723)
 
 [![JitPack](https://jitpack.io/v/lice-lang/lice.svg)](https://jitpack.io/#lice-lang/lice)<br/>
+[ ![Download](https://api.bintray.com/packages/ice1000/Lice/lice/images/download.svg?version=3.3.2) ](https://bintray.com/ice1000/Lice/lice/3.3.2/link)<br/>
 [![Gitter](https://badges.gitter.im/lice-lang/lice.svg)](https://gitter.im/lice-lang/lice)<br/>
 [![Dependency Status](https://www.versioneye.com/user/projects/58df5b1c24ef3e00425cf73f/badge.svg)](https://www.versioneye.com/user/projects/58df5b1c24ef3e00425cf73f)<br/>
 [![codecov](https://codecov.io/gh/lice-lang/lice/branch/master/graph/badge.svg)](https://codecov.io/gh/lice-lang/lice)<br/>
@@ -59,7 +60,32 @@ Once a feature is finished and tested, and not considered harmful, I'll copy the
 
 # Building
 
-To use Lice with build tools, see [JitPack instruction](https://jitpack.io/#lice-lang/lice).
+To use Lice with build tools, first add jcenter to your repositories list.
+ 
+With gradle, add this to your dependencies list:
+
+```groovy
+compile 'org.lice:lice:3.3.2'
+```
+
+Or with maven:
+
+```xml
+<dependency>
+  <groupId>org.lice</groupId>
+  <artifactId>lice</artifactId>
+  <version>3.3.2</version>
+  <type>pom</type>
+</dependency>
+```
+
+Or with ivy:
+
+```xml
+<dependency org='org.lice' name='lice' rev='3.3.2'>
+  <artifact name='lice' ext='pom'/>
+</dependency>
+```
 
 Alternatively, you can download the nightly jar for the newest commit on [AppVeyor](https://ci.appveyor.com/project/ice1000/lice/branch/master/artifacts).
 
@@ -127,13 +153,17 @@ Lice has handy APIs for interacting with Java.
 This project provides handy APIs for running Lice codes from Java.
 
 ```java
-// Running Lice
-System.out.println(Lice.run("(+ 1 1)")); // prints 2
-System.out.println(Lice.run(new File("example.lice"))); // run codes in a file
-
-// Lice API
-SymbolList env = new SymbolList();
-Lice.run("(def blablabla a (+ a a)) (-> myVar 233)", env);
-env.extractLiceFunction("blablabla").invoke(233); // result: 466
-int var = ((Number) env.extractLiceVariable("myVar")).intValue(); // result: 233
+class SomeClass {
+  public static void main(String[] args){
+    // Running Lice
+    System.out.println(Lice.run("(+ 1 1)")); // prints 2
+    System.out.println(Lice.run(new File("example.lice"))); // run codes in a file
+    
+    // Lice API
+    SymbolList env = new SymbolList();
+    Lice.run("(def blablabla a (+ a a)) (-> myVar 233)", env);
+    env.extractLiceFunction("blablabla").invoke(233); // result: 466
+    int var = ((Number) env.extractLiceVariable("myVar")).intValue(); // result: 233
+  }
+}
 ```

@@ -77,7 +77,7 @@ publishing {
 			artifact sourcesJar
 			pom.withXml {
 				val root = asNode()
-				root.appendNode("description", "A multi-paradigm programming language running on JVM Edit")
+				root.appendNode("description", "A multi-paradigm programming language running on JVM")
 				root.appendNode("name", project.name)
 				root.children().last()
 			}
